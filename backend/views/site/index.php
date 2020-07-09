@@ -4,50 +4,41 @@
 
 $this->title = 'My Yii Application';
 ?>
-<div class="site-index">
-
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="ibox bg-success color-white widget-stat">
+            <div class="ibox-body">
+                <h2 class="m-b-5 font-strong">201</h2>
+                <div class="m-b-5">NEW ORDERS</div><i class="ti-shopping-cart widget-stat-icon"></i>
+                <div><i class="fa fa-level-up m-r-5"></i><small>25% higher</small></div>
             </div>
         </div>
-
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="ibox bg-info color-white widget-stat">
+            <div class="ibox-body">
+                <h2 class="m-b-5 font-strong">1250</h2>
+                <div class="m-b-5">UNIQUE VIEWS</div><i class="ti-bar-chart widget-stat-icon"></i>
+                <div><i class="fa fa-level-up m-r-5"></i><small>17% higher</small></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="ibox bg-warning color-white widget-stat">
+            <div class="ibox-body">
+                <h2 class="m-b-5 font-strong">$1570</h2>
+                <div class="m-b-5">TOTAL INCOME</div><i class="fa fa-money widget-stat-icon"></i>
+                <div><i class="fa fa-level-up m-r-5"></i><small>22% higher</small></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="ibox bg-danger color-white widget-stat">
+            <div class="ibox-body">
+                <h2 class="m-b-5 font-strong">108</h2>
+                <div class="m-b-5">NEW USERS</div><i class="ti-user widget-stat-icon"></i>
+                <div><i class="fa fa-level-down m-r-5"></i><small>-12% Lower</small></div>
+            </div>
+        </div>
     </div>
 </div>

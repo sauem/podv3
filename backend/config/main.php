@@ -1,9 +1,7 @@
 <?php
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
-    require __DIR__ . '/../../common/config/params-local.php',
-    require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php'
+    require __DIR__ . '/params.php'
 );
 
 return [
@@ -11,10 +9,26 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'gii' => [
+            'class' => 'yii\gii\Module',
+        ],
+        'api' => [
+            'class' => \backend\modules\api::class,
+        ],
+        'gridview' => [
+            'class' => '\kartik\grid\Module',
+            'bsVersion' => '4.x'
+        ]
+    ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\DbManager'
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
+            'cookieValidationKey' => COOKIE_VALID_BACKEND,
+            'enableCsrfValidation' => false,
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -37,14 +51,20 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+    ],
+    'as access' => [
+        'class' => \mdm\admin\components\AccessControl::class,
+        'allowActions' => [
+            'api/*',
+           // 'rbac/*',
+           // 'gii/*'
+        ]
     ],
     'params' => $params,
 ];

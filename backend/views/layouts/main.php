@@ -22,59 +22,48 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <style>
+        .ui-widget-content{
+            margin-left: 16%;
+            margin-top: 23%;
+        }
+        .grid-view th{
+            white-space: nowrap;
+        }
+    </style>
 </head>
-<body>
+<body class="fixed-navbar">
 <?php $this->beginBody() ?>
+<div class="page-wrapper">
+    <?= $this->render('@backend/views/parts/nav')?>
+    <?= $this->render('@backend/views/parts/sidebar')?>
+    <div class="content-wrapper">
 
-<div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    ?>
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+        <div class="page-content fade-in-up">
+
+            <?= $content?>
+        </div>
+        <?= $this->render('@backend/views/parts/footer')?>
     </div>
 </div>
-
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
+<div class="sidenav-backdrop backdrop"></div>
+<div class="preloader-backdrop">
+    <div class="page-preloader">Loading</div>
+</div>
 
 <?php $this->endBody() ?>
+<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <script>
+        toastr.success("<?= Yii::$app->session->getFlash('success') ?>");
+    </script>
+<?php endif; ?>
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <script>
+        toastr.warning("<?= Yii::$app->session->getFlash('success') ?>");
+    </script>
+<?php endif; ?>
+
 </body>
 </html>
 <?php $this->endPage() ?>

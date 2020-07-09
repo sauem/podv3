@@ -1,0 +1,103 @@
+<?php
+
+use yii\helpers\Html;
+use kartik\grid\GridView;
+use kartik\grid\CheckboxColumn;
+use kartik\form\ActiveForm;
+use kartik\grid\ActionColumn;
+use common\helper\Component;
+
+/* @var $this yii\web\View */
+/* @var $searchModel backend\models\ProductsSearchModel */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Products Models';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="ibox table-responsive">
+            <div class="ibox-head">
+                <h2 class="ibox-title">Tạo sản phẩm</h2>
+            </div>
+            <?php $form = ActiveForm::begin() ?>
+            <div class="ibox-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'name')->label('Tên sản phẩm') ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'sku')->label('Mã sản phẩm') ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'category_id')
+                            ->widget(\kartik\select2\Select2::className(), [
+                                'data' => \backend\models\CategoriesModel::select(),
+                                'options' => [
+                                    'prompt' => 'Chọn danh mục'
+                                ]
+                            ])
+                            ->label('Danh mục sản phẩm') ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= Component::money($form, $model, 'regular_price') ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= Component::money($form, $model, 'sale_price') ?>
+                    </div>
+                    <div class="col-12">
+                        <?= $form->field($model, 'description')->textarea()->label('Mô tả') ?>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <?= Html::resetButton("Nhập lại", ['class' => 'btn btn-secondary']) ?>
+                    <?= Html::submitButton("Lưu", ['class' => 'btn btn-success']) ?>
+                </div>
+            </div>
+            <?php ActiveForm::end() ?>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="ibox">
+            <div class="ibox-head">
+                <h2 class="ibox-title">Danh sách sản phẩm</h2>
+            </div>
+            <div class="ibox-body">
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'responsive' => true,
+                    'headerRowOptions' => [
+                        'class' => 'thead-light'
+                    ],
+                    'columns' => [
+                        ['class' => CheckboxColumn::class],
+                        [
+                            'attribute' => 'name',
+                            'format' => 'html',
+                            'value' => function ($model) {
+                                return "<strong><i>$model->sku</i></strong> | $model->name ";
+                            }
+                        ],
+                        'category_id',
+                        'regular_price',
+                        'created_at:date',
+                        [
+                            'class' => ActionColumn::class,
+                            'template' => '{update}{delete}',
+                            'buttons' => [
+                                'delete' => function ($url, $model) {
+                                    return Component::delete($url);
+                                },
+                                'update' => function ($url, $model) {
+                                    return Component::update($url);
+                                },
+                            ]
+                        ],
+                    ],
+                ]); ?>
+            </div>
+        </div>
+    </div>
+</div>
