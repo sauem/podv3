@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'name')->label('Tên danh mục') ?>
                 <?= $form->field($model, 'description')->textarea()->label('Mô tả') ?>
                 <div class="text-right">
-                    <?= Html::resetButton("Nhập lại",['class' =>'btn btn-secondary'])?>
+                    <?= Component::reset() ?>
                     <?= Html::submitButton("Lưu",['class' =>'btn btn-success'])?>
                 </div>
             </div>
@@ -57,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return Component::delete($url);
                                 },
                                 'update' => function ($url, $model) {
+                                    $url = \yii\helpers\Url::toRoute(['index','id' => $model->id]);
                                     return Component::update($url);
                                 },
                             ]

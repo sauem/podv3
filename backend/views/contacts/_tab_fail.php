@@ -8,14 +8,24 @@ use common\helper\Component;
 
 ?>
 <div class="table-responsive">
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
+        'pjax' => true,
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],
         'columns' => [
-            ['class' => CheckboxColumn::class],
+            [
+                'class' => CheckboxColumn::class,
+                'checkboxOptions' => function ($model) {
+                    return ['data-cate' => $model->page->category_id];
+                }
+            ],
             [
                 'label' => 'sản phẩm',
                 'attribute' => 'category_id',
@@ -23,8 +33,7 @@ use common\helper\Component;
                 'value' => function ($model) {
                     return Html::tag("p",
                         $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
-                        "<small><i>{$model->page->category->name}</i></small>"
-                        , []);
+                        "<small><i>{$model->page->category->name}</i></small>");
                 }
             ],
             [
@@ -33,9 +42,8 @@ use common\helper\Component;
                 'format' => 'raw',
                 'value' => function ($model) {
                     return Html::tag("p",
-                        "<a target='_blank' href='{$model->link}' >{$model->name}  <i class='fa fa-chrome'></i></a><br><small>{$model->option}</small><br>" .
-                        "<small class='text-danger'>Note: <i>{$model->note}</i></small>"
-                        , []);
+                        "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br><small>{$model->option}</small><br>" .
+                        "<small class='text-danger'>Note: <i>{$model->note}</i></small>");
                 }
             ],
             [
@@ -52,7 +60,7 @@ use common\helper\Component;
                 'template' => '{takenote}',
                 'buttons' => [
                     'takenote' => function ($url, $model) {
-                        return Html::a("<i class='fa fa-newspaper-o'></i> Ghi chú",
+                        return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",
                             '#takeNoteModal',
                             [
                                 'class' => 'btn btn-sm bg-white',

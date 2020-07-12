@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
  * @property float|null $sale_price
  * @property int|null $category_id
  * @property string|null $description
+ * @property string|null $option
  * @property int $created_at
  * @property int $updated_at
  *
@@ -41,6 +42,7 @@ class ProductsModel extends BaseModel
             [['category_id', 'created_at', 'updated_at'], 'integer'],
             [['name', 'sku', 'description'], 'string', 'max' => 255],
             [['sku'], 'unique'],
+            [['option'],'string'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => CategoriesModel::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
@@ -58,6 +60,7 @@ class ProductsModel extends BaseModel
             'sale_price' => 'Giá giảm',
             'category_id' => 'Danh mục',
             'description' => 'Mô tả',
+            'option' => 'Tùy chọn',
             'created_at' => 'Ngày tạo',
             'updated_at' => 'Updated At',
         ];
@@ -70,7 +73,7 @@ class ProductsModel extends BaseModel
      */
     public function getCategory()
     {
-        return $this->hasOne(CategoriesModel::className(), ['id' => 'category_id']);
+        return $this->hasOne(CategoriesModel::className(), ['id' => 'category_id'])->with('sku');
     }
     static function select(){
         $all = self::find()->all();
@@ -79,7 +82,7 @@ class ProductsModel extends BaseModel
 
     public function afterFind()
     {
-        $this->regular_price = number_format($this->regular_price,2,'.',',') ."đ";
+        //$this->regular_price = number_format($this->regular_price,2,'.',',') ."đ";
         $this->category_id = CategoriesModel::findOne($this->category_id)->name;
         parent::afterFind();
     }

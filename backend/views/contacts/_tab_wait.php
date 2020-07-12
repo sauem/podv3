@@ -8,14 +8,25 @@ use common\helper\Component;
 
 ?>
 <div class="table-responsive">
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
+        'layout' => "{items}\n{pager}",
+        'pjax' => true,
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],
         'columns' => [
-            ['class' => CheckboxColumn::class],
+            [
+                'class' => CheckboxColumn::class,
+                'checkboxOptions' => function ($model) {
+                    return ['data-cate' => $model->page->category_id];
+                }
+            ],
             [
                 'label' => 'sản phẩm',
                 'attribute' => 'category_id',
@@ -47,16 +58,19 @@ use common\helper\Component;
             'created_at:date',
             [
                 'class' => ActionColumn::class,
-                'template' => '{takenote}',
+                'template' => '{takenote}{view}',
                 'buttons' => [
                     'takenote' => function ($url, $model) {
                         return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",
                             '#takeNoteModal',
                             [
-                                'class' => 'btn btn-sm bg-white',
+                                'class' => 'btn btn-sm mb-1 bg-white',
                                 'data-toggle' => 'modal'
-                                ]);
+                            ]);
                     },
+                    'view' => function ($url, $model) {
+                        return Component::view($url);
+                    }
                 ]
             ],
         ],

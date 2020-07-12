@@ -14,6 +14,10 @@ use common\helper\Component;
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],
+       // 'pjax' => true,
+        'pjaxSettings' => [
+            'neverTimeout' => true,
+        ],
         'columns' => [
             ['class' => CheckboxColumn::class],
 

@@ -15,6 +15,7 @@ class AppAsset extends AssetBundle
        // 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css',
         'https://use.fontawesome.com/releases/v5.3.1/css/all.css',
+        '/lib/vendors/select2/dist/css/select2.min.css',
         '/lib/vendors/bootstrap/dist/css/bootstrap.min.css',
         '/lib/vendors/font-awesome/css/font-awesome.min.css',
         '/lib/vendors/themify-icons/css/themify-icons.css',
@@ -30,7 +31,11 @@ class AppAsset extends AssetBundle
         '/lib/js/app.min.js',
         'https://cdn.jsdelivr.net/npm/sweetalert2@9',
         'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js',
-        '/lib/js/scripts/dashboard_1_demo.js',
+        //'/lib/js/scripts/dashboard_1_demo.js',
+        '/lib/vendors/select2/dist/js/select2.full.min.js',
+        '/lib/js/admin.js?v=1.24',
+        '/lib/js/handlebars-v4.7.6.js',
+        '/lib/js/handlebars-helper.js',
 
     ];
     public $depends = [

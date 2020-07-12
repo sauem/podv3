@@ -22,12 +22,6 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <style>
-        .ui-widget-content{
-            margin-left: 16%;
-            margin-top: 23%;
-        }
-    </style>
 </head>
 <body class="fixed-navbar">
 <?php $this->beginBody() ?>

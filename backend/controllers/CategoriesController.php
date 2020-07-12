@@ -34,12 +34,15 @@ class CategoriesController extends BaseController
      * Lists all CategoriesModel models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
         $searchModel = new CategoriesSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $model = new CategoriesModel;
+        if($id){
+            $model = $this->findModel($id);
+        }
 
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
 

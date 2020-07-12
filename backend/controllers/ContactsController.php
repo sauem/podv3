@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsAssignment;
 use backend\models\ContactsLog;
+use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
 use common\models\User;
@@ -58,7 +59,6 @@ class ContactsController extends BaseController
             $phone = UserModel::findOne($saleID);
             $phone = $phone->processing->contact_phone;
         }
-
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -96,11 +96,11 @@ class ContactsController extends BaseController
                 ]
             ]
         ));
-
         $modelNote = new ContactsLog;
-        $info = ContactsModel::find(['phone' => $phone])->groupBy('phone')->one();
-
+        $info = ContactsModel::findOne(['phone' => $phone]);
         $log =  $this->actionSubmit();
+
+        $order = new OrdersModel;
         if(Yii::$app->request->isPost){
             if($log){
                 self::success("Thành công!");
@@ -114,6 +114,7 @@ class ContactsController extends BaseController
             'failureProvider' => $failureProvider,
             'successProvider' => $successProvider,
             'modelNote' => $modelNote,
+            'order' => $order,
             'info' => $info
         ]);
     }

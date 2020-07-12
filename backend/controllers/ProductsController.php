@@ -35,13 +35,17 @@ class ProductsController extends BaseController
      * Lists all ProductsModel models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
+
         $searchModel = new ProductsSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $model = new ProductsModel;
 
+        if($id){
+            $model = $this->findModel($id);
+        }
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
 
             if($model->save()){

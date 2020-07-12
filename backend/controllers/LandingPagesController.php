@@ -37,7 +37,7 @@ class LandingPagesController extends BaseController
      * Lists all LandingPages models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
         $searchModel = new LandingPagesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -52,7 +52,9 @@ class LandingPagesController extends BaseController
                 ));
             }
         $model = new LandingPages;
-
+        if($id){
+            $model = $this->findModel($id);
+        }
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
 
             if($model->save()){

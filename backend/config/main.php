@@ -62,7 +62,7 @@ return [
         'class' => \mdm\admin\components\AccessControl::class,
         'allowActions' => [
             'api/*',
-           // 'rbac/*',
+            'ajax/*',
            // 'gii/*'
         ]
     ],

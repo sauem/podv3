@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\helper\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\ProductsModel;
@@ -69,7 +70,7 @@ class ProductsSearchModel extends ProductsModel
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'sku', $this->sku])
-            ->andFilterWhere(['like', 'description', $this->description]);
+            ->orFilterWhere(['like', 'sku', $this->name]);
 
         return $dataProvider;
     }

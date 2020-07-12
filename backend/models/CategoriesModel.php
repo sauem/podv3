@@ -54,4 +54,7 @@ class CategoriesModel extends BaseModel
         $all = self::find()->all();
         return ArrayHelper::map($all,'id','name');
     }
+    public function getSku(){
+        return $this->hasMany(ProductsModel::className(),['category_id' => 'id']);
+    }
 }

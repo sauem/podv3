@@ -24,4 +24,7 @@ class Helper
     static function userRole($role){
         return \Yii::$app->user->can(ucfirst($role));
     }
+    static function option($option){
+        return preg_split("/\r\n|\n|\r/", $option);
+    }
 }

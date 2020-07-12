@@ -47,12 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-6">
                         <?= Component::money($form, $model, 'sale_price') ?>
                     </div>
-                    <div class="col-12">
-                        <?= $form->field($model, 'description')->textarea()->label('Mô tả') ?>
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'option')->textarea(['rows' => 10])->label('Tùy chỉnh (Mỗi thuộc tính xuống dòng)') ?>
                     </div>
+
                 </div>
                 <div class="text-right">
-                    <?= Html::resetButton("Nhập lại", ['class' => 'btn btn-secondary']) ?>
+                    <?= Component::reset() ?>
                     <?= Html::submitButton("Lưu", ['class' => 'btn btn-success']) ?>
                 </div>
             </div>
@@ -63,8 +64,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="ibox">
             <div class="ibox-head">
                 <h2 class="ibox-title">Danh sách sản phẩm</h2>
+                <div class="ibox-tools">
+                    <a data-toggle="collapse" href="#filter"><i class="fa fa-filter"></i> Tìm kiếm</a>
+                </div>
             </div>
             <div class="ibox-body">
+                <?= $this->render('_search',['model' => $searchModel])?>
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'responsive' => true,
@@ -91,6 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return Component::delete($url);
                                 },
                                 'update' => function ($url, $model) {
+                                    $url = \yii\helpers\Url::toRoute(['index','id' => $model->id]);
                                     return Component::update($url);
                                 },
                             ]

@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use backend\assets\AppAsset;
@@ -22,29 +23,45 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <script>
+        var Action = {
+            DELTE: 'del',
+            ADD: 'add',
+            UP: 'up',
+            DOWN: 'down'
+        }
+    </script>
     <style>
-        .ui-widget-content{
+        .ui-widget-content {
             margin-left: 16%;
             margin-top: 23%;
         }
-        .grid-view th{
+
+        .grid-view th {
             white-space: nowrap;
+        }
+
+        @media (min-width: 768px) {
+            .modal-xl {
+                width: 90%;
+                max-width: 1200px;
+            }
         }
     </style>
 </head>
 <body class="fixed-navbar">
 <?php $this->beginBody() ?>
 <div class="page-wrapper">
-    <?= $this->render('@backend/views/parts/nav')?>
-    <?= $this->render('@backend/views/parts/sidebar')?>
+    <?= $this->render('@backend/views/parts/nav') ?>
+    <?= $this->render('@backend/views/parts/sidebar') ?>
     <div class="content-wrapper">
 
 
         <div class="page-content fade-in-up">
 
-            <?= $content?>
+            <?= $content ?>
         </div>
-        <?= $this->render('@backend/views/parts/footer')?>
+        <?= $this->render('@backend/views/parts/footer') ?>
     </div>
 </div>
 <div class="sidenav-backdrop backdrop"></div>

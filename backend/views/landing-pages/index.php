@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'link')->label('Link trang') ?>
                     </div>
                     <div class="col-md-12">
+                        <label>Danh mục sản phẩm</label>
                         <?= $form->field($model, 'category_id')
                             ->widget(\kartik\select2\Select2::className(), [
                                 'data' => \backend\models\CategoriesModel::select(),
@@ -40,9 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'prompt' => 'Chọn danh mục'
                                 ]
                             ])
-                            ->label('Danh mục') ?>
+                            ->label(false) ?>
                     </div>
                     <div class="col-md-12">
+                        <label>Sản phẩm</label>
                         <?= $form->field($model, 'product_id')
                             ->widget(\kartik\select2\Select2::className(), [
                                 'data' => \backend\models\ProductsModel::select(),
@@ -50,12 +52,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'prompt' => 'Chọn sản phẩm'
                                 ]
                             ])
-                            ->label('Sản phẩm') ?>
+                            ->label(false) ?>
                     </div>
 
                 </div>
                 <div class="text-right">
-                    <?= Html::resetButton("Nhập lại", ['class' => 'btn btn-secondary']) ?>
+                    <?= Component::reset() ?>
                     <?= Html::submitButton("Lưu", ['class' => 'btn btn-success']) ?>
                 </div>
             </div>
@@ -111,6 +113,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return Component::delete($url);
                                 },
                                 'update' => function ($url, $model) {
+                                    $url = \yii\helpers\Url::toRoute(['index','id' => $model->id]);
+
                                     return Component::update($url);
                                 },
                             ]

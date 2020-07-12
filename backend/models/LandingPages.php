@@ -83,7 +83,7 @@ class LandingPages extends BaseModel
      */
     public function getProduct()
     {
-        return $this->hasOne(ProductsModel::className(), ['id' => 'product_id']);
+        return $this->hasOne(ProductsModel::className(), ['id' => 'product_id'])->with('category');
     }
 
     /**

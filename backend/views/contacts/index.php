@@ -10,83 +10,167 @@ use yii\grid\GridView;
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="row">
-    <div class="col-md-4">
-        <div class="ibox">
-            <div class="ibox-head">
-                <h2 class="ibox-title">Thông tin : <i class="fa fa-phone"></i> <?= $info->phone?></h2>
-            </div>
-            <div class="ibox-body">
-                <table class="table">
-                    <tbody>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Thông tin : <i class="fa fa-phone"></i> <?= $info->phone ?></h2>
+                </div>
+                <div class="ibox-body">
+                    <table class="table">
+                        <tbody>
                         <tr>
                             <td>Khách hàng</td>
-                            <td><?= $info->name?></td>
+                            <td><?= $info->name ?></td>
                         </tr>
                         <tr>
                             <td>Địa chỉ</td>
-                            <td><?= $info->address?></td>
+                            <td><?= $info->address ?></td>
                         </tr>
                         <tr>
                             <td>Zipcode</td>
-                            <td><?= $info->zipcode?></td>
+                            <td><?= $info->zipcode ?></td>
                         </tr>
                         <tr>
                             <td>IP</td>
-                            <td><?= $info->ip?></td>
+                            <td><?= $info->ip ?></td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-8">
-        <div class="ibox">
-            <div class="ibox-body">
-                <ul class="nav nav-tabs tabs-line">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ xử lý</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất bại</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành công</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown">Hành động <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <a id="changeStatus" class="dropdown-item" href="javascript:;">Thay đổi trạng thái</a>
-                            <a id="createOrder" class="dropdown-item" href="javascript;;" data-toggle="tab">Tạo đơn hàng</a>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="tab-content">
+        <div class="col-md-8">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <ul class="nav nav-tabs tabs-line">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ
+                                xử lý</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất
+                                bại</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
+                                công</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="btn-group">
+                            <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
+                            <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                        </div>
+                        <div class="tab-pane fade show active" id="wating">
+                            <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
+                        </div>
+                        <div class="tab-pane fade" id="failure">
+                            <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
+                        </div>
+                        <div class="tab-pane fade" id="success">
 
-                    <div class="tab-pane fade show active" id="wating">
-                        <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider])?>
-                    </div>
-                    <div class="tab-pane fade" id="failure">
-                        <?= $this->render('_tab_fail',['dataProvider' => $failureProvider])?>
-                    </div>
-                    <div class="tab-pane fade" id="success">
-                        <?= $this->render('_tab_done',['dataProvider' => $successProvider])?>
+                            <?= $this->render('_tab_done', ['dataProvider' => $successProvider]) ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<?= $this->render('_modal',['model' => $modelNote])?>
+<?= $this->render('_modal', ['model' => $modelNote]) ?>
+<?= $this->render('_modal_order', ['model' => $order]) ?>
 <?php
-$route  = \yii\helpers\Url::toRoute(Yii::$app->controller->getRoute());
-$js =<<<JS
+$route = \yii\helpers\Url::toRoute(Yii::$app->controller->getRoute());
+$loadProduct = \yii\helpers\Url::toRoute(['ajax/load-product-select']);
+$skuURL = \yii\helpers\Url::toRoute(['ajax/load-sku']);
+$js = <<<JS
+   
     $("document").ready(function() {
-        $("#changeStatus").click(function() {
-            var keys = $('#w0').yiiGridView('getSelectedRows');
-            alert(keys)
+        window.Skulist = [];
+        Window.Total = {
+            subTotal : 0,
+            saleTotal : 0,
+            total : 0
+        };
+    
+        $("#createOrder").click(function() {
+            var keys = $('.grid-view').yiiGridView('getSelectedRows');
+            if(keys.length <= 0){
+                swal.fire({
+                    title : "Thông báo",
+                    text : "Để lên đơn hàng hãy chọn liên hệ",
+                    icon : "error",
+                });
+                return;
+            }
+               $("#takeOrder").modal()
+           $('#takeOrder').on('shown.bs.modal', function () {
+               loadProducts(keys);
+               loadSku(getSelectedColum());
+               
+            })
         });
+        
+        function loadProducts(keys) {
+             
+            if(keys.length > 0){
+                $.ajax({    
+                    url : "$loadProduct",
+                    type : "POST",
+                    data : {keys : keys},
+                    cache : false,
+                    success: function(res) {
+                         setItem(res.product)
+                        let html =  compileTemplate("template-product",res.customer);
+                        $("#resultInfo").html(html) 
+                           res.product.map( item => {
+                             if(!Skulist.includes(item.sku)){
+                                  let html =  compileTemplate("template-item-product",item);
+                                  $("#resultItemProduct").append(html) 
+                                 Skulist.push(item.sku)
+                             }
+                         })
+                         Total = {
+                            subTotal:  res.subTotal,
+                            saleTotal:  res.totalSale,
+                            total : res.total
+                         }    
+                         localStorage.setItem("total", Total.total);
+                         html =  compileTemplate("total-template",res);
+                        $("#totalResult").html(html) 
+                        
+                       
+                    }
+                })
+            }
+        }  
+        function loadSku(_keys) {
+           $.ajax({
+            url : '$skuURL',
+            data : {keys : _keys},
+            type : 'POST',
+            cache : false,
+            success : function(res) {
+               $("#resultProduct").html(compileTemplate('template-sku',res))
+               initSelect2();
+            }
+        })
+        }
+        function getSelectedColum(grid_id = 'grid-view') {
+            let cate = [];
+            let cat = $("."+grid_id).find("tbody").find("input[type='checkbox']:checked");
+            cat.each(function() {
+                let _id= $(this).data("cate");
+                cate.push(_id)
+            })
+          return   Array.from(new Set(cate))
+        }
+        
+        function setItem(product) {
+            localStorage.setItem("product",JSON.stringify(product))
+        }
+       
     })
     
 JS;

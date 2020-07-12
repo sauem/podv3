@@ -23,6 +23,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'category_id')->textInput() ?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+    
+    <?= $form->field($model, 'option')->textarea() ?>
 
     <?= $form->field($model, 'created_at')->textInput() ?>
 
