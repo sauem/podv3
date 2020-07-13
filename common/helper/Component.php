@@ -39,6 +39,10 @@ class Component
     }
 
     static function reset(){
-        return Html::a('Reset',Url::toRoute(\Yii::$app->controller->getRoute()), ['class' => 'btn btn-outline-secondary']);
+        $url = Url::toRoute(\Yii::$app->controller->getRoute());
+        if(\Yii::$app->request->get('phone')){
+            $url = Url::toRoute([\Yii::$app->controller->getRoute(),'phone' => \Yii::$app->request->get('phone')]);
+        }
+        return Html::a('Reset', $url, ['class' => 'btn btn-outline-secondary']);
     }
 }

@@ -99,6 +99,7 @@ class ContactsController extends BaseController
         $modelNote = new ContactsLog;
         $info = ContactsModel::findOne(['phone' => $phone]);
         $order = new OrdersModel;
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

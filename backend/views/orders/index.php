@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\OrdersSearchModel */
@@ -20,29 +20,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::begin(); ?>
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
+            'layout' => "{items}\n{pager}",
+            'headerRowOptions' => [
+                    'class' => [
+                            'thead-light'
+                    ]
+            ],
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-
                 'id',
                 'customer_name',
                 'customer_phone',
                 'customer_email:email',
                 'address',
-                //'city',
-                //'district',
-                //'zipcode',
-                //'country',
-                //'sale',
-                //'sub_total',
-                //'total',
-                //'order_note',
-                //'user_id',
-                //'status',
-                //'status_note',
-                //'created_at',
-                //'updated_at',
-
                 ['class' => 'yii\grid\ActionColumn'],
             ],
         ]); ?>

@@ -57,12 +57,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
                                 công</a>
                         </li>
+
                     </ul>
                     <div class="tab-content">
-                        <div class="btn-group">
-                            <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
-                            <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                        </div>
+
+                       <div class="d-flex justify-content-between">
+                           <div class="btn-group">
+                               <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
+                               <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                           </div>
+                           <a class="nav-link" href="#filter" data-toggle="collapse">
+                               <i class="ti-filter"></i> Tìm kiếm</a>
+                       </div>
+                        <?= $this->render('_search',['model' => $searchModel])?>
                         <div class="tab-pane fade show active" id="wating">
                             <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
                         </div>
@@ -70,9 +77,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
                         </div>
                         <div class="tab-pane fade" id="success">
-
                             <?= $this->render('_tab_done', ['dataProvider' => $successProvider]) ?>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\ContactsSearchModel;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -8,59 +9,30 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="contacts-model-search">
+<div class="landing-pages-search mt-3 collapse <?= Yii::$app->request->get('ContactsSearchModel') ? 'show' : ''?>" id="filter">
 
-    <?php $form = ActiveForm::begin([
-        'action' => ['index'],
+<?php $form = ActiveForm::begin([
+        'action' => ['index','phone' => Yii::$app->request->get('phone')],
         'method' => 'get',
     ]); ?>
-
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'phone') ?>
-
-    <?= $form->field($model, 'email') ?>
-
-    <?= $form->field($model, 'address') ?>
-
-    <?php // echo $form->field($model, 'zipcode') ?>
-
-    <?php // echo $form->field($model, 'option') ?>
-
-    <?php // echo $form->field($model, 'ip') ?>
-
-    <?php // echo $form->field($model, 'note') ?>
-
-    <?php // echo $form->field($model, 'link') ?>
-
-    <?php // echo $form->field($model, 'short_link') ?>
-
-    <?php // echo $form->field($model, 'utm_source') ?>
-
-    <?php // echo $form->field($model, 'utm_medium') ?>
-
-    <?php // echo $form->field($model, 'utm_content') ?>
-
-    <?php // echo $form->field($model, 'utm_term') ?>
-
-    <?php // echo $form->field($model, 'utm_campaign') ?>
-
-    <?php // echo $form->field($model, 'host') ?>
-
-    <?php // echo $form->field($model, 'hashkey') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+    <div class="row">
+        <div class="col-md-4">
+            <?= $form->field($model,'name')->textInput(['placeholder' => 'Tên sản phẩm, mã sản phẩm,..'])->label(false)?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model,'status')->dropDownList(
+                    \backend\models\ContactsModel::STATUS,
+                    ['prompt' => 'Trạng thái liên hệ']
+            )->label(false)?>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <?= \common\helper\Component::reset() ?>
+                <?= Html::submitButton('Tìm kiếm', ['class' => 'btn btn-outline-secondary']) ?>
+            </div>
+        </div>
     </div>
+
 
     <?php ActiveForm::end(); ?>
 
