@@ -12,6 +12,7 @@ use common\helper\Component;
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'responsive' => true,
+            'layout' => "{items}\n{pager}",
             'pjax' => true,
             'pjaxSettings' => [
                 'neverTimeout' => true,
@@ -66,7 +67,6 @@ use common\helper\Component;
                                     'class' => 'btn btn-sm mb-1 bg-white btnNoteModal',
                                     'data-contact' => $model->id,
                                     'data-status' => $model->status,
-
                                 ]);
                         },
                         'view' => function ($url, $model) {
@@ -77,8 +77,5 @@ use common\helper\Component;
             ],
         ]) ?>
     </div>
+
 <?php
-$js = <<<JS
-    
-JS;
-$this->registerJs($js);

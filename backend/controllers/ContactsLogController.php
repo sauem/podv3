@@ -22,7 +22,7 @@ class ContactsLogController extends BaseController
             return [
                 'success' => 1,
                 'logs' => $logs,
-                'selected' => ArrayHelper::getValue(array_shift($logs),'status'),
+                'selected' => ArrayHelper::getValue(array_shift($logs), 'status'),
                 'status' => ContactsModel::STATUS
             ];
         }
@@ -38,8 +38,31 @@ class ContactsLogController extends BaseController
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $log = new ContactsLog();
-        if (\Yii::$app->request->isPost && $log->load(\Yii::$app->request->post())) {
-            if ($log->save()) {
+
+        if (\Yii::$app->request->isPost) {
+
+
+            $cids = \Yii::$app->request->post('contact_id');
+            $cids = explode(",", $cids);
+            if (sizeof($cids) <= 1) {
+                if ($log->load(\Yii::$app->request->post(), '') && $log->save()) {
+                    self::success('Thêm trạng thái thành công!');
+                    return [
+                        'success' => 1
+                    ];
+                }
+            } else {
+                foreach ($cids as $id) {
+                    $log = new ContactsLog();
+                    $raw = [
+                        'contact_id' => $id,
+                        'note' => \Yii::$app->request->post('note'),
+                        'status' => \Yii::$app->request->post('status'),
+                        'user_id' => \Yii::$app->request->post('user_id')
+                    ];
+                    $log->load($raw, '');
+                    $log->save();
+                }
                 self::success('Thêm trạng thái thành công!');
                 return [
                     'success' => 1
@@ -51,5 +74,11 @@ class ContactsLogController extends BaseController
             ];
         }
 
+    }
+
+    public function actionStatus()
+    {
+        $ids = \Yii::$app->request->post('contact_id');
+        return $ids;
     }
 }

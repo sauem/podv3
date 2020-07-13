@@ -93,6 +93,7 @@ class OrdersController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new OrdersModel();
+
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post(),'')){
             try {
                 if($model->save()){

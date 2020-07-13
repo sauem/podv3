@@ -93,7 +93,6 @@ $js = <<<JS
             saleTotal : 0,
             total : 0
         };
-    
         $("#createOrder").click(function() {
             var keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(keys.length <= 0){
@@ -104,14 +103,14 @@ $js = <<<JS
                 });
                 return;
             }
-               $("#takeOrder").modal()
+           $("#takeOrder").modal()
            $('#takeOrder').on('shown.bs.modal', function () {
                loadProducts(keys);
                loadSku(getSelectedColum());
                
             })
         });
-        
+       
         function loadProducts(keys) {
              
             if(keys.length > 0){
@@ -121,7 +120,7 @@ $js = <<<JS
                     data : {keys : keys},
                     cache : false,
                     success: function(res) {
-                         setItem(res.product)
+                        
                         let html =  compileTemplate("template-product",res.customer);
                         $("#resultInfo").html(html) 
                            res.product.map( item => {
@@ -167,10 +166,6 @@ $js = <<<JS
           return   Array.from(new Set(cate))
         }
         
-        function setItem(product) {
-            localStorage.setItem("product",JSON.stringify(product))
-        }
-       
     })
     
 JS;

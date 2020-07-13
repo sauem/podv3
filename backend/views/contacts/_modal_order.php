@@ -238,7 +238,9 @@ $js = <<<JS
     $(document).on("beforeSubmit","#formOrder",function(e) {
         e.preventDefault();
         let form = new FormData(document.getElementById("formOrder"))
-        
+        var keys = $('.grid-view').yiiGridView('getSelectedRows');
+            form.append("contact_id", keys);
+            
             $.ajax({
                         url : $(this).attr("action"),
                         contentType: false,
@@ -250,6 +252,7 @@ $js = <<<JS
                                 toastr.success("Tạo đơn hàng thành công!")
                                 $("#takeOrder").modal("hide")
                                 $("#formOrder").reset() 
+                                window.location.reload();
                             }
                         }
             });

@@ -35,7 +35,7 @@ class AppAsset extends AssetBundle
         '/lib/vendors/select2/dist/js/select2.full.min.js',
         '/lib/js/admin.js?v=1.20',
         '/lib/js/handlebars-v4.7.6.js',
-        '/lib/js/handlebars-helper.js?v=2',
+        '/lib/js/handlebars-helper.js?v=1.2',
 
     ];
     public $depends = [
