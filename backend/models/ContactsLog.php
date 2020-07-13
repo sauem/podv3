@@ -34,7 +34,7 @@ class ContactsLog extends BaseModel
     public function rules()
     {
         return [
-            [['user_id', 'contact_id','status'], 'required'],
+            [['user_id', 'contact_id'], 'required'],
             [['user_id', 'contact_id', 'created_at', 'updated_at'], 'integer'],
             [['status'], 'string', 'max' => 50],
             [['note'], 'string', 'max' => 255],
@@ -87,4 +87,10 @@ class ContactsLog extends BaseModel
     {
         return $this->hasOne(UserModel::className(), ['id' => 'user_id']);
     }
+    public function afterFind()
+    {
+        $this->created_at = date('d/m/Y H:i:s', $this->created_at);
+        parent::afterFind();
+    }
+
 }

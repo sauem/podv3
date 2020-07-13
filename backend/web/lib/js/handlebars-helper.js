@@ -6,6 +6,9 @@ Handlebars.registerHelper("caculate", function (singular_price, sale_price) {
 Handlebars.registerHelper("money", function (number) {
     return number.formatMoney();
 })
-Handlebars.registerHelper("caculate",function (numb1, numb2) {
-
+Handlebars.registerHelper("selected",function (numb1, numb2) {
+    if(numb1 == numb2){
+        return 'selected'
+    }
+    return  ''
 })

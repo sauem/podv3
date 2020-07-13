@@ -67,7 +67,6 @@ use common\helper\Component;
                                 'class' => 'btn btn-sm mb-1 bg-white btnNoteModal',
                                 'data-contact' => $model->id,
                                 'data-status' => $model->status,
-
                             ]);
                     },
                     'view' => function ($url, $model) {

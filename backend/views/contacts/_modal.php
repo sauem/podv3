@@ -18,25 +18,8 @@ use kartik\form\ActiveForm;
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <label>Trạng thái hiện tại</label>
-                            <?= $form->field($model, 'status')
-                                ->widget(\kartik\select2\Select2::className(), [
-                                    'data' => \backend\models\ContactsModel::STATUS,
-                                    'options' => ['prompt' => 'Chọn trạng thái cuộc gọi', 'style' => 'with:100%!important'],
-                                ])->label(false) ?>
+                <div class="modal-body" id="resultNote">
 
-                        </div>
-
-                        <div class="col-12">
-                            <?= $form->field($model, 'note')->textarea()->label('Ghi chú') ?>
-                            <?= $form->field($model, 'user_id')->hiddenInput(['value' => Yii::$app->user->getId()])->label(false) ?>
-                            <?= $form->field($model, 'contact_id')->hiddenInput(['value' => 6])->label(false) ?>
-                        </div>
-
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
@@ -46,15 +29,70 @@ use kartik\form\ActiveForm;
             <?php ActiveForm::end() ?>
         </div>
     </div>
+
+<script id="note-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-12">
+           <div class="form-group">
+               <label>Trạng thái hiện tại</label>
+               <select name="ContactsLog[status]" class="form-control select2">
+                   {{#each this.status}}
+                   <option {{selected @key ../selected}} value="{{@key}}">{{this}}</option>
+                   {{/each}}
+               </select>
+               <input type="hidden" name="ContactsLog[user_id]" value="<?=Yii::$app->user->getId()?>">
+           </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label>Ghi chú</label>
+                <textarea class="form-control" name="ContactsLog[note]"></textarea>
+            </div>
+        </div>
+        <div class="col-12">
+            <hr>
+            <h5>Lịch sử liên hệ</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>Ngày gọi</td>
+                        <td>Trạng thái</td>
+                        <td>Ghi chú</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.logs}}
+                        <tr>
+                            <td>{{created_at}}</td>
+                            <td>{{status}}</td>
+                            <td>{{note}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
 <?php
+$noteLogs = \yii\helpers\Url::toRoute(['contacts-log/index']);
 $js = <<<JS
     $(".btnNoteModal").click(function() {
         let _contactID = $(this).data('contact');
-        let _status = $(this).data('status');
-        alert(_status)
+     
         $("#takeNoteModal").modal();
         $("#noteForm").attr("data-contact",_contactID);
-        $("#noteForm").find("ContactsLog[status]").val(_status)
+        
+        $.ajax({
+            type: 'POST',
+            data : {cid : _contactID},
+            url : "$noteLogs",
+            success : function(res) {
+                if(res.success){
+                    $("#resultNote").html(compileTemplate("note-template",res))
+                }
+            }
+        })
+    
     });
     $(document).on("beforeSubmit","#noteForm", function(e) {
         e.preventDefault();

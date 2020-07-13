@@ -14,7 +14,6 @@ function compileTemplate(template , data){
     var template = Handlebars.compile(html);
     return template(data);
 }
-
 initSelect2();
 function initSelect2() {
 
