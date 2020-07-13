@@ -98,16 +98,7 @@ class ContactsController extends BaseController
         ));
         $modelNote = new ContactsLog;
         $info = ContactsModel::findOne(['phone' => $phone]);
-        $log =  $this->actionSubmit();
-
         $order = new OrdersModel;
-        if(Yii::$app->request->isPost){
-            if($log){
-                self::success("Thành công!");
-            }else{
-                self::error("Lôii");
-            }
-        }
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

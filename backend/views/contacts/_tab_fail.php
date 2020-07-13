@@ -57,16 +57,21 @@ use common\helper\Component;
             'created_at:date',
             [
                 'class' => ActionColumn::class,
-                'template' => '{takenote}',
+                'template' => '{takenote}{view}',
                 'buttons' => [
                     'takenote' => function ($url, $model) {
                         return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",
-                            '#takeNoteModal',
+                            'javascript:;',
                             [
-                                'class' => 'btn btn-sm bg-white',
-                                'data-toggle' => 'modal'
+                                'class' => 'btn btn-sm mb-1 bg-white btnNoteModal',
+                                'data-contact' => $model->id,
+                                'data-status' => $model->status,
+
                             ]);
                     },
+                    'view' => function ($url, $model) {
+                        return Component::view($url);
+                    }
                 ]
             ],
         ],
