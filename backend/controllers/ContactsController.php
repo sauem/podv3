@@ -120,6 +120,7 @@ class ContactsController extends BaseController
      */
     public function actionView($id)
     {
+        $this->layout =  "empty";
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);

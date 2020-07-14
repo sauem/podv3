@@ -85,8 +85,11 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+<?= $this->render('_modal_remote') ?>
+
 <?= $this->render('_modal', ['model' => $modelNote]) ?>
 <?= $this->render('_modal_order', ['model' => $order]) ?>
+
 <?php
 $route = \yii\helpers\Url::toRoute(Yii::$app->controller->getRoute());
 $loadProduct = \yii\helpers\Url::toRoute(['ajax/load-product-select']);
@@ -94,12 +97,21 @@ $skuURL = \yii\helpers\Url::toRoute(['ajax/load-sku']);
 $js = <<<JS
    
     $("document").ready(function() {
+        
         window.Skulist = [];
         Window.Total = {
             subTotal : 0,
             saleTotal : 0,
             total : 0
         };
+        
+        $('#viewNote').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);
+        
+            var modal = $(this);
+            modal.find('.modal-body').load(button.data("remote"));
+        });
+        
         $("#createOrder").click(function() {
             var keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(keys.length <= 0){

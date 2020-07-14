@@ -26,17 +26,9 @@ AppAsset::register($this);
 <body class="fixed-navbar">
 <?php $this->beginBody() ?>
 <div class="page-wrapper">
+    <?= $content?>
+</div>
 
-    <div class="content-wrapper">
-        <div class="page-content fade-in-up">
-            <?= $content?>
-        </div>
-    </div>
-</div>
-<div class="sidenav-backdrop backdrop"></div>
-<div class="preloader-backdrop">
-    <div class="page-preloader">Loading</div>
-</div>
 <?php $this->endBody() ?>
 </body>
 </html>

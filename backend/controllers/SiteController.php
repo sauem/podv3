@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
+use backend\models\ContactsSearchModel;
 use backend\models\UserModel;
 use common\helper\Helper;
 use common\models\User;
@@ -167,7 +168,11 @@ class SiteController extends BaseController
         }
     }
 
-    static function appendCallbackStatus(){
+    function actionSumContact(){
+        $searchModel = new ContactsSearchModel();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->groupBy(['phone'])->with('assignment')->with('sumContact');
 
+        Helper::prinf($dataProvider->query->all());
     }
 }

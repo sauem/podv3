@@ -45,3 +45,8 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<?php
+$js =<<<JS
+    
+JS;
+$this->registerJs($js);

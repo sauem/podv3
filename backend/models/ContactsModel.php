@@ -169,5 +169,8 @@ class ContactsModel extends BaseModel
         return $this->hasOne(ContactsAssignment::className(),['contact_phone' => 'phone'])->with('user');
     }
 
+    public function getSumContact(){
+        return $this->hasMany(ContactsModel::className(),['phone' => 'phone'])->from(self::tableName());
+    }
 
 }
