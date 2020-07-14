@@ -111,18 +111,6 @@ class ContactsController extends BaseController
         ]);
     }
 
-    function actionSubmit()
-    {
-        if (Yii::$app->request->isPost) {
-            $log = new ContactsLog;
-            if ($log->load(Yii::$app->request->post())) {
-                if ($log->save()) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
 
     /**
      * Displays a single ContactsModel model.

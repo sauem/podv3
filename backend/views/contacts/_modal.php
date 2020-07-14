@@ -42,6 +42,11 @@ use kartik\form\ActiveForm;
                         {{/each}}
                     </select>
                     <input type="hidden" name="user_id" value="<?= Yii::$app->user->getId() ?>">
+                    <input type="hidden" name="phone" value="<?= Yii::$app->request->get('phone') ?>">
+                </div>
+                <div class="form-group callback-group" style="display: none" >
+                    <label>Goị lại sau (giờ):</label>
+                    <input class="form-control"  type="number" name="callback_time" placeholder="Gọi lại sau 3 giờ">
                 </div>
             </div>
             <div class="col-12">
@@ -118,7 +123,6 @@ $js = <<<JS
             contentType: false,
             processData: false,
             success : function(res) {
-                console.log(res)
                 if(res.success){
                     window.location.reload();
                 }else{
@@ -154,5 +158,17 @@ $js = <<<JS
             }
         })
         })
+        $("body").on("change","select[name='status']",function() {
+            let _val = $(this).val();
+            switch (_val) {
+              case "callback":
+                  case "pending":
+                      $(".callback-group").show()
+                      break;
+                      default:
+                             $(".callback-group").hide()
+                          break;
+            }
+        });
 JS;
 $this->registerJs($js);

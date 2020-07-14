@@ -41,7 +41,7 @@ class ContactsSearchModel extends ContactsModel
      */
     public function search($params)
     {
-        $query = ContactsModel::find();
+        $query = ContactsModel::find()->orderBy(['status' => SORT_ASC]);
 
         // add conditions that should always apply here
 

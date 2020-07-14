@@ -2,13 +2,13 @@
 
 namespace backend\models;
 
-use common\helper\Helper;
+
 use common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use mdm\admin\models\Assignment;
-use backend\models\AuthAssignment;
+
 /**
  * This is the model class for table "user".
  *
@@ -144,10 +144,6 @@ class UserModel extends User
         return $this->hasOne(AuthAssignment::class,['user_id' => 'id']);
     }
 
-    public static function saleRole(){
-        $sale = UserModel::find()->all();
-        return $sale;
-    }
     public function getProcessing(){
         return $this->hasOne(ContactsAssignment::className(),['user_id' => 'id']);
     }

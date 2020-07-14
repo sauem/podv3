@@ -48,28 +48,7 @@ class OrdersController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    public function actionRemote(){
-        $this->layout = "empty";
 
-
-        $contacts = ContactsModel::find()
-            ->with('page')
-            ->where(['IN','contacts.id', [9,12]])->asArray()->all();
-
-        $total = 0;
-        $subTotal = 0;
-        $sale = 0;
-
-        $sale = array_sum(ArrayHelper::getColumn($contacts,'page.product.sale_price'));
-        $subTotal = array_sum(ArrayHelper::getColumn($contacts,'page.product.regular_price'));
-        $total = $subTotal - $sale;
-
-
-        $model = new OrdersModel;
-        return $this->render('remote_create',[
-            'model' => $model
-        ]);
-    }
 
     /**
      * Displays a single OrdersModel model.

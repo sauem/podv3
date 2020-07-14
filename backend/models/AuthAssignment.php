@@ -15,7 +15,7 @@ use mdm\admin\models\AuthItem;
  *
  * @property AuthItem $itemName
  */
-class AuthAssignment extends Assignment
+class AuthAssignment extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -59,5 +59,8 @@ class AuthAssignment extends Assignment
     public function getItemName()
     {
         return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
+    }
+    public function getUser(){
+        return $this->hasMany(UserModel::className(),['id' => 'user_id']);
     }
 }

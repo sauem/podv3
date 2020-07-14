@@ -79,14 +79,14 @@ use kartik\form\ActiveForm;
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Tên khách hàng</label>
-                    <input name="customer_name" value="{{this.name}}" class="form-control">
+                    <input required name="customer_name" value="{{this.name}}" class="form-control">
                     <input type="hidden" name="contact_id" value="{{this.id}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Số điện toại</label>
-                    <input name="customer_phone" value="{{this.phone}}" class="form-control">
+                    <input required name="customer_phone" value="{{this.phone}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -98,31 +98,31 @@ use kartik\form\ActiveForm;
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Địa chỉ</label>
-                    <input name="address" value="{{this.address}}" class="form-control">
+                    <input required name="address" value="{{this.address}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Quận/huyện</label>
-                    <input name="district" class="form-control">
+                    <input required name="district" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Thành phố</label>
-                    <input name="city" class="form-control">
+                    <input required name="city" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Zipcode</label>
-                    <input name="zipcode" value="{{this.zipcode}}" class="form-control">
+                    <input required name="zipcode" value="{{this.zipcode}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Quốc gia</label>
-                    <input name="country" class="form-control">
+                    <input required name="country" class="form-control">
                 </div>
             </div>
             <div class="col-md-12">

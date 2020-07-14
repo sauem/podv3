@@ -64,7 +64,7 @@ class ContactsAssignment extends BaseModel
             [['user_id', 'callback_time', 'created_at', 'updated_at'], 'integer'],
             [['contact_phone'], 'string', 'max' => 15],
             [['status'], 'string', 'max' => 50],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -91,7 +91,7 @@ class ContactsAssignment extends BaseModel
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(UserModel::className(), ['id' => 'user_id']);
     }
 
     public function getContacts(){
