@@ -67,8 +67,8 @@ class ContactsController extends BaseController
                     'phone' => $phone,
                     'status' => [
                         ContactsModel::_NEW,
-                        ContactsModel::_PENDING,
-                        ContactsModel::_CALLBACK,
+//                        ContactsModel::_PENDING,
+//                        ContactsModel::_CALLBACK,
                     ]
                 ]
             ]
@@ -96,6 +96,20 @@ class ContactsController extends BaseController
                 ]
             ]
         ));
+        $callbackTime = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $phone,
+                    'status' => [
+                     //   ContactsModel::_NEW,
+                        ContactsModel::_PENDING,
+                        ContactsModel::_CALLBACK,
+                    ]
+                ]
+            ]
+        ));
+
         $modelNote = new ContactsLog;
         $info = ContactsModel::findOne(['phone' => $phone]);
         $order = new OrdersModel;
@@ -105,6 +119,7 @@ class ContactsController extends BaseController
             'dataProvider' => $dataProvider,
             'failureProvider' => $failureProvider,
             'successProvider' => $successProvider,
+            'callbackProvider' => $callbackTime,
             'modelNote' => $modelNote,
             'order' => $order,
             'info' => $info

@@ -30,7 +30,7 @@ use kartik\form\ActiveForm;
                             <div class="col-12">
                                 <h5 class="text-info  m-t-10"><i class="fa fa-bar-chart"></i> Thông tin khách hàng
                                 </h5>
-                                <small class="text-danger">(*) các thông tin bắt buộc</small>
+
                             </div>
                             <div id="resultInfo" class="col-12">
                             </div>
@@ -49,8 +49,8 @@ use kartik\form\ActiveForm;
                                 <tr>
                                     <td width="30%">Sản phẩm</td>
                                     <td width="30%">Option</td>
-                                    <td width="20%">số lượng</td>
-                                    <td width="15%" class="text-right">đơn giá</td>
+                                    <td width="15%">số lượng</td>
+                                    <td width="20%" class="text-right">đơn giá</td>
                                     <td></td>
                                 </tr>
                                 </thead>
@@ -67,6 +67,7 @@ use kartik\form\ActiveForm;
                 </div>
             </div>
             <div class="modal-footer">
+                <small class="text-danger">Các thông tin (*) là bắt buộc</small>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
                 <button type="submit" class="btn btn-primary">Lưu</button>
             </div>
@@ -78,14 +79,14 @@ use kartik\form\ActiveForm;
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Tên khách hàng</label>
+                    <label>Tên khách hàng <span class="text-danger">(*)</span></label>
                     <input required name="customer_name" value="{{this.name}}" class="form-control">
                     <input type="hidden" name="contact_id" value="{{this.id}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Số điện toại</label>
+                    <label>Số điện toại <span class="text-danger">(*)</span></label>
                     <input required name="customer_phone" value="{{this.phone}}" class="form-control">
                 </div>
             </div>
@@ -97,32 +98,34 @@ use kartik\form\ActiveForm;
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Địa chỉ</label>
+                    <label>Địa chỉ <span class="text-danger">(*)</span></label>
                     <input required name="address" value="{{this.address}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Quận/huyện</label>
+                    <label>Quận/huyện <span class="text-danger">(*)</span></label>
                     <input required name="district" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Thành phố</label>
+                    <label>Thành phố <span class="text-danger">(*)</span></label>
                     <input required name="city" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Zipcode</label>
+                    <label>Zipcode <span class="text-danger">(*)</span></label>
                     <input required name="zipcode" value="{{this.zipcode}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Quốc gia</label>
-                    <input required name="country" class="form-control">
+                    <label>Quốc gia <span class="text-danger">(*)</span></label>
+                    <select class="form-control select2" name="country">
+                        <option value="">Chọn quốc gia</option>
+                    </select>
                 </div>
             </div>
             <div class="col-md-12">
@@ -163,8 +166,7 @@ use kartik\form\ActiveForm;
                        value="1">
             </td>
             <td class="text-right">
-                {{regular_price}}<br>
-                <small>-{{sale_price}}</small>
+                <input value="{{regular_price}}" name="regular_price" type="number" class="form-control">
             </td>
             <td>
                 <button data-sku="{{sku}}" type="button" class="removeItem btn btn-xs btn-danger">xoá</button>
@@ -175,7 +177,7 @@ use kartik\form\ActiveForm;
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
             <td><strong>Tổng hóa đơn</strong></td>
-            <td colspan="3" class="text-right">
+            <td colspan="4" class="text-right">
                 <strong>{{money this.total}}đ</strong>
                 <input type="hidden" value="{{subTotal}}" name="sub_total">
                 <input type="hidden" value="{{saleTotal}}" name="sale">
@@ -188,6 +190,7 @@ $loadProduct = \yii\helpers\Url::toRoute(['ajax/load-product']);
 $totalUpdate = \yii\helpers\Url::toRoute(['ajax/update-total']);
 $js = <<<JS
     
+   
     $("body").on('click','.removeItem',function() {
         let qty = $(this).closest("tr").find("input[type='number']").val();
         swal.fire({
@@ -250,9 +253,8 @@ $js = <<<JS
                         success : function(res) {
                             if(res.success){
                                 toastr.success("Tạo đơn hàng thành công!")
+                                  window.location.reload();
                                 $("#takeOrder").modal("hide")
-                                $("#formOrder").reset() 
-                                window.location.reload();
                             }
                         }
             });
@@ -274,7 +276,7 @@ $js = <<<JS
             }
          })
     }
-  
+    
 JS;
 
 $this->registerJs($js);

@@ -33,7 +33,7 @@ class AppAsset extends AssetBundle
         'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js',
         //'/lib/js/scripts/dashboard_1_demo.js',
         '/lib/vendors/select2/dist/js/select2.full.min.js',
-        '/lib/js/admin.js?v=1.20',
+        '/lib/js/admin.js?v=1.3',
         '/lib/js/handlebars-v4.7.6.js',
         '/lib/js/handlebars-helper.js?v=1.2',
 

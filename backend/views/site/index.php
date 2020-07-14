@@ -42,3 +42,9 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
+<?php
+
+$js =<<<JS
+
+JS;
+$this->registerJs($js);

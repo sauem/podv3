@@ -31,6 +31,7 @@ use yii\helpers\Html;
  * @property string|null $status
  * @property int $created_at
  * @property int $updated_at
+ * @property int $callback_time
  *
  * @property ContactsLog[] $contactsLogs
  */
@@ -99,7 +100,7 @@ class ContactsModel extends BaseModel
         return [
             [['name', 'phone', 'option', 'zipcode'], 'required'],
             [['address', 'option', 'link', 'short_link', 'street'], 'string'],
-            [['zipcode', 'created_at', 'updated_at'], 'integer'],
+            [['zipcode', 'created_at', 'updated_at','callback_time'], 'integer'],
             [['name', 'note', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 100],
@@ -133,6 +134,7 @@ class ContactsModel extends BaseModel
             'ip' => 'Ip',
             'note' => 'Ghi chú',
             'link' => 'Link',
+            'callback_time' => 'Giờ gọi lại',
             'short_link' => 'Host link',
             'utm_source' => 'Utm Source',
             'utm_medium' => 'Utm Medium',

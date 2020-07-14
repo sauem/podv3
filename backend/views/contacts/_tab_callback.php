@@ -52,15 +52,27 @@ use common\helper\Component;
                     'attribute' => 'status',
                     'format' => 'html',
                     'value' => function ($model) {
+                        //\common\helper\Helper::prinf($model->assignment);
                         return \backend\models\ContactsModel::label($model->status);
                     }
                 ],
-                'created_at:date',
+                [
+                    'label' => 'Giờ gọi lại',
+                    'attribute' => 'callback_time',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        $html = "Ngày gọi: ".date("H:i:s - d/m") ."<br>";
+                        $html .= "Gọi lại: ". \common\helper\Helper::caculateDate($model->updated_at,$model->callback_time);
+
+                        return $html;
+                    }
+                ],
                 [
                     'class' => ActionColumn::class,
                     'template' => '{takenote}{view}',
                     'buttons' => [
                         'takenote' => function ($url, $model) {
+
                             return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",
                                 'javascript:;',
                                 [

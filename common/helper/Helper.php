@@ -27,4 +27,9 @@ class Helper
     static function option($option){
         return preg_split("/\r\n|\n|\r/", $option);
     }
+
+    static function caculateDate($start , $end){
+        $newDate = strtotime("+ $end hour",$start);
+        return date('H:i:s - d/m', $newDate);
+    }
 }

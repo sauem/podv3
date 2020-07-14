@@ -39,8 +39,7 @@ class ContactsAssignmentController extends Controller
     {
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->groupBy(['phone'])->with('assignment');
-
+        $dataProvider->query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
 
         return $this->render('index', [
             'searchModel' => $searchModel,

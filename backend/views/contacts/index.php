@@ -50,6 +50,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 xử lý</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#callback" data-toggle="tab">
+                                <i class="ti-time"></i> Hẹn gọi lại</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất
                                 bại</a>
                         </li>
@@ -61,17 +65,26 @@ $this->params['breadcrumbs'][] = $this->title;
                     </ul>
                     <div class="tab-content">
 
-                       <div class="d-flex justify-content-between">
-                           <div class="btn-group">
-                               <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
-                               <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                           </div>
-                           <a class="nav-link" href="#filter" data-toggle="collapse">
-                               <i class="ti-filter"></i> Tìm kiếm</a>
-                       </div>
+
                         <?= $this->render('_search',['model' => $searchModel])?>
                         <div class="tab-pane fade show active" id="wating">
+                            <div class="d-flex justify-content-between">
+                                <div class="">
+                                    <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
+                                    <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                                </div>
+                                <a class="nav-link" href="#filter" data-toggle="collapse">
+                                    <i class="ti-filter"></i> Tìm kiếm</a>
+                            </div>
                             <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
+                        </div>
+                        <div class="tab-pane fade" id="callback">
+                                <div class="">
+                                    <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
+                                    <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                                </div>
+
+                            <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
                         </div>
                         <div class="tab-pane fade" id="failure">
                             <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
@@ -126,6 +139,7 @@ $js = <<<JS
            $('#takeOrder').on('shown.bs.modal', function () {
                loadProducts(keys);
                loadSku(getSelectedColum());
+                getCountry("select[name='country']");
                
             })
         });

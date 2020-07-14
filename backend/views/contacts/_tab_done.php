@@ -24,7 +24,7 @@ use common\helper\Component;
                 [
                     'class' => CheckboxColumn::class,
                     'checkboxOptions' => function ($model) {
-                        return ['data-cate' => $model->page->category_id];
+                        return ['data-cate' => $model->page->category_id,'disabled' => true];
                     }
                 ],
                 [
@@ -58,7 +58,7 @@ use common\helper\Component;
                 'created_at:date',
                 [
                     'class' => ActionColumn::class,
-                    'template' => '{takenote}{view}',
+                    'template' => '{view}',
                     'buttons' => [
                         'takenote' => function ($url, $model) {
                             return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",

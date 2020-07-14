@@ -23,7 +23,7 @@ use common\helper\Component;
             [
                 'class' => CheckboxColumn::class,
                 'checkboxOptions' => function ($model) {
-                    return ['data-cate' => $model->page->category_id];
+                    return ['data-cate' => $model->page->category_id,'disabled' => true];
                 }
             ],
             [

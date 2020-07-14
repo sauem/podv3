@@ -16,6 +16,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use yii\web\Response;
 
 /**
  * Site controller
@@ -174,5 +175,11 @@ class SiteController extends BaseController
         $dataProvider->query->groupBy(['phone'])->with('assignment')->with('sumContact');
 
         Helper::prinf($dataProvider->query->all());
+    }
+
+    function actionCountry(){
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $country = Yii::$app->params['country'];
+        return $country;
     }
 }
