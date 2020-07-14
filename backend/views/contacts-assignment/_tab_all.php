@@ -11,10 +11,11 @@ use common\helper\Component;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
+        'layout' => "{items}\n{pager}",
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],
-       // 'pjax' => true,
+        // 'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
         ],
@@ -24,18 +25,26 @@ use common\helper\Component;
             [
                 'label' => 'Số điện thoại',
                 'attribute' => 'phone',
-                'format' => 'html',
+                'format' => 'raw',
                 'value' => function ($model) {
-                    return Html::a($model->phone,\yii\helpers\Url::toRoute(['contacts/index','phone' => $model->phone]));
+                    $count = sizeof($model->sumContact);
+                    return Html::a("<span data-toggle='tooltip' title='Số lượng liên hệ' class='badge badge-info rounded'> $count</span> $model->phone", \yii\helpers\Url::toRoute(['contacts/index', 'phone' => $model->phone]));
                 }
             ],
-            'name',
+            [
+                'label' => 'Tên khách hàng',
+                'attribute' => 'name',
+                'format' => 'html',
+                'value' => function ($model) {
+                    return $model->name;
+                }
+            ],
             [
                 'label' => 'Trạng thái',
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
-                    return $model->assignment->status;
+                    return \backend\models\ContactsAssignment::label($model->assignment->status);
                 }
             ],
             [
