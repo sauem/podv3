@@ -3,6 +3,7 @@
 namespace backend\models;
 
 
+use common\helper\Helper;
 use common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -146,5 +147,12 @@ class UserModel extends User
 
     public function getProcessing(){
         return $this->hasOne(ContactsAssignment::className(),['user_id' => 'id'])->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING]);
+    }
+    public static function hasCallback(){
+        $model = ContactsAssignment::find()->where(['user_id' => Yii::$app->user->getId()])->orderBy(['callback_time' => SORT_ASC])->one();
+        if(!empty($model->callback_time)){
+            return Helper::caculateDate($model->updated_at, $model->callback_time);
+        }
+        return false;
     }
 }

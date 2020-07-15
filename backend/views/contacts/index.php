@@ -20,6 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-body">
                     <table class="table">
                         <tbody>
+
+                         <?php if($time = \backend\models\UserModel::hasCallback()){ ?>
+                        <tr>
+                            <td>Hẹn gọi lại: </td>
+                            <td><span class="badge badge-danger"><?= $time ?></span></td>
+                        </tr>
+                        <?php } ?>
                         <tr>
                             <td>Trạng thái hiện tại</td>
                             <td><?= ContactsAssignment::label($info->assignment->status) ?></td>

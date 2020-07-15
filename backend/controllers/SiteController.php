@@ -174,7 +174,8 @@ class SiteController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->groupBy(['phone'])->with('assignment')->with('sumContact');
 
-        Helper::prinf($dataProvider->query->all());
+        $isCallback = UserModel::hasCallback();
+        Helper::prinf($isCallback);
     }
 
 
