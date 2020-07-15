@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="ibox">
             <div class="ibox-head">
-                <h2 class="ibox-title">Lịch sử liên hệ</h2>
+                <h2 class="ibox-title">Lịch sử đơn hàng</h2>
             </div>
             <div class="ibox-body">
                 <?= GridView::widget([

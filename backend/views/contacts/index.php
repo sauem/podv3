@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#callback" data-toggle="tab">
-                                <i class="ti-time"></i> Hẹn gọi lại</a>
+                                <i class="ti-time"></i> Gọi lại</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất

@@ -130,4 +130,7 @@ class OrdersModel extends BaseModel
     {
         return $this->hasMany(OrdersItems::className(), ['order_id' => 'id']);
     }
+    public function getContacts(){
+        return $this->hasMany(OrdersContacts::className(),['order_id' => 'id'])->with('contact');
+    }
 }

@@ -70,6 +70,8 @@ class ContactsController extends BaseController
                     'phone' => $phone,
                     'status' => [
                         ContactsModel::_NEW,
+                        ContactsModel::_PENDING,
+                        ContactsModel::_CALLBACK,
                     ]
                 ]
             ]
@@ -119,15 +121,8 @@ class ContactsController extends BaseController
 
         $order = new OrdersModel;
 
-        $histories = new ActiveDataProvider([
-            'query' => ContactsLog::find()->where(['user_id' => Yii::$app->user->getId()])
-                ->joinWith('contact')
-                ->where(['=', 'contacts.phone', $phone])
-                ->orderBy(['created_at' => SORT_DESC])
-            ,
-            'pagination' => [
-                'pageSize' => 10
-            ]
+        $histories =  new ActiveDataProvider([
+            'query' => OrdersModel::find(),
         ]);
 
         return $this->render('index', [
