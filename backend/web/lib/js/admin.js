@@ -50,6 +50,15 @@ function caculate(total = {total: 0, saleTotal: 0, subTotal: 0}, res, action = "
     return final;
 }
 
+
+$('#viewNote').on('show.bs.modal', function (e) {
+    var button = $(e.relatedTarget);
+
+    var modal = $(this);
+    modal.find('.modal-body').load(button.data("remote"));
+});
+
+
 getCountry()
 
 function getCountry(select) {

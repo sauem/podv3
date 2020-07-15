@@ -158,9 +158,15 @@ class UserModel extends User
 
     public static function hasCallback()
     {
-        $model = ContactsAssignment::find()->where(['user_id' => Yii::$app->user->getId()])->orderBy(['callback_time' => SORT_ASC])->one();
+        $model = ContactsAssignment::find()
+            ->where(['user_id' => Yii::$app->user->getId()])
+            ->andWhere(['!=','callback_time' , ""])
+            ->orderBy(['callback_time' => SORT_ASC])->one();
         if (!empty($model->callback_time)) {
-            return Helper::caculateDate($model->updated_at, $model->callback_time);
+            return [
+                'phone' => $model->contact_phone,
+                'time' => Helper::caculateDate($model->updated_at, $model->callback_time)
+            ];
         }
         return false;
     }

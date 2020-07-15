@@ -3,10 +3,14 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use backend\models\ContactsAssignment;
+
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\ContactsSearchModel */
+
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
 use common\helper\Helper;
+
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -14,19 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-4">
             <div class="ibox">
                 <div class="ibox-head">
-                    <h2 class="ibox-title">Thông tin : <i class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới"  ?>
+                    <h2 class="ibox-title">Thông tin : <i
+                                class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
                     </h2>
                 </div>
                 <div class="ibox-body">
                     <table class="table">
                         <tbody>
-
-                         <?php if($time = \backend\models\UserModel::hasCallback()){ ?>
-                        <tr>
-                            <td>Hẹn gọi lại: </td>
-                            <td><span class="badge badge-danger"><?= $time ?></span></td>
-                        </tr>
-                        <?php } ?>
                         <tr>
                             <td>Trạng thái hiện tại</td>
                             <td><?= ContactsAssignment::label($info->assignment->status) ?></td>
@@ -48,6 +46,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= $info->ip ?></td>
                         </tr>
                         </tbody>
+                        <?php
+                        if ($time = \backend\models\UserModel::hasCallback()) {
+                            ?>
+                            <tfoot>
+                            <tr>
+                                <td>Ghi chú gọi lại</td>
+                                <td>
+                                    <strong><?= $time['phone'] ?>: <br>
+                                        <span class="badge-danger badge"><?= $time['time'] ?></span>
+                                    </strong>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        <?php } ?>
+
                     </table>
                 </div>
             </div>
@@ -78,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="tab-content">
 
 
-                        <?= $this->render('_search',['model' => $searchModel])?>
+                        <?= $this->render('_search', ['model' => $searchModel]) ?>
                         <div class="tab-pane fade show active" id="wating">
                             <div class="d-flex justify-content-between">
                                 <div class="">
@@ -91,10 +104,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
                         </div>
                         <div class="tab-pane fade" id="callback">
-                                <div class="mb-2">
-                                    <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
-                                    <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                                </div>
+                            <div class="mb-2">
+                                <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
+                                <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                            </div>
 
                             <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
                         </div>
@@ -110,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="col-md-12">
-            <?= $this->render('_histories',['dataProvider' => $histories]) ?>
+            <?= $this->render('_histories', ['dataProvider' => $histories]) ?>
         </div>
     </div>
 <?= $this->render('_modal_remote') ?>
@@ -132,14 +145,7 @@ $js = <<<JS
             saleTotal : 0,
             total : 0
         };
-        
-        $('#viewNote').on('show.bs.modal', function (e) {
-            var button = $(e.relatedTarget);
-        
-            var modal = $(this);
-            modal.find('.modal-body').load(button.data("remote"));
-        });
-        
+       
         $("#createOrder").click(function() {
             var keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(keys.length <= 0){

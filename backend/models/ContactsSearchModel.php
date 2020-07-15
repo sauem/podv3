@@ -39,10 +39,12 @@ class ContactsSearchModel extends ContactsModel
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $group = true)
     {
         $query = ContactsModel::find()->orderBy(['contacts.status' => SORT_ASC]);
-
+        if(Helper::userRole(UserModel::_ADMIN) && $group){
+            $query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
+        }
         // add conditions that should always apply here
         if(Helper::userRole(UserModel::_SALE)){
             $query->innerJoin('contacts_assignment',

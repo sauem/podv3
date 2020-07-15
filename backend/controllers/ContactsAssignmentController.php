@@ -2,12 +2,14 @@
 
 namespace backend\controllers;
 
+use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
 use common\helper\Helper;
 use Yii;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsAssignmentSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -49,9 +51,8 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
-       // $completeProvider->query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
 
-        $callProvider =  $searchModel->search(array_merge(
+        $callProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
                 'ContactsSearchModel' => [
@@ -72,6 +73,8 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
+
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
@@ -86,10 +89,68 @@ class ContactsAssignmentController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($phone)
     {
+        $model = $this->findModel(['contact_phone' => $phone]);
+        $info = ContactsModel::find()->where(['phone' => $phone])
+            ->orderBy(['created_at' => SORT_ASC])
+            ->with('assignment')
+            ->one();
+
+        $searchModel = new ContactsSearchModel();
+        $dataProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $phone,
+                    'status' => [
+                        ContactsModel::_NEW,
+                    ]
+                ]
+            ]
+        ));
+
+        $callbackTime = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $phone,
+                    'status' => [
+                        ContactsModel::_PENDING,
+                        ContactsModel::_CALLBACK,
+                    ]
+                ]
+            ]
+        ));
+
+        $successProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $phone,
+                    'status' => ContactsModel::_OK
+                ]
+            ]
+        ));
+
+        $histories = new ActiveDataProvider([
+            'query' => ContactsLog::find()->where(['user_id' => $model->user_id])
+                ->joinWith('contact')
+                ->where(['=', 'contacts.phone', $phone])
+                ->orderBy(['created_at' => SORT_DESC])
+            ,
+            'pagination' => [
+                'pageSize' => 10
+            ]
+        ]);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel(['contact_phone' => $phone]),
+            'dataProvider' => $dataProvider,
+            'callbackProvider' => $callbackTime,
+            'successProvider' => $successProvider,
+            'info' => $info,
+            'histories' => $histories
         ]);
     }
 

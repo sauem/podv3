@@ -5,6 +5,7 @@ use kartik\grid\CheckboxColumn;
 use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
+use yii\helpers\Url;
 
 ?>
 <div class="table-responsive">
@@ -26,7 +27,7 @@ use common\helper\Component;
                 'format' => 'raw',
                 'value' => function ($model) {
                     $count = sizeof($model->sumContact);
-                    return Html::a("$model->phone", \yii\helpers\Url::toRoute(['contacts/index', 'phone' => $model->phone]));
+                    return Html::a("$model->phone", Url::toRoute(['view', 'phone' => $model->phone]));
                 }
             ],
             [
@@ -60,7 +61,7 @@ use common\helper\Component;
                 'buttons' => [
                     'view' => function ($url, $model) {
                         return Html::a("<i class='fa fa-eye'></i> chi tiết",
-                            \yii\helpers\Url::toRoute(['contacts/index', 'phone' => $model->phone]),
+                            \yii\helpers\Url::toRoute(['view', 'phone' => $model->phone]),
                             ['class' => 'btn btn-sm bg-white']);
                     }
                 ]

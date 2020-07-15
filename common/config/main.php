@@ -66,7 +66,7 @@ return [
             'class' => \yii\i18n\Formatter::class,
             'thousandSeparator' => ',',
             'decimalSeparator' => '.',
-            'currencyCode' => 'VND'
+            'currencyCode' => 'VND',
         ],
     ],
 ];

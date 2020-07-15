@@ -113,6 +113,7 @@ class ContactsController extends BaseController
 
         $modelNote = new ContactsLog;
         $info = ContactsModel::find()->where(['phone' => $phone])
+            ->orderBy(['created_at' => SORT_ASC])
             ->with('assignment')
             ->one();
 

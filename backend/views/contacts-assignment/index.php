@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h2 class="ibox-title">Hẹn gọi lại</h2>
             </div>
             <div class="ibox-body">
-                <?= $this->render('_tab_approved', ['dataProvider' => $callbackProvider])?>
+                <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider])?>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h2 class="ibox-title">Hoành thành</h2>
             </div>
             <div class="ibox-body">
-                <?= $this->render('_tab_all', ['dataProvider' => $completeProvider])?>
+                <?= $this->render('_tab_done', ['dataProvider' => $completeProvider])?>
             </div>
         </div>
     </div>
