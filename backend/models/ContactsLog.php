@@ -53,11 +53,11 @@ class ContactsLog extends BaseModel
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'contact_id' => 'Contact ID',
-            'status' => 'Status',
-            'note' => 'Note',
-            'created_at' => 'Created At',
+            'user_id' => 'Tài khoản',
+            'contact_id' => 'Khách hàng',
+            'status' => 'Trạng thái',
+            'note' => 'Ghi chú liên hệ',
+            'created_at' => 'Ngày liên hệ',
             'updated_at' => 'Updated At',
         ];
     }

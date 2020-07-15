@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
+use common\helper\Component;
+
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\OrdersSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -22,9 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'layout' => "{items}\n{pager}",
             'headerRowOptions' => [
-                    'class' => [
-                            'thead-light'
-                    ]
+                'class' => [
+                    'thead-light'
+                ]
             ],
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
@@ -33,7 +35,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'customer_phone',
                 'customer_email:email',
                 'address',
-                ['class' => 'yii\grid\ActionColumn'],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'template' => '{view}',
+                    'buttons' => [
+                        'view' => function ($url) {
+                            return Component::view($url);
+                        }
+                    ]
+                ],
             ],
         ]); ?>
 

@@ -77,7 +77,7 @@ AppAsset::register($this);
 <?php endif; ?>
 <?php if (Yii::$app->session->hasFlash('error')): ?>
     <script>
-        toastr.warning("<?= Yii::$app->session->getFlash('success') ?>");
+        toastr.warning("<?= Yii::$app->session->getFlash('error') ?>");
     </script>
 <?php endif; ?>
 

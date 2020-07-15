@@ -53,7 +53,7 @@ class ContactsSearchModel extends ContactsModel
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 15
+                'pageSize' => 10
             ]
         ]);
 

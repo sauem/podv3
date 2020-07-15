@@ -33,8 +33,9 @@ use common\helper\Component;
                     'format' => 'html',
                     'value' => function ($model) {
                         return Html::tag("p",
-                            $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
-                            "<small><i>{$model->page->category->name}</i></small>");
+                            $model->page->product->name .
+                            "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small> | <small><i>{$model->page->category->name}</i></small>" .
+                            "<br><small>{$model->option}</small>");
                     }
                 ],
                 [
@@ -43,7 +44,9 @@ use common\helper\Component;
                     'format' => 'raw',
                     'value' => function ($model) {
                         return Html::tag("p",
-                            "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br><small>{$model->option}</small><br>" .
+                            "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
+                            "<small>Soure: {$model->utm_source}</small></br>" .
+                            "<small>Campagin: {$model->utm_campaign}</small></br>" .
                             "<small class='text-danger'>Note: <i>{$model->note}</i></small>");
                     }
                 ],

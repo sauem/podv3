@@ -109,6 +109,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <?= $this->render('_histories',['dataProvider' => $histories]) ?>
+        </div>
     </div>
 <?= $this->render('_modal_remote') ?>
 

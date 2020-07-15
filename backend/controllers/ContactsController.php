@@ -12,6 +12,8 @@ use common\models\User;
 use Yii;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use yii\data\ActiveDataProvider;
+use yii\debug\models\timeline\DataProvider;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -115,6 +117,18 @@ class ContactsController extends BaseController
             ->one();
 
         $order = new OrdersModel;
+
+        $histories = new ActiveDataProvider([
+            'query' => ContactsLog::find()->where(['user_id' => Yii::$app->user->getId()])
+                ->joinWith('contact')
+                ->where(['=', 'contacts.phone', $phone])
+                ->orderBy(['created_at' => SORT_DESC])
+            ,
+            'pagination' => [
+                'pageSize' => 10
+            ]
+        ]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -123,7 +137,8 @@ class ContactsController extends BaseController
             'callbackProvider' => $callbackTime,
             'modelNote' => $modelNote,
             'order' => $order,
-            'info' => $info
+            'info' => $info,
+            'histories' => $histories
         ]);
     }
 
@@ -136,7 +151,7 @@ class ContactsController extends BaseController
      */
     public function actionView($id)
     {
-        $this->layout =  "empty";
+        $this->layout = "empty";
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -210,7 +225,8 @@ class ContactsController extends BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    function actionHistories(){
+    function actionHistories()
+    {
         return $this->render("_histories");
     }
 }
