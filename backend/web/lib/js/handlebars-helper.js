@@ -17,6 +17,10 @@ Handlebars.registerHelper("date", function (number) {
     return new Date(parseInt(number ,10) * 1000).toLocaleString();
 })
 
+
+Handlebars.registerHelper("isNull", function (number) {
+    return number == "ok";
+})
 Handlebars.registerHelper("span", function (  value, array) {
         let $tag = '';
         switch (value){

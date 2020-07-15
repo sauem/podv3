@@ -2,11 +2,11 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
+use backend\models\ContactsAssignment;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\ContactsSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
+use common\helper\Helper;
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -14,11 +14,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-4">
             <div class="ibox">
                 <div class="ibox-head">
-                    <h2 class="ibox-title">Thông tin : <i class="fa fa-phone"></i> <?= $info->phone ?></h2>
+                    <h2 class="ibox-title">Thông tin : <i class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới"  ?>
+                    </h2>
                 </div>
                 <div class="ibox-body">
                     <table class="table">
                         <tbody>
+                        <tr>
+                            <td>Trạng thái hiện tại</td>
+                            <td><?= ContactsAssignment::label($info->assignment->status) ?></td>
+                        </tr>
                         <tr>
                             <td>Khách hàng</td>
                             <td><?= $info->name ?></td>
@@ -79,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
                         </div>
                         <div class="tab-pane fade" id="callback">
-                                <div class="">
+                                <div class="mb-2">
                                     <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
                                     <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
                                 </div>

@@ -168,11 +168,15 @@ class ContactsModel extends BaseModel
     }
 
     public function getAssignment(){
-        return $this->hasOne(ContactsAssignment::className(),['contact_phone' => 'phone'])->with('user');
+        return $this->hasOne(ContactsAssignment::className(),['contact_phone' => 'phone'])
+            ->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING])->with('user');
+    }
+    public function getSaleAssign(){
+        return $this->hasOne(ContactsAssignment::className(),['contact_phone' => 'phone'])
+            ->with('user');
     }
 
     public function getSumContact(){
         return $this->hasMany(ContactsModel::className(),['phone' => 'phone'])->from(self::tableName());
     }
-
 }

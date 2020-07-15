@@ -5,6 +5,7 @@ use kartik\grid\CheckboxColumn;
 use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
+use common\helper\Helper;
 
 ?>
     <div class="table-responsive">
@@ -61,8 +62,8 @@ use common\helper\Component;
                     'attribute' => 'callback_time',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        $html = "Ngày gọi: ".date("H:i:s - d/m") ."<br>";
-                        $html .= "Gọi lại: ". \common\helper\Helper::caculateDate($model->updated_at,$model->callback_time);
+                        $html = "Ngày gọi: </br>".date("H:i:s - d/m") ."<br>";
+                        $html .= "Gọi lại: </br>". Helper::caculateDate($model->updated_at,$model->callback_time);
 
                         return $html;
                     }

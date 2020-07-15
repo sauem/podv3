@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
 use common\helper\Helper;
 use Yii;
@@ -38,12 +39,44 @@ class ContactsAssignmentController extends Controller
     public function actionIndex()
     {
         $searchModel = new ContactsSearchModel();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
+        $completeProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'status' => [
+                        ContactsModel::_OK,
+                    ]
+                ]
+            ]
+        ));
+       // $completeProvider->query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
 
+        $callProvider =  $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'status' => [
+                        ContactsModel::_PENDING,
+                        ContactsModel::_CALLBACK
+                    ]
+                ]
+            ]
+        ));
+        $pendingProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'status' => [
+                        ContactsModel::_NEW
+                    ]
+                ]
+            ]
+        ));
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'completeProvider' => $completeProvider,
+            'callbackProvider' => $callProvider,
+            'pendingProvider' => $pendingProvider
         ]);
     }
 

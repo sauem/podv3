@@ -37,16 +37,19 @@ use kartik\form\ActiveForm;
                     <label>Trạng thái hiện tại</label>
                     <select name="status" class="form-control select2">
                         {{#each this.status}}
+                        {{#unless  (isNull @key)}}
                         <option {{selected @key ..
-                        /selected}} value="{{@key}}">{{this}}</option>
+                        /selected}} value="{{@key}}">{{this}}
+                        </option>
+                        {{/unless }}
                         {{/each}}
                     </select>
                     <input type="hidden" name="user_id" value="<?= Yii::$app->user->getId() ?>">
                     <input type="hidden" name="phone" value="<?= Yii::$app->request->get('phone') ?>">
                 </div>
-                <div class="form-group callback-group" style="display: none" >
+                <div class="form-group callback-group" style="display: none">
                     <label>Goị lại sau (giờ):</label>
-                    <input class="form-control"  type="number" name="callback_time" placeholder="Gọi lại sau 3 giờ">
+                    <input class="form-control" type="number" name="callback_time" placeholder="Gọi lại sau 3 giờ">
                 </div>
             </div>
             <div class="col-12">

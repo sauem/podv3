@@ -41,10 +41,15 @@ class ContactsSearchModel extends ContactsModel
      */
     public function search($params)
     {
-        $query = ContactsModel::find()->orderBy(['status' => SORT_ASC]);
+        $query = ContactsModel::find()->orderBy(['contacts.status' => SORT_ASC]);
 
         // add conditions that should always apply here
-
+        if(Helper::userRole(UserModel::_SALE)){
+            $query->innerJoin('contacts_assignment',
+                'contacts_assignment.contact_phone=contacts.phone')
+                ->where(['=','contacts_assignment.user_id', \Yii::$app->user->getId() ])
+                ->andWhere(['=','contacts_assignment.status', ContactsAssignment::_PROCESSING]);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -72,20 +77,7 @@ class ContactsSearchModel extends ContactsModel
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'option', $this->option])
-            ->andFilterWhere(['like', 'ip', $this->ip])
-            ->andFilterWhere(['like', 'note', $this->note])
-            ->andFilterWhere(['like', 'link', $this->link])
-            ->andFilterWhere(['like', 'short_link', $this->short_link])
-            ->andFilterWhere(['like', 'utm_source', $this->utm_source])
-            ->andFilterWhere(['like', 'utm_medium', $this->utm_medium])
-            ->andFilterWhere(['like', 'utm_content', $this->utm_content])
-            ->andFilterWhere(['like', 'utm_term', $this->utm_term])
-            ->andFilterWhere(['like', 'utm_campaign', $this->utm_campaign])
-            ->andFilterWhere(['like', 'host', $this->host])
-            ->andFilterWhere(['like', 'hashkey', $this->hashkey])
-            ->andFilterWhere(['IN', 'status', $this->status]);
+            ->andFilterWhere(['IN', 'contacts.status', $this->status]);
 
         return $dataProvider;
     }

@@ -145,6 +145,6 @@ class UserModel extends User
     }
 
     public function getProcessing(){
-        return $this->hasOne(ContactsAssignment::className(),['user_id' => 'id']);
+        return $this->hasOne(ContactsAssignment::className(),['user_id' => 'id'])->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING]);
     }
 }

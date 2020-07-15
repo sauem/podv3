@@ -20,15 +20,13 @@ use common\helper\Component;
             'neverTimeout' => true,
         ],
         'columns' => [
-            ['class' => CheckboxColumn::class],
-
             [
                 'label' => 'Số điện thoại',
                 'attribute' => 'phone',
                 'format' => 'raw',
                 'value' => function ($model) {
                     $count = sizeof($model->sumContact);
-                    return Html::a("<span data-toggle='tooltip' title='Số lượng liên hệ' class='badge badge-info rounded'> $count</span> $model->phone", \yii\helpers\Url::toRoute(['contacts/index', 'phone' => $model->phone]));
+                    return Html::a("$model->phone", \yii\helpers\Url::toRoute(['contacts/index', 'phone' => $model->phone]));
                 }
             ],
             [
@@ -40,14 +38,6 @@ use common\helper\Component;
                 }
             ],
             [
-                'label' => 'Trạng thái',
-                'attribute' => 'status',
-                'format' => 'html',
-                'value' => function ($model) {
-                    return \backend\models\ContactsAssignment::label($model->assignment->status);
-                }
-            ],
-            [
                 'label' => 'Quản lý',
                 'attribute' => 'status',
                 'format' => 'html',
@@ -55,19 +45,24 @@ use common\helper\Component;
                     return $model->assignment->user->username;
                 }
             ],
-            'created_at:date',
+            [
+                'label' => 'Số lượng',
+                'attribute' => 'status',
+                'format' => 'html',
+                'value' => function ($model) {
+                    $count = sizeof($model->sumContact);
+                    return $count;
+                }
+            ],
             [
                 'class' => ActionColumn::class,
-                'template' => '{takenote}',
+                'template' => '{view}',
                 'buttons' => [
-                    'takenote' => function ($url, $model) {
-                        return Html::a("<i class='fa fa-newspaper-o'></i> Ghi chú",
-                            '#takeNoteModal',
-                            [
-                                'class' => 'btn btn-sm bg-white',
-                                'data-toggle' => 'modal'
-                            ]);
-                    },
+                    'view' => function ($url, $model) {
+                        return Html::a("<i class='fa fa-eye'></i> chi tiết",
+                            \yii\helpers\Url::toRoute(['contacts/index', 'phone' => $model->phone]),
+                            ['class' => 'btn btn-sm bg-white']);
+                    }
                 ]
             ],
         ],

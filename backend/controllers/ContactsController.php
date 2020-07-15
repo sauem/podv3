@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ContactsAssignment;
+use backend\models\ContactsAssignmentSearch;
 use backend\models\ContactsLog;
 use backend\models\OrdersModel;
 use backend\models\UserModel;
@@ -67,8 +68,6 @@ class ContactsController extends BaseController
                     'phone' => $phone,
                     'status' => [
                         ContactsModel::_NEW,
-//                        ContactsModel::_PENDING,
-//                        ContactsModel::_CALLBACK,
                     ]
                 ]
             ]
@@ -102,7 +101,6 @@ class ContactsController extends BaseController
                 'ContactsSearchModel' => [
                     'phone' => $phone,
                     'status' => [
-                     //   ContactsModel::_NEW,
                         ContactsModel::_PENDING,
                         ContactsModel::_CALLBACK,
                     ]
@@ -110,10 +108,13 @@ class ContactsController extends BaseController
             ]
         ));
 
-        $modelNote = new ContactsLog;
-        $info = ContactsModel::findOne(['phone' => $phone]);
-        $order = new OrdersModel;
 
+        $modelNote = new ContactsLog;
+        $info = ContactsModel::find()->where(['phone' => $phone])
+            ->with('assignment')
+            ->one();
+
+        $order = new OrdersModel;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -207,5 +208,9 @@ class ContactsController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    function actionHistories(){
+        return $this->render("_histories");
     }
 }

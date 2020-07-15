@@ -73,7 +73,8 @@ use common\helper\Component;
                         return Html::a("<i class='fa fa-eye'></i> chi tiết", '#viewNote', [
                             'data-remote' => \yii\helpers\Url::toRoute(['view', 'id' => $model->id]),
                             'data-target' => "#viewNote",
-                            'data-toggle' => 'modal'
+                            'data-toggle' => 'modal',
+                            'class' => 'btn btn-sm bg-white'
                         ]);
                     }
                 ]
