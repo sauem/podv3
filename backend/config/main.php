@@ -9,7 +9,9 @@ return [
     'timeZone' => 'Asia/Ho_Chi_Minh',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log'
+    ],
     'modules' => [
         'gii' => [
             'class' => 'yii\gii\Module',
@@ -57,12 +59,6 @@ return [
             'showScriptName' => false,
             'rules' => [
             ],
-        ],
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 0,
         ],
     ],
     'as access' => [

@@ -1,5 +1,6 @@
 <?php
 use mdm\admin\Module;
+use yii\queue\redis\Queue;
 return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -7,7 +8,9 @@ return [
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'bootstrap' => [
-        'rbac'
+        'rbac',
+        'queue',
+        'log'
     ],
     'modules' => [
         'rbac' => [
@@ -36,6 +39,18 @@ return [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
             'useFileTransport' => true,
+        ],
+        'redis' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => REDIS_HOST,
+            'port' => REDIS_PORT,
+            'database' => 0,
+            'retries' => 1,
+        ],
+        'queue' => [
+            'class' => Queue::class,
+            'redis' => 'redis',
+            'channel' => 'queue',
         ],
 //        'assetManager' => [
 //            'bundles' => [

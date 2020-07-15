@@ -5,6 +5,7 @@ use kartik\grid\CheckboxColumn;
 use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
+use backend\models\ContactsModel;
 
 ?>
 <div class="table-responsive">
@@ -46,7 +47,7 @@ use common\helper\Component;
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
-                    return \backend\models\ContactsModel::label($model->status);
+                    return ContactsModel::label($model->status);
                 }
             ],
             'created_at:date',

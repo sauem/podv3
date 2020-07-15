@@ -17,7 +17,11 @@ return [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
             'namespace' => 'common\fixtures',
-          ],
+        ],
+        'rescan' => [
+            'class' => \yii\console\controllers\RescanController::class,
+            'namespace' => "yii\console\controllers",
+        ],
     ],
     'components' => [
         'log' => [

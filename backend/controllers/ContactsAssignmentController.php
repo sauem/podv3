@@ -108,7 +108,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ));
+        ),false);
 
         $callbackTime = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -121,7 +121,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ));
+        ),false);
 
         $successProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -131,7 +131,7 @@ class ContactsAssignmentController extends Controller
                     'status' => ContactsModel::_OK
                 ]
             ]
-        ));
+        ),false);
 
         $histories = new ActiveDataProvider([
             'query' => ContactsLog::find()->where(['user_id' => $model->user_id])
