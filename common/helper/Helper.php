@@ -1,6 +1,8 @@
 <?php
 namespace common\helper;
 
+use yii\helpers\ArrayHelper;
+
 class Helper
 {
     static function prinf($data){
@@ -34,5 +36,10 @@ class Helper
             return  $newDate;
         }
         return date('H:i:s - d/m', $newDate);
+    }
+    static function getCountry($code){
+        $country = \Yii::$app->params['country'];
+        $country = ArrayHelper::map($country,"code","name");
+        return ArrayHelper::getValue($country,$code);
     }
 }

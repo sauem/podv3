@@ -45,8 +45,6 @@ use common\helper\Component;
                     'value' => function ($model) {
                         return Html::tag("p",
                             "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
-                            "<small>Soure: {$model->utm_source}</small></br>" .
-                            "<small>Campagin: {$model->utm_campaign}</small></br>" .
                             "<small class='text-danger'>Note: <i>{$model->note}</i></small>");
                     }
                 ],

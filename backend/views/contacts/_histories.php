@@ -8,7 +8,7 @@ use backend\models\ContactsModel;
 ?>
 <div class="ibox">
     <div class="ibox-head">
-        <h2 class="ibox-title">Lịch sử tạo đơn</h2>
+        <h2 class="ibox-title">Lịch sử đơn hàng</h2>
     </div>
     <div class="ibox-body">
         <?= GridView::widget([
@@ -27,14 +27,13 @@ use backend\models\ContactsModel;
                     'class' => SerialColumn::class,
                 ],
                 'created_at:datetime',
-                ['label' => 'sản phẩm','attribute' => 'customer_phone',
-                    'format' => 'html','value' => function($model){
-                       $html = '';
-                        foreach ($model->items as $item){
-                           $html .= "<span class='badge badge-info'>{$item->product_sku}</span>";
-                        }
-                        return $html;
-
+                ['label' => 'sản phẩm', 'attribute' => 'customer_phone',
+                    'format' => 'raw', 'value' => function ($model) {
+                    $html = '';
+                    foreach ($model->items as $item) {
+                        $html .= "<span class='badge badge-info'>{$item->product->sku} | {$item->product->name}</span><br>";
+                    }
+                    return $html;
                 }],
                 [
                     'label' => 'Trạng thái',

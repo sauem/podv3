@@ -48,6 +48,6 @@ class Component
         if(\Yii::$app->request->get('phone')){
             $url = Url::toRoute([\Yii::$app->controller->getRoute(),'phone' => \Yii::$app->request->get('phone')]);
         }
-        return Html::a('Reset', $url, ['class' => 'btn btn-outline-secondary']);
+        return Html::a('Làm mới', $url, ['class' => 'btn btn-outline-secondary']);
     }
 }

@@ -73,31 +73,34 @@ class OrdersController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new OrdersModel();
 
-        if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post(),'')){
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post(), '')) {
             try {
-                if($model->save()){
+                if ($model->save()) {
                     $product = Yii::$app->request->post('product');
-                    foreach ($product as $k => $item){
-                        $product[$k]['contact_id'] =(int)Yii::$app->request->post('contact_id');
-                        $product[$k]['order_id'] = $model->id;
-                        $product[$k]['price'] = $item['price'];
-                        $product[$k]['qty'] = $item['qty'];
-                        $product[$k]['product_option'] = Yii::$app->request->post('option') ? Yii::$app->request->post('option') : null;
-                        $product[$k]['created_at'] = time();
-                        $product[$k]['updated_at'] = time();
+                    foreach ($product as $k => $item) {
+                        $product['order_id'] = $model->id;
+                        $product['price'] = $item['price'];
+                        $product['product_sku'] = $item['product_sku'];
+                        $product['qty'] = $item['qty'];
+                        $product['product_option'] = Yii::$app->request->post('option') ? Yii::$app->request->post('option') : null;
+
+                        $items = new OrdersItems;
+                        if ($items->load($product, "") && $items->save()) {
+                            continue;
+                        } else {
+                            return [
+                                'success' => 0,
+                                'msg' => Helper::firstError($items)
+                            ];
+                        }
                     }
-
-                    Yii::$app->db->createCommand()->batchInsert("orders_items", [
-                        'product_sku','product_option','qty','price','contact_id','order_id','created_at','updated_at'
-                    ],$product)->execute();
-
-                    return  [
+                    return [
                         'success' => 1,
                         'msg' => 'HIiI'
                     ];
                 }
-            }catch (\Exception $e){
-                return  [
+            } catch (\Exception $e) {
+                return [
                     'success' => 0,
                     'msg' => $e->getMessage()
                 ];

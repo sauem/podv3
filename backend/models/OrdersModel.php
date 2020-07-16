@@ -128,7 +128,7 @@ class OrdersModel extends BaseModel
      */
     public function getItems()
     {
-        return $this->hasMany(OrdersItems::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrdersItems::className(), ['order_id' => 'id'])->with('product');
     }
     public function getContacts(){
         return $this->hasMany(OrdersContacts::className(),['order_id' => 'id'])->with('contact');

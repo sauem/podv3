@@ -242,8 +242,8 @@ $js = <<<JS
     $(document).on("beforeSubmit","#formOrder",function(e) {
         e.preventDefault();
         let form = new FormData(document.getElementById("formOrder"))
-        var keys = $('.grid-view').yiiGridView('getSelectedRows');
-            form.append("contact_id", keys);
+        // var keys = $('.grid-view').yiiGridView('getSelectedRows');
+        //     form.append("contact_id", keys);
             
             $.ajax({
                         url : $(this).attr("action"),
