@@ -35,7 +35,11 @@ class doScanContact
                             $count = self::countAssignUser($user);
                             switch ($count) {
                                 case 1:
-                                    self::assignUser($phone, $user, ContactsAssignment::_PENDING);
+                                    if (!self::hasTime($user)) {
+                                        self::assignUser($phone, $user, ContactsAssignment::_PENDING);
+                                    } else {
+                                        self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                                    }
                                     break;
                                 default:
                                     self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
@@ -54,11 +58,14 @@ class doScanContact
     static function hasTime($user_id)
     {
 
-        $user = ContactsAssignment::find()->where(['user_id' => $user_id, "status" => ContactsAssignment::_PENDING])
+        $assign = ContactsAssignment::find()->where(['user_id' => $user_id, "status" => ContactsAssignment::_PENDING])
             ->andWhere(['!=', 'callback_time', ""])
             ->orderBy(["callback_time" => SORT_ASC])
             ->one();
-        return self::openUserCallback($user);
+        if (!$assign) {
+            return true;
+        }
+        return self::openUserCallback($assign);
     }
 
     static function changeStatusPending(ContactsAssignment $exitStatus)

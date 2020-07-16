@@ -84,8 +84,8 @@ class SiteController extends BaseController
     public function actionData()
     {
         $user_id = 25;
-        $user = ContactsAssignment::find()->where(['user_id' => $user_id,"status" => ContactsAssignment::_PENDING])
-            ->andWhere(['!=','callback_time', ""])
+        $user = ContactsAssignment::find()->where(['user_id' => $user_id, "status" => ContactsAssignment::_PENDING])
+            ->andWhere(['!=', 'callback_time', ""])
             ->orderBy(["callback_time" => SORT_ASC])
             ->one();
         Helper::prinf($user);
