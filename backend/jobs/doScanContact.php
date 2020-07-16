@@ -4,6 +4,7 @@ use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
 use backend\models\UserModel;
+use common\helper\Helper;
 use yii\helpers\ArrayHelper;
 
 class doScanContact {
@@ -96,5 +97,26 @@ class doScanContact {
         if ($assign->count() > 1) {
             self::changeStatusPending($assign->all()[0]);
         }
+    }
+
+    static function openCallback($user){
+        $now = time();
+        $model = ContactsAssignment::find()
+            ->where(['user_id' => $user])
+            ->andWhere(['!=','callback_time' , ""])
+            ->orderBy(['callback_time' => SORT_ASC])->one();
+        $data = [];
+        if (!empty($model->callback_time)) {
+            $data =  [
+                'phone' => $model->contact_phone,
+                'time' => Helper::caculateDate($model->updated_at, $model->callback_time, true)
+            ];
+        }
+        if($now >= $data['time']){
+            $model->callback_time = null;
+            $model->save();
+            return true;
+        }
+        return false;
     }
 }

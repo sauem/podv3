@@ -156,7 +156,7 @@ class UserModel extends User
         return $this->hasOne(ContactsAssignment::className(), ['user_id' => 'id'])->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING]);
     }
 
-    public static function hasCallback()
+    public static function hasCallback($getTime = false)
     {
         $model = ContactsAssignment::find()
             ->where(['user_id' => Yii::$app->user->getId()])
@@ -165,7 +165,7 @@ class UserModel extends User
         if (!empty($model->callback_time)) {
             return [
                 'phone' => $model->contact_phone,
-                'time' => Helper::caculateDate($model->updated_at, $model->callback_time)
+                'time' => Helper::caculateDate($model->updated_at, $model->callback_time, $getTime)
             ];
         }
         return false;

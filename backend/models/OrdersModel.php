@@ -91,23 +91,23 @@ class OrdersModel extends BaseModel
     {
         return [
             'id' => 'ID',
-            'customer_name' => 'Customer Name',
-            'customer_phone' => 'Customer Phone',
-            'customer_email' => 'Customer Email',
-            'address' => 'Address',
-            'city' => 'City',
-            'district' => 'District',
+            'customer_name' => 'Tên kách hàng',
+            'customer_phone' => 'Số điện thoại',
+            'customer_email' => 'Email',
+            'address' => 'Địa chỉ',
+            'city' => 'Thành phố',
+            'district' => 'Quận/Huyện',
             'zipcode' => 'Zipcode',
-            'country' => 'Country',
+            'country' => 'Quốc gia',
             'sale' => 'Sale',
             'sub_total' => 'Sub Total',
             'total' => 'Total',
-            'order_note' => 'Order Note',
-            'user_id' => 'User ID',
-            'status' => 'Status',
-            'status_note' => 'Status Note',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'order_note' => 'Ghi chú đơn hàng',
+            'user_id' => 'Người tạo đơn',
+            'status' => 'Trạng thái',
+            'status_note' => 'Ghi chú xác nhận',
+            'created_at' => 'Ngày tạo đơn',
+            'updated_at' => 'Ngày cập nhật',
         ];
     }
 
@@ -126,7 +126,7 @@ class OrdersModel extends BaseModel
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrdersItems()
+    public function getItems()
     {
         return $this->hasMany(OrdersItems::className(), ['order_id' => 'id']);
     }

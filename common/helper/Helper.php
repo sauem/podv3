@@ -28,8 +28,11 @@ class Helper
         return preg_split("/\r\n|\n|\r/", $option);
     }
 
-    static function caculateDate($start , $end){
+    static function caculateDate($start , $end, $number = false){
         $newDate = strtotime("+ $end hour",$start);
+        if($number){
+            return  $newDate;
+        }
         return date('H:i:s - d/m', $newDate);
     }
 }

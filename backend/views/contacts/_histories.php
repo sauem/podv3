@@ -26,7 +26,16 @@ use backend\models\ContactsModel;
                 [
                     'class' => SerialColumn::class,
                 ],
-                'created_at',
+                'created_at:datetime',
+                ['label' => 'sản phẩm','attribute' => 'customer_phone',
+                    'format' => 'html','value' => function($model){
+                       $html = '';
+                        foreach ($model->items as $item){
+                           $html .= "<span class='badge badge-info'>{$item->product_sku}</span>";
+                        }
+                        return $html;
+
+                }],
                 [
                     'label' => 'Trạng thái',
                     'attribute' => 'status',
@@ -35,7 +44,7 @@ use backend\models\ContactsModel;
                         return ContactsModel::label($model->status);
                     }
                 ],
-                'note'
+                'order_note'
             ],
         ]) ?>
     </div>
