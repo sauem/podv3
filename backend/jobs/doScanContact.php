@@ -20,12 +20,18 @@ class doScanContact
 
         foreach ($users as $user) {
             $count = self::countAssignUser($user);
+            if (self::isLimitOfDay($user)) {
+                continue;
+            }
             if ($count >= 2) {
                 self::openCallback($user);
                 self::pendingStatus($user);
                 continue;
             } else {
                 foreach ($phones as $k => $phone) {
+                    if (self::isLimitOfDay($user)) {
+                        continue;
+                    }
                     $exitStatus = self::getStatusUser($user, $phone);
                     if ($exitStatus) {
                         self::changeStatusPending($exitStatus);
@@ -35,11 +41,7 @@ class doScanContact
                             $count = self::countAssignUser($user);
                             switch ($count) {
                                 case 1:
-                                    if (!self::hasTime($user)) {
-                                        self::assignUser($phone, $user, ContactsAssignment::_PENDING);
-                                    } else {
-                                        self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
-                                    }
+                                    self::assignUser($phone, $user, ContactsAssignment::_PENDING);
                                     break;
                                 default:
                                     self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
@@ -93,7 +95,7 @@ class doScanContact
         $nextTime = Helper::caculateDate($user->updated_at, $user->callback_time, true);
         if ($now >= ArrayHelper::getValue($nextTime, 'time')) {
             $user->status = ContactsAssignment::_PROCESSING;
-            $user->callback_time = "";
+            $user->callback_time = null;
             return $user->save();
         }
         return false;
@@ -173,5 +175,18 @@ class doScanContact
             return true;
         }
         return false;
+    }
+
+    static function isLimitOfDay($user)
+    {
+        $userPhone = UserModel::findOne($user)->getAttribute("phone_of_day");
+        $beginOfDay = strtotime("midnight", time());
+        $endOfDay = strtotime("tomorrow", $beginOfDay) - 1;
+        $count = ContactsAssignment::find()->where(['user_id' => 25])
+            ->orderBy(['created_at' => SORT_ASC])
+            ->andFilterWhere([
+                'between', 'created_at', $beginOfDay, $endOfDay
+            ])->count();
+        return  $count == $userPhone;
     }
 }

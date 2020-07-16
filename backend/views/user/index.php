@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'columns' => [
                             'username',
                             'email:email',
+                            'phone_of_day',
                             ['attribute' => 'status', 'format' => 'html', 'value' => function ($model) {
                                 return UserModel::label($model->status);
                             }],

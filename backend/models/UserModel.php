@@ -71,8 +71,8 @@ class UserModel extends User
     public function rules()
     {
         return [
-            [['username', 'password_hash', 'email', 'role'], 'required'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'password_hash', 'email', 'role','phone_of_day'], 'required'],
+            [['status', 'created_at', 'updated_at','phone_of_day'], 'integer'],
             [['role', 'username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
@@ -94,6 +94,7 @@ class UserModel extends User
             'password_hash' => 'Mật khẩu',
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
+            'phone_of_day' => 'Số lượng SDT/ngày',
             'status' => 'Trạng thái',
             'created_at' => 'Ngày tạo',
             'updated_at' => 'Updated At',

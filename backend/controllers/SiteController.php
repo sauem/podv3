@@ -83,12 +83,16 @@ class SiteController extends BaseController
 
     public function actionData()
     {
-        $user_id = 25;
-        $user = ContactsAssignment::find()->where(['user_id' => $user_id, "status" => ContactsAssignment::_PENDING])
-            ->andWhere(['!=', 'callback_time', ""])
-            ->orderBy(["callback_time" => SORT_ASC])
-            ->one();
-        Helper::prinf($user);
+        $beginOfDay = strtotime("midnight", time());
+        $endOfDay = strtotime("tomorrow", $beginOfDay) - 1;
+        $count = ContactsAssignment::find()->where(['user_id' => 25])
+            ->orderBy(['created_at' => SORT_ASC])
+            ->andFilterWhere([
+                'between', 'created_at', $beginOfDay, $endOfDay
+            ])->count();
+       $user = UserModel::findOne(25)->getAttribute("phone_of_day");
+
+        echo $user == $count;
     }
 
     function actionCountry()

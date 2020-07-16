@@ -31,6 +31,9 @@ use kartik\form\ActiveForm;
                             'options' => ['prompt' => 'Chọn quyền quản trị']
                         ])->label('Quyền quản trị') ?>
                     </div>
+                    <div class="form-group col-md-6">
+                        <?= $form->field($model, 'phone_of_day')->textInput(["type" => 'number','placeholder'  => 'Số điện thoại giới hạn gọi']) ?>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
