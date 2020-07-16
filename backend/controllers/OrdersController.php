@@ -80,13 +80,15 @@ class OrdersController extends Controller
                     foreach ($product as $k => $item){
                         $product[$k]['contact_id'] =(int)Yii::$app->request->post('contact_id');
                         $product[$k]['order_id'] = $model->id;
+                        $product[$k]['price'] = $item['price'];
+                        $product[$k]['qty'] = $item['qty'];
                         $product[$k]['product_option'] = Yii::$app->request->post('option') ? Yii::$app->request->post('option') : null;
                         $product[$k]['created_at'] = time();
                         $product[$k]['updated_at'] = time();
                     }
 
                     Yii::$app->db->createCommand()->batchInsert("orders_items", [
-                        'product_sku','qty','contact_id','order_id','product_option','created_at','updated_at'
+                        'product_sku','product_option','qty','price','contact_id','order_id','created_at','updated_at'
                     ],$product)->execute();
 
                     return  [
@@ -102,6 +104,7 @@ class OrdersController extends Controller
             }
 
         }
+        return Helper::firstError($model);
 
     }
 

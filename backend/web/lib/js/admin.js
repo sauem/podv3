@@ -74,7 +74,7 @@ function getCountry(select) {
             country.map(item => {
                 html += "<option value='" + item.code + "'>" + item.name + "</option>";
             })
-            $(select).html(html);
+           $("body").find( select ).html(html);
         }
     });
 

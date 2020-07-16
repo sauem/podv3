@@ -1,5 +1,7 @@
 <?php
+
 namespace backend\jobs;
+
 use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
@@ -7,7 +9,8 @@ use backend\models\UserModel;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
 
-class doScanContact {
+class doScanContact
+{
     public static function apply()
     {
         $phones = ContactsModel::find()->addSelect(['phone'])->distinct()->asArray()->all();
@@ -18,6 +21,7 @@ class doScanContact {
         foreach ($users as $user) {
             $count = self::countAssignUser($user);
             if ($count >= 2) {
+                self::openCallback($user);
                 self::pendingStatus($user);
                 continue;
             } else {
@@ -47,12 +51,51 @@ class doScanContact {
         return "done!";
     }
 
+    static function hasTime($user_id)
+    {
+
+        $user = ContactsAssignment::find()->where(['user_id' => $user_id, "status" => ContactsAssignment::_PENDING])
+            ->andWhere(['!=', 'callback_time', ""])
+            ->orderBy(["callback_time" => SORT_ASC])
+            ->one();
+        return self::openUserCallback($user);
+    }
+
     static function changeStatusPending(ContactsAssignment $exitStatus)
     {
+
         if ($exitStatus) {
-            $exitStatus->status = ContactsAssignment::_PROCESSING;
-            $exitStatus->save();
+            if ($exitStatus->status = ContactsAssignment::_COMPLETED) {
+                if (self::checkNewContact($exitStatus->contact_phone)) {
+                    $exitStatus->status = ContactsAssignment::_PENDING;
+                }
+                return false;
+            } elseif ($exitStatus->status == ContactsModel::_PENDING && !empty($exitStatus->callback_time)) {
+                self::openUserCallback($exitStatus);
+            } else {
+                $exitStatus->status = ContactsAssignment::_PROCESSING;
+            }
+            return $exitStatus->save();
         }
+    }
+
+    static function openUserCallback(ContactsAssignment $user)
+    {
+
+        $now = time();
+        $nextTime = Helper::caculateDate($user->updated_at, $user->callback_time, true);
+        if ($now >= ArrayHelper::getValue($nextTime, 'time')) {
+            $user->status = ContactsAssignment::_PROCESSING;
+            $user->callback_time = "";
+            return $user->save();
+        }
+        return false;
+    }
+
+    static function checkNewContact($phone)
+    {
+        // check have new contact
+        return ContactsModel::hasNewContact($phone);
     }
 
     static function phoneExitsts($phone)
@@ -75,6 +118,7 @@ class doScanContact {
         $model->save();
     }
 
+// số lượng được assign không có trạng thái completed
     static function countAssignUser($user)
     {
         $count = ContactsAssignment::find()
@@ -89,31 +133,35 @@ class doScanContact {
         return $assign;
     }
 
+    //thay đổi trạng thái nếu có 2 status pending
     static function pendingStatus($user)
     {
         $assign = ContactsAssignment::find()
             ->where(['user_id' => $user, 'status' => ContactsAssignment::_PENDING])
-            ->orderBy(['created_at' => SORT_ASC]);
+            ->orderBy(['created_at' => SORT_DESC]);
         if ($assign->count() > 1) {
-            self::changeStatusPending($assign->all()[0]);
+            self::changeStatusPending($assign->one());
         }
     }
 
-    static function openCallback($user){
+    static function openCallback($user)
+    {
         $now = time();
         $model = ContactsAssignment::find()
             ->where(['user_id' => $user])
-            ->andWhere(['!=','callback_time' , ""])
+            ->andWhere(['!=', 'callback_time', ""])
             ->orderBy(['callback_time' => SORT_ASC])->one();
         $data = [];
+        if (!$model) return false;
         if (!empty($model->callback_time)) {
-            $data =  [
+            $data = [
                 'phone' => $model->contact_phone,
                 'time' => Helper::caculateDate($model->updated_at, $model->callback_time, true)
             ];
         }
-        if($now >= $data['time']){
+        if ($now >= $data['time']) {
             $model->callback_time = null;
+            $model->status = ContactsAssignment::_PROCESSING;
             $model->save();
             return true;
         }

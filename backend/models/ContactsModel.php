@@ -221,4 +221,17 @@ class ContactsModel extends BaseModel
         }
         return  false;
     }
+    static function hasNewContact($phone){
+        $count = ContactsModel::find()
+            ->where(['phone' => $phone])
+            ->andWhere(["=",'callback_time', null])
+            ->andWhere(['IN', "status", [
+                ContactsModel::_NEW
+            ]])->count();
+
+        if($count < 1){
+            return true;
+        }
+        return  false;
+    }
 }

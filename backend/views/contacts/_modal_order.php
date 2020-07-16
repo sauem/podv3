@@ -166,7 +166,7 @@ use kartik\form\ActiveForm;
                        value="1">
             </td>
             <td class="text-right">
-                <input value="{{regular_price}}" name="regular_price" type="number" class="form-control">
+                <input value="{{regular_price}}" name="product[{{sku}}][price]" type="number" class="form-control">
             </td>
             <td>
                 <button data-sku="{{sku}}" type="button" class="removeItem btn btn-xs btn-danger">xoá</button>
@@ -179,8 +179,8 @@ use kartik\form\ActiveForm;
             <td><strong>Tổng hóa đơn</strong></td>
             <td colspan="4" class="text-right">
                 <strong>{{money this.total}}đ</strong>
-                <input type="hidden" value="{{subTotal}}" name="sub_total">
-                <input type="hidden" value="{{saleTotal}}" name="sale">
+<!--                <input type="hidden" value="{{subTotal}}" name="sub_total">-->
+<!--                <input type="hidden" value="{{saleTotal}}" name="sale">-->
                 <input type="hidden" value="{{total}}" name="total">
             </td>
         </tr>
@@ -253,8 +253,8 @@ $js = <<<JS
                         success : function(res) {
                             if(res.success){
                                 toastr.success("Tạo đơn hàng thành công!")
-                                  window.location.reload();
                                 $("#takeOrder").modal("hide")
+                                  window.location.reload();
                             }
                         }
             });
