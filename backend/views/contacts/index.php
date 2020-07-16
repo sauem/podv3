@@ -15,57 +15,6 @@ $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="row">
-        <div class="col-md-4">
-            <div class="ibox">
-                <div class="ibox-head">
-                    <h2 class="ibox-title">Thông tin : <i
-                                class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
-                    </h2>
-                </div>
-                <div class="ibox-body">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>Trạng thái hiện tại</td>
-                            <td><?= ContactsAssignment::label($info->assignment->status) ?></td>
-                        </tr>
-                        <tr>
-                            <td>Khách hàng</td>
-                            <td><?= $info->name ?></td>
-                        </tr>
-                        <tr>
-                            <td>Địa chỉ</td>
-                            <td><?= $info->address ?></td>
-                        </tr>
-                        <tr>
-                            <td>Zipcode</td>
-                            <td><?= $info->zipcode ?></td>
-                        </tr>
-                        <tr>
-                            <td>IP</td>
-                            <td><?= $info->ip ?></td>
-                        </tr>
-                        </tbody>
-                        <?php
-                        if ($time = \backend\models\UserModel::hasCallback()) {
-                            ?>
-                            <tfoot>
-                            <tr>
-                                <td>Ghi chú gọi lại</td>
-                                <td>
-                                    <strong><?= $time['phone'] ?>: <br>
-                                        <span class="badge-danger badge"><?= $time['time'] ?></span>
-                                    </strong>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        <?php } ?>
-
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <div class="col-md-8">
             <div class="ibox">
                 <div class="ibox-body">
@@ -119,6 +68,72 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Thông tin : <i
+                                class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
+                    </h2>
+                </div>
+                <div class="ibox-body">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Trạng thái hiện tại</td>
+                            <td><?= ContactsAssignment::label($info->assignment->status) ?></td>
+                        </tr>
+                        <tr>
+                            <td>Khách hàng</td>
+                            <td><?= $info->name ?></td>
+                        </tr>
+                        <tr>
+                            <td>Địa chỉ</td>
+                            <td><?= $info->address ?></td>
+                        </tr>
+                        <tr>
+                            <td>Zipcode</td>
+                            <td><?= $info->zipcode ?></td>
+                        </tr>
+                        <tr>
+                            <td>IP</td>
+                            <td><?= $info->ip ?></td>
+                        </tr>
+                        </tbody>
+                        <?php
+                        if ($time = \backend\models\UserModel::hasCallback()) {
+                            ?>
+                            <tfoot>
+                            <tr>
+                                <td>Ghi chú gọi lại</td>
+                                <td>
+                                    <strong><?= $time['phone'] ?>: <br>
+                                        <span class="badge-danger badge"><?= $time['time'] ?></span>
+                                    </strong>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        <?php } ?>
+
+                    </table>
+                </div>
+            </div>
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Trạng thái gần đây</h2>
+                </div>
+                <div class="ibox-body">
+
+                </div>
+            </div>
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Tài khoản</h2>
+                </div>
+                <div class="ibox-body">
+
                 </div>
             </div>
         </div>

@@ -41,11 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             ])
                             ->label('Danh mục sản phẩm') ?>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <?= Component::money($form, $model, 'regular_price') ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?= Component::money($form, $model, 'sale_price') ?>
                     </div>
                     <div class="col-md-12">
                         <?= $form->field($model, 'option')->textarea(['rows' => 10])->label('Tùy chỉnh (Mỗi thuộc tính xuống dòng)') ?>

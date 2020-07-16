@@ -31,9 +31,14 @@ class Component
     }
     static function money($form,$model,$name){
         return $form->field($model, $name)->widget(MaskMoney::classname(), [
+            'options' => [
+                'placeholder' => 'Nhập số tiền...'
+            ],
             'pluginOptions' => [
-                'suffix' => 'đ',
-                'allowNegative' => false
+                'prefix' => 'đ ',
+                'allowNegative' => false,
+                'allowZero' => false,
+                'allowEmpty' => true
             ]
         ]);
     }
