@@ -172,11 +172,12 @@ $js = <<<JS
                 return;
             }
            $("#takeOrder").modal()
+            getCountry("select[name='country']");
            $('#takeOrder').on('shown.bs.modal', function () {
                loadProducts(keys);
                loadSku(getSelectedColum());
                 getCountry("select[name='country']");
-               
+                initMaskMoney();
             })
         });
        

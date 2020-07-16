@@ -15,7 +15,7 @@ use kartik\form\ActiveForm;
             // 'validationUrl' => \yii\helpers\Url::toRoute(['orders/create-validate']),
             'action' => \yii\helpers\Url::toRoute(['orders/create'])
         ]) ?>
-        <input type="hidden" value="<?= Yii::$app->user->getId()?>" name="user_id">
+        <input type="hidden" value="<?= Yii::$app->user->getId() ?>" name="user_id">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tạo đơn hàng</h5>
@@ -25,7 +25,7 @@ use kartik\form\ActiveForm;
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="row">
                             <div class="col-12">
                                 <h5 class="text-info  m-t-10"><i class="fa fa-bar-chart"></i> Thông tin khách hàng
@@ -36,7 +36,7 @@ use kartik\form\ActiveForm;
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <h5><i class="fa fa-bar-chart"></i> Sản phẩm đặt mua</h5>
                         <div class="d-flex justify-content-between">
                             <div id="resultProduct">
@@ -162,11 +162,13 @@ use kartik\form\ActiveForm;
                 </select>
             </td>
             <td>
-                <input data-sku="{{sku}}"  class="form-control" style="width: 80px;" type="number" name="product[{{sku}}][qty]"
+                <input data-sku="{{sku}}" class="form-control" style="width: 80px;" type="number"
+                       name="product[{{sku}}][qty]"
                        value="1">
             </td>
             <td class="text-right">
-                <input value="{{regular_price}}" name="product[{{sku}}][price]" type="number" class="form-control">
+                <input value="{{regular_price}}" name="product[{{sku}}][price]" type="number"
+                       class="money form-control">
             </td>
             <td>
                 <button data-sku="{{sku}}" type="button" class="removeItem btn btn-xs btn-danger">xoá</button>
@@ -179,8 +181,6 @@ use kartik\form\ActiveForm;
             <td><strong>Tổng hóa đơn</strong></td>
             <td colspan="4" class="text-right">
                 <strong>{{money this.total}}đ</strong>
-<!--                <input type="hidden" value="{{subTotal}}" name="sub_total">-->
-<!--                <input type="hidden" value="{{saleTotal}}" name="sale">-->
                 <input type="hidden" value="{{total}}" name="total">
             </td>
         </tr>
@@ -234,6 +234,7 @@ $js = <<<JS
                         Skulist.push(res.sku)
                     }
                     updateTotal(_sku,1, Action.ADD)
+                  initMaskMoney();
             }
         })
     })

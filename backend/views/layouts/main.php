@@ -40,6 +40,16 @@ AppAsset::register($this);
         .grid-view th {
             white-space: nowrap;
         }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
 
         @media (min-width: 768px) {
             .modal-xl {

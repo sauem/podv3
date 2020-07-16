@@ -59,7 +59,6 @@ $('#viewNote').on('show.bs.modal', function (e) {
 });
 
 
-getCountry()
 
 function getCountry(select) {
     let html = "";
@@ -78,4 +77,7 @@ function getCountry(select) {
         }
     });
 
+}
+function initMaskMoney() {
+    //$(".money").mask("#.##0,00", {reverse: true});
 }
