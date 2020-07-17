@@ -6,6 +6,7 @@ namespace backend\controllers;
 
 use backend\models\CategoriesModel;
 use backend\models\ContactsModel;
+use backend\models\OrdersModel;
 use backend\models\ProductsModel;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
@@ -70,7 +71,7 @@ class AjaxController extends BaseController
         $p = ProductsModel::findOne(['sku' => $sku]);
         $subTotal = $p->regular_price * $qty;
         $saleTotal = $p->sale_price * $qty;
-        $total =  $subTotal - $saleTotal;
+        $total = $subTotal - $saleTotal;
         return [
             'subTotal' => $subTotal,
             'saleTotal' => $saleTotal,
@@ -78,6 +79,61 @@ class AjaxController extends BaseController
             'qty' => $qty
         ];
 
+    }
+
+    function actionRevenue()
+    {
+        $kind = \Yii::$app->request->post('kind');
+        $time = \Yii::$app->request->post('time');
+
+        $kind = "sale";
+        $time = "week";
+
+        $query = OrdersModel::find()->with(['user' => function ($query) {
+            $query->select(['user.username', 'user.id']);
+        }])->orderBy(['created_at' => SORT_ASC])->groupBy('user_id');
+
+        $result = static::weeklyReport($query);
+
+        $data['label'] = static::labelOfWeek();
+        $items = [];
+
+        foreach ($result as $k => $item){
+            $items[$item['user_id']][$k] = static::renderItem($item);
+        }
+    }
+    static function renderItem($item){
+        foreach ($item as $k => $val){
+            $data['label'] = $val['name'];
+            $data['data'] = $val['total'];
+            $data['backgroundColor'] = '';
+        }
+
+    }
+
+    static function weeklyReport($query)
+    {
+        $beginOfDay = strtotime('-7 days');
+        $endOfDay = time();
+        $query->andFilterWhere([
+            'between', 'created_at', $beginOfDay, $endOfDay
+        ])
+            ->select(['SUM(total) AS `total`'
+                , 'DAY(FROM_UNIXTIME(created_at)) as day'
+                , 'MONTH(FROM_UNIXTIME(created_at)) as month',
+                'user_id'
+            ])
+            ->groupBy(['day', 'month', 'user_id']);
+
+        return $query->asArray()->all();
+    }
+
+    static function labelOfWeek(){
+        $startWeek = strtotime('this week', time());
+        for ($i = 1; $i <= 7; $i++) {
+            $label[$i] = date("d/m/Y",strtotime("+$i day",$startWeek));
+        }
+        return $label;
     }
 
 }

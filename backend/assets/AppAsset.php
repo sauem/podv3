@@ -33,6 +33,7 @@ class AppAsset extends AssetBundle
         'https://cdn.jsdelivr.net/npm/sweetalert2@9',
         'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js',
         //'/lib/js/scripts/dashboard_1_demo.js',
+        '/lib//vendors/chart.js/dist/Chart.min.js',
         '/lib/vendors/select2/dist/js/select2.full.min.js',
         '/lib/js/money.js',
         '/lib/js/admin.js?v=1.3',

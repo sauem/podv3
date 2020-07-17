@@ -95,6 +95,9 @@ class LandingPages extends BaseModel
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+    public function getContacts(){
+        return $this->hasMany(ContactsModel::className(),['short_link' =>'link']);
+    }
     public function beforeSave($insert)
     {
         if($insert){

@@ -22,6 +22,7 @@ use Yii;
  * @property float|null $total
  * @property string|null $order_note
  * @property int|null $user_id
+ * @property int|null $contact_id
  * @property string|null $status
  * @property string|null $status_note
  * @property int $created_at

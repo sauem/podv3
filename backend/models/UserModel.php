@@ -152,6 +152,11 @@ class UserModel extends User
         return $this->hasOne(AuthAssignment::class, ['user_id' => 'id']);
     }
 
+    public function getSale()
+    {
+        return $this->hasOne(AuthAssignment::class, ['user_id' => 'id'])->where(['auth_assignment.item_name' => UserModel::_SALE]);
+    }
+
     public function getProcessing()
     {
         return $this->hasOne(ContactsAssignment::className(), ['user_id' => 'id'])->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING]);

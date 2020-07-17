@@ -167,8 +167,10 @@ $js = <<<JS
               case "callback":
                   case "pending":
                       $(".callback-group").show()
+                      $(".callback-group").find("input[name='callback_time']").attr("required",true);
                       break;
                       default:
+                             $(".callback-group").find("input[name='callback_time']").attr("required",false);
                              $(".callback-group").hide()
                           break;
             }

@@ -8,6 +8,7 @@ use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
 use common\models\User;
@@ -42,7 +43,17 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
-        return $this->render('index');
+
+        $totalContact = ContactsModel::find()->count();
+        $totalOrder = OrdersModel::find()->count();
+        $totalAmount = OrdersModel::find()->sum('total');
+        $conversionRate = $totalOrder/ $totalContact * 100;
+        return $this->render('index',[
+            'totalContact'  => $totalContact,
+            'totalOrder' => $totalOrder,
+            'totalAmount' => $totalAmount,
+            'conversionRate' => $conversionRate
+        ]);
     }
 
     /**
@@ -52,7 +63,7 @@ class SiteController extends BaseController
      */
     public function actionLogin()
     {
-        $this->layout = "empty";
+        $this->layout = "login";
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }

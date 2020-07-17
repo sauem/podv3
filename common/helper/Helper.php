@@ -42,4 +42,7 @@ class Helper
         $country = ArrayHelper::map($country,"code","name");
         return ArrayHelper::getValue($country,$code);
     }
+    static function money($number){
+        return number_format($number,2,',','.') ."đ";
+    }
 }

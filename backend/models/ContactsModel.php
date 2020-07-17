@@ -208,12 +208,13 @@ class ContactsModel extends BaseModel
             ->where(['phone' => $phone])
             ->andWhere(['IN', "status", [
                 ContactsModel::_NEW,
-                ContactsModel::_CALLBACK,
-                ContactsModel::_PENDING,
-                ContactsModel::_SKIP,
-                ContactsModel::_CANCEL,
-                ContactsModel::_NUMBER_FAIL,
-                ContactsModel::_DUPLICATE
+//                ContactsModel::_CALLBACK,
+//                ContactsModel::_PENDING,
+//                ContactsModel::_SKIP,
+//                ContactsModel::_CANCEL,
+//                ContactsModel::_NUMBER_FAIL,
+//                ContactsModel::_DUPLICATE,
+//                ContactsModel::_OK
             ]])->count();
 
         if($count < 1){

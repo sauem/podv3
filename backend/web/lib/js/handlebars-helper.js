@@ -3,8 +3,22 @@ Handlebars.registerHelper("caculate", function (singular_price, sale_price) {
     return price.formatMoney();
 })
 
-Handlebars.registerHelper("money", function (number) {
-    return number.formatMoney();
+Handlebars.registerHelper("money", function (value,options) {
+    var dl = options.hash['decimalLength'] || 2;
+    var ts = options.hash['thousandsSep'] || ',';
+    var ds = options.hash['decimalSep'] || '.';
+
+    // Parse to float
+    var value = parseFloat(value);
+
+    // The regex
+    var re = '\\d(?=(\\d{3})+' + (dl > 0 ? '\\D' : '$') + ')';
+
+    // Formats the number with the decimals
+    var num = value.toFixed(Math.max(0, ~~dl));
+
+    // Returns the formatted number
+    return (ds ? num.replace('.', ds) : num).replace(new RegExp(re, 'g'), '$&' + ts);
 })
 Handlebars.registerHelper("selected",function (numb1, numb2) {
     if(numb1 == numb2){
