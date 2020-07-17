@@ -150,28 +150,40 @@ use kartik\form\ActiveForm;
     <script type="text/x-handlebars-template" id="template-item-product">
 
         <tr class="form-group">
-            <td>{{name}}<br>
-                <small>{{category.name}}|{{sku}}</small>
-                <input type="hidden" value="{{sku}}" name="product[{{sku}}][product_sku]">
+
+            <td>{{product.name}}<br>
+                <small>{{product.category.name}}|{{product.sku}}</small>
+                <input type="hidden" value="{{product.sku}}" name="product[{{product.sku}}][product_sku]">
             </td>
             <td>
-                <select class="form-control" name="product[{{sku}}][product_option]">
-                    {{#each this.option}}
-                    <option value="{{this}}">{{this}}</option>
+                {{#if (hasArray customer.option product.option)}}
+                <select class="form-control" name="product[{{product.sku}}][product_option]">
+                    {{#each product.option}}
+                    <option {{selected this ..
+                    /product.selected}} value="{{this}}">{{this}}</option>
                     {{/each}}
                 </select>
+                {{else}}
+                <select class="form-control" name="product[{{product.sku}}][product_option]">
+                    <option value="{{customer.option}}">{{customer.option}}</option>
+                    {{#each product.option}}
+                    <option {{selected this ..
+                    /product.selected}} value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+                {{/if}}
             </td>
             <td>
-                <input data-sku="{{sku}}" class="form-control" style="width: 80px;" type="number"
-                       name="product[{{sku}}][qty]"
+                <input data-sku="{{product.sku}}" class="form-control qty-input" style="width: 80px;" type="number"
+                       name="product[{{product.sku}}][qty]"
                        value="1">
             </td>
             <td class="text-right">
-                <input value="{{regular_price}}" name="product[{{sku}}][price]" type="number"
+                <input data-sku="{{product.sku}}" value="{{product.regular_price}}" name="product[{{product.sku}}][price]" type="number"
                        class="money form-control">
             </td>
             <td>
-                <button data-sku="{{sku}}" type="button" class="removeItem btn btn-xs btn-danger">xoá</button>
+                <button data-sku="{{product.sku}}" type="button" class="removeItem btn btn-xs btn-danger">xoá</button>
             </td>
         </tr>
 
@@ -189,8 +201,6 @@ use kartik\form\ActiveForm;
 $loadProduct = \yii\helpers\Url::toRoute(['ajax/load-product']);
 $totalUpdate = \yii\helpers\Url::toRoute(['ajax/update-total']);
 $js = <<<JS
-    
-   
     $("body").on('click','.removeItem',function() {
         let qty = $(this).closest("tr").find("input[type='number']").val();
         swal.fire({
@@ -202,23 +212,16 @@ $js = <<<JS
             if(val.value){
                 $(this).closest(".form-group").remove();
                 let _sku = $(this).data("sku");
-                window.Skulist = removeArray(Skulist,_sku)
-                updateTotal(_sku,qty, Action.DELTE)
+                if(ORDER.skus.includes(_sku)){
+                  ORDER.skus = ORDER.skus.filter(item => item !== _sku)
+                  updateTotal(Action.DELTE, _sku) 
+                }
             }
         });
         
     })
-    $("body").on('focusin',"input[type='number']", function(){
-        $(this).attr("data-prev", $(this).val());
-    });
-    $("body").on("change","input[type='number']",function(e) {
-        let _sku = $(this).data("sku");
-         var _prev = $(this).data('prev');
-         var _val = $(this).val();
-        
-    });
+
      $("body").on('click','#addProduct',function() {
-        
          let _sku = $(this).closest(".form-group").find("select > option:selected").val();
         $.ajax({
             url : '$loadProduct',
@@ -226,15 +229,21 @@ $js = <<<JS
             type :'POST',
             data : {sku : _sku},
             success : function(res) {
-                    if(Skulist.includes(_sku)){
-                       toastr.warning("Sản phẩm đã tồn tại");
+                    if(ORDER.skus.includes(_sku)){
+                        toastr.warning("Đã tồn tại "+_sku+" trong đơn hàng!");
                         return false;
                     }else{
+                        ORDER.skus.push(_sku)
+                        let _cach_item = {
+                            qty : 1,
+                            sku : _sku,
+                            price : res.product.regular_price
+                        }
+                        ORDER.products.push(_cach_item)
+                        updateTotal(Action.ADD, res.product.regular_price)
                         $("#resultItemProduct").prepend(compileTemplate('template-item-product',res))
-                        Skulist.push(res.sku)
+                       
                     }
-                    updateTotal(_sku,1, Action.ADD)
-                  initMaskMoney();
             }
         })
     })
@@ -263,22 +272,73 @@ $js = <<<JS
           
         return false;
     })
-    
-    function updateTotal(sku, _val = 1, action = Action.DELTE) {
-        
-         $.ajax({
-            url : '$totalUpdate',
-            type : 'POST',
-            cache: false,
-            data : {sku : sku, qty : _val},
-            success : function(res){
-                Total = caculate(Total,res,action)
-                let html =  compileTemplate("total-template",Total);
-                        $("#totalResult").html(html) 
-            }
-         })
+    $("body").on("change",".qty-input",function() {
+        let _qty = $(this).val()
+        let _sku = $(this).data("sku")
+        changeQty(_sku,_qty)
+         initTotal(ORDER)
+    }) 
+    $("body").on("change",".money",function() {
+        let _price = $(this).val()
+        let _sku = $(this).data("sku")
+        changePrice(_sku,_price)
+          initTotal(ORDER)
+    })
+        function updateTotal(action = Action.ADD, value) {
+        switch (action) {
+          case "add":
+                ORDER.total = parseFloat(ORDER.total) + parseFloat(value)
+              break;
+              case "del":
+               ORDER.total = reloadProduct(value)
+                  break;
+               default:
+                   break;
+        }
+        initTotal(ORDER)
     }
     
+    function initTotal(val = window.ORDER) {
+           let html =  compileTemplate("total-template",val);
+           $("#totalResult").html(html) 
+        }
+        function reloadProduct(_sku) {
+            let products = ORDER.products
+            let _removed = products.find(item => item.sku == _sku)
+            let _price = _removed.price * _removed.qty;
+                ORDER.total = ORDER.total - _price
+                ORDER.products = products.filter(item => item.sku !== _sku)
+                return ORDER.total
+        }
+        function changeQty(_sku , _qty) {
+            let products = ORDER.products
+            let _changed = products.find(item => item.sku == _sku)
+            let _old_price = _changed.price * _changed.qty 
+            let _new_price = _changed.price  * _qty
+            let _new = {
+                qty : _qty,
+                sku :_sku,
+                price : _changed.price
+            }
+            ORDER.products = products.filter(item => item.sku !== _sku)
+            ORDER.products.push(_new)
+            ORDER.total = ORDER.total - _old_price + _new_price
+        }
+        
+        function changePrice(_sku,_price) {
+            let products = ORDER.products
+            let _changed = products.find(item => item.sku == _sku)
+            let _old_price = _changed.price * _changed.qty
+            let _new_price  = _price * _changed.qty
+              let _new = {
+                qty : _changed.qty,
+                sku :_sku,
+                price : _price
+            }
+            ORDER.products = products.filter(item => item.sku !== _sku)
+            ORDER.products.push(_new)
+            ORDER.total = ORDER.total - _old_price + _new_price
+        }
 JS;
 
 $this->registerJs($js);

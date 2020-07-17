@@ -26,20 +26,18 @@ class AjaxController extends BaseController
         $contacts = ContactsModel::find()
             ->with('page')
             ->where(['IN', 'contacts.id', $ids])->asArray()->all();
-        $total = 0;
-        $subTotal = 0;
-        $sale = 0;
 
-        $sale = array_sum(ArrayHelper::getColumn($contacts, 'page.product.sale_price'));
-        $subTotal = array_sum(ArrayHelper::getColumn($contacts, 'page.product.regular_price'));
-        $total = $subTotal - $sale;
+        $total = array_sum(ArrayHelper::getColumn($contacts, 'page.product.regular_price'));
         $product = ArrayHelper::getColumn($contacts, 'page.product');
+        $selected = ArrayHelper::getColumn($contacts,'option');
+        foreach ($product as $k => $p){
+            $product[$k]['option'] = Helper::option($p['option']);
+            $product[$k]['selected'] = $selected[$k];
+        }
         $customer = $contacts[0];
         return [
             'customer' => $customer,
             'product' => $product,
-            'saleTotal' => $sale,
-            'subTotal' => $subTotal,
             'total' => $total
         ];
     }
@@ -60,7 +58,12 @@ class AjaxController extends BaseController
             ->with('category')
             ->asArray()->one();
         $product['option'] = Helper::option($product['option']);
-        return $product;
+        return [
+            'product' => $product,
+            'customer' => [
+                'option' => null
+            ]
+        ];
     }
 
     function actionUpdateTotal()

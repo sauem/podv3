@@ -153,14 +153,11 @@ $skuURL = \yii\helpers\Url::toRoute(['ajax/load-sku']);
 $js = <<<JS
    
     $("document").ready(function() {
-        
-        window.Skulist = [];
-        Window.Total = {
-            subTotal : 0,
-            saleTotal : 0,
+        window.ORDER = {
+            skus : [],
+            products : [],
             total : 0
-        };
-       
+        }
         $("#createOrder").click(function() {
             var keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(keys.length <= 0){
@@ -176,8 +173,7 @@ $js = <<<JS
            $('#takeOrder').on('shown.bs.modal', function () {
                loadProducts(keys);
                loadSku(getSelectedColum());
-                getCountry("select[name='country']");
-                initMaskMoney();
+               getCountry("select[name='country']");
             })
         });
        
@@ -190,26 +186,28 @@ $js = <<<JS
                     data : {keys : keys},
                     cache : false,
                     success: function(res) {
-                        
                         let html =  compileTemplate("template-product",res.customer);
                         $("#resultInfo").html(html) 
                            res.product.map( item => {
-                             if(!Skulist.includes(item.sku)){
-                                  let html =  compileTemplate("template-item-product",item);
-                                  $("#resultItemProduct").append(html) 
-                                 Skulist.push(item.sku)
-                             }
+                                  if(!ORDER.skus.includes(item.sku)){
+                                      ORDER.skus.push(item.sku)
+                                        let _cacheItem = {
+                                            qty : 1,
+                                            sku : item.sku,
+                                            price : item.regular_price
+                                        }
+                                        ORDER.products.push(_cacheItem)
+                                        let _set_data = {
+                                            customer : res.customer,
+                                            product : item
+                                        }
+                                          let html =  compileTemplate("template-item-product",_set_data);
+                                          $("#resultItemProduct").append(html) 
+                                           ORDER.total = res.total
+                                  }
                          })
-                         Total = {
-                            subTotal:  res.subTotal,
-                            saleTotal:  res.totalSale,
-                            total : res.total
-                         }    
-                         localStorage.setItem("total", Total.total);
-                         html =  compileTemplate("total-template",res);
-                        $("#totalResult").html(html) 
                         
-                       
+                      initTotal()
                     }
                 })
             }

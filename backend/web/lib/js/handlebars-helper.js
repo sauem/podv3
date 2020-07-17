@@ -20,11 +20,17 @@ Handlebars.registerHelper("money", function (value,options) {
     // Returns the formatted number
     return (ds ? num.replace('.', ds) : num).replace(new RegExp(re, 'g'), '$&' + ts);
 })
-Handlebars.registerHelper("selected",function (numb1, numb2) {
-    if(numb1 == numb2){
+Handlebars.registerHelper("selected",function (val1, val2) {
+    if(typeof val1 == "undefined" || typeof val2 == "undefined"){
+        return ""
+    }
+    if(val1.trim() == val2.trim()){
         return 'selected'
     }
     return  ''
+})
+Handlebars.registerHelper("hasArray",function (filter , array) {
+    return array.includes(filter)
 })
 
 Handlebars.registerHelper("date", function (number) {

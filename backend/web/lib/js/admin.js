@@ -3,7 +3,13 @@ Number.prototype.formatMoney = function (n, x) {
     var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
     return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
 };
-
+Array.prototype.sum  = function (prop) {
+    var total = 0
+    for ( var i = 0, _len = this.length; i < _len; i++ ) {
+        total += parseFloat(this[i][prop])
+    }
+    return total
+}
 function removeArray(array, elem) {
     var index = array.indexOf(elem);
     if (index > -1) {
@@ -46,7 +52,6 @@ function caculate(total = {total: 0, saleTotal: 0, subTotal: 0}, res, action = "
             }
             break;
     }
-    localStorage.setItem("total", final.total);
     return final;
 }
 
@@ -77,7 +82,4 @@ function getCountry(select) {
         }
     });
 
-}
-function initMaskMoney() {
-    //$(".money").mask("#.##0,00", {reverse: true});
 }
