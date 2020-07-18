@@ -56,7 +56,14 @@ use common\helper\Component;
                         return \backend\models\ContactsModel::label($model->status);
                     }
                 ],
-                'created_at:date',
+                [
+                    'label' => 'Ngày nhận',
+                    'attribute' => 'created_at',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return Html::tag("small",date("H:i:s d/m/Y",$model->created_at));
+                    }
+                ],
                 [
                     'class' => ActionColumn::class,
                     'template' => '{takenote}{view}',

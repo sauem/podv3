@@ -122,14 +122,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="ibox">
                 <div class="ibox-head">
-                    <h2 class="ibox-title">Trạng thái gần đây</h2>
-                </div>
-                <div class="ibox-body">
-
-                </div>
-            </div>
-            <div class="ibox">
-                <div class="ibox-head">
                     <h2 class="ibox-title">Tài khoản</h2>
                 </div>
                 <div class="ibox-body">

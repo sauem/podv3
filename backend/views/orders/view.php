@@ -1,11 +1,5 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\DetailView;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\OrdersModel */
-
+use common\helper\Helper;
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Orders Models', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -67,9 +61,42 @@ $this->params['breadcrumbs'][] = $this->title;
                 </h2>
             </div>
             <div class="ibox-body">
+                <p>Ghi chú: <?= $model->order_note?></p>
                 <?php
                     $items = $model->items;
                 ?>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Tổng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if($items && !empty($items)){
+                            foreach ($items as $item){
+                                ?>
+                                <tr>
+                                    <td><?= $item->product->sku?> | <?= $item->product->name?></td>
+                                    <td><?= $item->qty?></td>
+                                    <td><?= Helper::money($item->price)?></td>
+                                    <td><?= Helper::money($item->price * $item->qty)?></td>
+                                </tr>
+                        <?php
+                            }
+                        }else{
+                            echo "<t><td colspan='4' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
+                        }?>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <td colspan="3"><strong>Tổng hóa đơn</strong></td>
+                            <td><strong><?= Helper::money($model->total)?></strong></td>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

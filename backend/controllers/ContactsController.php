@@ -54,6 +54,7 @@ class ContactsController extends BaseController
 
     public function actionIndex()
     {
+
         $phone = Yii::$app->request->get("phone");
         if (Helper::userRole(UserModel::_ADMIN) && !$phone) {
             $this->redirect(Url::toRoute(['/contacts-assignment/index']));
