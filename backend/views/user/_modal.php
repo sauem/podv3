@@ -22,9 +22,12 @@ use kartik\form\ActiveForm;
                     <div class="form-group col-md-6">
                         <?= $form->field($model, 'email') ?>
                     </div>
-                    <div class="form-group col-md-6">
-                        <?= $form->field($model, 'password_hash') ?>
-                    </div>
+                    <?php
+                    if ($model->isNewRecord) { ?>
+                        <div class="form-group col-md-6">
+                            <?= $form->field($model, 'password_hash') ?>
+                        </div>
+                    <?php } ?>
                     <div class="form-group col-md-6">
                         <?= $form->field($model, 'role')->widget(\kartik\select2\Select2::className(), [
                             'data' => \backend\models\AuthItem::Roles(),
@@ -32,7 +35,7 @@ use kartik\form\ActiveForm;
                         ])->label('Quyền quản trị') ?>
                     </div>
                     <div class="form-group col-md-6">
-                        <?= $form->field($model, 'phone_of_day')->textInput(["type" => 'number','placeholder'  => 'Số điện thoại giới hạn gọi']) ?>
+                        <?= $form->field($model, 'phone_of_day')->textInput(["type" => 'number', 'placeholder' => 'Số điện thoại giới hạn gọi']) ?>
                     </div>
                 </div>
             </div>

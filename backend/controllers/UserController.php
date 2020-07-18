@@ -34,13 +34,16 @@ class UserController extends BaseController
      * Lists all UserModel models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
         $searchModel = new UserSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
         $model = new UserModel;
+        if($id){
+            $model = $this->findModel($id);
+        }
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
 
             if($model->save()){
@@ -66,8 +69,16 @@ class UserController extends BaseController
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        if(Yii::$app->request->isPost){
+            if($model->load(Yii::$app->request->post()) && $model->save()){
+                self::success("Đổi mật khẩu thành công!");
+            }
+            return $this->refresh();
+        }
+        unset($model->password_hash);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
