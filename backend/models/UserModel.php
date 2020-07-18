@@ -170,6 +170,8 @@ class UserModel extends User
             ->orderBy(['callback_time' => SORT_ASC])->one();
         if (!empty($model->callback_time)) {
             return [
+                'created' => Helper::toDate($model->created_at),
+                'last_called' => Helper::toDate($model->updated_at),
                 'phone' => $model->contact_phone,
                 'time' => Helper::caculateDate($model->updated_at, $model->callback_time, $getTime)
             ];

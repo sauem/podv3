@@ -26,15 +26,30 @@ use backend\models\ContactsModel;
                 [
                     'class' => SerialColumn::class,
                 ],
-                'created_at:datetime',
+                [
+                    'label' => 'Ngày tạo đơn',
+                    'attribute' => 'created_at',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return date("H:i:s d/m/Y",$model->created_at);
+                    }
+                ],
                 ['label' => 'sản phẩm', 'attribute' => 'customer_phone',
                     'format' => 'raw', 'value' => function ($model) {
                     $html = '';
                     foreach ($model->items as $item) {
-                        $html .= "<span class='badge badge-info'>{$item->product->sku} | {$item->product->name}</span><br>";
+                        $html .= "<span class='badge mb-1 badge-info'>{$item->product->sku} | {$item->product->name}</span><br>";
                     }
                     return $html;
                 }],
+                [
+                    'label' => 'Tổng hóa đơn',
+                    'attribute' => 'total',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return \common\helper\Helper::money($model->total);
+                    }
+                ],
                 [
                     'label' => 'Trạng thái',
                     'attribute' => 'status',

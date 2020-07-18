@@ -45,4 +45,7 @@ class Helper
     static function money($number){
         return number_format($number,2,',','.') ."đ";
     }
+    static function toDate($number, $format = "H:i:s d/m"){
+        return date($format,$number);
+    }
 }

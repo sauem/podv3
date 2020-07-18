@@ -41,7 +41,11 @@ class doScanContact
                             $count = self::countAssignUser($user);
                             switch ($count) {
                                 case 1:
-                                    self::assignUser($phone, $user, ContactsAssignment::_PENDING);
+                                    if(self::openCallback($user)){
+                                        self::assignUser($phone, $user, ContactsAssignment::_PENDING);
+                                    }else{
+                                        self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                                    }
                                     break;
                                 default:
                                     self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);

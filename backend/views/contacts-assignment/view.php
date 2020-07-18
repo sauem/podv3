@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="ibox-body">
                 <table class="table">
+                    <?php if(isset($model->user)) { ?>
                     <tr>
                         <td>Tên tài khoản:</td>
                         <td><?= $model->user->username ?></td>
@@ -36,6 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td>Bộ phận:</td>
                         <td><?= $model->user->role->item_name ?></td>
                     </tr>
+                    <?php }else{ ?>
+                        <tr>
+                            <td>Chưa phân bổ số điện thoại này</td>
+                        </tr>
+                    <?php } ?>
                 </table>
             </div>
         </div>
@@ -127,6 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return $html;
                             }
                         ],
+                        'total',
                         [
                             'label' => 'Trạng thái',
                             'attribute' => 'status',

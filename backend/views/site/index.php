@@ -47,7 +47,7 @@ $this->title = 'My Yii Application';
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">
@@ -66,26 +66,7 @@ $this->title = 'My Yii Application';
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="ibox">
-                <div class="ibox-head">
-                    <h2 class="ibox-title">
-                        Doanh thu theo marketing
-                    </h2>
-                    <div class="ibox-tools">
-                        <select name="sortByMarketing" class="form-control">
-                            <option value="this_week">Tuần này</option>
-                            <option value="this_month">Tháng này</option>
-                            <option value="last_month">Tháng trước</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="ibox-body" id="result-marketing">
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">
@@ -164,19 +145,13 @@ $this->title = 'My Yii Application';
 use yii\helpers\Url;
 
 $urlSale = Url::toRoute(['report/sale']);
-$urlMarketing = Url::toRoute(['report/marketing']);
 $urlProduct = Url::toRoute(['report/product']);
 $js = <<<JS
     initData();
-    initData("this_week",  "#result-marketing", "marketing");
      initData("this_week", 'product-template', "#result-product", "product");
     $("select[name='sortBySale']").change(function() {
         let _val = $(this).val();
        initData(_val);
-    });
-    $("select[name='sortByMarketing']").change(function() {
-            let _val = $(this).val();
-            initData(_val,  "#result-marketing", "marketing");
     });
     $("select[name='sortByProduct']").change(function() {
             let _val = $(this).val();
@@ -190,9 +165,6 @@ $js = <<<JS
           case "sale":
               _url = "$urlSale";
               break;
-              case "marketing":
-                  _url = "$urlMarketing";
-                  break;
                   case "product":
                       _url = "$urlProduct";
                       break;
@@ -203,8 +175,11 @@ $js = <<<JS
         type : "POST",
         success : function(res) {
             $(result).html(compileTemplate(template,res))
+        },
+        error : function(e) {
+          console.log(e.toString())
         }
-    });
+    })
       function setLoading(el) {
         $(el).html("<tr class='loading'><td colspan='2' class='text-center'><i class='fa fa-spinner fa-spin fa-pulse fa-3x fa-fw'></i></td></tr>");  
       }

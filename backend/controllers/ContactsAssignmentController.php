@@ -91,7 +91,8 @@ class ContactsAssignmentController extends Controller
      */
     public function actionView($phone)
     {
-        $model = $this->findModel(['contact_phone' => $phone]);
+        $model = ContactsModel::findOne(['phone' => $phone]);
+
         $info = ContactsModel::find()->where(['phone' => $phone])
             ->orderBy(['created_at' => SORT_ASC])
             ->with('assignment')
@@ -134,7 +135,7 @@ class ContactsAssignmentController extends Controller
         ),false);
 
         $histories = new ActiveDataProvider([
-            'query' => ContactsLog::find()->where(['user_id' => $model->user_id])
+            'query' => ContactsLog::find()
                 ->joinWith('contact')
                 ->where(['=', 'contacts.phone', $phone])
                 ->orderBy(['created_at' => SORT_DESC])
@@ -145,7 +146,7 @@ class ContactsAssignmentController extends Controller
         ]);
 
         return $this->render('view', [
-            'model' => $this->findModel(['contact_phone' => $phone]),
+            'model' => $model,
             'dataProvider' => $dataProvider,
             'callbackProvider' => $callbackTime,
             'successProvider' => $successProvider,

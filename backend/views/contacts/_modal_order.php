@@ -179,7 +179,7 @@ use kartik\form\ActiveForm;
                        value="1">
             </td>
             <td class="text-right">
-                <input data-sku="{{product.sku}}" value="{{product.regular_price}}" name="product[{{product.sku}}][price]" type="number"
+                <input data-sku="{{product.sku}}" value="{{ product.regular_price}}" name="product[{{product.sku}}][price]" type="text"
                        class="money form-control">
             </td>
             <td>

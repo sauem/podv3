@@ -66,7 +66,8 @@ return [
         'allowActions' => [
             'api/*',
             'ajax/*',
-            'rbac/*'
+            'rbac/*',
+            'report/*'
         ]
     ],
     'params' => $params,

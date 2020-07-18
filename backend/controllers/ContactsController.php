@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\jobs\doScanContact;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsAssignmentSearch;
 use backend\models\ContactsLog;
@@ -116,14 +117,18 @@ class ContactsController extends BaseController
         $modelNote = new ContactsLog;
         $info = ContactsModel::find()->where(['phone' => $phone])
             ->orderBy(['created_at' => SORT_ASC])
-            ->with('assignment')
+            ->with('saleAssign')
             ->one();
 
         $order = new OrdersModel;
 
         $histories =  new ActiveDataProvider([
             'query' => OrdersModel::find(),
+            'pagination' => [
+                'pageSize' => 10
+            ]
         ]);
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,

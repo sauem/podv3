@@ -1,15 +1,7 @@
 <?php
-
-use yii\helpers\Html;
-use yii\grid\GridView;
+use backend\models\ContactsModel;
 use backend\models\ContactsAssignment;
-
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\ContactsSearchModel */
-
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-use common\helper\Helper;
+use yii\helpers\ArrayHelper;
 
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
@@ -107,10 +99,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                             <tfoot>
                             <tr>
-                                <td>Ghi chú gọi lại</td>
+                                <td>Ghi chú gọi lại : <br>
+                                    <strong class="text-danger"><?= $time['phone'] ?></strong>
+                                </td>
                                 <td>
-                                    <strong><?= $time['phone'] ?>: <br>
-                                        <span class="badge-danger badge"><?= $time['time'] ?></span>
+                                    <strong>Thời gian tạo: <br>
+                                        <span class="text-warning"><?= $time['created'] ?></span>
+                                    </strong><br>
+                                    <strong>Lần gọi cuối: <br>
+                                        <span class="text-warning"><?= $time['last_called'] ?></span>
+                                    </strong><br>
+                                    <strong>Gọi lại: <br>
+                                        <span class="text-danger"><?= $time['time'] ?></span>
                                     </strong>
                                 </td>
                             </tr>
@@ -133,7 +133,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h2 class="ibox-title">Tài khoản</h2>
                 </div>
                 <div class="ibox-body">
-
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Tài khoản:</td>
+                                <td><?= $info->saleAssign->user->username?></td>
+                            </tr>
+                            <tr>
+                                <td>Số điện thoại hôm nay:</td>
+                                <td><?= $info->saleAssign->user->phone_of_day?></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
