@@ -181,7 +181,6 @@ $js = <<<JS
         });
        
         function loadProducts(keys) {
-             
             if(keys.length > 0){
                 $.ajax({    
                     url : "$loadProduct",
@@ -191,25 +190,35 @@ $js = <<<JS
                     success: function(res) {
                         let html =  compileTemplate("template-product",res.customer);
                         $("#resultInfo").html(html) 
-                           res.product.map( item => {
-                                  if(!ORDER.skus.includes(item.sku)){
+                           let _same = 1;
+                           
+                           res.product.map(  item  => {
+                                    item.qty  = _same
+                                  let _set_data = {
+                                      customer : res.customer,
+                                      product : item
+                                  }
+                                  let _cacheItem = {
+                                        qty : _same,
+                                        sku : item.sku,
+                                        price : item.regular_price
+                                  }
+                                  if(ORDER.skus.includes(item.sku)){
+                                         _same = _same + 1
+                                     let vm =  ORDER.products;
+                                     vm.map((_item,index) => {
+                                          if(item.sku ==  _item.sku){
+                                              vm[index].qty =  _same
+                                          }
+                                      });
+                                  }else{
                                       ORDER.skus.push(item.sku)
-                                        let _cacheItem = {
-                                            qty : 1,
-                                            sku : item.sku,
-                                            price : item.regular_price
-                                        }
                                         ORDER.products.push(_cacheItem)
-                                        let _set_data = {
-                                            customer : res.customer,
-                                            product : item
-                                        }
-                                          let html =  compileTemplate("template-item-product",_set_data);
-                                          $("#resultItemProduct").append(html) 
-                                           ORDER.total = res.total
+                                        ORDER.total = res.total
+                                        let html = compileTemplate("template-item-product",_set_data)
+                                        $("#resultItemProduct").append(html)
                                   }
                          })
-                        
                       initTotal()
                     }
                 })

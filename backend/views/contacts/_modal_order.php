@@ -176,7 +176,7 @@ use kartik\form\ActiveForm;
             <td>
                 <input data-sku="{{product.sku}}" class="form-control qty-input" style="width: 80px;" type="number"
                        name="product[{{product.sku}}][qty]"
-                       value="1">
+                       value="{{product.qty}}">
             </td>
             <td class="text-right">
                 <input data-sku="{{product.sku}}" value="{{ product.regular_price}}" name="product[{{product.sku}}][price]" type="text"
@@ -202,7 +202,7 @@ $loadProduct = \yii\helpers\Url::toRoute(['ajax/load-product']);
 $totalUpdate = \yii\helpers\Url::toRoute(['ajax/update-total']);
 $js = <<<JS
     $("body").on('click','.removeItem',function() {
-        let qty = $(this).closest("tr").find("input[type='number']").val();
+        
         swal.fire({
             title : 'Cảnh báo',
             icon : "error",
@@ -269,7 +269,7 @@ $js = <<<JS
                             }
                         }
             });
-          
+          restOrder();
         return false;
     })
     $("body").on("change",".qty-input",function() {
@@ -310,20 +310,7 @@ $js = <<<JS
                 ORDER.products = products.filter(item => item.sku !== _sku)
                 return ORDER.total
         }
-        function changeQty(_sku , _qty) {
-            let products = ORDER.products
-            let _changed = products.find(item => item.sku == _sku)
-            let _old_price = _changed.price * _changed.qty 
-            let _new_price = _changed.price  * _qty
-            let _new = {
-                qty : _qty,
-                sku :_sku,
-                price : _changed.price
-            }
-            ORDER.products = products.filter(item => item.sku !== _sku)
-            ORDER.products.push(_new)
-            ORDER.total = ORDER.total - _old_price + _new_price
-        }
+      
         
         function changePrice(_sku,_price) {
             let products = ORDER.products
@@ -339,6 +326,8 @@ $js = <<<JS
             ORDER.products.push(_new)
             ORDER.total = ORDER.total - _old_price + _new_price
         }
+        
+        
 JS;
 
 $this->registerJs($js);

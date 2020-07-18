@@ -43,7 +43,6 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
-
         $totalContact = ContactsModel::find()->count();
         $totalOrder = OrdersModel::find()->count();
         $totalAmount = OrdersModel::find()->sum('total');

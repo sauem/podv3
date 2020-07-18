@@ -20,7 +20,10 @@ class doScanContact
 
         foreach ($users as $user) {
             $count = self::countAssignUser($user);
+
             if (self::isLimitOfDay($user)) {
+                self::openCallback($user);
+                self::pendingStatus($user);
                 continue;
             }
             if ($count >= 2) {
@@ -41,9 +44,9 @@ class doScanContact
                             $count = self::countAssignUser($user);
                             switch ($count) {
                                 case 1:
-                                    if(self::openCallback($user)){
+                                    if (!self::hasCallback($user)) {
                                         self::assignUser($phone, $user, ContactsAssignment::_PENDING);
-                                    }else{
+                                    } else {
                                         self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
                                     }
                                     break;
@@ -82,13 +85,12 @@ class doScanContact
                 if (self::checkNewContact($exitStatus->contact_phone)) {
                     $exitStatus->status = ContactsAssignment::_PENDING;
                 }
-                return false;
             } elseif ($exitStatus->status == ContactsModel::_PENDING && !empty($exitStatus->callback_time)) {
                 self::openUserCallback($exitStatus);
             } else {
                 $exitStatus->status = ContactsAssignment::_PROCESSING;
+                return $exitStatus->save();
             }
-            return $exitStatus->save();
         }
     }
 
@@ -152,7 +154,7 @@ class doScanContact
         $assign = ContactsAssignment::find()
             ->where(['user_id' => $user, 'status' => ContactsAssignment::_PENDING])
             ->orderBy(['created_at' => SORT_DESC]);
-        if ($assign->count() > 1) {
+        if ($assign->count() >= 1) {
             self::changeStatusPending($assign->one());
         }
     }
@@ -175,8 +177,7 @@ class doScanContact
         if ($now >= $data['time']) {
             $model->callback_time = null;
             $model->status = ContactsAssignment::_PROCESSING;
-            $model->save();
-            return true;
+           return $model->save();
         }
         return false;
     }
@@ -186,11 +187,23 @@ class doScanContact
         $userPhone = UserModel::findOne($user)->getAttribute("phone_of_day");
         $beginOfDay = strtotime("midnight", time());
         $endOfDay = strtotime("tomorrow", $beginOfDay) - 1;
-        $count = ContactsAssignment::find()->where(['user_id' => 25])
+        $count = ContactsAssignment::find()->where(['user_id' => $user])
             ->orderBy(['created_at' => SORT_ASC])
             ->andFilterWhere([
                 'between', 'created_at', $beginOfDay, $endOfDay
             ])->count();
-        return  $count == $userPhone;
+        return $count == $userPhone;
+    }
+
+    static function hasCallback($user){
+        $model = ContactsAssignment::find()
+            ->where(['user_id' => $user])
+            ->andWhere(['!=','callback_time' , ""])
+            ->orderBy(['callback_time' => SORT_ASC])->one();
+        if($model){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

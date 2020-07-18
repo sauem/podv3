@@ -130,3 +130,24 @@ function initMoney() {
    $("body").find('.money').mask('#,##0.00', options);
 
 }
+
+function restOrder() {
+    ORDER.total = 0;
+    ORDER.products = [];
+    ORDER.skus = [];
+}
+
+function changeQty(_sku , _qty) {
+    let products = ORDER.products
+    let _changed = products.find(item => item.sku == _sku)
+    let _old_price = _changed.price * _changed.qty
+    let _new_price = _changed.price  * _qty
+    let _new = {
+        qty : _qty,
+        sku :_sku,
+        price : _changed.price
+    }
+    ORDER.products = products.filter(item => item.sku !== _sku)
+    ORDER.products.push(_new)
+    ORDER.total = ORDER.total - _old_price + _new_price
+}
