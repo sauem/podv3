@@ -54,7 +54,10 @@ class SiteController extends BaseController
             'conversionRate' => $conversionRate
         ]);
     }
-
+    public function actionReport(){
+        $sale = UserModel::listSales();
+        return $this->render("report");
+    }
     /**
      * Login action.
      *

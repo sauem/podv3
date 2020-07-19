@@ -109,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <strong>Lần gọi cuối: <br>
                                         <span class="text-warning"><?= $time['last_called'] ?></span>
                                     </strong><br>
-                                    <strong>Gọi lại: <br>
+                                    <strong>Lần gọi tiếp theo: <br>
                                         <span class="text-danger"><?= $time['time'] ?></span>
                                     </strong>
                                 </td>

@@ -20,6 +20,8 @@ class AppAsset extends AssetBundle
         '/lib/vendors/font-awesome/css/font-awesome.min.css',
         '/lib/vendors/themify-icons/css/themify-icons.css',
         '/lib/vendors/jvectormap/jquery-jvectormap-2.0.3.css',
+        '/lib/vendors/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css',
+        '/lib/vendors/bootstrap-timepicker/css/bootstrap-timepicker.min.css',
         '/lib/css/main.min.css'
     ];
     public $js = [
@@ -35,6 +37,9 @@ class AppAsset extends AssetBundle
         //'/lib/js/scripts/dashboard_1_demo.js',
         '/lib//vendors/chart.js/dist/Chart.min.js',
         '/lib/vendors/select2/dist/js/select2.full.min.js',
+        '/lib/vendors/moment/min/moment.min.js',
+        '/lib/vendors/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+        '/lib/vendors/bootstrap-timepicker/js/bootstrap-timepicker.min.js',
         '/lib/js/money.js',
         '/lib/js/admin.js?v=1.3',
         '/lib/js/handlebars-v4.7.6.js',

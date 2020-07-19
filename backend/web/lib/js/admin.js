@@ -29,7 +29,7 @@ initSelect2();
 function initSelect2() {
 
     $(".select2").select2({
-        placeholder: "Select a state",
+        placeholder: "Lựa chọn...",
         allowClear: true
     });
 }

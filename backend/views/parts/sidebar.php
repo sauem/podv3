@@ -44,7 +44,7 @@ $path = array_filter($path);
 
                             ?>
                             <li>
-                                <a href="javascript:;"><i class="sidebar-item-icon fa fa-bookmark"></i>
+                                <a href="<?= $item['url'][0] ?>"><i class="sidebar-item-icon fa fa-bookmark"></i>
                                     <span class="nav-label">
                                     <?= $item['label'] ?>
                                 </span><i class="fa fa-angle-left arrow"></i>

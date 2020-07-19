@@ -30,11 +30,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                'id',
-                'customer_name',
-                'customer_phone',
-                'customer_email:email',
-                'address',
+                [
+                    'attribute' => 'customer_name',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        $html = $model->customer_name . "<br>";
+                        $html .= $model->customer_phone . "<br>";
+                        $html .= $model->customer_email;
+                        $html .= $model->address;
+                        return $html;
+                    }
+                ],
+                'total',
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => '{view}',

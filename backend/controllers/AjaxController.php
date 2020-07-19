@@ -29,8 +29,8 @@ class AjaxController extends BaseController
 
         $total = array_sum(ArrayHelper::getColumn($contacts, 'page.product.regular_price'));
         $product = ArrayHelper::getColumn($contacts, 'page.product');
-        $selected = ArrayHelper::getColumn($contacts,'option');
-        foreach ($product as $k => $p){
+        $selected = ArrayHelper::getColumn($contacts, 'option');
+        foreach ($product as $k => $p) {
             $product[$k]['option'] = Helper::option($p['option']);
             $product[$k]['selected'] = $selected[$k];
         }
@@ -101,12 +101,14 @@ class AjaxController extends BaseController
         $data['label'] = static::labelOfWeek();
         $items = [];
 
-        foreach ($result as $k => $item){
+        foreach ($result as $k => $item) {
             $items[$item['user_id']][$k] = static::renderItem($item);
         }
     }
-    static function renderItem($item){
-        foreach ($item as $k => $val){
+
+    static function renderItem($item)
+    {
+        foreach ($item as $k => $val) {
             $data['label'] = $val['name'];
             $data['data'] = $val['total'];
             $data['backgroundColor'] = '';
@@ -131,12 +133,27 @@ class AjaxController extends BaseController
         return $query->asArray()->all();
     }
 
-    static function labelOfWeek(){
+    static function labelOfWeek()
+    {
         $startWeek = strtotime('this week', time());
         for ($i = 1; $i <= 7; $i++) {
-            $label[$i] = date("d/m/Y",strtotime("+$i day",$startWeek));
+            $label[$i] = date("d/m/Y", strtotime("+$i day", $startWeek));
         }
         return $label;
     }
 
+
+    public function actionReportSearch()
+    {
+        $sort = \Yii::$app->request->post();
+        $accounts = ArrayHelper::getColumn($sort,'account');
+        $status = ArrayHelper::getColumn($sort,'status');
+        $type = ArrayHelper::getColumn($sort,'type');
+        $time = ArrayHelper::getColumn($sort,"time");
+
+        $time['start']  = strtotime($time['start']);
+        $time['end']  = strtotime($time['end']);
+
+        return $time;
+    }
 }
