@@ -11,7 +11,9 @@ use common\helper\Component;
 
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
+
 use common\helper\Helper;
+
 ?>
 <div class="ibox">
     <div class="ibox-head">
@@ -25,6 +27,8 @@ use common\helper\Helper;
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'layout' => "{items}\n{pager}",
+            'resizableColumns' => false,
+            'showFooter' => true,
             'headerRowOptions' => [
                 'class' => [
                     'thead-light'
@@ -35,6 +39,7 @@ use common\helper\Helper;
                 [
                     'attribute' => 'customer_name',
                     'format' => 'html',
+                    'footer' => '<strong>Tổng </strong>',
                     'value' => function ($model) {
                         $html = $model->customer_name . "<br>";
                         $html .= $model->customer_phone . "<br>";
@@ -59,10 +64,19 @@ use common\helper\Helper;
                         return $model->user->username;
                     }
                 ],
+                ['label' => 'sản phẩm', 'attribute' => 'customer_phone',
+                    'format' => 'raw', 'value' => function ($model) {
+                    $html = '';
+                    foreach ($model->items as $item) {
+                        $html .= "<span class='badge mb-1 badge-info'>{$item->product->sku} | {$item->product->name}</span><br>";
+                    }
+                    return $html;
+                }],
                 [
                     'label' => 'Tổng đơn',
                     'attribute' => 'total',
                     'format' => 'html',
+                    'footer' => Helper::money($dataProvider->query->sum('total')),
                     'value' => function ($model) {
                         return Helper::money($model->total);
                     }
@@ -75,6 +89,7 @@ use common\helper\Helper;
                         return date('H:i:s d/m/Y');
                     }
                 ],
+
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => '{view}',
@@ -90,4 +105,5 @@ use common\helper\Helper;
         <?php Pjax::end(); ?>
 
     </div>
+
 </div>
