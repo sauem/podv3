@@ -11,6 +11,7 @@ use common\helper\Component;
 
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
+use common\helper\Helper;
 ?>
 <div class="ibox">
     <div class="ibox-head">
@@ -19,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <div class="ibox-body">
+        <?= $this->render("_search", ['model' => $searchModel]) ?>
         <?php Pjax::begin(); ?>
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
@@ -41,7 +43,38 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $html;
                     }
                 ],
-                'total',
+                [
+                    'label' => 'Số liên hệ',
+                    'attribute' => 'total',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return $model->getContacts()->count();
+                    }
+                ],
+                [
+                    'label' => 'Người tạo đơn',
+                    'attribute' => 'total',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return $model->user->username;
+                    }
+                ],
+                [
+                    'label' => 'Tổng đơn',
+                    'attribute' => 'total',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return Helper::money($model->total);
+                    }
+                ],
+                [
+                    'label' => 'Ngày tạo đơn',
+                    'attribute' => 'created_at',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return date('H:i:s d/m/Y');
+                    }
+                ],
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => '{view}',

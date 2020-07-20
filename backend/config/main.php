@@ -67,6 +67,7 @@ return [
             'api/*',
             'ajax/*',
             'rbac/*',
+            'site/logout',
             'report/*'
         ]
     ],

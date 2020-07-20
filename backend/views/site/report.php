@@ -68,11 +68,7 @@ use yii\helpers\Url;
 <?php ActiveForm::end() ?>
 <?php
 $js = <<<JS
-    $('.input-daterange').datepicker({
-        keyboardNavigation: false,
-        forceParse: false,
-        autoclose: true
-    });
+    $('.input-daterange').daterangepicker()
     $(document).on("beforeSubmit","#reportForm",function(e) {
         e.preventDefault()
             let _form = new FormData($(this)[0])
