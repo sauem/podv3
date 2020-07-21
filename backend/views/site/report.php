@@ -5,6 +5,7 @@ use backend\models\UserModel;
 use kartik\form\ActiveForm;
 use backend\models\ContactsModel;
 use yii\helpers\Url;
+use kartik\daterange\DateRangePicker;
 
 ?>
 <?php $form = ActiveForm::begin([
@@ -42,14 +43,20 @@ use yii\helpers\Url;
                         ]) ?>
                 </div>
                 <div class="col-md-3 form-group">
-                    <label>Ngày</label>
-                    <div class="input-daterange input-group" id="datepicker">
-                        <input class="input-sm form-control" type="text" name="time[start]"
-                               value="<?= date('d/m/Y', strtotime("today midnight", time())) ?>">
-                        <span class="input-group-addon p-l-10 p-r-10">to</span>
-                        <input class="input-sm form-control" type="text" name="time[end]"
-                               value="<?= date('d/m/Y', strtotime("today midnight", time())) ?>">
-                    </div>
+                    <?php
+                    echo '<label class="control-label">Ngày tạo đơn</label>';
+                    echo '<div class="drp-container">';
+                    echo DateRangePicker::widget([
+                        'name'=>'created_at',
+                        'presetDropdown'=>true,
+                        'convertFormat'=>true,
+                        'includeMonthsFilter'=>true,
+                        'pluginOptions' => ['locale' => ['format' => 'm-d-Y']],
+                        'options' => ['placeholder' => 'Chọn ngày tạo đơn']
+                    ]);
+                    echo '</div>';
+
+                    ?>
                 </div>
                 <div class="col-md-12 form-group text-right">
                     <?= Html::submitButton('Tìm kiếm', ['class' => 'btn btn-success']) ?>

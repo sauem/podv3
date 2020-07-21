@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\UserModel;
+
 ?>
 
 <div class="orders-model-search">
@@ -24,17 +25,24 @@ use backend\models\UserModel;
         </div>
         <div class="col-md-3">
             <label>Ngày lập đơn</label>
-            <?= $form->field($model, 'created_at')
-                ->textInput(['class' => 'daterange form-control'])
-                ->label(false) ?>
+            <?= $form->field($model,'created_at')->widget(\kartik\daterange\DateRangePicker::className(),[
+                'presetDropdown'=>true,
+                'convertFormat'=>true,
+                'includeMonthsFilter'=>true,
+                'pluginOptions' => ['locale' => ['format' => 'm-d-Y']],
+                'options' => ['placeholder' => 'Chọn ngày tạo đơn']
+            ])->label(false)?>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label>Người lập đơn</label>
-            <?= Html::dropDownList("user_id[]", null, UserModel::listSales(), [
-                'prompt' => 'Chọn tài khoản',
-                'multiple' => true,
-                'class' => 'select2 form-control'
-            ]) ?>
+            <?= $form->field($model, "user_id")->widget(\kartik\select2\Select2::className(), [
+                'data' => UserModel::listSales(),
+                'theme' => \kartik\select2\Select2::THEME_CLASSIC,
+                'options' => [
+                    'prompt' => 'Chọn tài khoản',
+                    'multiple' => true
+                ]
+            ])->label(false) ?>
         </div>
     </div>
     <div class="form-group">

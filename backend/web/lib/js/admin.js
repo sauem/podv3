@@ -88,6 +88,9 @@ function initDateRage() {
     }, function(start, end, label) {
         console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
     });
+
+    $('.daterange').val('');
+    $('.daterange').attr("placeholder","Ngày tạo đơn");
 }
 
 function caculate(total = {total: 0, saleTotal: 0, subTotal: 0}, res, action = "delete") {

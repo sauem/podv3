@@ -20,8 +20,8 @@ class OrdersSearchModel extends OrdersModel
     public function rules()
     {
         return [
-            [['id', 'zipcode', 'user_id'], 'integer'],
-            [['customer_name', 'customer_phone', 'customer_email', 'address', 'city', 'district', 'country', 'order_note', 'status', 'status_note', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'zipcode'], 'integer'],
+            [['customer_name','user_id', 'customer_phone', 'customer_email', 'address', 'city', 'district', 'country', 'order_note', 'status', 'status_note', 'created_at', 'updated_at'], 'safe'],
             [['sale', 'sub_total', 'total'], 'number'],
         ];
     }
@@ -60,22 +60,14 @@ class OrdersSearchModel extends OrdersModel
             // $query->where('0=1');
             return $dataProvider;
         }
-        // grid filtering conditions
-//        $query->andFilterWhere([
-//            'id' => $this->id,
-//            'zipcode' => $this->zipcode,
-//            'sale' => $this->sale,
-//            'sub_total' => $this->sub_total,
-//            'total' => $this->total,
-//            'user_id' => $this->user_id,
-//            'created_at' => $this->created_at,
-//            'updated_at' => $this->updated_at,
-//        ]);
-        $range = ArrayHelper::getValue($params,'OrdersSearchModel.created_at');
-        $range = explode("-",$range);
-        $start = strtotime($range[0]);
-        $end = strtotime($range[1]);
 
+        $range = ArrayHelper::getValue($params,'OrdersSearchModel.created_at');
+        $range = explode(" - ",$range);
+        $range = array_map(function ($item){
+            return trim($item);
+        },$range);
+        $start = strtotime(trim($range[0]));
+        $end = strtotime(trim($range[1]));
 
         $query->andFilterWhere(['like', 'customer_name', $this->customer_name])
             ->orFilterWhere(['like', 'customer_phone', $this->customer_name])
@@ -86,8 +78,9 @@ class OrdersSearchModel extends OrdersModel
             ->andFilterWhere(['like', 'country', $this->country])
             ->andFilterWhere(['like', 'order_note', $this->order_note])
             ->andFilterWhere(['like', 'status', $this->status])
-            ->andFilterWhere(['like', 'status_note', $this->status_note]);
-        if(\Yii::$app->request->get("OrdersSearchModel")){
+            ->andFilterWhere(['like', 'status_note', $this->status_note])
+            ->andFilterWhere(['IN', 'user_id', $this->user_id]);
+        if($start && $end){
             $query->andFilterWhere(['between','created_at',$start,$end]);
         }
         return $dataProvider;

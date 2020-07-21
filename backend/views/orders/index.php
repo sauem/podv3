@@ -44,10 +44,22 @@ use common\helper\Helper;
                         $html = $model->customer_name . "<br>";
                         $html .= $model->customer_phone . "<br>";
                         $html .= $model->customer_email;
-                        $html .= $model->address;
                         return $html;
                     }
                 ],
+                [
+                     'label' => 'Địa chỉ',
+                    'attribute' => 'address',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        $html = $model->address . "<br>";
+                        $html .= $model->district . "<br>";
+                        $html .= $model->city . "<br>";
+                        $html .= Helper::getCountry($model->country);
+                        return $html;
+                    }
+                ],
+                "zipcode",
                 [
                     'label' => 'Số liên hệ',
                     'attribute' => 'total',
