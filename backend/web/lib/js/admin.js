@@ -114,14 +114,16 @@ function caculate(total = {total: 0, saleTotal: 0, subTotal: 0}, res, action = "
     return final;
 }
 
+initRemote("viewNote");
+function initRemote(_modal) {
+    $('#' + _modal).on('show.bs.modal', function (e) {
+        var button = $(e.relatedTarget);
 
-$('#viewNote').on('show.bs.modal', function (e) {
-    var button = $(e.relatedTarget);
+        var modal = $(this);
+        modal.find('.modal-body').load(button.data("remote"));
+    });
 
-    var modal = $(this);
-    modal.find('.modal-body').load(button.data("remote"));
-});
-
+}
 
 
 function getCountry(select) {

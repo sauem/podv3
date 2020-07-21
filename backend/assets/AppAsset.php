@@ -21,7 +21,8 @@ class AppAsset extends AssetBundle
         '/lib/vendors/themify-icons/css/themify-icons.css',
         '/lib/vendors/jvectormap/jquery-jvectormap-2.0.3.css',
         'https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css',
-        '/lib/css/main.min.css'
+        '/lib/css/main.min.css',
+        '/css/site.css'
     ];
     public $js = [
       //  '/lib/vendors/jquery/dist/jquery.min.js',
@@ -39,13 +40,16 @@ class AppAsset extends AssetBundle
         '/lib/vendors/moment/min/moment.min.js',
         'https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js',
         '/lib/js/money.js',
-        '/lib/js/admin.js?v=1.3',
         '/lib/js/handlebars-v4.7.6.js',
         '/lib/js/handlebars-helper.js?v=1.2',
+        '/lib/js/admin.js?v=1.3',
+        '/js/excel/xlsx/dist/xlsx.full.min.js',
+        '/js/site.js?v=1.3',
+
 
     ];
     public $depends = [
         'yii\web\YiiAsset',
-       'yii\bootstrap\BootstrapAsset',
+       //'yii\bootstrap\BootstrapAsset',
     ];
 }

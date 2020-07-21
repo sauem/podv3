@@ -27,7 +27,7 @@ class Component
 
     static function view($url)
     {
-        return Html::a('<i class="fa fa-eye"></i> xem', $url, ['class' => 'btn btn-sm bg-white']);
+        return Html::a('<i class="fa fa-eye"></i> xem', $url, ['data-pjax' => '0' ,'class' => 'btn btn-sm bg-white']);
     }
     static function money($form,$model,$name){
         return $form->field($model, $name)->widget(MaskMoney::classname(), [

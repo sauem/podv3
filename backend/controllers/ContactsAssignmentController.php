@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use backend\models\UploadForm;
 use common\helper\Helper;
 use Yii;
 use backend\models\ContactsAssignment;
@@ -221,5 +222,13 @@ class ContactsAssignmentController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    function actionImport(){
+        $this->layout = "empty";
+        $model = new UploadForm;
+       return $this->render("_import_modal",[
+           'model' => $model
+       ]);
     }
 }

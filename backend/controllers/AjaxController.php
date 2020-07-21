@@ -9,9 +9,12 @@ use backend\models\ContactsModel;
 use backend\models\OrdersModel;
 use backend\models\ProductsModel;
 use common\helper\Helper;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use Yii;
+use backend\models\UploadForm;
+use yii\web\UploadedFile;
 
 class AjaxController extends BaseController
 {
@@ -162,10 +165,49 @@ class AjaxController extends BaseController
         if ($start && $end) {
             $query->andFilterWhere(['between', 'created_at', $start, $end]);
         }
-        $result  =  $query->asArray()->all();
+        $result = $query->asArray()->all();
         return [
-          'success'  => 1,
-          'data' => $result
+            'success' => 1,
+            'data' => $result
         ];
+    }
+
+    function actionAjaxFile()
+    {
+        $model = new UploadForm;
+        if (\Yii::$app->request->isPost) {
+            $model->excelFile = UploadedFile::getInstance($model, 'excelFile');
+            if ($path = $model->upload()) {
+                return [
+                    'success' => 1,
+                    'path' => $path
+                ];
+            }
+        }
+        return [
+            'success' => 0,
+            'path' => null
+        ];
+    }
+
+    function actionPushContact()
+    {
+        $contacts = Yii::$app->request->post("contacts");
+        $errors = [];
+        if (!empty($contacts)) {
+
+            foreach ($contacts as $k => $item) {
+                $model = new ContactsModel;
+                if (!$model->load($item, '') || !$model->save()) {
+                    $errors[$k] = Helper::firstError($model);
+                }
+            }
+            return [
+                'success' => 1,
+                'error' => $errors,
+                'totalInsert' => sizeof($contacts) - sizeof($errors)
+            ];
+        }
+
     }
 }

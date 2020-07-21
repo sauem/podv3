@@ -30,6 +30,13 @@ AppAsset::register($this);
             UP: 'up',
             DOWN: 'down'
         }
+        var config = {
+            type: ["xlsx", "csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+            ajaxUpload: "<?= \yii\helpers\Url::toRoute(['ajax/ajax-file'])?>",
+            pushContact: "<?= \yii\helpers\Url::toRoute(['ajax/push-contact'])?>",
+            maxSize: 10485760
+        }
+
     </script>
     <style>
         .ui-widget-content {

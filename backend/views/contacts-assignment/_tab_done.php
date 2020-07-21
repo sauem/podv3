@@ -15,7 +15,7 @@ use yii\helpers\Url;
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],
-        // 'pjax' => true,
+        'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
         ],

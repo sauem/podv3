@@ -6,6 +6,7 @@ use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
 use yii\helpers\Url;
+
 ?>
 <div class="table-responsive">
     <?= GridView::widget([
@@ -15,7 +16,7 @@ use yii\helpers\Url;
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],
-        // 'pjax' => true,
+        'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
         ],
@@ -61,7 +62,7 @@ use yii\helpers\Url;
                     'view' => function ($url, $model) {
                         return Html::a("<i class='fa fa-eye'></i> chi tiết",
                             \yii\helpers\Url::toRoute(['view', 'phone' => $model->phone]),
-                            ['class' => 'btn btn-sm bg-white']);
+                            ['class' => 'btn btn-sm bg-white','data-pjax' => '0']);
                     }
                 ]
             ],
