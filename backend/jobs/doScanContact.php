@@ -83,14 +83,14 @@ class doScanContact
         if ($exitStatus) {
             if ($exitStatus->status = ContactsAssignment::_COMPLETED) {
                 if (self::checkNewContact($exitStatus->contact_phone)) {
-                    $exitStatus->status = ContactsAssignment::_PENDING;
+                    $exitStatus->status = ContactsAssignment::_PROCESSING;
                 }
             } elseif ($exitStatus->status == ContactsModel::_PENDING && !empty($exitStatus->callback_time)) {
                 self::openUserCallback($exitStatus);
             } else {
                 $exitStatus->status = ContactsAssignment::_PROCESSING;
-                return $exitStatus->save();
             }
+            return $exitStatus->save();
         }
     }
 

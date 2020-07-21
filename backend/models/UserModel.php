@@ -198,4 +198,13 @@ class UserModel extends User
             ->asArray()->all();
         return ArrayHelper::map($all,"id","username");
     }
+    public static function completed(){
+        $beginOfDay = strtotime("midnight", time());
+        $endOfDay = strtotime("tomorrow", $beginOfDay) - 1;
+        $count = ContactsAssignment::find()->where(['user_id' => Yii::$app->user->getId()])
+            ->andWhere(['status' => ContactsAssignment::_COMPLETED])
+            ->andWhere(['between', 'created_at' , $beginOfDay, $endOfDay])
+            ->count();
+        return $count;
+    }
 }

@@ -120,11 +120,11 @@ class ContactsController extends BaseController
             ->orderBy(['created_at' => SORT_ASC])
             ->with('saleAssign')
             ->one();
-
+        $user = UserModel::findOne(Yii::$app->user->getId());
         $order = new OrdersModel;
 
         $histories =  new ActiveDataProvider([
-            'query' => OrdersModel::find(),
+            'query' => OrdersModel::find()->where(['user_id' => Yii::$app->user->getId()]),
             'pagination' => [
                 'pageSize' => 10
             ]
@@ -139,6 +139,7 @@ class ContactsController extends BaseController
             'callbackProvider' => $callbackTime,
             'modelNote' => $modelNote,
             'order' => $order,
+            'user' => $user,
             'info' => $info,
             'histories' => $histories
         ]);

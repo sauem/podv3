@@ -34,6 +34,14 @@ use backend\models\ContactsModel;
                         return date("H:i:s d/m/Y",$model->created_at);
                     }
                 ],
+                [
+                    'label' => 'Khách hàng',
+                    'attribute' => 'customer_phone',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return $model->customer_phone;
+                    }
+                ],
                 ['label' => 'sản phẩm', 'attribute' => 'customer_phone',
                     'format' => 'raw', 'value' => function ($model) {
                     $html = '';

@@ -225,12 +225,10 @@ class ContactsModel extends BaseModel
     static function hasNewContact($phone){
         $count = ContactsModel::find()
             ->where(['phone' => $phone])
-            ->andWhere(["=",'callback_time', null])
-            ->andWhere(['IN', "status", [
-                ContactsModel::_NEW
-            ]])->count();
+            ->andWhere(["is",'callback_time', new \yii\db\Expression('null')])
+            ->andWhere(["is","status",  new \yii\db\Expression('null')]);
 
-        if($count < 1){
+        if($count->count()  > 0){
             return true;
         }
         return  false;

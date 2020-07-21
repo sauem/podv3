@@ -129,11 +129,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tbody>
                             <tr>
                                 <td>Tài khoản:</td>
-                                <td><?= $info->saleAssign->user->username?></td>
+                                <td><?= $user->username?></td>
                             </tr>
                             <tr>
-                                <td>Số điện thoại hôm nay:</td>
-                                <td><?= $info->saleAssign->user->phone_of_day?></td>
+                                <td>SĐT hoàn thành/Tổng phân bổ:</td>
+                                <td><?= \backend\models\UserModel::completed() . " /" .$user->phone_of_day?></td>
                             </tr>
                         </tbody>
                     </table>
