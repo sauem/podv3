@@ -11,6 +11,7 @@ use backend\models\ProductsModel;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
+use Yii;
 
 class AjaxController extends BaseController
 {
@@ -146,14 +147,25 @@ class AjaxController extends BaseController
     public function actionReportSearch()
     {
         $sort = \Yii::$app->request->post();
-        $accounts = ArrayHelper::getColumn($sort,'account');
-        $status = ArrayHelper::getColumn($sort,'status');
-        $type = ArrayHelper::getColumn($sort,'type');
-        $time = ArrayHelper::getColumn($sort,"time");
+        $accounts = Yii::$app->request->post("account");
+        $time = ArrayHelper::getValue($sort, "created_at");
+        $time = explode(" - ", $time);
 
-        $time['start']  = strtotime($time['start']);
-        $time['end']  = strtotime($time['end']);
-
-        return $time;
+        $start = strtotime($time[0]);
+        $end = strtotime($time[1]);
+        $query = OrdersModel::find()
+            ->with('user')
+            ->with('items')
+            ->with('contacts')
+            ->orderBy(['created_at' => SORT_DESC]);
+        $query->andFilterWhere(['IN', 'user_id', $accounts]);
+        if ($start && $end) {
+            $query->andFilterWhere(['between', 'created_at', $start, $end]);
+        }
+        $result  =  $query->asArray()->all();
+        return [
+          'success'  => 1,
+          'data' => $result
+        ];
     }
 }

@@ -32,25 +32,16 @@ use kartik\daterange\DateRangePicker;
                         'class' => 'select2 form-control'
                     ]) ?>
                 </div>
-                <div class="col-md-3 form-group">
-                    <label>Trạng thái liên hệ</label>
-                    <?= Html::dropDownList("status[]", null,
-                        ContactsModel::STATUS
-                        , [
-                            'prompt' => 'Chọn tài khoản',
-                            'multiple' => true,
-                            'class' => 'select2 form-control'
-                        ]) ?>
-                </div>
+
                 <div class="col-md-3 form-group">
                     <?php
                     echo '<label class="control-label">Ngày tạo đơn</label>';
                     echo '<div class="drp-container">';
                     echo DateRangePicker::widget([
-                        'name'=>'created_at',
-                        'presetDropdown'=>true,
-                        'convertFormat'=>true,
-                        'includeMonthsFilter'=>true,
+                        'name' => 'created_at',
+                        'presetDropdown' => true,
+                        'convertFormat' => true,
+                        'includeMonthsFilter' => true,
                         'pluginOptions' => ['locale' => ['format' => 'm-d-Y']],
                         'options' => ['placeholder' => 'Chọn ngày tạo đơn']
                     ]);
@@ -72,11 +63,57 @@ use kartik\daterange\DateRangePicker;
             </div>
         </div>
     </div>
+    <script id="report-template" type="text/x-handlebars-template">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Khách hàng</th>
+                    <th>Zipcode</th>
+                    <th>Địa chỉ</th>
+                    <th>Tài khoản</th>
+                    <th>Ngày tạo</th>
+                    <th>sản phẩm</th>
+                    <th>Tổng đơn</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each this.data}}
+                <tr>
+                    <td>{{stt @index}}</td>
+                    <td>
+                        {{customer_name}}<br>
+                        {{customer_phone}}<br>
+                        {{customer_email}}
+                    </td>
+                    <td>{{zipcode}}</td>
+                    <td>
+                        {{address}}<br>
+                        {{district}}<br>
+                        {{city}}<br>
+                        {{country}}
+                    </td>
+                    <td>{{user.username}}</td>
+                    <td>{{date created_at}}</td>
+                    <td>
+                        {{#each items}}
+                        <span>{{product.sku}} | {{product.name}}</span><br>
+                        {{/each}}
+                    </td>
+                    <td>{{money total}}đ</td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </script>
 <?php ActiveForm::end() ?>
 <?php
 $js = <<<JS
     $('.input-daterange').daterangepicker()
     $(document).on("beforeSubmit","#reportForm",function(e) {
+      
         e.preventDefault()
             let _form = new FormData($(this)[0])
             let _action = $(this).attr("action")
@@ -96,8 +133,8 @@ $js = <<<JS
             processData: false,
             success : function(res) {
               endLoading()
-              if(res){
-                  console.log(res)
+              if(res.success){
+                  $("#result").html(compileTemplate("report-template",res))
               }else{
                   $("#result").html('<p class="text-center">Không có kết quả tìm kiếm nào...</p>')
               }

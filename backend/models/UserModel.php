@@ -81,7 +81,7 @@ class UserModel extends User
             [['username', 'password_hash', 'email', 'role','phone_of_day'], 'required'],
             [['status', 'created_at', 'updated_at','phone_of_day'], 'integer'],
             [['role', 'username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
-            [['auth_key'], 'string', 'max' => 32],
+            [['auth_key','role'], 'string', 'max' => 32],
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['email'], 'email'],

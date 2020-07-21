@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'category_id')
                             ->widget(\kartik\select2\Select2::className(), [
                                 'data' => \backend\models\CategoriesModel::select(),
+                                'theme' => \kartik\select2\Select2::THEME_DEFAULT,
                                 'options' => [
                                     'prompt' => 'Chọn danh mục'
                                 ]

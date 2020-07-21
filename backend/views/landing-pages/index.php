@@ -33,26 +33,26 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'link')->label('Link trang') ?>
                     </div>
                     <div class="col-md-12">
-                        <label>Danh mục sản phẩm</label>
                         <?= $form->field($model, 'category_id')
                             ->widget(\kartik\select2\Select2::className(), [
                                 'data' => \backend\models\CategoriesModel::select(),
+                                'theme' => \kartik\select2\Select2::THEME_DEFAULT,
                                 'options' => [
                                     'prompt' => 'Chọn danh mục'
                                 ]
                             ])
-                            ->label(false) ?>
+                            ->label("Danh mục sản phẩm") ?>
                     </div>
                     <div class="col-md-12">
-                        <label>Sản phẩm</label>
                         <?= $form->field($model, 'product_id')
                             ->widget(\kartik\select2\Select2::className(), [
                                 'data' => \backend\models\ProductsModel::select(),
+                                'theme' => \kartik\select2\Select2::THEME_DEFAULT,
                                 'options' => [
                                     'prompt' => 'Chọn sản phẩm'
                                 ]
                             ])
-                            ->label(false) ?>
+                            ->label("Sản phẩm") ?>
                     </div>
 
                 </div>
@@ -125,3 +125,8 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<?php
+$js =<<<JS
+
+JS;
+$this->registerJs($js);

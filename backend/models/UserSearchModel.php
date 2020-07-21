@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\helper\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\UserModel;
@@ -14,11 +15,12 @@ class UserSearchModel extends UserModel
     /**
      * {@inheritdoc}
      */
+    public $role;
     public function rules()
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'safe'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token','role'], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class UserSearchModel extends UserModel
      */
     public function search($params)
     {
-        $query = UserModel::find();
+        $query = UserModel::find()->innerJoin(AuthAssignment::tableName(),'user.id=auth_assignment.user_id');
 
         // add conditions that should always apply here
 
@@ -56,20 +58,14 @@ class UserSearchModel extends UserModel
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
-
-        $query->andFilterWhere(['like', 'username', $this->username])
+        $query
+            ->andFilterWhere(['like', 'username', $this->username])
+            ->orFilterWhere(['like', 'email', $this->username])
             ->andFilterWhere(['like', 'auth_key', $this->auth_key])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'verification_token', $this->verification_token]);
+            ->andFilterWhere(['like', 'verification_token', $this->verification_token])
+            ->andFilterWhere(['IN', 'auth_assignment.item_name', $this->role]);
 
         return $dataProvider;
     }

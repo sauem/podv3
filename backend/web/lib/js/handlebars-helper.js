@@ -36,6 +36,9 @@ Handlebars.registerHelper("hasArray",function (filter , array) {
 Handlebars.registerHelper("date", function (number) {
     return new Date(parseInt(number ,10) * 1000).toLocaleString();
 })
+Handlebars.registerHelper("stt", function (number) {
+    return number + 1;
+})
 
 
 Handlebars.registerHelper("isNull", function (number) {

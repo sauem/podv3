@@ -57,8 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-head">
                     <h2 class="ibox-title">Danh sách tài khoản</h2>
                     <div class="ibox-tools">
-                        <a data-toggle="modal" data-target="#accountModal" class="btn btn-outline-success btn-sm"
-                           href="">Tạo tài khoản</a>
                         <a data-toggle="collapse" href="#filter"><i class="fa fa-filter"></i> Tìm kiếm</a>
                     </div>
                 </div>
@@ -78,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return UserModel::label($model->status);
                             }],
                             ['attribute' => 'role', 'format' => 'html', 'value' => function ($model) {
-                                return $model->role->item_name;
+                                return $model->getRole()->one()->item_name;
                             }],
                             [
                                 'class' => ActionColumn::class,

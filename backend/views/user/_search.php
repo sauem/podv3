@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="user-model-search collapse" id="filter">
+<div class="user-model-search collapse <?= Yii::$app->request->get("UserSearchModel") ? "show" : ""?>" id="filter">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -16,19 +16,23 @@ use yii\widgets\ActiveForm;
     ]); ?>
 
    <div class="row">
-       <div class="col-md-6">
+       <div class="col-md-5">
            <?= $form->field($model, 'username')
                ->textInput(['placeholder' => 'Tên, SDT, Email,...'])->label(false) ?>
        </div>
-       <div class="col-md-3">
+       <div class="col-md-4">
            <?= $form->field($model, 'role')
                ->widget(\kartik\select2\Select2::className(),[
                    'data' => \backend\models\AuthItem::Roles(),
-                   'options' => ['prompt' => 'Chọn quyền quản trị']
+                   'theme' => \kartik\select2\Select2::THEME_CLASSIC,
+                   'options' => [
+                       'prompt' => 'Chọn qản trị',
+                       'multiple' => true
+                   ]
                ])->label(false) ?>
        </div>
        <div class="col-md-3">
-           <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+           <?= Html::submitButton('Tìm', ['class' => 'btn btn-primary']) ?>
            <?= \common\helper\Component::reset();?>
        </div>
    </div>
