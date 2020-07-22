@@ -1,4 +1,5 @@
 <?php
+
 use backend\models\ContactsModel;
 use backend\models\ContactsAssignment;
 use yii\helpers\ArrayHelper;
@@ -42,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <a class="nav-link" href="#filter" data-toggle="collapse">
                                     <i class="ti-filter"></i> Tìm kiếm</a>
                             </div>
-                            <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
+                            <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider])  ?>
                         </div>
                         <div class="tab-pane fade" id="callback">
                             <div class="mb-2">
@@ -70,55 +71,59 @@ $this->params['breadcrumbs'][] = $this->title;
                                 class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
                     </h2>
                 </div>
-                <div class="ibox-body">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>Trạng thái hiện tại</td>
-                            <td><?= ContactsAssignment::label($info->assignment->status) ?></td>
-                        </tr>
-                        <tr>
-                            <td>Khách hàng</td>
-                            <td><?= $info->name ?></td>
-                        </tr>
-                        <tr>
-                            <td>Địa chỉ</td>
-                            <td><?= $info->address ?></td>
-                        </tr>
-                        <tr>
-                            <td>Zipcode</td>
-                            <td><?= $info->zipcode ?></td>
-                        </tr>
-                        <tr>
-                            <td>IP</td>
-                            <td><?= $info->ip ?></td>
-                        </tr>
-                        </tbody>
-                        <?php
-                        if ($time = \backend\models\UserModel::hasCallback()) {
-                            ?>
-                            <tfoot>
+                <?php
+                if ($info) {
+                    ?>
+                    <div class="ibox-body">
+                        <table class="table">
+                            <tbody>
                             <tr>
-                                <td>Ghi chú gọi lại : <br>
-                                    <strong class="text-danger"><?= $time['phone'] ?></strong>
-                                </td>
-                                <td>
-                                    <strong>Thời gian tạo: <br>
-                                        <span class="text-warning"><?= $time['created'] ?></span>
-                                    </strong><br>
-                                    <strong>Lần gọi cuối: <br>
-                                        <span class="text-warning"><?= $time['last_called'] ?></span>
-                                    </strong><br>
-                                    <strong>Lần gọi tiếp theo: <br>
-                                        <span class="text-danger"><?= $time['time'] ?></span>
-                                    </strong>
-                                </td>
+                                <td>Trạng thái hiện tại</td>
+                                <td><?= ContactsAssignment::label(isset($info->assignment) ? $info->assignment->status : "") ?></td>
                             </tr>
-                            </tfoot>
-                        <?php } ?>
+                            <tr>
+                                <td>Khách hàng</td>
+                                <td><?= $info->name ?></td>
+                            </tr>
+                            <tr>
+                                <td>Địa chỉ</td>
+                                <td><?= $info->address ?></td>
+                            </tr>
+                            <tr>
+                                <td>Zipcode</td>
+                                <td><?= $info->zipcode ?></td>
+                            </tr>
+                            <tr>
+                                <td>IP</td>
+                                <td><?= $info->ip ?></td>
+                            </tr>
+                            </tbody>
+                            <?php
+                            if ($time = \backend\models\UserModel::hasCallback()) {
+                                ?>
+                                <tfoot>
+                                <tr>
+                                    <td>Ghi chú gọi lại : <br>
+                                        <strong class="text-danger"><?= $time['phone'] ?></strong>
+                                    </td>
+                                    <td>
+                                        <strong>Thời gian tạo: <br>
+                                            <span class="text-warning"><?= $time['created'] ?></span>
+                                        </strong><br>
+                                        <strong>Lần gọi cuối: <br>
+                                            <span class="text-warning"><?= $time['last_called'] ?></span>
+                                        </strong><br>
+                                        <strong>Lần gọi tiếp theo: <br>
+                                            <span class="text-danger"><?= $time['time'] ?></span>
+                                        </strong>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            <?php } ?>
 
-                    </table>
-                </div>
+                        </table>
+                    </div>
+                <?php } ?>
             </div>
             <div class="ibox">
                 <div class="ibox-head">
@@ -127,14 +132,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-body">
                     <table class="table">
                         <tbody>
-                            <tr>
-                                <td>Tài khoản:</td>
-                                <td><?= $user->username?></td>
-                            </tr>
-                            <tr>
-                                <td>SĐT hoàn thành/Tổng phân bổ:</td>
-                                <td><?= \backend\models\UserModel::completed() . " /" .$user->phone_of_day?></td>
-                            </tr>
+                        <tr>
+                            <td>Tài khoản:</td>
+                            <td><?= $user->username ?></td>
+                        </tr>
+                        <tr>
+                            <td>SĐT hoàn thành/Tổng phân bổ:</td>
+                            <td><?= \backend\models\UserModel::completed() . " /" . $user->phone_of_day ?></td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

@@ -27,6 +27,7 @@ use yii\helpers\Url;
             'enablePushState' => false
         ],
         'columns' => [
+
             [
                 'label' => 'Số điện thoại',
                 'attribute' => 'phone',
@@ -52,6 +53,9 @@ use yii\helpers\Url;
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
+                    if(!$model->assignment){
+                        return  null;
+                    }
                     return $model->assignment->user->username;
                 }
             ],

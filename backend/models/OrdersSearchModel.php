@@ -66,8 +66,13 @@ class OrdersSearchModel extends OrdersModel
         $range = array_map(function ($item){
             return trim($item);
         },$range);
-        $start = strtotime(trim($range[0]));
-        $end = strtotime(trim($range[1]));
+        $start = null;
+        $end = null;
+        if(!empty($params['created_at'])){
+            $start = strtotime(trim($range[0]));
+            $end = strtotime(trim($range[1]));
+        }
+
 
         $query->andFilterWhere(['like', 'customer_name', $this->customer_name])
             ->orFilterWhere(['like', 'customer_phone', $this->customer_name])

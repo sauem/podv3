@@ -153,19 +153,22 @@ class AjaxController extends BaseController
         $sort = \Yii::$app->request->post();
         $accounts = Yii::$app->request->post("account");
         $time = ArrayHelper::getValue($sort, "created_at");
-        $time = explode(" - ", $time);
 
-        $start = strtotime($time[0]);
-        $end = strtotime($time[1]);
         $query = OrdersModel::find()
             ->with('user')
             ->with('items')
             ->with('contacts')
             ->orderBy(['created_at' => SORT_DESC]);
         $query->andFilterWhere(['IN', 'user_id', $accounts]);
-        if ($start && $end) {
-            $query->andFilterWhere(['between', 'created_at', $start, $end]);
+        if ($time && !empty($time)) {
+            $time = explode(" - ", $time);
+            $start = strtotime($time[0]);
+            $end = strtotime($time[1]);
+            if ($start && $end) {
+                $query->andFilterWhere(['between', 'created_at', $start, $end]);
+            }
         }
+
         $result = $query->asArray()->all();
         return [
             'success' => 1,
@@ -194,7 +197,7 @@ class AjaxController extends BaseController
     function actionPushContact()
     {
         $contacts = Yii::$app->request->post("contacts");
-        $fileName= Yii::$app->request->post("fileName");
+        $fileName = Yii::$app->request->post("fileName");
         $errors = [];
         if (!empty($contacts)) {
 
@@ -204,12 +207,12 @@ class AjaxController extends BaseController
                     $errors[$k] = Helper::firstError($model);
                     $logs = new LogsImport;
                     $data = [
-                        'line' => (string) ($k + 2),
+                        'line' => (string)($k + 2),
                         'message' => Helper::firstError($model),
                         'name' => $fileName,
-                        'user_id'  => Yii::$app->user->getId()
+                        'user_id' => Yii::$app->user->getId()
                     ];
-                    $logs->load($data,"");
+                    $logs->load($data, "");
                     $logs->save();
                 }
             }
