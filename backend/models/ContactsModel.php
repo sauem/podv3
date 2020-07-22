@@ -116,7 +116,7 @@ class ContactsModel extends BaseModel
     public function beforeSave($insert)
     {
         if ($insert) {
-            $this->address = $this->address;
+            //$this->address = $this->address;
             $this->hashkey = md5($this->phone . $this->option);
             $this->short_link = Helper::getHost($this->link);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
