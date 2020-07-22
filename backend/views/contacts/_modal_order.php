@@ -179,7 +179,8 @@ use kartik\form\ActiveForm;
                        value="1">
             </td>
             <td class="text-right">
-                <input data-sku="{{product.sku}}" value="{{ product.regular_price}}" name="product[{{product.sku}}][price]" type="text"
+                <input data-sku="{{product.sku}}" value="{{ product.regular_price}}"
+                       name="product[{{product.sku}}][price]" type="text"
                        class="money form-control">
             </td>
             <td>
@@ -263,7 +264,7 @@ $js = <<<JS
                         success : function(res) {
                            
                             if(res.success){
-                                toastr.success("Tạo đơn hàng thành công!")
+                                 toastr.success("Tạo đơn hàng thành công!")
                                 $("#takeOrder").modal("hide")
                                   window.location.reload();
                             }

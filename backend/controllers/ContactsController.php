@@ -17,6 +17,7 @@ use backend\models\ContactsSearchModel;
 use yii\data\ActiveDataProvider;
 use yii\debug\models\timeline\DataProvider;
 use yii\helpers\Url;
+use yii\rbac\Assignment;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -63,7 +64,7 @@ class ContactsController extends BaseController
         if (Helper::userRole(UserModel::_SALE)) {
             $saleID = Yii::$app->user->getId();
             $phone = UserModel::findOne($saleID);
-            $phone = $phone->processing->contact_phone;
+            $phone = isset($phone->processing) ? $phone->processing->contact_phone : null;
         }
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
@@ -114,8 +115,6 @@ class ContactsController extends BaseController
                 ]
             ]
         ));
-
-
         $modelNote = new ContactsLog;
         $info = ContactsModel::find()->where(['phone' => $phone])
             ->orderBy(['created_at' => SORT_ASC])
@@ -130,8 +129,6 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
-
-
 
 
         return $this->render('index', [

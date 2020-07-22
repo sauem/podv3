@@ -101,7 +101,7 @@ class ContactsAssignment extends BaseModel
 
     public static function nextAssignment(){
         $assignment = ContactsAssignment::find()->where(['user_id' => Yii::$app->user->getId()])
-                ->andWhere(['status' => ContactsAssignment::_PENDING,'callback_time' => null])
+                ->andWhere(['status' => ContactsAssignment::_PENDING,'callback_time' => null ])
             ->one();
         if($assignment){
                $assignment->status  = ContactsAssignment::_PROCESSING;

@@ -68,7 +68,7 @@ class doScanContact
     {
 
         $assign = ContactsAssignment::find()->where(['user_id' => $user_id, "status" => ContactsAssignment::_PENDING])
-            ->andWhere(['!=', 'callback_time', ""])
+            ->andWhere(['is not', 'callback_time', new \yii\db\Expression('null')])
             ->orderBy(["callback_time" => SORT_ASC])
             ->one();
         if (!$assign) {
@@ -87,7 +87,8 @@ class doScanContact
                 }
             } elseif ($exitStatus->status == ContactsModel::_PENDING && !empty($exitStatus->callback_time)) {
                 self::openUserCallback($exitStatus);
-            } else {
+            }
+            else {
                 $exitStatus->status = ContactsAssignment::_PROCESSING;
             }
             return $exitStatus->save();
@@ -198,7 +199,7 @@ class doScanContact
     static function hasCallback($user){
         $model = ContactsAssignment::find()
             ->where(['user_id' => $user])
-            ->andWhere(['!=','callback_time' , ""])
+            ->andWhere(['is not','callback_time' , new \yii\db\Expression('null')])
             ->orderBy(['callback_time' => SORT_ASC])->one();
         if($model){
             return true;

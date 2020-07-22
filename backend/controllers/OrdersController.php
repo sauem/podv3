@@ -94,9 +94,10 @@ class OrdersController extends Controller
                             ];
                         }
                     }
+                    $msg = ContactsModel::updateCompleteAndNextProcess();
                     return [
                         'success' => 1,
-                        'msg' => 'HIiI'
+                        'msg' => $msg
                     ];
                 }
             } catch (\Exception $e) {
