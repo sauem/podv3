@@ -6,6 +6,7 @@ use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
 use backend\models\UploadForm;
+use common\helper\Component;
 use common\helper\Helper;
 use Yii;
 use backend\models\ContactsAssignment;
@@ -74,8 +75,6 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
-
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,

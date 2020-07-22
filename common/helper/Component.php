@@ -50,4 +50,15 @@ class Component
         }
         return Html::a('Làm mới', $url, ['class' => 'btn btn-outline-warning']);
     }
+
+    static function renderLogs(){
+        $path = \Yii::getAlias("@backend/web/file/logs.txt");
+        $file = fopen($path, "r");
+        $content = "";
+        if(filesize($path) > 0){
+            $content  = fread($file, filesize($path));
+            fclose($file);
+        }
+        return $content;
+    }
 }

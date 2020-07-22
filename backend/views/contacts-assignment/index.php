@@ -1,5 +1,6 @@
 <?php
 
+use common\helper\Component;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -39,6 +40,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
                 </div>
             </div>
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Logs</h2>
+                </div>
+                <div class="ibox-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>File nhập liệu</th>
+                            <th>Dòng nhập liệu</th>
+                            <th>Lỗi ghi nhận</th>
+                            <th>Ngày nhập liệu</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?= Component::renderLogs() ?>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
         </div>
         <div class="col-md-6">
             <div class="ibox">

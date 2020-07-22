@@ -2,7 +2,7 @@
 namespace common\helper;
 
 use yii\helpers\ArrayHelper;
-
+use Yii;
 class Helper
 {
     static function prinf($data){

@@ -74,7 +74,10 @@ function doProcessWorkbook(workbook, file) {
         size: file.size,
         total: rows.length
     }
-    window.EXCEL = rows
+    window.EXCEL = {
+        rows : rows,
+        fileName :  file.name
+    }
     $("#result").html(compileTemplate("excel-template", data))
 }
 
@@ -88,7 +91,7 @@ $("#handleData").click(function () {
                 url: config.pushContact,
                 type: "POST",
                 cache: false,
-                data: {contacts: window.EXCEL},
+                data: {contacts: window.EXCEL.rows , fileName : window.EXCEL.fileName },
                 success: function (res) {
 
                     if (res.success) {
