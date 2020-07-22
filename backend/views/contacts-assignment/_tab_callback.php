@@ -43,6 +43,9 @@ use yii\helpers\Url;
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
+                    if(!$model->assignment){
+                        return  null;
+                    }
                     return $model->assignment->user->username;
                 }
             ],
