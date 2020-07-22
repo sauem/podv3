@@ -105,7 +105,7 @@ class ContactsModel extends BaseModel
             [['name', 'note', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 100],
-            [['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
+           // [['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
             [['ip', 'status'], 'string', 'max' => 50],
         ];
     }
