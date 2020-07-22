@@ -24,7 +24,7 @@ use common\helper\Component;
                 [
                     'class' => CheckboxColumn::class,
                     'checkboxOptions' => function ($model) {
-                        if(!$model->page->category_id){
+                        if(!$model->page){
                             return "";
                         }
                         return ['data-cate' => $model->page->category_id];
