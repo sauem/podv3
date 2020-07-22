@@ -49,6 +49,9 @@ use common\helper\Component;
                     'attribute' => 'link',
                     'format' => 'raw',
                     'value' => function ($model) {
+                        if(!$model->link){
+                            return null;
+                        }
                         return Html::tag("p",
                             "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
                             "<small class='text-danger'>Note: <i>{$model->note}</i></small>");
