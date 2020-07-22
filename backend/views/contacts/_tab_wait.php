@@ -49,7 +49,7 @@ use common\helper\Component;
                     'attribute' => 'link',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        if(!$model->link){
+                        if(!$model->page){
                             return null;
                         }
                         return Html::tag("p",
