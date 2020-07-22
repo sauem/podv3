@@ -7,7 +7,8 @@ use kartik\grid\GridView;
 use common\helper\Component;
 use kartik\grid\ActionColumn;
 use kartik\form\ActiveForm;
-
+use backend\models\AuthItem;
+use backend\models\AuthAssignment;
 $this->title = 'User Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -35,7 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php } ?>
                         <div class="form-group col-md-12">
                             <?php
-                            $model->role = \backend\models\AuthAssignment::findOne(['user_id' => $model->id])->item_name?>
+                            $role = AuthAssignment::findOne(['user_id' => $model->id]);
+                            $model->role = $role ? $role->getAttribute("item_name") : null?>
                             <?= $form->field($model, 'role')->dropDownList(
                                 \backend\models\AuthItem::Roles(),
                                 ['prompt' => 'Chọn quyền quản trị'])->label('Quyền quản trị') ?>
