@@ -21,16 +21,16 @@ class doScanContact
         foreach ($users as $user) {
             $count = self::countAssignUser($user);
 
-            if (self::isLimitOfDay($user)) {
-                self::openCallback($user);
-                self::pendingStatus($user);
-                continue;
-            }
             if ($count >= 2) {
                 self::openCallback($user);
-                self::pendingStatus($user);
+              //  self::pendingStatus($user);
                 continue;
             } else {
+                if (self::isLimitOfDay($user)) {
+                    self::openCallback($user);
+                    self::pendingStatus($user);
+                    continue;
+                }
                 foreach ($phones as $k => $phone) {
                     if (self::isLimitOfDay($user)) {
                         continue;
@@ -165,7 +165,7 @@ class doScanContact
         $now = time();
         $model = ContactsAssignment::find()
             ->where(['user_id' => $user])
-            ->andWhere(['!=', 'callback_time', ""])
+            ->andWhere(['is not', 'callback_time', new \yii\db\Expression('null')])
             ->orderBy(['callback_time' => SORT_ASC])->one();
         $data = [];
         if (!$model) return false;
