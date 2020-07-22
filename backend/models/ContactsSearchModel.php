@@ -68,17 +68,9 @@ class ContactsSearchModel extends ContactsModel
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'zipcode' => $this->zipcode,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
-
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'email', $this->email])
+            ->orFilterWhere(['like', 'phone', $this->name])
+            ->orFilterWhere(['like', 'email', $this->name])
             ->andFilterWhere(['IN', 'contacts.status', $this->status]);
 
         return $dataProvider;

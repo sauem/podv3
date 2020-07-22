@@ -6,6 +6,7 @@ namespace backend\controllers;
 
 use backend\models\CategoriesModel;
 use backend\models\ContactsModel;
+use backend\models\LogsImport;
 use backend\models\OrdersModel;
 use backend\models\ProductsModel;
 use common\helper\Helper;
@@ -201,12 +202,15 @@ class AjaxController extends BaseController
                 $model = new ContactsModel;
                 if (!$model->load($item, '') || !$model->save()) {
                     $errors[$k] = Helper::firstError($model);
-                    $myfile = fopen(Yii::getAlias("@backend/web/file/logs.txt"), "a");
-                    if($myfile){
-                        fwrite($myfile , "");
-                        fwrite($myfile , "<tr><td>$fileName</td><td>".($k + 1)."</td><td>"  . Helper::firstError($model) . "</td><td>" .date("H:i:s - d-m-Y", time()). "</td></tr>");
-                        fclose($myfile);
-                    }
+                    $logs = new LogsImport;
+                    $data = [
+                        'line' => (string) ($k + 2),
+                        'message' => Helper::firstError($model),
+                        'name' => $fileName,
+                        'user_id'  => Yii::$app->user->getId()
+                    ];
+                    $logs->load($data,"");
+                    $logs->save();
                 }
             }
             return [

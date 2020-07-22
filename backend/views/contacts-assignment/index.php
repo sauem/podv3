@@ -25,9 +25,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">Chờ xử lý</h2>
+                    <div class="ibox-tools">
+                        <a data-toggle="collapse" href="#filter1"><i class="fa fa-filter"></i> Tìm kiếm</a>
+                    </div>
                 </div>
                 <div class="ibox-body">
-                    <?= $this->render('_tab_waiting', ['dataProvider' => $pendingProvider]) ?>
+                    <?= $this->render('_tab_waiting', ['dataProvider' => $pendingProvider,'searchModel' => $searchModel]) ?>
                 </div>
             </div>
         </div>
@@ -40,28 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
                 </div>
             </div>
-            <div class="ibox">
-                <div class="ibox-head">
-                    <h2 class="ibox-title">Logs</h2>
-                </div>
-                <div class="ibox-body">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>File nhập liệu</th>
-                            <th>Dòng nhập liệu</th>
-                            <th>Lỗi ghi nhận</th>
-                            <th>Ngày nhập liệu</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?= Component::renderLogs() ?>
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
         </div>
         <div class="col-md-6">
             <div class="ibox">
@@ -70,6 +51,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="ibox-body">
                     <?= $this->render('_tab_done', ['dataProvider' => $completeProvider]) ?>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Logs</h2>
+                </div>
+                <div class="ibox-body">
+                    <?=
+                    \kartik\grid\GridView::widget([
+                        'dataProvider' => $logsProvider,
+                        'columns' => [
+                            'name',
+                            'line',
+                            'message',
+                            'created_at:date'
+                        ]
+                    ])
+                    ?>
+
                 </div>
             </div>
         </div>

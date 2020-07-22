@@ -6,6 +6,7 @@ use backend\jobs\doScanContact;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsAssignmentSearch;
 use backend\models\ContactsLog;
+use backend\models\LogsImport;
 use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
@@ -129,6 +130,8 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+
+
 
 
         return $this->render('index', [

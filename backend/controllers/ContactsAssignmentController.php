@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use backend\models\LogsImport;
 use backend\models\UploadForm;
 use common\helper\Component;
 use common\helper\Helper;
@@ -75,11 +76,19 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
+        $logs = new ActiveDataProvider([
+            'query' => LogsImport::find()->orderBy(['created_at' => SORT_DESC]),
+            'pagination' => [
+                'pageSize' => 15
+            ]
+        ]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
             'callbackProvider' => $callProvider,
-            'pendingProvider' => $pendingProvider
+            'pendingProvider' => $pendingProvider,
+            'logsProvider' => $logs
         ]);
     }
 

@@ -9,9 +9,14 @@ use yii\helpers\Url;
 
 ?>
 <div class="table-responsive">
+
+    <?= $this->render('_search',['model' => $searchModel])?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
+        'tableOptions' => [
+                'id' => 'gridviewData'
+        ],
         'layout' => "{items}\n{pager}",
         'headerRowOptions' => [
             'class' => 'thead-light'
@@ -19,6 +24,7 @@ use yii\helpers\Url;
         'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
+            'enablePushState' => false
         ],
         'columns' => [
             [
@@ -27,7 +33,10 @@ use yii\helpers\Url;
                 'format' => 'raw',
                 'value' => function ($model) {
                     $count = sizeof($model->sumContact);
-                    return Html::a("$model->phone", Url::toRoute(['view', 'phone' => $model->phone]));
+                    return Html::a("$model->phone",
+                        Url::toRoute(['view', 'phone' => $model->phone]),[
+                                'data-pjax' => '0'
+                        ]);
                 }
             ],
             [
