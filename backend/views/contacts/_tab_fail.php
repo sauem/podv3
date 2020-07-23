@@ -23,6 +23,9 @@ use common\helper\Component;
             [
                 'class' => CheckboxColumn::class,
                 'checkboxOptions' => function ($model) {
+                    if(!$model->page){
+                        return null;
+                    }
                     return ['data-cate' => $model->page->category_id,'disabled' => true];
                 }
             ],
@@ -31,6 +34,9 @@ use common\helper\Component;
                 'attribute' => 'category_id',
                 'format' => 'html',
                 'value' => function ($model) {
+                    if(!$model->page){
+                        return null;
+                    }
                     return Html::tag("p",
                         $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
                         "<small><i>{$model->page->category->name}</i></small>");
@@ -41,6 +47,9 @@ use common\helper\Component;
                 'attribute' => 'link',
                 'format' => 'raw',
                 'value' => function ($model) {
+                    if(!$model->page){
+                        return null;
+                    }
                     return Html::tag("p",
                         "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br><small>{$model->option}</small><br>" .
                         "<small class='text-danger'>Note: <i>{$model->note}</i></small>");
