@@ -99,7 +99,7 @@ class ContactsModel extends BaseModel
     public function rules()
     {
         return [
-            [['name', 'phone', 'option', 'zipcode'], 'required', 'message' => '{attribute} không được để trống!'],
+            [['phone'], 'required', 'message' => '{attribute} không được để trống!'],
             [['address', 'option', 'link', 'short_link', 'street'], 'string'],
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
             [['name', 'note', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
