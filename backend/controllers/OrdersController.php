@@ -77,7 +77,7 @@ class OrdersController extends Controller
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post(), '')) {
             try {
                 if ($model->save()) {
-                    ActionLog::add("success", "Tạo đơn hàng");
+                    ActionLog::add("success", "Tạo đơn hàng mới $model->id");
                     $product = Yii::$app->request->post('product');
                     foreach ($product as $k => $item) {
                         $product['order_id'] = $model->id;
