@@ -22,7 +22,10 @@ return [
         'gridview' => [
             'class' => '\kartik\grid\Module',
             'bsVersion' => '4.x'
-        ]
+        ],
+        'actionlog' => [
+            'class' => 'cakebake\actionlog\Module',
+        ],
     ],
     'components' => [
         'authManager' => [

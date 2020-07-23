@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -198,6 +199,10 @@ class ContactsModel extends BaseModel
     public function afterSave($insert, $changedAttributes)
     {
         static::updateCompleteAndNextProcess();
+        if($insert){
+            ActionLog::add("success","Thêm liên hệ mới $this->id");
+        }
+        ActionLog::add("success","Cập nhật trạng thái liên hệ $this->id");
         parent::afterSave($insert, $changedAttributes);
     }
 

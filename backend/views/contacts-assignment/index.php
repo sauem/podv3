@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-12 text-right mb-2">
             <button data-remote="<?= \yii\helpers\Url::toRoute(['contacts-assignment/import']) ?>" data-toggle="modal"
-                    data-target="#remote-import" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Import
-                contact
+                    data-target="#remote-import" class="btn btn-success">
+                <i class="fa fa-file-excel-o"></i> Nhập liên hệ
             </button>
         </div>
     </div>
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-6">
             <div class="ibox">
                 <div class="ibox-head">
-                    <h2 class="ibox-title">Logs</h2>
+                    <h2 class="ibox-title">Lịch sử nhập liệu</h2>
                 </div>
                 <div class="ibox-body">
                     <?=

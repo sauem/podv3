@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44651beb62163b6bed6b1b10c302cc12",
+    "content-hash": "4751f11aa55e1688e88b20c3a4a5522f",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -101,6 +101,47 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "cakebake/yii2-actionlog",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakebake/yii2-actionlog.git",
+                "reference": "2f7eb5ac2683fb33ec248291db6454840b18e70d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakebake/yii2-actionlog/zipball/2f7eb5ac2683fb33ec248291db6454840b18e70d",
+                "reference": "2f7eb5ac2683fb33ec248291db6454840b18e70d",
+                "shasum": ""
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "cakebake\\actionlog\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-V3"
+            ],
+            "authors": [
+                {
+                    "name": "cakebake (Jens A.)",
+                    "email": "cakebake.dev@gmail.com"
+                }
+            ],
+            "description": "Logs user actions like create, read, update, delete and custom",
+            "keywords": [
+                "actionlog",
+                "activerecord",
+                "extension",
+                "log",
+                "yii2"
+            ],
+            "abandoned": true,
+            "time": "2014-06-02T21:03:09+00:00"
         },
         {
             "name": "cebe/markdown",

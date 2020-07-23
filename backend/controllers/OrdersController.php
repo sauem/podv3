@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsModel;
 use backend\models\OrdersItems;
+use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use Yii;
 use backend\models\OrdersModel;
@@ -76,6 +77,7 @@ class OrdersController extends Controller
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post(), '')) {
             try {
                 if ($model->save()) {
+                    ActionLog::add("success", "Tạo đơn hàng");
                     $product = Yii::$app->request->post('product');
                     foreach ($product as $k => $item) {
                         $product['order_id'] = $model->id;
@@ -101,6 +103,7 @@ class OrdersController extends Controller
                     ];
                 }
             } catch (\Exception $e) {
+                ActionLog::add("error", "Tạo đơn hàng " .$e->getMessage());
                 return [
                     'success' => 0,
                     'msg' => $e->getMessage()

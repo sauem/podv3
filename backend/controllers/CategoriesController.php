@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use Yii;
 use backend\models\CategoriesModel;
@@ -47,8 +48,10 @@ class CategoriesController extends BaseController
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
 
             if($model->save()){
+                ActionLog::add("success","Tạo danh mục mới!");
                 self::success("Tạo danh mục thành công!");
             }else{
+                ActionLog::add("error",Helper::firstError($model));
                 self::error(Helper::firstError($model));
             }
             return $this->redirect(['index']);

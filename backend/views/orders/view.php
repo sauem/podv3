@@ -69,6 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <thead>
                         <tr>
                             <th>Sản phẩm</th>
+                            <th>Lựa chọn</th>
                             <th>Số lượng</th>
                             <th>Đơn giá</th>
                             <th>Tổng</th>
@@ -80,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ?>
                                 <tr>
                                     <td><?= $item->product->sku?> | <?= $item->product->name?></td>
+                                    <td><?= $item->product_option?></td>
                                     <td><?= $item->qty?></td>
                                     <td><?= Helper::money($item->price)?></td>
                                     <td><?= Helper::money($item->price * $item->qty)?></td>
@@ -87,15 +89,62 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php
                             }
                         }else{
-                            echo "<t><td colspan='4' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
+                            echo "<t><td colspan='5' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
                         }?>
                     </tbody>
                     <thead>
                         <tr>
-                            <td colspan="3"><strong>Tổng hóa đơn</strong></td>
+                            <td colspan="4"><strong>Tổng hóa đơn</strong></td>
                             <td><strong><?= Helper::money($model->total)?></strong></td>
                         </tr>
                     </thead>
+                </table>
+            </div>
+        </div>
+
+        <div class="ibox">
+            <div class="ibox-head">
+                <h2 class="ibox-title">
+                    Các liên hệ
+                </h2>
+            </div>
+            <div class="ibox-body">
+                <?php
+                $contacts = $model->contacts;
+                ?>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Đăng kí</th>
+                        <th>Lựa chọn</th>
+                        <th>Trang đích</th>
+                        <th>Ngày liên hệ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php if($contacts && !empty($contacts)){
+                        foreach ($contacts as $contact){
+                            ?>
+                            <tr>
+                                <td><?=
+                                    $contact->contact->name."<br>".
+                                    $contact->contact->address."<br>".
+                                    $contact->contact->zipcode
+
+                                    ?></td>
+                                <td><?=
+                                    $contact->contact->page->product->name. "<br>".
+                                    $contact->contact->option
+                                    ?></td>
+                                <td><?= $contact->contact->link?></td>
+                                <td><?= Helper::toDate($contact->updated_at)?></td>
+                            </tr>
+                            <?php
+                        }
+                    }else{
+                        echo "<t><td colspan='4' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
+                    }?>
+                    </tbody>
                 </table>
             </div>
         </div>

@@ -93,28 +93,26 @@ $("#handleData").click(function () {
                 cache: false,
                 data: {contacts: window.EXCEL.rows , fileName : window.EXCEL.fileName },
                 success: function (res) {
-
-                    if (res.success) {
-                        let errors = res.error;
-                        let _error = "Nhập liệu thành công " + res.totalInsert + " liên hệ.<br>";
-                        if(errors.length !== 0){
-                            for (let i in errors) {
-                                _error += " Lỗi tại dòng " + (parseInt(i) + 2) + " : " + errors[i] + "<br>";
-                            }
+                    let _icon = res.success == 1 ? 'success' : 'error';
+                    let errors = res.error;
+                    let _error = "Nhập liệu thành công " + res.totalInsert + " liên hệ.<br>";
+                    if(errors.length !== 0){
+                        for (let i in errors) {
+                            _error += " Lỗi tại dòng " + (parseInt(i) + 2) + " : " + errors[i] + "<br>";
                         }
-
-                        setTimeout(() => {
-                            Swal.hideLoading()
-                            swal.fire({
-                                title: "Thông báo!",
-                                html: _error,
-                                icon: "success"
-                            })
-                                .then(() => {
-                                    window.location.reload()
-                                })
-                        }, 1000)
                     }
+
+                    setTimeout(() => {
+                        Swal.hideLoading()
+                        swal.fire({
+                            title: "Thông báo!",
+                            html: _error,
+                            icon: _icon
+                        })
+                            .then(() => {
+                                window.location.reload()
+                            })
+                    }, 1000)
                 }
             });
         }

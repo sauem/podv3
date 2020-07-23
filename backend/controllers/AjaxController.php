@@ -9,6 +9,7 @@ use backend\models\ContactsModel;
 use backend\models\LogsImport;
 use backend\models\OrdersModel;
 use backend\models\ProductsModel;
+use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -216,10 +217,19 @@ class AjaxController extends BaseController
                     $logs->save();
                 }
             }
+            $count = sizeof($contacts) - sizeof($errors);
+            if($count > 0){
+                ActionLog::add("success","Nhập file liên hệ - $fileName số lượng $count");
+                return [
+                    'success' => 1,
+                    'error' => $errors,
+                    'totalInsert' => $count
+                ];
+            }
             return [
-                'success' => 1,
+                'success' => 0,
                 'error' => $errors,
-                'totalInsert' => sizeof($contacts) - sizeof($errors)
+                'totalInsert' => $count
             ];
         }
 
