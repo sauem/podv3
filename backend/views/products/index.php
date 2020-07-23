@@ -6,7 +6,7 @@ use kartik\grid\CheckboxColumn;
 use kartik\form\ActiveForm;
 use kartik\grid\ActionColumn;
 use common\helper\Component;
-
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\ProductsSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -21,6 +21,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="ibox table-responsive">
             <div class="ibox-head">
                 <h2 class="ibox-title">Tạo sản phẩm</h2>
+                <div class="ibox-tools">
+                    <button class="btn btn-success btn-sm" data-toggle="modal"
+                            data-remote="<?= Url::toRoute(['products/import'])?>"
+                            data-target="#product-import">
+                        <i class="fa fa-file-excel-o"></i>
+                        Nhập sản phẩm</button>
+                </div>
             </div>
             <?php $form = ActiveForm::begin() ?>
             <div class="ibox-body">
@@ -105,3 +112,34 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" id="product-import" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nhập sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <a class="text-warning" href="<?= \yii\helpers\Url::toRoute(['/file/product_example.xlsx']) ?>"><i
+                            class="fa fa-download"></i> File dữ liệu mẫu</a>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" data-action="product" id="handleData" class="btn btn-primary">Nhập sản phẩm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+
+$js =<<<JS
+    initRemote("product-import");
+JS;
+$this->registerJs($js);

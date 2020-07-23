@@ -218,8 +218,8 @@ class AjaxController extends BaseController
                 }
             }
             $count = sizeof($contacts) - sizeof($errors);
-            if($count > 0){
-                ActionLog::add("success","Nhập file liên hệ - $fileName số lượng $count");
+            if ($count > 0) {
+                ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
                 return [
                     'success' => 1,
                     'error' => $errors,
@@ -233,5 +233,58 @@ class AjaxController extends BaseController
             ];
         }
 
+    }
+
+    function actionPushProduct()
+    {
+        $products = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $errors = [];
+        if (!empty($products)) {
+            foreach ($products as $k => $product) {
+                $model = new ProductsModel;
+                $category = CategoriesModel::findOne(['name' => $product['category']]);
+                if (!$category) {
+                    $category = new CategoriesModel;
+                    $category->name = $product['category'];
+                    $category->save();
+                }
+                $data = [
+                    'name' => $product['name'],
+                    'sku' => $product['sku'],
+                    'category_id' => $category->id,
+                    'regular_price' => str_replace(",","",$product['regular_price']),
+                    'option' => $product['option']
+                ];
+
+                if (!$model->load($data, "") || !$model->save()) {
+                    $errors[$k] = Helper::firstError($model);
+                    $logs = new LogsImport;
+                    $data = [
+                        'line' => (string)($k + 2),
+                        'message' => Helper::firstError($model),
+                        'name' => $fileName,
+                        'user_id' => Yii::$app->user->getId()
+                    ];
+                    $logs->load($data, "");
+                    $logs->save();
+                }
+            }
+            $count = sizeof($products) - sizeof($errors);
+
+            if ($count > 0) {
+                ActionLog::add("success", "Nhập file sản phẩm - $fileName số lượng $count");
+                return  static::resultImport($count,$errors,1);
+            }
+            return  static::resultImport($count,$errors,0);
+        }
+
+    }
+    static function resultImport( $count = 0, $errors, $status = 1){
+        return [
+            'success' => $status,
+            'error' => $errors,
+            'totalInsert' => $count
+        ];
     }
 }

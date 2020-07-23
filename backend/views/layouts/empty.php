@@ -27,6 +27,7 @@ AppAsset::register($this);
             type: ["xlsx", "csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
             ajaxUpload:  "<?= \yii\helpers\Url::toRoute(['ajax/ajax-file'])?>",
             pushContact: "<?= \yii\helpers\Url::toRoute(['ajax/push-contact'])?>",
+            pushProduct: "<?= \yii\helpers\Url::toRoute(['ajax/push-product'])?>",
             maxSize: 10485760
         }
 

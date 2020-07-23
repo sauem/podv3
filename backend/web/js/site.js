@@ -56,15 +56,7 @@ function doProcessWorkbook(workbook, file) {
     var row = getRow(sheet, rowsIndex, 7);
 
     while (row !== null) {
-        var item = contactModel();
-        item.phone = row[0] ? row[0].v : "";
-        item.name = row[1] ? row[1].v : "";
-        item.address = row[2] ? row[2].v : "";
-        item.zipcode = row[3] ? row[3].v : "";
-        item.option = row[4] ? row[4].v : "";
-        item.note = row[5] ? row[5].v : "";
-        item.link = row[6] ? row[6].v : "";
-        item.host = window.location.hostname;
+        var item = switchItem(firstSheet, row);
         rows.push(item);
         rowsIndex++;
         row = getRow(sheet, rowsIndex, 7);
@@ -75,33 +67,46 @@ function doProcessWorkbook(workbook, file) {
         total: rows.length
     }
     window.EXCEL = {
-        rows : rows,
-        fileName :  file.name
+        rows: rows,
+        fileName: file.name
     }
-    $("#result").html(compileTemplate("excel-template", data))
+    /// render view example
+    switch (firstSheet) {
+        case "product":
+            renderViewTemplate("result", "product-template", data)
+            break;
+        default:
+            renderViewTemplate("result", "excel-template", data)
+            break;
+    }
 }
 
 $("#handleData").click(function () {
+    let _importAction = $(this).data("action");
 
+    let _url = config.pushContact;
+    if (_importAction == "product") {
+        _url = config.pushProduct;
+    }
     swal.fire({
         title: "Đang nhập liệu",
         onBeforeOpen: () => {
             Swal.showLoading()
             $.ajax({
-                url: config.pushContact,
+                url: _url,
                 type: "POST",
                 cache: false,
-                data: {contacts: window.EXCEL.rows , fileName : window.EXCEL.fileName },
+                data: {contacts: window.EXCEL.rows, fileName: window.EXCEL.fileName},
                 success: function (res) {
+
                     let _icon = res.success == 1 ? 'success' : 'error';
                     let errors = res.error;
-                    let _error = "Nhập liệu thành công " + res.totalInsert + " liên hệ.<br>";
-                    if(errors.length !== 0){
+                    let _error = "Nhập liệu thành công " + res.totalInsert + " dữ liệu.<br>";
+                    if (errors.length !== 0) {
                         for (let i in errors) {
                             _error += " Lỗi tại dòng " + (parseInt(i) + 2) + " : " + errors[i] + "<br>";
                         }
                     }
-
                     setTimeout(() => {
                         Swal.hideLoading()
                         swal.fire({
@@ -119,6 +124,36 @@ $("#handleData").click(function () {
     })
 })
 
+function renderViewTemplate(result = "result", template = "excel-template", data) {
+    $("#" + result).html(compileTemplate(template, data));
+}
+
+function switchItem(sheet, row) {
+    var item = null;
+    switch (sheet) {
+
+        case "product":
+            item = new productModel();
+            item.name = row[0] ? row[0].v : "";
+            item.sku = row[1] ? row[1].v : "";
+            item.category = row[2] ? row[2].v : "";
+            item.regular_price = row[3] ? row[3].v : "";
+            item.option = row[4] ? row[4].v : "";
+            break;
+        default:
+            item = new contactModel();
+            item.phone = row[0] ? row[0].v : "";
+            item.name = row[1] ? row[1].v : "";
+            item.address = row[2] ? row[2].v : "";
+            item.zipcode = row[3] ? row[3].v : "";
+            item.option = row[4] ? row[4].v : "";
+            item.note = row[5] ? row[5].v : "";
+            item.link = row[6] ? row[6].v : "";
+            item.host = window.location.hostname;
+            break
+    }
+    return item;
+}
 
 function contactModel() {
     return {
@@ -132,6 +167,16 @@ function contactModel() {
         created_at: Date.now(),
         updated_at: Date.now(),
         host: window.location.hostname
+    }
+}
+
+function productModel() {
+    return {
+        name: "",
+        sku: "",
+        category: "",
+        regular_price: 0,
+        option: ""
     }
 }
 

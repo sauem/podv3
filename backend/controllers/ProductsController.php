@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\CategoriesModel;
+use backend\models\UploadForm;
 use common\helper\Helper;
 use Yii;
 use backend\models\ProductsModel;
@@ -142,5 +143,11 @@ class ProductsController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    public function actionImport(){
+        $this->layout = "empty";
+        $model = new UploadForm;
+
+        return $this->render("_remote",['model' => $model]);
     }
 }
