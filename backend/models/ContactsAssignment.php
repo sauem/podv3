@@ -127,4 +127,13 @@ class ContactsAssignment extends BaseModel
             ->addSelect("contact_phone")->distinct()->asArray()->all();
         return ArrayHelper::getColumn($phones,"contact_phone");
     }
+    static function prevAssignment(){
+        $phone =  self::find()->where([
+            'user_id' => Yii::$app->user->getId(),
+            ])->orderBy(['updated_at' => SORT_DESC])->one();
+        if($phone){
+            return $phone->contact_phone;
+        }
+        return null;
+    }
 }

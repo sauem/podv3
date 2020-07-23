@@ -94,10 +94,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td>Zipcode</td>
                                 <td><?= $info->zipcode ?></td>
                             </tr>
-                            <tr>
-                                <td>IP</td>
-                                <td><?= $info->ip ?></td>
-                            </tr>
                         <?php } ?>
                         </tbody>
                         <?php
@@ -139,7 +135,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= $user->username ?></td>
                         </tr>
                         <tr>
-                            <td>SĐT hoàn thành/Tổng phân bổ:</td>
+                            <td>SĐT đã hoàn thành hôm nay:</td>
                             <td><?= \backend\models\UserModel::completed() . " /" . $user->phone_of_day ?></td>
                         </tr>
                         </tbody>

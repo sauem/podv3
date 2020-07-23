@@ -64,8 +64,9 @@ class ContactsController extends BaseController
         if (Helper::userRole(UserModel::_SALE)) {
             $saleID = Yii::$app->user->getId();
             $phone = UserModel::findOne($saleID);
-            $phone = isset($phone->processing) ? $phone->processing->contact_phone : null;
+            $phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
         }
+
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -115,6 +116,7 @@ class ContactsController extends BaseController
                 ]
             ]
         ));
+
         $modelNote = new ContactsLog;
         $info = ContactsModel::find()->where(['phone' => $phone])
             ->orderBy(['created_at' => SORT_ASC])
