@@ -129,7 +129,7 @@ function initRemote(_modal) {
 function getCountry(select) {
     let html = "";
     $.ajax({
-        url: "http://podv2.local/site/country",
+        url: "/site/country",
         type: "GET",
         data: {},
         dataType: 'json',
