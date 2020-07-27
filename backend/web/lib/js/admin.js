@@ -167,5 +167,18 @@ function __changeProductPrice(_sku, val) {
 }
 
 function __reloadData(_url) {
-    $.pjax.reload({container: "#pjaxPage", url : _url, async: false});
+    let pjaxs = [];
+    $("body").find("div[id^='pjax']").each(function (item , index) {
+         let _id = "#" + $(this).attr("id");
+        pjaxs.push(_id);
+    });
+
+    $.each(pjaxs, function (index,  item) {
+        if (pjaxs.length > index + 1) {
+            $(item).one('pjax:end', function (xhr, options) {
+                $.pjax.reload({container: pjaxs[index+1] ,  timeout: false}) ;
+            });
+        }
+    });
+    $.pjax.reload({container: pjaxs[0], timeout: false}) ;
 }

@@ -11,11 +11,7 @@ use yii\widgets\Pjax;
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php
-Pjax::begin([
-    'id' => 'pjaxPage'
-]);
-?>
+
     <div class="row">
         <div class="col-md-12">
             <?= $this->render('_collapse_order', ['model' => $order]) ?>
@@ -169,9 +165,7 @@ Pjax::begin([
 <?= $this->render('_modal_remote') ?>
 
 <?= $this->render('_modal', ['model' => $modelNote]) ?>
-<?php
-Pjax::end();
-?>
+
 <?php
 $route = Url::toRoute(Yii::$app->controller->getRoute());
 $loadProduct = Url::toRoute(['ajax/load-product-select']);

@@ -13,10 +13,13 @@ use common\helper\Helper;
             'dataProvider' => $dataProvider,
             'responsive' => true,
             'layout' => "{items}\n{pager}",
-//            'pjax' => true,
-//            'pjaxSettings' => [
-//                'neverTimeout' => true,
-//            ],
+            'pjax' => true,
+            'pjaxSettings' => [
+                'neverTimeout' => true,
+                'options' => [
+                    'id' => 'pjax-wait'
+                ]
+            ],
             'headerRowOptions' => [
                 'class' => 'thead-light'
             ],
