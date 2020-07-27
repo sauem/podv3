@@ -35,7 +35,7 @@ class Component
                 'placeholder' => 'Nhập số tiền...'
             ],
             'pluginOptions' => [
-                'prefix' => 'đ ',
+                'prefix' => '',
                 'allowNegative' => false,
                 'allowZero' => false,
                 'allowEmpty' => true

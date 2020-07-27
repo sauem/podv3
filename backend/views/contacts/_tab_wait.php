@@ -5,7 +5,7 @@ use kartik\grid\CheckboxColumn;
 use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
-
+use common\helper\Helper;
 ?>
     <div class="table-responsive">
 
@@ -40,7 +40,7 @@ use common\helper\Component;
                         }
                         return Html::tag("p",
                             $model->page->product->name .
-                            "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small> | <small><i>{$model->page->category->name}</i></small>" .
+                            "<br><small>{$model->page->product->sku} |".Helper::money($model->page->product->regular_price)."</small> | <small><i>{$model->page->category->name}</i></small>" .
                             "<br><small>{$model->option}</small>");
                     }
                 ],
@@ -54,7 +54,11 @@ use common\helper\Component;
                         }
                         return Html::tag("p",
                             "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
-                            "<small class='text-danger'>Note: <i>{$model->note}</i></small>");
+                            "<small class='text-info'>address: <i>{$model->address}</i></small><br>".
+                            "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>".
+                            "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
+
+                        );
                     }
                 ],
                 [

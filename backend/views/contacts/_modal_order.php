@@ -104,14 +104,14 @@ use kartik\form\ActiveForm;
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Quận/huyện <span class="text-danger">(*)</span></label>
-                    <input required name="district" class="form-control">
+                    <label>Quận/huyện <span class="text-danger"></span></label>
+                    <input  name="district" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Thành phố <span class="text-danger">(*)</span></label>
-                    <input required name="city" class="form-control">
+                    <label>Thành phố <span class="text-danger"></span></label>
+                    <input  name="city" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -122,7 +122,7 @@ use kartik\form\ActiveForm;
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Quốc gia <span class="text-danger">(*)</span></label>
+                    <label>Quốc gia <span class="text-danger"></span></label>
                     <select class="form-control select2" name="country">
                         <option value="">Chọn quốc gia</option>
                     </select>
@@ -193,7 +193,7 @@ use kartik\form\ActiveForm;
         <tr>
             <td><strong>Tổng hóa đơn</strong></td>
             <td colspan="4" class="text-right">
-                <strong>{{money this.total}}đ</strong>
+                <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
             </td>
         </tr>

@@ -43,7 +43,7 @@ class Helper
         return ArrayHelper::getValue($country,$code);
     }
     static function money($number){
-        return number_format($number,2,',','.') ."đ";
+        return number_format($number,2,',','.');
     }
     static function toDate($number, $format = "H:i:s d/m"){
         return date($format,$number);

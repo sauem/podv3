@@ -101,6 +101,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute' => 'product_id',
                             'format' => 'html',
                             'value' => function ($model) {
+                                if(!$model->product){
+                                    return null;
+                                }
                                 return "<p><strong>{$model->product->sku}</strong> | {$model->product->name}<br>{$model->product->regular_price}</p>";
                             }
                         ],

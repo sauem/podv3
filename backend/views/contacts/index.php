@@ -3,72 +3,18 @@
 use backend\models\ContactsModel;
 use backend\models\ContactsAssignment;
 use yii\helpers\ArrayHelper;
+use common\helper\Helper;
+use backend\models\UserModel;
 
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="row">
-        <div class="col-md-8">
-            <div class="ibox">
-                <div class="ibox-body">
-                    <ul class="nav nav-tabs tabs-line">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ
-                                xử lý</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#callback" data-toggle="tab">
-                                <i class="ti-time"></i> Gọi lại</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất
-                                bại</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
-                                công</a>
-                        </li>
-
-                    </ul>
-                    <div class="tab-content">
-
-
-                        <?= $this->render('_search', ['model' => $searchModel]) ?>
-                        <div class="tab-pane fade show active" id="wating">
-                            <div class="d-flex justify-content-between">
-                                <div class="">
-                                    <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
-                                    <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                                </div>
-                                <a class="nav-link" href="#filter" data-toggle="collapse">
-                                    <i class="ti-filter"></i> Tìm kiếm</a>
-                            </div>
-                            <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
-                        </div>
-                        <div class="tab-pane fade" id="callback">
-                            <div class="mb-2">
-                                <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng thái</a>
-                                <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                            </div>
-
-                            <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
-                        </div>
-                        <div class="tab-pane fade" id="failure">
-                            <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
-                        </div>
-                        <div class="tab-pane fade" id="success">
-                            <?= $this->render('_tab_done', ['dataProvider' => $successProvider]) ?>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="col-md-4">
             <div class="ibox">
                 <div class="ibox-head">
-                    <h2 class="ibox-title">Thông tin : <i
-                                class="fa fa-phone"></i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
+                    <h2 class="ibox-title">Thông tin : <i class="fa fa-phone">
+                        </i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
                     </h2>
                 </div>
 
@@ -98,30 +44,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tbody>
                         <?php
                         if ($time = \backend\models\UserModel::hasCallback()) {
-                        ?>
-                        <tfoot>
-                        <tr>
-                            <td>Ghi chú gọi lại : <br>
-                                <strong class="text-danger"><?= $time['phone'] ?></strong>
-                            </td>
-                            <td>
-                                <strong>Thời gian tạo: <br>
-                                    <span class="text-warning"><?= $time['created'] ?></span>
-                                </strong><br>
-                                <strong>Lần gọi cuối: <br>
-                                    <span class="text-warning"><?= $time['last_called'] ?></span>
-                                </strong><br>
-                                <strong>Lần gọi tiếp theo: <br>
-                                    <span class="text-danger"><?= $time['time'] ?></span>
-                                </strong>
-                            </td>
-                        </tr>
-                        </tfoot>
-
-
+                            ?>
+                            <tfoot>
+                            <tr>
+                                <td>Ghi chú gọi lại : <br>
+                                    <strong class="text-danger"><?= $time['phone'] ?></strong>
+                                </td>
+                                <td>
+                                    <strong>Thời gian tạo: <br>
+                                        <span class="text-warning"><?= $time['created'] ?></span>
+                                    </strong><br>
+                                    <strong>Lần gọi cuối: <br>
+                                        <span class="text-warning"><?= $time['last_called'] ?></span>
+                                    </strong><br>
+                                    <strong>Lần gọi tiếp theo: <br>
+                                        <span class="text-danger"><?= $time['time'] ?></span>
+                                    </strong>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        <?php } ?>
                     </table>
                 </div>
-                <?php } ?>
+
             </div>
             <div class="ibox">
                 <div class="ibox-head">
@@ -140,6 +85,70 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <ul class="nav nav-tabs tabs-line">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ
+                                xử lý</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#callback" data-toggle="tab">
+                                <i class="ti-time"></i> Gọi lại</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất
+                                bại</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
+                                công</a>
+                        </li>
+
+                    </ul>
+                    <div class="tab-content">
+
+
+                        <?= $this->render('_search', ['model' => $searchModel]) ?>
+                        <div class="tab-pane fade show active" id="wating">
+                            <div class="d-flex justify-content-between">
+                                <div class="">
+                                    <?php if (Helper::userRole(UserModel::_ADMIN)) {
+                                        ?>
+                                        <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
+                                            thái</a>
+                                    <?php } ?>
+                                    <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                                </div>
+                                <a class="nav-link" href="#filter" data-toggle="collapse">
+                                    <i class="ti-filter"></i> Tìm kiếm</a>
+                            </div>
+                            <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
+                        </div>
+                        <div class="tab-pane fade" id="callback">
+                            <div class="mb-2">
+                                <?php if (Helper::userRole(UserModel::_ADMIN)) {
+                                    ?>
+                                    <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
+                                        thái</a>
+                                <?php } ?>
+                                <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                            </div>
+
+                            <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
+                        </div>
+                        <div class="tab-pane fade" id="failure">
+                            <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
+                        </div>
+                        <div class="tab-pane fade" id="success">
+                            <?= $this->render('_tab_done', ['dataProvider' => $successProvider]) ?>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -248,7 +257,6 @@ $js = <<<JS
             })
           return   Array.from(new Set(cate))
         }
-        
     })
     
 JS;

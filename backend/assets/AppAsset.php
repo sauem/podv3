@@ -12,7 +12,7 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-       // 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css',
+        // 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css',
         'https://use.fontawesome.com/releases/v5.3.1/css/all.css',
         '/lib/vendors/select2/dist/css/select2.min.css',
@@ -25,7 +25,7 @@ class AppAsset extends AssetBundle
         '/css/site.css'
     ];
     public $js = [
-      //  '/lib/vendors/jquery/dist/jquery.min.js',
+        //  '/lib/vendors/jquery/dist/jquery.min.js',
         '/lib/vendors/popper.js/dist/umd/popper.min.js',
         '/lib/vendors/bootstrap/dist/js/bootstrap.min.js',
         '/lib/vendors/metisMenu/dist/metisMenu.min.js',
@@ -50,6 +50,6 @@ class AppAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\YiiAsset',
-       //'yii\bootstrap\BootstrapAsset',
+        //'yii\bootstrap\BootstrapAsset',
     ];
 }

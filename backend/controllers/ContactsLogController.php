@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsLog;
 use backend\models\ContactsModel;
+use backend\models\UserModel;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
@@ -44,7 +45,7 @@ class ContactsLogController extends BaseController
 
             $cids = \Yii::$app->request->post('contact_id');
             $cids = explode(",", $cids);
-            if (sizeof($cids) <= 1) {
+            if (sizeof($cids) <= 1 && Helper::userRole(UserModel::_ADMIN)) {
                 if ($log->load(\Yii::$app->request->post(), '') && $log->save()) {
                     self::success('Thêm trạng thái thành công!');
                     return [
