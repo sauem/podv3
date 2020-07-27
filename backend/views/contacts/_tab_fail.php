@@ -73,7 +73,7 @@ use common\helper\Component;
             'created_at:date',
             [
                 'class' => ActionColumn::class,
-                'template' => '{takenote}{view}',
+                'template' => '{takenote}',
                 'buttons' => [
                     'takenote' => function ($url, $model) {
                         return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",

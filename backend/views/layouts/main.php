@@ -88,12 +88,12 @@ AppAsset::register($this);
 </div>
 
 <?php $this->endBody() ?>
-<?php if (Yii::$app->session->hasFlash('success')): ?>
+<?php if (Yii::$app->request->isPjax || Yii::$app->session->hasFlash('success')): ?>
     <script>
         toastr.success("<?= Yii::$app->session->getFlash('success') ?>");
     </script>
 <?php endif; ?>
-<?php if (Yii::$app->session->hasFlash('error')): ?>
+<?php if (Yii::$app->request->isPjax || Yii::$app->session->hasFlash('error')): ?>
     <script>
         toastr.warning("<?= Yii::$app->session->getFlash('error') ?>");
     </script>

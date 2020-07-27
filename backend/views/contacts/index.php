@@ -16,7 +16,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <?= $this->render('_collapse_order', ['model' => $order]) ?>
         </div>
+
         <div class="col-md-4">
+            <?php Pjax::begin([
+                'id' => 'pjax-info'
+            ])?>
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">Thông tin : <i class="fa fa-phone">
@@ -93,7 +97,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     </table>
                 </div>
             </div>
+            <?php Pjax::end() ?>
         </div>
+
         <div class="col-md-8">
             <div class="ibox">
                 <div class="ibox-body">

@@ -83,7 +83,7 @@ use common\helper\Helper;
                 ],
                 [
                     'class' => ActionColumn::class,
-                    'template' => '{takenote}{view}',
+                    'template' => '{takenote}',
                     'buttons' => [
                         'takenote' => function ($url, $model) {
 

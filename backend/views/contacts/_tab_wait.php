@@ -6,6 +6,7 @@ use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
 use common\helper\Helper;
+use kartik\grid\ExpandRowColumn;
 ?>
     <div class="table-responsive">
 
@@ -81,27 +82,18 @@ use common\helper\Helper;
                     }
                 ],
                 [
-                    'class' => ActionColumn::class,
-                    'template' => '{takenote}{view}',
-                    'buttons' => [
-                        'takenote' => function ($url, $model) {
-                            return Html::a("<i class='fa fa-newspaper-o'></i> Trạng thái",
-                                'javascript:;',
-                                [
-                                    'class' => 'btn btn-sm mb-1 bg-white btnNoteModal',
-                                    'data-contact' => $model->id,
-                                    'data-status' => $model->status,
-                                ]);
-                        },
-                        'view' => function ($url, $model) {
-                            return Html::a("<i class='fa fa-eye'></i> chi tiết", '#viewNote', [
-                                'data-remote' => \yii\helpers\Url::toRoute(['view', 'id' => $model->id]),
-                                'data-target' => "#viewNote",
-                                'data-toggle' => 'modal',
-                                'class' => 'btn btn-sm bg-white'
-                            ]);
-                        }
-                    ]
+                    'class' => ExpandRowColumn::class,
+                    'width' => '50px',
+                    'value' => function ($model, $key, $index, $column) {
+                        return GridView::ROW_COLLAPSED;
+                    },
+                    'detail' => function ($model, $key, $index, $column) {
+                        return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
+                    },
+                    'headerOptions' => ['class' => 'kartik-sheet-style'],
+                    'expandOneOnly' => true,
+                    'expandIcon' => '',
+                    'collapseIcon' => '',
                 ],
             ],
         ]) ?>
