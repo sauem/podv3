@@ -6,6 +6,7 @@ use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
 use backend\models\UserModel;
+use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
 
@@ -132,6 +133,8 @@ class doScanContact
             'status' => $status
         ], '');
         $model->save();
+
+        ActionLog::add("success",  "Số điện thoại $model->contact_phone được phân bổ cho tài khoản {$model->user_id}");
     }
 
 // số lượng được assign không có trạng thái completed
