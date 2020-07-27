@@ -134,7 +134,7 @@ class doScanContact
         ], '');
         $model->save();
 
-        ActionLog::add("success",  "Số điện thoại $model->contact_phone được phân bổ cho tài khoản {$model->user_id}");
+       // ActionLog::add("success",  "Số điện thoại $model->contact_phone được phân bổ cho tài khoản $user");
     }
 
 // số lượng được assign không có trạng thái completed
