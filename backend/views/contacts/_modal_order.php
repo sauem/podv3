@@ -49,8 +49,7 @@ use kartik\form\ActiveForm;
                                 <tr>
                                     <td width="30%">Sản phẩm</td>
                                     <td width="30%">Option</td>
-                                    <td width="15%">số lượng</td>
-                                    <td width="20%" class="text-right">đơn giá</td>
+                                    <td width="20%" class="text-right">Tổng cộng</td>
                                     <td></td>
                                 </tr>
                                 </thead>
@@ -173,11 +172,7 @@ use kartik\form\ActiveForm;
                 </select>
                 {{/if}}
             </td>
-            <td>
-                <input data-sku="{{product.sku}}" class="form-control qty-input" style="width: 80px;" type="number"
-                       name="product[{{product.sku}}][qty]"
-                       value="1">
-            </td>
+
             <td class="text-right">
                 <input data-sku="{{product.sku}}" value="{{ product.regular_price}}"
                        name="product[{{product.sku}}][price]" type="text"
@@ -191,11 +186,12 @@ use kartik\form\ActiveForm;
     </script>
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
-            <td><strong>Tổng hóa đơn</strong></td>
-            <td colspan="4" class="text-right">
+            <td colspan="2"><strong>Tổng đơn</strong></td>
+            <td class="text-left">
                 <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
             </td>
+            <td></td>
         </tr>
     </script>
 <?php

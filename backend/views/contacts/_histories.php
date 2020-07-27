@@ -15,10 +15,10 @@ use backend\models\ContactsModel;
             'dataProvider' => $dataProvider,
             'responsive' => true,
             'layout' => "{items}\n{pager}",
-            'pjax' => true,
-            'pjaxSettings' => [
-                'neverTimeout' => true,
-            ],
+//            'pjax' => true,
+//            'pjaxSettings' => [
+//                'neverTimeout' => true,
+//            ],
             'headerRowOptions' => [
                 'class' => 'thead-light'
             ],

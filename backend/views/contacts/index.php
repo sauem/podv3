@@ -5,11 +5,21 @@ use backend\models\ContactsAssignment;
 use yii\helpers\ArrayHelper;
 use common\helper\Helper;
 use backend\models\UserModel;
+use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<?php
+Pjax::begin([
+    'id' => 'pjaxPage'
+]);
+?>
     <div class="row">
+        <div class="col-md-12">
+            <?= $this->render('_collapse_order', ['model' => $order]) ?>
+        </div>
         <div class="col-md-4">
             <div class="ibox">
                 <div class="ibox-head">
@@ -43,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php } ?>
                         </tbody>
                         <?php
-                        if ($time = \backend\models\UserModel::hasCallback()) {
+                        if ($time = UserModel::hasCallback()) {
                             ?>
                             <tfoot>
                             <tr>
@@ -81,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tr>
                         <tr>
                             <td>SĐT đã hoàn thành hôm nay:</td>
-                            <td><?= \backend\models\UserModel::completed() . " /" . $user->phone_of_day ?></td>
+                            <td><?= UserModel::completed() . " /" . $user->phone_of_day ?></td>
                         </tr>
                         </tbody>
                     </table>
@@ -159,12 +169,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <?= $this->render('_modal_remote') ?>
 
 <?= $this->render('_modal', ['model' => $modelNote]) ?>
-<?= $this->render('_modal_order', ['model' => $order]) ?>
-
 <?php
-$route = \yii\helpers\Url::toRoute(Yii::$app->controller->getRoute());
-$loadProduct = \yii\helpers\Url::toRoute(['ajax/load-product-select']);
-$skuURL = \yii\helpers\Url::toRoute(['ajax/load-sku']);
+Pjax::end();
+?>
+<?php
+$route = Url::toRoute(Yii::$app->controller->getRoute());
+$loadProduct = Url::toRoute(['ajax/load-product-select']);
+$skuURL = Url::toRoute(['ajax/load-sku']);
 $js = <<<JS
    
     $("document").ready(function() {
@@ -173,6 +184,7 @@ $js = <<<JS
             products : [],
             total : 0
         }
+        
         $("#createOrder").click(function() {
             var keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(keys.length <= 0){
@@ -183,13 +195,13 @@ $js = <<<JS
                 });
                 return;
             }
-           $("#takeOrder").modal()
-            getCountry("select[name='country']");
-           $('#takeOrder').on('shown.bs.modal', function () {
-               loadProducts(keys);
-               loadSku(getSelectedColum());
-               getCountry("select[name='country']");
-            })
+           $("#collapse-order").collapse('show');
+            
+           $("html, body").animate({ scrollTop: 0 }, "slow");
+           restOrder();
+           getCountry("select[name='country']");
+           loadProducts(keys);
+           loadSku(getSelectedColum());
         });
        
         function loadProducts(keys) {
@@ -201,41 +213,13 @@ $js = <<<JS
                     cache : false,
                     success: function(res) {
                         let html =  compileTemplate("template-product",res.customer);
-                        $("#resultInfo").html(html) 
-                           let _same = 1;
-                           
-                           res.product.map(  item  => {
-                                    item.qty  = _same
-                                  let _set_data = {
-                                      customer : res.customer,
-                                      product : item
-                                  }
-                                  let _cacheItem = {
-                                        qty : _same,
-                                        sku : item.sku,
-                                        price : item.regular_price
-                                  }
-                                  if(ORDER.skus.includes(item.sku)){
-                                         _same = _same + 1
-                                     let vm =  ORDER.products;
-                                     vm.map((_item,index) => {
-                                          if(item.sku ==  _item.sku){
-                                              vm[index].qty =  _same
-                                          }
-                                      });
-                                  }else{
-                                      ORDER.skus.push(item.sku)
-                                        ORDER.products.push(_cacheItem)
-                                        ORDER.total = res.total
-                                        let html = compileTemplate("template-item-product",_set_data)
-                                        $("#resultItemProduct").append(html)
-                                  }
-                         })
-                      initTotal()
+                        $("#resultInfo").html(html);
+                         setORDER(res);
                     }
                 })
             }
         }  
+     
         function loadSku(_keys) {
            $.ajax({
             url : '$skuURL',
@@ -257,7 +241,24 @@ $js = <<<JS
             })
           return   Array.from(new Set(cate))
         }
-    })
+        
+        function setORDER(res) {
+            let _products = res.product;
+            _products.map( item  => {
+                if(ORDER.skus.includes(item.sku)){
+                    return 0;
+                };
+                ORDER.skus.push(item.sku);
+               __addItemProduct(item);
+            });
+            renderProduct();
+        }
+        function renderProduct() {
+            ORDER.products.map( product => {
+                $("#resultItemProduct").append(compileTemplate("template-item-product",product));
+            })
+        }
+    });
     
 JS;
 

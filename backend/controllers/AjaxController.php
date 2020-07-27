@@ -33,7 +33,6 @@ class AjaxController extends BaseController
         $contacts = ContactsModel::find()
             ->with('page')
             ->where(['IN', 'contacts.id', $ids])->asArray()->all();
-
         $total = array_sum(ArrayHelper::getColumn($contacts, 'page.product.regular_price'));
         $product = ArrayHelper::getColumn($contacts, 'page.product');
         $selected = ArrayHelper::getColumn($contacts, 'option');
@@ -42,8 +41,12 @@ class AjaxController extends BaseController
             $product[$k]['selected'] = $selected[$k];
         }
         $customer = $contacts[0];
+        $ids =  ArrayHelper::getColumn($contacts,'id');
         return [
-            'customer' => $customer,
+            'customer' => [
+                'info' => $customer,
+                'ids' => $ids
+            ],
             'product' => $product,
             'total' => $total
         ];
@@ -51,8 +54,7 @@ class AjaxController extends BaseController
 
     function actionLoadSku()
     {
-        $keys = \Yii::$app->request->post('keys');
-        $sku = ProductsModel::findAll(['category_id' => $keys]);
+        $sku = ProductsModel::find()->all();
         return $sku;
     }
 

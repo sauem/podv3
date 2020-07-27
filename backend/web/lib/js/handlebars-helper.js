@@ -21,16 +21,20 @@ Handlebars.registerHelper("money", function (value,options) {
     return (ds ? num.replace('.', ds) : num).replace(new RegExp(re, 'g'), '$&' + ts);
 })
 Handlebars.registerHelper("selected",function (val1, val2) {
+
     if(typeof val1 == "undefined" || typeof val2 == "undefined"){
-        return ""
+        return "";
     }
     if(val1.trim() == val2.trim()){
-        return 'selected'
+        return 'selected';
     }
-    return  ''
+    return  '';
 })
 Handlebars.registerHelper("hasArray",function (filter , array) {
-    return array.includes(filter)
+    if(array.length > 0 && !filter){
+        return true;
+    }
+    return array.includes(filter);
 })
 
 Handlebars.registerHelper("date", function (number) {

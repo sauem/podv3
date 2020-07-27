@@ -12,10 +12,10 @@ use common\helper\Component;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
-        'pjax' => true,
-        'pjaxSettings' => [
-            'neverTimeout' => true,
-        ],
+//        'pjax' => true,
+//        'pjaxSettings' => [
+//            'neverTimeout' => true,
+//        ],
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],

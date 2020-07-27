@@ -93,27 +93,6 @@ function initDateRage() {
     $('.daterange').attr("placeholder","Ngày tạo đơn");
 }
 
-function caculate(total = {total: 0, saleTotal: 0, subTotal: 0}, res, action = "delete") {
-    let final = total;
-    switch (action) {
-        case "del":
-            final = {
-                saleTotal: total.saleTotal - res.saleTotal,
-                subTotal: total.SubTotal - res.subTotal,
-                total: total.total - res.total
-            }
-            break;
-        default:
-            final = {
-                saleTotal: total.saleTotal + res.saleTotal,
-                subTotal: total.SubTotal + res.subTotal,
-                total: total.total + res.total
-            }
-            break;
-    }
-    return final;
-}
-
 initRemote("viewNote");
 function initRemote(_modal) {
     $('#' + _modal).on('show.bs.modal', function (e) {
@@ -145,70 +124,48 @@ function getCountry(select) {
 
 }
 
-//
-// function setSelectionRange(input, selectionStart, selectionEnd) {
-//     if (input.setSelectionRange) {
-//         input.focus();
-//         input.setSelectionRange(selectionStart, selectionEnd);
-//     } else if (input.createTextRange) {
-//         var range = input.createTextRange();
-//         range.collapse(true);
-//         range.moveEnd('character', selectionEnd);
-//         range.moveStart('character', selectionStart);
-//         range.select();
-//     }
-// }
-//
-// function setCaretToPos(input, pos) {
-//     setSelectionRange(input, pos, pos);
-// }
-//
-//
-// $("body").on("click",".money",function() {
-//     var inputLength = $(this).val().length;
-//     setCaretToPos($(this)[0], inputLength)
-// });
-
-function initMoney() {
-    var options = {
-        onKeyPress: function(cep, e, field, options){
-            if (cep.length<=6)
-            {
-
-                var inputVal = parseFloat(cep);
-                jQuery('#money').val(inputVal.toFixed(2));
-            }
-
-            // setCaretToPos(jQuery('#money')[0], 4);
-
-            var masks = ['#,##0.00', '0.00'];
-            mask = (cep == 0) ? masks[1] : masks[0];
-            $('.money').mask(mask, options);
-        },
-        reverse: true
-    };
-
-   $("body").find('.money').mask('#,##0.00', options);
-
-}
-
 function restOrder() {
     ORDER.total = 0;
     ORDER.products = [];
     ORDER.skus = [];
+    $("#resultItemProduct").empty();
+    $("#resultInfo").empty();
 }
 
-function changeQty(_sku , _qty) {
-    let products = ORDER.products
-    let _changed = products.find(item => item.sku == _sku)
-    let _old_price = _changed.price * _changed.qty
-    let _new_price = _changed.price  * _qty
-    let _new = {
-        qty : _qty,
-        sku :_sku,
-        price : _changed.price
-    }
-    ORDER.products = products.filter(item => item.sku !== _sku)
-    ORDER.products.push(_new)
-    ORDER.total = ORDER.total - _old_price + _new_price
+function __addItemProduct(item) {
+    let _item  = {
+        sku : item.sku,
+        price : parseFloat(item.regular_price),
+        name : item.name,
+        option : item.option,
+        category : item.category.name,
+        selected: item.selected
+    };
+    ORDER.products.push(_item);
+    __reloadTotal();
+    return _item;
+}
+function __reloadTotal() {
+    let _p = ORDER.products;
+    let _total = 0;
+    _p.map(item => {
+        _total  = _total + parseFloat(item.price);
+    })
+    ORDER.total = _total;
+
+    $("#totalResult").html(compileTemplate("total-template",ORDER));
+}
+
+function __changeProductPrice(_sku, val) {
+    let _products = ORDER.products;
+    _products.map( item => {
+        if(item.sku == _sku){
+            item.price = val;
+        }
+    })
+    __reloadTotal();
+}
+
+function __reloadData(_url) {
+    $.pjax.reload({container: "#pjaxPage", url : _url, async: false});
 }

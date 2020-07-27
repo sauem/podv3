@@ -73,7 +73,6 @@ class OrdersController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new OrdersModel();
-
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post(), '')) {
             try {
                 if ($model->save()) {
@@ -83,7 +82,6 @@ class OrdersController extends Controller
                         $product['order_id'] = $model->id;
                         $product['price'] = $item['price'];
                         $product['product_sku'] = $item['product_sku'];
-                        $product['qty'] = $item['qty'];
                         $product['product_option'] = Yii::$app->request->post('option') ? Yii::$app->request->post('option') : null;
 
                         $items = new OrdersItems;
@@ -103,7 +101,7 @@ class OrdersController extends Controller
                     ];
                 }
             } catch (\Exception $e) {
-                ActionLog::add("error", "Tạo đơn hàng " .$e->getMessage());
+                ActionLog::add("error", "Tạo đơn hàng thất bại " .$e->getMessage());
                 return [
                     'success' => 0,
                     'msg' => $e->getMessage()

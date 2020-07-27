@@ -101,7 +101,7 @@ class ContactsModel extends BaseModel
     {
         return [
             [['phone'], 'required', 'message' => '{attribute} không được để trống!'],
-            [['address', 'option', 'link', 'short_link', 'street'], 'string'],
+            [['address', 'option', 'link', 'short_link', 'street','code'], 'string'],
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
             [['name', 'note', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],

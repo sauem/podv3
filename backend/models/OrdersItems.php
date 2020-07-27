@@ -37,7 +37,7 @@ class OrdersItems extends BaseModel
     {
         return [
             [['order_id','qty'], 'integer'],
-            [['order_id', 'product_sku','qty','price'], 'required'],
+            [['order_id', 'product_sku','price'], 'required'],
             [['price'], 'number'],
             [['product_sku'], 'string']
         ];
