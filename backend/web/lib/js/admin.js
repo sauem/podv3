@@ -166,7 +166,7 @@ function __changeProductPrice(_sku, val) {
     __reloadTotal();
 }
 
-function __reloadData(_url) {
+function __reloadData() {
     let pjaxs = [];
     $("body").find("div[id^='pjax']").each(function (item , index) {
          let _id = "#" + $(this).attr("id");

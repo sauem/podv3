@@ -2,9 +2,7 @@
 
 use kartik\grid\GridView;
 use kartik\grid\CheckboxColumn;
-use kartik\grid\ActionColumn;
 use yii\helpers\Html;
-use common\helper\Component;
 use common\helper\Helper;
 use kartik\grid\ExpandRowColumn;
 ?>
@@ -85,15 +83,14 @@ use kartik\grid\ExpandRowColumn;
                     'class' => ExpandRowColumn::class,
                     'width' => '50px',
                     'value' => function ($model, $key, $index, $column) {
-                        return GridView::ROW_COLLAPSED;
+                        return GridView::ROW_EXPANDED;
                     },
                     'detail' => function ($model, $key, $index, $column) {
                         return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
                     },
-                    'headerOptions' => ['class' => 'kartik-sheet-style'],
+                    'headerOptions' => ['class' => 'expand-area'],
                     'expandOneOnly' => true,
-                    'expandIcon' => '',
-                    'collapseIcon' => '',
+                    'detailRowCssClass' => GridView::TYPE_DEFAULT
                 ],
             ],
         ]) ?>

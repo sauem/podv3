@@ -21,6 +21,7 @@ class ContactsLogController extends BaseController
             ->with('contact')->asArray()->all();
         if ($logs) {
             return [
+                'key' => $id,
                 'success' => 1,
                 'logs' => $logs,
                 'selected' => ArrayHelper::getValue(array_shift($logs), 'status'),
@@ -29,6 +30,7 @@ class ContactsLogController extends BaseController
         }
 
         return [
+            'key' => $id,
             'success' => 1,
             'logs' => [],
             'status' => ContactsModel::STATUS
@@ -43,11 +45,12 @@ class ContactsLogController extends BaseController
         if (\Yii::$app->request->isPost) {
 
 
+
             $cids = \Yii::$app->request->post('contact_id');
             $cids = explode(",", $cids);
-            if (sizeof($cids) <= 1 && Helper::userRole(UserModel::_ADMIN)) {
+
+            if (sizeof($cids) <= 1) {
                 if ($log->load(\Yii::$app->request->post(), '') && $log->save()) {
-                    self::success('Thêm trạng thái thành công!');
                     return [
                         'success' => 1
                     ];
@@ -64,7 +67,6 @@ class ContactsLogController extends BaseController
                     $log->load($raw, '');
                     $log->save();
                 }
-                self::success('Thêm trạng thái thành công!');
                 return [
                     'success' => 1
                 ];

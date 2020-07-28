@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\jobs\scanNewContact;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use Yii;
@@ -54,14 +55,14 @@ class ContactsModel extends BaseModel
     const _NEW = null;
 
     const STATUS = [
+        self::_NEW => 'Đợi xử lý',
         self::_OK => 'Thành công',
         self::_CALLBACK => 'Hẹn gọi lại',
         self::_PENDING => 'Thuê bao',
         self::_CANCEL => 'Hủy',
         self::_DUPLICATE => 'Trùng số',
         self::_NUMBER_FAIL => 'Sai số',
-        self::_SKIP => 'Bỏ qua',
-        self::_NEW => 'Đợi xử lý'
+        self::_SKIP => 'Bỏ qua'
     ];
 
     static function label($status)
@@ -203,6 +204,7 @@ class ContactsModel extends BaseModel
             ActionLog::add("success","Thêm liên hệ mới $this->id");
         }
         ActionLog::add("success","Cập nhật trạng thái liên hệ $this->id");
+       // Yii::$app->queue->push(new scanNewContact());
         parent::afterSave($insert, $changedAttributes);
     }
 

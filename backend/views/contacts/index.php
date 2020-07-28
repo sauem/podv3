@@ -168,9 +168,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $this->render('_histories', ['dataProvider' => $histories]) ?>
         </div>
     </div>
-<?= $this->render('_modal_remote') ?>
-
-<?= $this->render('_modal', ['model' => $modelNote]) ?>
 
 <?php
 $route = Url::toRoute(Yii::$app->controller->getRoute());
