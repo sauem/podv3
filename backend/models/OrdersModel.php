@@ -52,7 +52,7 @@ class OrdersModel extends BaseModel
     {
         return [
             [['customer_name', 'customer_phone','address','zipcode'], 'required'],
-            [['zipcode', 'user_id', 'created_at', 'updated_at'], 'integer'],
+            [['zipcode', 'user_id', 'created_at', 'updated_at','payment_method'], 'integer'],
             [['sale', 'sub_total', 'total'], 'number'],
             [['customer_name', 'address', 'city', 'district', 'country', 'order_note', 'status_note','contact_id','vendor_note'], 'string', 'max' => 255],
             [['customer_phone'], 'string', 'max' => 15],
@@ -111,6 +111,9 @@ class OrdersModel extends BaseModel
             'order_note' => 'Ghi chú đơn hàng',
             'user_id' => 'Người tạo đơn',
             'status' => 'Trạng thái',
+            'payment_method' => 'Phuơng thức thanh toán',
+            'bill_transfer' => 'Hoá đơn chuyển khoản',
+            'shipping_price' => 'Gía vận chuyển',
             'status_note' => 'Ghi chú xác nhận',
             'created_at' => 'Ngày tạo đơn',
             'updated_at' => 'Ngày cập nhật',
@@ -138,5 +141,9 @@ class OrdersModel extends BaseModel
     }
     public function getContacts(){
         return $this->hasMany(OrdersContacts::className(),['order_id' => 'id'])->with('contact');
+    }
+
+    public function getPayment(){
+        return $this->hasOne(Payment::className(),['id' => 'payment_method']);
     }
 }
