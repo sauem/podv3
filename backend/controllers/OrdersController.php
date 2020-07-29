@@ -82,7 +82,7 @@ class OrdersController extends Controller
                         $product['order_id'] = $model->id;
                         $product['price'] = $item['price'];
                         $product['product_sku'] = $item['product_sku'];
-                        $product['product_option'] = Yii::$app->request->post('option') ? Yii::$app->request->post('option') : null;
+                        $product['product_option'] = $item['product_option'] ? $item['product_option'] : null;
 
                         $items = new OrdersItems;
                         if ($items->load($product, "") && $items->save()) {

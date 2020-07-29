@@ -67,7 +67,7 @@ class Payment extends BaseModel
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPaymentInfos()
+    public function getInfos()
     {
         return $this->hasMany(PaymentInfo::className(), ['payment_id' => 'id']);
     }

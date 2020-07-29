@@ -179,7 +179,8 @@ $js = <<<JS
         window.ORDER = {
             skus : [],
             products : [],
-            total : 0
+            total : 0,
+            shipping : 0
         }
         
         $("#createOrder").click(function() {
@@ -196,7 +197,6 @@ $js = <<<JS
             
            $("html, body").animate({ scrollTop: 0 }, "slow");
            restOrder();
-           getCountry("select[name='country']");
            loadProducts(keys);
            loadSku(getSelectedColum());
         });

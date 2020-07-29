@@ -7,10 +7,12 @@ use yii\base\Model;
 class UploadForm extends Model
 {
     public $excelFile;
+
     public function rules()
     {
         return [
-            [['excelFile'],'file','skipOnEmpty' => false,'extensions' => 'xlsx,csv']
+            [['excelFile'],'file','skipOnEmpty' => false,'extensions' => 'xlsx,csv'],
+
         ];
     }
 
@@ -24,4 +26,5 @@ class UploadForm extends Model
         }
         return false;
     }
+
 }

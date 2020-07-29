@@ -7,7 +7,8 @@ use yii\helpers\Url;
     <div id="collapse-order" class="collapse">
         <div class="ibox">
             <div class="ibox-head">
-                <div class="col-12 text-right   ">
+                <h2 class="ibox-title"><i class="fa fa-shopping-cart"></i> Tạo đơn hàng</h2>
+                <div class="text-right   ">
                     <small class="text-danger">Các thông tin (*) là bắt buộc</small>
                     <button type="button" class="btn btn-secondary" data-target="#collapse-order"
                             data-toggle="collapse">Hủy
@@ -18,6 +19,9 @@ use yii\helpers\Url;
             <div class="ibox-body">
                 <?php $form = ActiveForm::begin([
                     'id' => 'formOrder',
+                    'options' => [
+                        'enctype' => 'multipart/form-data'
+                    ],
                     'enableClientValidation' => true,
                     'enableAjaxValidation' => true,
                     'action' => Url::toRoute(['orders/create'])
@@ -28,41 +32,34 @@ use yii\helpers\Url;
 
                     <div class="col-md-5">
                         <div class="row">
-                            <div class="col-12">
-                                <h5 class="text-info  m-t-10"><i class="fa fa-bar-chart"></i> Thông tin khách hàng
-                                </h5>
-
-                            </div>
                             <div id="resultInfo" class="col-12">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-7">
-                        <h5><i class="fa fa-bar-chart"></i> Sản phẩm đặt mua</h5>
                         <div class="d-flex justify-content-between">
+                            <h5 class="ibox-title"><i class="fa fa-shopping-bag"></i> Sản phẩm đặt mua</h5>
                             <div id="resultProduct">
                             </div>
                         </div>
-                        <hr>
-                        <div>
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <td width="30%">Sản phẩm</td>
-                                    <td width="30%">Option</td>
-                                    <td width="20%" class="text-right">Tổng cộng</td>
-                                    <td></td>
-                                </tr>
-                                </thead>
-                                <tbody id="resultItemProduct">
 
-                                </tbody>
-                                <tfoot id="totalResult">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <td width="30%">Sản phẩm</td>
+                                <td width="30%">Option</td>
+                                <td width="20%" class="text-right">Tổng cộng</td>
+                                <td></td>
+                            </tr>
+                            </thead>
+                            <tbody id="resultItemProduct">
 
-                                </tfoot>
+                            </tbody>
+                            <tfoot id="totalResult">
 
-                            </table>
-                        </div>
+                            </tfoot>
+
+                        </table>
                     </div>
                     <div class="col-12 text-right   ">
                         <small class="text-danger">Các thông tin (*) là bắt buộc</small>
@@ -127,7 +124,35 @@ use yii\helpers\Url;
                     <label>Quốc gia <span class="text-danger"></span></label>
                     <select class="form-control select2" name="country">
                         <option value="">Chọn quốc gia</option>
+                        {{#each this.countries}}
+                        <option value="{{this.code}}">{{this.name}}</option>
+                        {{/each}}
                     </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Phương thức thanh toán <span class="text-danger">(*)</span></label>
+                    <select required class="form-control" name="payment_id">
+                        <option value="">Chọn PTTT...</option>
+                        {{#each this.payment}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Phí vận chuyển </label>
+                    <input required min="0" type="number" name="shipping_price" value="0" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group bill-image" data-toggle="tooltip"
+                     title="Tiệp hình ảnh .jpg,png,jpeg hoặc file pdf">
+                    <label><i class="fa fa-cloud-upload"></i> Chọn hóa đơn chuyển khoản <br>
+                    </label>
+                    <input type="file" name="bill_transfer[]" multiple>
                 </div>
             </div>
             <div class="col-md-12">
@@ -200,6 +225,7 @@ use yii\helpers\Url;
 
 $loadProduct = Url::toRoute(['ajax/load-product']);
 $totalUpdate = Url::toRoute(['ajax/update-total']);
+$billtransfer = Url::toRoute(['ajax/upload-bill']);
 $currentPage = Url::toRoute(Yii::$app->controller->getRoute());
 $js = <<<JS
  $("body").on('click','.removeItem',function() {
@@ -269,5 +295,52 @@ $js = <<<JS
         })
       return false;
     })
+    $("body").on("change","input[name='shipping_price']",function() {
+        let _val = $(this).val();
+        ORDER.shipping = typeof _val == "undefined" ? 0 : _val;
+        __reloadTotal();
+    });
+    
+    $("body").on("change","select[name='payment_id']",function() {
+      let _val = $(this).val();
+        switch (_val) {
+          case "1":
+              $(".bill-image").css({"display" : "block"});
+              $(".bill-image").find("input[type='file']").attr("required",true);
+              break;
+              default:
+                  $(".bill-image").css({"display" : "none"});
+                   $(".bill-image").find("input[type='file']").attr("required",false);
+                  break;
+        }
+    });
+    
+    $("body").on("change","input[name='bill_transfer[]']",function() {
+        let _file = $(this)[0].files[0];
+        let _type = ["application/pdf","image/jpeg","image/png","image/jpg"];
+        if(!_type.includes(_file.type)){
+            toastr.warning(_file.name + " không đúng định dạng!");
+            return;
+        }
+        let _form = new FormData();
+          _form.append("ImageUpload[bill_transfer]", _file);
+         $(this).parent().find("label").text(_file.name + " được chọn");
+         console.log(_file);
+        $.ajax({
+            url : '$billtransfer',
+            type: 'POST',
+            data : _form,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success : function(res) {
+               if(res.success){
+                   toastr.success("Thành công!");
+               }else{
+                   toastr.warning(res.path);
+               }
+            }
+        });
+    });
 JS;
 $this->registerJs($js);

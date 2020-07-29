@@ -22,7 +22,7 @@ class AppAsset extends AssetBundle
         '/lib/vendors/jvectormap/jquery-jvectormap-2.0.3.css',
         'https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css',
         '/lib/css/main.min.css',
-        '/css/site.css'
+        '/css/site.css?v=1.2'
     ];
     public $js = [
         //  '/lib/vendors/jquery/dist/jquery.min.js',
