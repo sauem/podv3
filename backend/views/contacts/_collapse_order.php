@@ -300,7 +300,7 @@ $js = <<<JS
         __reloadTotal();
     });
     
-    $("body").on("change","select[name='payment_id']",function() {
+    $("body").on("change","select[name='payment_method']",function() {
       let _val = $(this).val();
         switch (_val) {
           case "1":
@@ -324,7 +324,6 @@ $js = <<<JS
         let _form = new FormData();
           _form.append("ImageUpload[bill_transfer]", _file);
          $(this).parent().find("label").text(_file.name + " được chọn");
-         console.log(_file);
         $.ajax({
             url : '$billtransfer',
             type: 'POST',

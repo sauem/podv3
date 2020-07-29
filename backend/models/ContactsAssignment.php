@@ -105,7 +105,8 @@ class ContactsAssignment extends BaseModel
             ->one();
         if($assignment){
                $assignment->status  = ContactsAssignment::_PROCESSING;
-             return  $assignment->save();
+            Yii::$app->session->setFlash("success", "Số điện thoại mới được áp dụng!");
+            return  $assignment->save();
         }
         return false;
     }

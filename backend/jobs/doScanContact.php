@@ -24,7 +24,16 @@ class doScanContact
 
             if ($count >= 2) {
                 self::openCallback($user);
-              //  self::pendingStatus($user);
+                if(!self::isLimitOfDay($user) && !self::hasProcessing($user)){
+                    foreach ($phones as $phone){
+                        if (self::isLimitOfDay($user)) {
+                            break;
+                        }
+                        if(!self::phoneExitsts($phone)){
+                            self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                        }
+                    }
+                }
                 continue;
             } else {
                 if (self::isLimitOfDay($user)) {
@@ -209,5 +218,16 @@ class doScanContact
         }else{
             return false;
         }
+    }
+
+    static function hasProcessing($user){
+        $model =  ContactsAssignment::find()
+            ->where(['user_id' => $user])
+            ->andWhere(['status' => ContactsAssignment::_PROCESSING])
+            ->count();
+        if($model >= 1){
+            return true;
+        }
+        return  false;
     }
 }
