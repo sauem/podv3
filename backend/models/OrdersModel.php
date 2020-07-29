@@ -144,6 +144,9 @@ class OrdersModel extends BaseModel
     }
 
     public function getPayment(){
-        return $this->hasOne(Payment::className(),['id' => 'payment_method']);
+        return $this->hasOne(Payment::className(),['id' => 'payment_method'])->with('infos');
+    }
+    public function getBillings(){
+        return $this->hasMany(OrdersBilling::className(),['order_id' => 'id']);
     }
 }

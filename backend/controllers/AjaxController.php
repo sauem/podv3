@@ -318,7 +318,7 @@ class AjaxController extends BaseController
         $names = Yii::$app->request->post('images');
         if(sizeof($names) > 0){
             foreach ($names as $name){
-                unlink(Yii::getAlias("@uploads") . "/$name");
+                unlink(Yii::getAlias("@files") . "/$name");
             }
             OrdersBilling::deleteAll(['path' => $names]);
         }

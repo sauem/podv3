@@ -1,5 +1,7 @@
 <?php
 use common\helper\Helper;
+use yii\helpers\Html;
+
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Orders Models', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -46,8 +48,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                     <tr>
                         <td>Quốc gia:</td>
-                        <td><?= \common\helper\Helper::getCountry($model->country)?></td>
+                        <td><?=Helper::getCountry($model->country)?></td>
                     </tr>
+                    <tr>
+                        <td>Hình thức thanh toán</td>
+                        <td><?= $model->payment->name?></td>
+                    </tr>
+                    <?php if($model->billings){
+                        ?>
+                        <tr>
+                            <td>Hoá đơn chuyển khoản</td>
+                            <td>
+                                <?php foreach ($model->billings as $billing){
+                                    echo Html::img(Helper::getImage($billing->path),['class' => 'img img-fluid']);
+                                } ?>
+                            </td>
+                        </tr>
+                    <?php
+                    }?>
                 </table>
             </div>
         </div>
@@ -70,8 +88,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <th>Sản phẩm</th>
                             <th>Lựa chọn</th>
-                            <th>Số lượng</th>
-                            <th>Đơn giá</th>
                             <th>Tổng</th>
                         </tr>
                     </thead>
@@ -82,19 +98,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <td><?= $item->product->sku?> | <?= $item->product->name?></td>
                                     <td><?= $item->product_option?></td>
-                                    <td><?= $item->qty?></td>
                                     <td><?= Helper::money($item->price)?></td>
-                                    <td><?= Helper::money($item->price * $item->qty)?></td>
                                 </tr>
                         <?php
                             }
                         }else{
-                            echo "<t><td colspan='5' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
+                            echo "<t><td colspan='3' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
                         }?>
                     </tbody>
                     <thead>
                         <tr>
-                            <td colspan="4"><strong>Tổng hóa đơn</strong></td>
+                            <td colspan="2"><strong>Tổng hóa đơn</strong></td>
                             <td><strong><?= Helper::money($model->total)?></strong></td>
                         </tr>
                     </thead>

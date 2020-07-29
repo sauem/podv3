@@ -44,7 +44,7 @@ class OrdersSearchModel extends OrdersModel
      */
     public function search($params)
     {
-        $query = OrdersModel::find()->with('items')->with('contacts');
+        $query = OrdersModel::find()->orderBy(['created_at' => SORT_DESC])->with('items')->with('contacts');
 
         // add conditions that should always apply here
 

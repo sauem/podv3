@@ -19,7 +19,7 @@ class ImageUpload extends Model
     }
 
     function upload(){
-        $filePath =  UPLOAD_PATH;
+        $filePath =  \Yii::getAlias("@files") . "/";
         $paths = [];
         if($this->validate()){
             foreach ($this->billFile as $k => $file){

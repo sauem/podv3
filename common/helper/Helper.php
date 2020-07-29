@@ -48,4 +48,7 @@ class Helper
     static function toDate($number, $format = "H:i:s d/m"){
         return date($format,$number);
     }
+    static function getImage($name){
+        return "/uploads/$name";
+    }
 }
