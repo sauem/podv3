@@ -204,7 +204,7 @@ class ContactsModel extends BaseModel
             ActionLog::add("success","Thêm liên hệ mới $this->id");
         }
         ActionLog::add("success","Cập nhật trạng thái liên hệ $this->id");
-       // Yii::$app->queue->push(new scanNewContact());
+        Yii::$app->queue->push(new scanNewContact());
         parent::afterSave($insert, $changedAttributes);
     }
 

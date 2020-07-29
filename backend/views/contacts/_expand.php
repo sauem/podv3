@@ -115,7 +115,13 @@ $js = <<<JS
         let _form = $(this).closest("#noteForm_"+ _key );
         let _url = _form.attr("action");
         let _formData = new FormData(_form[0]);
-        
+
+        if((_formData.get("status") == "pending" ||
+         _formData.get("status") == "callback") && 
+         _formData.get("callback_time") == ""){
+            toastr.warning("Hãy đặt thời gian gọi lại!");
+            return false;
+        }
         $.ajax({    
             url : _url,
             data : _formData,
