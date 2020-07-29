@@ -3,6 +3,8 @@ namespace common\helper;
 
 use yii\helpers\ArrayHelper;
 use Yii;
+use yii\helpers\Url;
+
 class Helper
 {
     static function prinf($data){
@@ -49,6 +51,6 @@ class Helper
         return date($format,$number);
     }
     static function getImage($name){
-        return "/uploads/$name";
+        return Url::to("/file/$name");
     }
 }

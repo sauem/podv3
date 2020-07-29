@@ -15,6 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h2 class="ibox-title">
                     Khách hàng
                 </h2>
+                <div class="ibox-tools">
+                    <button class="btn btn-sm btn-info"><i class="fa fa-cloud-download"></i> Xuất đơn hàng</button>
+                </div>
             </div>
             <div class="ibox-body">
                 <table class="table">
@@ -60,7 +63,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td>Hoá đơn chuyển khoản</td>
                             <td>
                                 <?php foreach ($model->billings as $billing){
-                                    echo Html::img(Helper::getImage($billing->path),['class' => 'img img-fluid']);
+                                    echo "<a target='_blank' href='".Helper::getImage($billing->path)."'>";
+                                    echo Html::img(Helper::getImage($billing->path),['class' => 'img mb-2 img-fluid']);
+                                    echo "</a>";
                                 } ?>
                             </td>
                         </tr>
@@ -105,6 +110,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         }else{
                             echo "<t><td colspan='3' class='text-warning text-center'>Không có sản phẩm nào</td></t>";
                         }?>
+                    <tr>
+                        <td colspan="2">Phí vận chuyển</td>
+                        <td><?= Helper::money($model->shipping_price)?></td>
+                    </tr>
                     </tbody>
                     <thead>
                         <tr>
@@ -132,7 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th>Đăng kí</th>
                         <th>Lựa chọn</th>
                         <th>Trang đích</th>
-                        <th>Ngày liên hệ</th>
+                        <th>Ngày đăng kí</th>
                     </tr>
                     </thead>
                     <tbody>

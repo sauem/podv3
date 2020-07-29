@@ -131,6 +131,7 @@ function restOrder() {
     ORDER.total = 0;
     ORDER.products = [];
     ORDER.billings = [];
+    ORDER.shipping = 0;
     ORDER.skus = [];
     $("#resultItemProduct").empty();
     $("#resultInfo").empty();

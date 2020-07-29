@@ -212,6 +212,11 @@ use yii\helpers\Url;
     </script>
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
+            <td colspan="2">Phí ship</td>
+            <td><strong>{{money this.shipping}}</strong></td>
+            <td></td>
+        </tr>
+        <tr>
             <td colspan="2"><strong>Tổng đơn</strong></td>
             <td class="text-left">
                 <strong>{{money this.total}}</strong>
