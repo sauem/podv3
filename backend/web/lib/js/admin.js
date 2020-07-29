@@ -130,6 +130,7 @@ function getCountry(select) {
 function restOrder() {
     ORDER.total = 0;
     ORDER.products = [];
+    ORDER.billings = [];
     ORDER.skus = [];
     $("#resultItemProduct").empty();
     $("#resultInfo").empty();
@@ -187,4 +188,14 @@ function __reloadData() {
     $.pjax.reload({container: pjaxs[0], timeout: false});
 }
 
-$('[data-toggle="tooltip"]').tooltip();
+function _removeImage() {
+    $.ajax({
+        url : config.removeImages,
+        type : "POST",
+        cache : false,
+        data :{images : ORDER.billings},
+        success : function (res) {
+            console.log(res)
+        }
+    })
+}

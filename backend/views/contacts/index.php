@@ -201,6 +201,12 @@ $js = <<<JS
            loadProducts(keys);
            loadSku(getSelectedColum());
         });
+        
+       $("#collapse-order").on("hidden.bs.collapse", function() {
+            if(ORDER.billings.length > 0){
+                _removeImage();
+            }
+       });
        
         function loadProducts(keys) {
             if(keys.length > 0){

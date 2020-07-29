@@ -7,6 +7,7 @@ namespace backend\controllers;
 use backend\models\CategoriesModel;
 use backend\models\ContactsModel;
 use backend\models\LogsImport;
+use backend\models\OrdersBilling;
 use backend\models\OrdersModel;
 use backend\models\ProductsModel;
 use cakebake\actionlog\model\ActionLog;
@@ -310,6 +311,19 @@ class AjaxController extends BaseController
             'success' => $status,
             'error' => $errors,
             'totalInsert' => $count
+        ];
+    }
+
+    function actionRemoveImage(){
+        $names = Yii::$app->request->post('images');
+        if(sizeof($names) > 0){
+            foreach ($names as $name){
+                unlink(Yii::getAlias("@uploads") . "/$name");
+            }
+            OrdersBilling::deleteAll(['path' => $names]);
+        }
+        return [
+            'success' => 0
         ];
     }
 }

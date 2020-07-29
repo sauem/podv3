@@ -35,6 +35,7 @@ AppAsset::register($this);
             ajaxUpload: "<?= \yii\helpers\Url::toRoute(['ajax/ajax-file'])?>",
             pushContact: "<?= \yii\helpers\Url::toRoute(['ajax/push-contact'])?>",
             pushProduct: "<?= \yii\helpers\Url::toRoute(['ajax/push-product'])?>",
+            removeImages: "<?= \yii\helpers\Url::toRoute(['ajax/remove-image'])?>",
             maxSize: 10485760
         }
 
