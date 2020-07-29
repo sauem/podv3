@@ -82,17 +82,18 @@ class doScanContact
     {
 
         if ($exitStatus) {
-            if ($exitStatus->status = ContactsAssignment::_COMPLETED) {
-                if (self::checkNewContact($exitStatus->contact_phone)) {
+            if ($exitStatus->status == ContactsAssignment::_COMPLETED) {
+                if (self::checkNewContact($exitStatus->contact_phone) ) {
                     $exitStatus->status = ContactsAssignment::_PROCESSING;
+                    return $exitStatus->save();
                 }
             } elseif ($exitStatus->status == ContactsModel::_PENDING && !empty($exitStatus->callback_time)) {
-                self::openUserCallback($exitStatus);
+                return  self::openUserCallback($exitStatus);
             }
             else {
                 $exitStatus->status = ContactsAssignment::_PROCESSING;
+                return $exitStatus->save();
             }
-            return $exitStatus->save();
         }
     }
 
@@ -101,7 +102,7 @@ class doScanContact
 
         $now = time();
         $nextTime = Helper::caculateDate($user->updated_at, $user->callback_time, true);
-        if ($now >= ArrayHelper::getValue($nextTime, 'time')) {
+        if ($now >= $nextTime) {
             $user->status = ContactsAssignment::_PROCESSING;
             $user->callback_time = null;
             return $user->save();

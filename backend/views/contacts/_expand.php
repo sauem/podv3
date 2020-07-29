@@ -125,9 +125,7 @@ $js = <<<JS
             processData: false,
             success : function(res) {
                 if(res.success){
-                    __reloadData();
-                    __loadContactLogs(_key);
-                    toastr.success("Thêm trạng thái liên hệ thành công!");
+                    swal.fire('Thông báo!',"Thêm trạng thái thành công.","success").then(() => {window.location.reload()})
                     return false;              
                 }else{
                     toastr.warning(res.msg);

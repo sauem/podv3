@@ -73,19 +73,21 @@ class OrdersController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new OrdersModel();
-        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post(), '')) {
+        $post = Yii::$app->request->post();
+        $product = ArrayHelper::getValue($post, "product");
+
+        if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
                 if ($model->save()) {
-                    ActionLog::add("success", "Tạo đơn hàng mới $model->id");
-                    $product = Yii::$app->request->post('product');
                     foreach ($product as $k => $item) {
-                        $product['order_id'] = $model->id;
-                        $product['price'] = $item['price'];
-                        $product['product_sku'] = $item['product_sku'];
-                        $product['product_option'] = $item['product_option'] ? $item['product_option'] : null;
+
+                        $p['order_id'] = $model->id;
+                        $p['price'] = $item['price'];
+                        $p['product_sku'] = $item['product_sku'];
+                        $p['product_option'] = $item['product_option'];
 
                         $items = new OrdersItems;
-                        if ($items->load($product, "") && $items->save()) {
+                        if ($items->load($p, "") && $items->save()) {
                             continue;
                         } else {
                             return [
@@ -94,6 +96,7 @@ class OrdersController extends Controller
                             ];
                         }
                     }
+                    ActionLog::add("success", "Tạo đơn hàng mới $model->id");
                     $msg = ContactsModel::updateCompleteAndNextProcess();
                     return [
                         'success' => 1,
@@ -101,7 +104,7 @@ class OrdersController extends Controller
                     ];
                 }
             } catch (\Exception $e) {
-                ActionLog::add("error", "Tạo đơn hàng thất bại " .$e->getMessage());
+                ActionLog::add("error", "Tạo đơn hàng thất bại " . $e->getMessage());
                 return [
                     'success' => 0,
                     'msg' => $e->getMessage()
@@ -109,7 +112,11 @@ class OrdersController extends Controller
             }
 
         }
-        return Helper::firstError($model);
+
+        return [
+            'success' => 0,
+            'msg' => Helper::firstError($model)
+        ];
 
     }
 

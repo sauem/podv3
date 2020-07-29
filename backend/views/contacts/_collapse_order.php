@@ -4,6 +4,15 @@ use kartik\form\ActiveForm;
 use yii\helpers\Url;
 
 ?>
+<?php $form = ActiveForm::begin([
+    'id' => 'formOrder',
+    'options' => [
+        'enctype' => 'multipart/form-data'
+    ],
+    'enableClientValidation' => true,
+    'enableAjaxValidation' => true,
+    'action' => Url::toRoute(['orders/create'])
+]) ?>
     <div id="collapse-order" class="collapse">
         <div class="ibox">
             <div class="ibox-head">
@@ -17,16 +26,6 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="ibox-body">
-                <?php $form = ActiveForm::begin([
-                    'id' => 'formOrder',
-                    'options' => [
-                        'enctype' => 'multipart/form-data'
-                    ],
-                    'enableClientValidation' => true,
-                    'enableAjaxValidation' => true,
-                    'action' => Url::toRoute(['orders/create'])
-                ]) ?>
-
                 <input type="hidden" value="<?= Yii::$app->user->getId() ?>" name="user_id">
                 <div class="row">
 
@@ -69,11 +68,11 @@ use yii\helpers\Url;
                         <button type="submit" class="btn btn-success">Lưu</button>
                     </div>
                 </div>
-                <?php ActiveForm::end() ?>
+
             </div>
         </div>
     </div>
-
+<?php ActiveForm::end() ?>
     <script type="text/x-handlebars-template" id="template-product">
         <div class="row">
             <div class="col-md-6">
@@ -133,7 +132,7 @@ use yii\helpers\Url;
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Phương thức thanh toán <span class="text-danger">(*)</span></label>
-                    <select required class="form-control" name="payment_id">
+                    <select required class="form-control" name="payment_method">
                         <option value="">Chọn PTTT...</option>
                         {{#each this.payment}}
                         <option value="{{this.id}}">{{this.name}}</option>
@@ -197,7 +196,7 @@ use yii\helpers\Url;
                     {{/each}}
                 </select>
                 {{ else }}
-                <input class="form-control" name=name="product[{{this.sku}}][product_option]" value="{{this.selected}}">
+                <input class="form-control" name="product[{{this.sku}}][product_option]" value="{{this.selected}}">
                 {{/if}}
             </td>
             <td class="text-right">
