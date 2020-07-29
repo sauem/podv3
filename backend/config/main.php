@@ -83,7 +83,8 @@ return [
             'ajax/*',
             'rbac/*',
             'site/logout',
-            'report/*'
+            'report/*',
+            'export/*'
         ]
     ],
     'params' => $params,

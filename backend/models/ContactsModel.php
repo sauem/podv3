@@ -8,6 +8,7 @@ use common\helper\Helper;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "contacts".
@@ -34,6 +35,7 @@ use yii\helpers\Html;
  * @property int $created_at
  * @property int $updated_at
  * @property int $callback_time
+ * @property int $code
  *
  * @property ContactsLog[] $contactsLogs
  */
@@ -122,7 +124,7 @@ class ContactsModel extends BaseModel
             $this->hashkey = md5($this->phone . $this->option);
             $this->short_link = Helper::getHost($this->link);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-
+            $this->code = md5(time());
             if (self::findOne(['hashkey' => $this->hashkey])) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;

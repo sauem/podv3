@@ -32,7 +32,8 @@
         "kartik-v/yii2-money": "dev-master",
         "yii2tech/crontab": "^1.0@dev",
         "yiisoft/yii2-redis": "~2.0.0",
-        "cakebake/yii2-actionlog": "*"
+        "cakebake/yii2-actionlog": "*",
+        "yii2tech/spreadsheet": "^1.0@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

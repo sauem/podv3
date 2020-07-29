@@ -53,4 +53,7 @@ class Helper
     static function getImage($name){
         return Url::to("/file/$name");
     }
+    static function formatExcel($num){
+        return number_format($num,2,'.',',');
+    }
 }
