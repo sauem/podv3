@@ -16,11 +16,17 @@ use Yii;
  *
  * @property Orders $order
  */
-class OrdersBilling extends \yii\db\ActiveRecord
+class OrdersBilling extends BaseModel
 {
     /**
      * {@inheritdoc}
      */
+    const DRAFT  = "draf";
+    const ACTIVE = "active";
+    const STATUS = [
+        self::DRAFT => 'Nháp',
+        self::ACTIVE => 'Kích hoạt'
+    ];
     public static function tableName()
     {
         return 'orders_billing';
@@ -34,9 +40,9 @@ class OrdersBilling extends \yii\db\ActiveRecord
         return [
             [['order_id', 'created_at', 'updated_at'], 'integer'],
             [['path'], 'string'],
-            [['created_at', 'updated_at'], 'required'],
+            [['path'], 'required'],
             [['active'], 'string', 'max' => 50],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrdersModel::className(), 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
 
@@ -62,6 +68,6 @@ class OrdersBilling extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Orders::className(), ['id' => 'order_id']);
+        return $this->hasOne(OrdersModel::className(), ['id' => 'order_id']);
     }
 }

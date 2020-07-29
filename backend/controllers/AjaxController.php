@@ -29,7 +29,7 @@ class AjaxController extends BaseController
     function actionUploadBill(){
         $model = new ImageUpload;
         if (\Yii::$app->request->isPost) {
-            $model->billFile = UploadedFile::getInstance($model, 'bill_transfer');
+            $model->billFile = UploadedFile::getInstances($model, 'bill_transfer');
             if ($path = $model->upload()) {
                     return [
                         'success' => 1,

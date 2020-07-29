@@ -179,6 +179,7 @@ $js = <<<JS
         window.ORDER = {
             skus : [],
             products : [],
+            billings : [],
             total : 0,
             shipping : 0
         }

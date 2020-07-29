@@ -227,6 +227,7 @@ $totalUpdate = Url::toRoute(['ajax/update-total']);
 $billtransfer = Url::toRoute(['ajax/upload-bill']);
 $currentPage = Url::toRoute(Yii::$app->controller->getRoute());
 $js = <<<JS
+
  $("body").on('click','.removeItem',function() {
         swal.fire({
             title : 'Cảnh báo',
@@ -275,6 +276,7 @@ $js = <<<JS
       res.preventDefault();
         let _formData = new FormData($(this)[0]);
         let _action = $(this).attr("action");
+        _formData.append("bills" , ORDER.billings);
         $.ajax({
            url : _action,
            type : "POST",
@@ -282,6 +284,7 @@ $js = <<<JS
            contentType :false,
            data : _formData,
            success : function(res) {
+               
                 if(res.success){
                     toastr.success("Tạo đơn hàng thành công!");
                     $("#collapse-order").collapse("hide");
@@ -315,15 +318,18 @@ $js = <<<JS
     });
     
     $("body").on("change","input[name='bill_transfer[]']",function() {
-        let _file = $(this)[0].files[0];
+        let _file = $(this)[0].files;
         let _type = ["application/pdf","image/jpeg","image/png","image/jpg"];
-        if(!_type.includes(_file.type)){
-            toastr.warning(_file.name + " không đúng định dạng!");
-            return;
-        }
         let _form = new FormData();
-          _form.append("ImageUpload[bill_transfer]", _file);
-         $(this).parent().find("label").text(_file.name + " được chọn");
+        
+            $.each(_file, function(index,item) {
+              if(!_type.includes(item.type)){
+                    toastr.warning(item.name + " không đúng định dạng!");
+                    return;
+                }
+              _form.append("ImageUpload[bill_transfer][]", _file[index]);
+            })
+         $(this).parent().find("label").text(_file.length + " được chọn");
         $.ajax({
             url : '$billtransfer',
             type: 'POST',
@@ -332,13 +338,16 @@ $js = <<<JS
             contentType: false,
             processData: false,
             success : function(res) {
+                
                if(res.success){
+                   ORDER.billings = res.path;
                    toastr.success("Thành công!");
                }else{
                    toastr.warning(res.path);
                }
             }
         });
+      
     });
 JS;
 $this->registerJs($js);

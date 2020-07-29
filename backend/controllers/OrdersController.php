@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ContactsModel;
+use backend\models\OrdersBilling;
 use backend\models\OrdersItems;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
@@ -75,6 +76,8 @@ class OrdersController extends Controller
         $model = new OrdersModel();
         $post = Yii::$app->request->post();
         $product = ArrayHelper::getValue($post, "product");
+        $path  = ArrayHelper::getValue($post,'bills');
+        $path = explode(',',$path);
 
         if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
@@ -96,6 +99,10 @@ class OrdersController extends Controller
                             ];
                         }
                     }
+                    OrdersBilling::updateAll([
+                        'order_id' => $model->id,
+                        'active' => OrdersBilling::ACTIVE
+                    ],['IN','path' ,  $path]);
                     ActionLog::add("success", "Tạo đơn hàng mới $model->id");
                     $msg = ContactsModel::updateCompleteAndNextProcess();
                     return [
