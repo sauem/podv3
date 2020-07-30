@@ -59,19 +59,12 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ),true);
-        $logs = new ActiveDataProvider([
-            'query' => LogsImport::find()->orderBy(['created_at' => SORT_DESC]),
-            'pagination' => [
-                'pageSize' => 15
-            ]
-        ]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
             'callbackProvider' => $callProvider,
-            'pendingProvider' => $pendingProvider,
-            'logsProvider' => $logs
+            'pendingProvider' => $pendingProvider
         ]);
     }
 

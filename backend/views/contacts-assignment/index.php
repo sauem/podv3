@@ -54,27 +54,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="ibox">
-                <div class="ibox-head">
-                    <h2 class="ibox-title">Lịch sử nhập liệu</h2>
-                </div>
-                <div class="ibox-body">
-                    <?=
-                    \kartik\grid\GridView::widget([
-                        'dataProvider' => $logsProvider,
-                        'columns' => [
-                            'name',
-                            'line',
-                            'message',
-                            'created_at:date'
-                        ]
-                    ])
-                    ?>
-
-                </div>
-            </div>
-        </div>
     </div>
     <div class="modal fade" tabindex="-1" id="remote-import" role="dialog">
         <div class="modal-dialog modal-lg" role="document">

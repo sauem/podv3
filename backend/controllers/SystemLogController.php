@@ -4,9 +4,11 @@
 namespace backend\controllers;
 
 use backend\models\ContactsModel;
+use backend\models\LogsImport;
 use cakebake\actionlog\model\ActionLog;
 use cakebake\actionlog\model\ActionLogSearch;
 use common\helper\Helper;
+use yii\data\ActiveDataProvider;
 
 class SystemLogController extends BaseController
 {
@@ -16,6 +18,18 @@ class SystemLogController extends BaseController
         $dataProvider = $model->search(\Yii::$app->request->queryParams);
         return $this->render("index", [
             'searchModel' => $model,
+            'dataProvider' => $dataProvider
+        ]);
+    }
+    function actionImport(){
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => LogsImport::find()->orderBy(['created_at' => SORT_DESC]),
+            'pagination' => [
+                'pageSize' => 15
+            ]
+        ]);
+        return $this->render("import", [
             'dataProvider' => $dataProvider
         ]);
     }
