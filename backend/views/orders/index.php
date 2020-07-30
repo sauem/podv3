@@ -4,11 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use common\helper\Component;
-
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\OrdersSearchModel */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
+use backend\models\UserModel;
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -23,12 +19,19 @@ use common\helper\Helper;
     </div>
     <div class="ibox-body">
         <?= $this->render("_search", ['model' => $searchModel]) ?>
-        <?php Pjax::begin(); ?>
+
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'layout' => "{items}\n{pager}",
             'resizableColumns' => false,
             'showFooter' => true,
+            'pjax' => true,
+            'pjaxSettings' => [
+                'neverTimeout' => true,
+                'options' => [
+                    'id' => 'pjax-order'
+                ]
+            ],
             'headerRowOptions' => [
                 'class' => [
                     'thead-light'
@@ -48,7 +51,7 @@ use common\helper\Helper;
                     }
                 ],
                 [
-                     'label' => 'Địa chỉ',
+                    'label' => 'Địa chỉ',
                     'attribute' => 'address',
                     'format' => 'html',
                     'value' => function ($model) {
@@ -96,51 +99,77 @@ use common\helper\Helper;
                 [
                     'label' => 'Ngày tạo đơn',
                     'attribute' => 'created_at',
-                    'format' => 'html',
+                    'format' => 'raw',
                     'value' => function ($model) {
-                        return date('H:i:s d/m/Y');
+                        $create = Html::tag("span",
+                            "<i class='fa fa-plus'></i> | " . date('H:i:s d/m/Y', $model->created_at),
+                            [
+                                'class' => 'badge badge-info ',
+                                'data-toggle' => 'tooltip',
+                                'title' => 'giờ tạo đơn'
+                            ]);
+                        $canEdit = Html::tag("span", "<i class='fa fa-lock'></i> | " . date('H:i:s d/m/Y', $model->block_time),
+                            [
+                                'class' => 'badge badge-warning mt-2',
+                                'data-toggle' => 'tooltip',
+                                'title' => 'Giờ khóa đơn'
+                            ]);
+                        if ($model->block_time == 0) {
+                            $canEdit = Html::tag("span", "<i class='fa fa-lock'></i> | đã khóa chỉnh sửa", [
+                                'class' => 'badge badge-danger mt-2',
+                                'data-toggle' => 'tooltip',
+                                'title' => 'Trạng thái khóa'
+                            ]);
+                        }
+                        return "$create<br>$canEdit";
                     }
                 ],
-
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => '{view}{export}{block}',
+                    'template' => '{view}{update}{export}{block}',
                     'headerOptions' => [
-                            'width' => '10%'
+                        'width' => '10%',
                     ],
                     'buttons' => [
                         'view' => function ($url) {
                             return Component::view($url);
                         },
-                        'export' => function($url,$model){
-                            return Html::a("<i class='fa fa-cloud-download'></i> Xuất đơn","javascript:;",[
-                               'class' => 'bg-white export btn btn-sm mt-2',
+                        'update' => function ($url, $model) {
+                            if ($model->hasLocked()) {
+                                return null;
+                            }
+                            $url = "javascript:;";
+                            return Component::update($url);
+                        },
+                        'export' => function ($url, $model) {
+                            return Html::a("<i class='fa fa-cloud-download'></i> Xuất đơn", "javascript:;", [
+                                'class' => 'bg-white export btn btn-sm mt-2',
                                 'data-key' => $model->id,
                                 'data-pjax' => '0'
                             ]);
                         },
-                        'block' => function($url,$model){
-                            $button =  Html::a("<i class='fa fa-lock'></i> Khóa sửa",'javascript:;',[
+                        'block' => function ($url, $model) {
+                            if(!Helper::userRole(UserModel::_ADMIN)){
+                                return  null;
+                            }
+                            $button = Html::a("<i class='fa fa-lock'></i> Khóa sửa", 'javascript:;', [
                                 'class' => 'bg-white block btn btn-sm mt-2',
                                 'data-key' => $model->id,
                                 'data-pjax' => '0'
                             ]);
-                             if($model->block_time > 0){
-                                 $button =  Html::a("<i class='fa fa-lock'></i> Mở khóa",'javascript:;',[
-                                     'class' => 'bg-white block btn btn-sm mt-2',
-                                     'data-key' => $model->id,
-                                     'data-pjax' => '0'
-                                 ]);
-                             }
-                             return $button;
+                            if ($model->hasLocked()) {
+                                $button = Html::a("<i class='fa fa-lock'></i> Mở khóa", 'javascript:;', [
+                                    'class' => 'bg-white block btn btn-sm mt-2',
+                                    'data-key' => $model->id,
+                                    'data-type' => 'open',
+                                    'data-pjax' => '0'
+                                ]);
+                            }
+                            return $button;
                         }
                     ]
                 ],
             ],
         ]); ?>
-
-        <?php Pjax::end(); ?>
-
     </div>
-
 </div>

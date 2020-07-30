@@ -93,4 +93,9 @@ class Helper
         }
         return $date;
     }
+
+    static function getTimeLeft(){
+        $endDay = strtotime("today 23:59:59");
+        return  $endDay ;
+    }
 }

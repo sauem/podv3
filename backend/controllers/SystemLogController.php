@@ -48,8 +48,8 @@ class SystemLogController extends BaseController
             'link' => 'https://ladi.huynguyen.info',
         ];
 
-        Helper::countryFromIP(null);
-        die;
+        $time = strtotime("midnight",time());
+        Helper::prinf( Helper::getTimeLeft());
 
     }
 }

@@ -84,7 +84,8 @@ return [
             'rbac/*',
             'site/logout',
             'report/*',
-            'export/*'
+            'export/*',
+            'system-log/*'
         ]
     ],
     'params' => $params,

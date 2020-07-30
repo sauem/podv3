@@ -182,20 +182,20 @@ function __reloadData() {
     $.each(pjaxs, function (index, item) {
         if (pjaxs.length > index + 1) {
             $(item).one('pjax:end', function (xhr, options) {
-                $.pjax.reload({container: pjaxs[index + 1], replace: false , timeout: false});
+                $.pjax.reload({container: pjaxs[index + 1], replace: false, timeout: false});
             });
         }
     });
-    $.pjax.reload({container: pjaxs[0], replace: false , timeout: false});
+    $.pjax.reload({container: pjaxs[0], replace: false, timeout: false});
 }
 
 function _removeImage() {
     $.ajax({
-        url : config.removeImages,
-        type : "POST",
-        cache : false,
-        data :{images : ORDER.billings},
-        success : function (res) {
+        url: config.removeImages,
+        type: "POST",
+        cache: false,
+        data: {images: ORDER.billings},
+        success: function (res) {
             console.log(res)
         }
     })
@@ -203,25 +203,25 @@ function _removeImage() {
 
 function __zipcodeSate(zipcode) {
     $.ajax({
-        url : "http://www.zipcodeapi.com/rest/"+ config.zipcodeAPI +"/info.json/" + zipcode + "/radians",
+        url: "http://www.zipcodeapi.com/rest/" + config.zipcodeAPI + "/info.json/" + zipcode + "/radians",
         dataType: "json",
-        type : "GET",
-        cache : false,
-        success : function (res) {
+        type: "GET",
+        cache: false,
+        success: function (res) {
             console.log(res)
         }
     })
 }
 
-$(".export").click(function() {
-    let _id =  $(this).data("key");
+$(".export").click(function () {
+    let _id = $(this).data("key");
     $.ajax({
-        url : config.exportURL,
-        type : "POST",
-        data : {orderID : _id},
-        cache : false,
-        success : function(res) {
-            if(!res.success){
+        url: config.exportURL,
+        type: "POST",
+        data: {orderID: _id},
+        cache: false,
+        success: function (res) {
+            if (!res.success) {
                 toastr.warning(res.msg);
                 return;
             }
@@ -230,40 +230,70 @@ $(".export").click(function() {
     })
 });
 
-$(".block").click(function () {
-    let _key = $(this).data("key");
-    alert(_key);
-})
 
-
-$("body").on("click",".submitLog",function(e) {
+$("body").on("click", ".submitLog", function (e) {
     e.preventDefault();
     let _key = $(this).data('key');
-    let _form = $(this).closest("#noteForm_"+ _key );
+    let _form = $(this).closest("#noteForm_" + _key);
     let _url = _form.attr("action");
     let _formData = new FormData(_form[0]);
 
-    if((_formData.get("status") == "pending" ||
+    if ((_formData.get("status") == "pending" ||
         _formData.get("status") == "callback") &&
-        _formData.get("callback_time") == ""){
+        _formData.get("callback_time") == "") {
         toastr.warning("Hãy đặt thời gian gọi lại!");
         return false;
     }
     $.ajax({
-        url : _url,
-        data : _formData,
-        type : 'POST',
-        cache : false,
+        url: _url,
+        data: _formData,
+        type: 'POST',
+        cache: false,
         contentType: false,
         processData: false,
-        success : function(res) {
-            if(res.success){
+        success: function (res) {
+            if (res.success) {
                 __reloadData();
                 return false;
-            }else{
+            } else {
                 toastr.warning(res.msg);
             }
         }
     });
     return false;
 });
+
+$("body").on("click",".block",function () {
+    let _key = $(this).data("key");
+    let _type = $(this).data("type");
+    if(typeof _type == "undefined"){
+        _type = "block";
+    }
+
+    swal.fire({
+        title: "Thông báo",
+        text: "Khoá chỉnh sửa thông tin đơn này?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Khóa ngay",
+        cancelButtonText: "Huỷ",
+    }).then(({value}) => {
+        if (value) {
+            $.ajax({
+                url : config.blockOrder,
+                type : 'POST',
+                cache : false,
+                data : { key : _key,type : _type},
+                success : function (res) {
+                    if(res.success){
+                        toastr.success("Đã khóa chỉnh sửa đơn hàng!");
+                        __reloadData();
+                    }else{
+                        toastr.warning(res.msg);
+                    }
+                }
+            })
+        }
+    })
+})
+

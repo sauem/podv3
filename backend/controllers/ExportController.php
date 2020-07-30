@@ -64,8 +64,8 @@ class ExportController extends BaseController
         $export->renderCell("B9",Helper::getCountry($order->country));
         $export->renderCell("B10",$order->payment->name);
 
+        $colB = 10;
         if($order->billings){
-            $colB = 10;
             foreach ($order->billings as $k => $billing){
                 $url = Url::toRoute("/file/$billing->path",'http');
                 $url = "=HYPERLINK(\"$url\")";
@@ -80,6 +80,7 @@ class ExportController extends BaseController
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
             ],
         ]);
+        $endCol = isset($endCol) ? $endCol : $colB + 2;
         $export->applyCellStyle("A1:B$endCol",[
            'borders' => [
                'outline' => [

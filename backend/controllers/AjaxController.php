@@ -19,6 +19,7 @@ use backend\models\UploadForm;
 use yii\web\UploadedFile;
 use backend\models\ImageUpload;
 use backend\models\Payment;
+
 class AjaxController extends BaseController
 {
     public function init()
@@ -27,15 +28,16 @@ class AjaxController extends BaseController
         \Yii::$app->response->format = Response::FORMAT_JSON;
     }
 
-    function actionUploadBill(){
+    function actionUploadBill()
+    {
         $model = new ImageUpload;
         if (\Yii::$app->request->isPost) {
             $model->billFile = UploadedFile::getInstances($model, 'bill_transfer');
             if ($path = $model->upload()) {
-                    return [
-                        'success' => 1,
-                        'path' => $path
-                    ];
+                return [
+                    'success' => 1,
+                    'path' => $path
+                ];
             }
         }
         return [
@@ -77,7 +79,7 @@ class AjaxController extends BaseController
             $product[$k]['selected'] = $selected[$k];
         }
         $customer = $contacts[0];
-        $ids =  ArrayHelper::getColumn($contacts,'id');
+        $ids = ArrayHelper::getColumn($contacts, 'id');
         $payment = Payment::find()->with('infos')->all();
         $countries = Yii::$app->params['country'];
         return [
@@ -279,7 +281,7 @@ class AjaxController extends BaseController
                     'name' => $product['name'],
                     'sku' => $product['sku'],
                     'category_id' => $category->id,
-                    'regular_price' => str_replace(",","",$product['regular_price']),
+                    'regular_price' => str_replace(",", "", $product['regular_price']),
                     'option' => $product['option']
                 ];
 
@@ -300,13 +302,15 @@ class AjaxController extends BaseController
 
             if ($count > 0) {
                 ActionLog::add("success", "Nhập file sản phẩm - $fileName số lượng $count");
-                return  static::resultImport($count,$errors,1);
+                return static::resultImport($count, $errors, 1);
             }
-            return  static::resultImport($count,$errors,0);
+            return static::resultImport($count, $errors, 0);
         }
 
     }
-    static function resultImport( $count = 0, $errors, $status = 1){
+
+    static function resultImport($count = 0, $errors, $status = 1)
+    {
         return [
             'success' => $status,
             'error' => $errors,
@@ -314,16 +318,42 @@ class AjaxController extends BaseController
         ];
     }
 
-    function actionRemoveImage(){
+    function actionRemoveImage()
+    {
         $names = Yii::$app->request->post('images');
-        if(sizeof($names) > 0){
-            foreach ($names as $name){
+        if (sizeof($names) > 0) {
+            foreach ($names as $name) {
                 unlink(Yii::getAlias("@files") . "/$name");
             }
             OrdersBilling::deleteAll(['path' => $names]);
         }
         return [
             'success' => 0
+        ];
+    }
+
+    function actionBlockOrder()
+    {
+        $key = Yii::$app->request->post("key");
+        $type = Yii::$app->request->post("type");
+        $order = OrdersModel::findOne($key);
+        if (!$order) {
+            return [
+                'success' => 0,
+                'msg' => 'Không tìm thấy đơn hàng này!'
+            ];
+        }
+        $order->block_time = $type == "open" ? Helper::getTimeLeft() : 0;
+        $order->admin_block = Yii::$app->user->getId();
+        if ($order->save()) {
+            ActionLog::add("success",Yii::$app->user->getIdentity()->username . ($type == "open" ? "Mở chỉnh sửa " : " khóa chỉnh sửa")) . " đơn hàng $key";
+            return [
+                'success' => 1,
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => Helper::firstError($order)
         ];
     }
 }

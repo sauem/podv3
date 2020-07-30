@@ -22,7 +22,7 @@ class Component
 
     static function update($url)
     {
-        return Html::a('<i class="fa fa-edit"></i> sửa', $url, ['class' => 'btn btn-sm bg-white']);
+        return Html::a('<i class="fa fa-edit"></i> sửa', $url, ['class' => 'btn mt-1 btn-sm bg-white']);
     }
 
     static function view($url)
