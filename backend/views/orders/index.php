@@ -104,10 +104,17 @@ use common\helper\Helper;
 
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => '{view}',
+                    'template' => '{view}{export}',
                     'buttons' => [
                         'view' => function ($url) {
                             return Component::view($url);
+                        },
+                        'export' => function($url,$model){
+                            return Html::a("<i class='fa fa-cloud-download'></i> Xuất đơn","javascript:;",[
+                               'class' => 'bg-white export btn btn-sm mt-2',
+                                'data-key' => $model->id,
+                                'data-pjax' => '0'
+                            ]);
                         }
                     ]
                 ],

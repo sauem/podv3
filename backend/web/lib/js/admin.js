@@ -212,3 +212,20 @@ function __zipcodeSate(zipcode) {
         }
     })
 }
+
+$(".export").click(function() {
+    let _id =  $(this).data("key");
+    $.ajax({
+        url : config.exportURL,
+        type : "POST",
+        data : {orderID : _id},
+        cache : false,
+        success : function(res) {
+            if(!res.success){
+                toastr.warning(res.msg);
+                return;
+            }
+            window.location.replace(res.url);
+        }
+    })
+});

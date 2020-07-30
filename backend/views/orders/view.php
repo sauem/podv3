@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     Khách hàng
                 </h2>
                 <div class="ibox-tools">
-                    <button class="btn btn-sm btn-info"><i class="fa fa-cloud-download"></i> Xuất đơn hàng</button>
+                    <button data-key="<?= $model->id?>" class="btn export btn-sm btn-info"><i class="fa fa-cloud-download"></i> Xuất đơn hàng</button>
                 </div>
             </div>
             <div class="ibox-body">
@@ -151,6 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr>
                                 <td><?=
                                     $contact->contact->name."<br>".
+                                    "<small class='text-warning'>{$contact->contact->code}</small><br>".
                                     $contact->contact->address."<br>".
                                     $contact->contact->zipcode
 
@@ -173,3 +174,9 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<?php
+$urlExport = \yii\helpers\Url::toRoute(['export/order']);
+$js =<<<JS
+    
+JS;
+$this->registerJs($js);

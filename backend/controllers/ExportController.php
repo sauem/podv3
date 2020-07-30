@@ -14,9 +14,8 @@ use yii2tech\spreadsheet\Spreadsheet;
 class ExportController extends BaseController
 {
     function actionOrder(){
-      //  \Yii::$app->response->format = Response::FORMAT_JSON;
-        $orderId  = 290;
-
+       \Yii::$app->response->format = Response::FORMAT_JSON;
+        $orderId = \Yii::$app->request->post('orderID');
         $order =  OrdersModel::findOne($orderId);
         if(!$order){
             return [
@@ -137,7 +136,12 @@ class ExportController extends BaseController
         if($order->contacts){
             $export = self::renderContacts($export , $order);
         }
-        return $export->send("demo.xlsx");
+        $fileName = $order->id. "_".time().".xlsx";
+        $export->save(\Yii::getAlias("@files")  . "/$fileName");
+        return  [
+            'success' => 1,
+            'url' =>  $url = Url::to("/file/$fileName")
+        ];
     }
 
     static function renderContacts(Spreadsheet $export , $order){

@@ -10,7 +10,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
-
+use yii\helpers\Url;
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -32,12 +32,13 @@ AppAsset::register($this);
         }
         var config = {
             type: ["xlsx", "csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
-            ajaxUpload: "<?= \yii\helpers\Url::toRoute(['ajax/ajax-file'])?>",
-            pushContact: "<?= \yii\helpers\Url::toRoute(['ajax/push-contact'])?>",
-            pushProduct: "<?= \yii\helpers\Url::toRoute(['ajax/push-product'])?>",
-            removeImages: "<?= \yii\helpers\Url::toRoute(['ajax/remove-image'])?>",
+            ajaxUpload: "<?= Url::toRoute(['ajax/ajax-file'])?>",
+            pushContact: "<?= Url::toRoute(['ajax/push-contact'])?>",
+            pushProduct: "<?=Url::toRoute(['ajax/push-product'])?>",
+            removeImages: "<?= Url::toRoute(['ajax/remove-image'])?>",
             maxSize: 10485760,
-            zipcodeAPI : "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx"
+            zipcodeAPI: "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx",
+            exportURL: "<?=Url::toRoute(['export/order'])?>"
         }
 
     </script>
@@ -50,6 +51,7 @@ AppAsset::register($this);
         .grid-view th {
             white-space: nowrap;
         }
+
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
