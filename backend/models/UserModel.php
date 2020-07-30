@@ -179,10 +179,13 @@ class UserModel extends User
         return $this->hasOne(ContactsAssignment::className(), ['user_id' => 'id'])->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING]);
     }
 
-    public static function hasCallback($getTime = false)
+    public static function hasCallback($userID = null, $getTime = false)
     {
+        if(!$userID){
+            $userID = Yii::$app->user->getId();
+        }
         $model = ContactsAssignment::find()
-            ->where(['user_id' => Yii::$app->user->getId()])
+            ->where(['user_id' => $userID])
             ->andWhere(['!=','callback_time' , ""])
             ->orderBy(['callback_time' => SORT_ASC])->one();
         if (!empty($model->callback_time)) {
