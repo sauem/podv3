@@ -13,7 +13,7 @@ use backend\models\ContactsModel;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
-        'layout' => "{items}\n{pager}",
+        'layout' => "{summary}{items}\n{pager}",
         'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
@@ -27,7 +27,7 @@ use backend\models\ContactsModel;
                 'attribute' => 'category_id',
                 'format' => 'html',
                 'value' => function ($model) {
-                    if(!$model->page){
+                    if(!$model->page || !$model->page->product){
                         return null;
                     }
                     return Html::tag("p",

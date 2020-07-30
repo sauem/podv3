@@ -36,7 +36,7 @@ use common\helper\Helper;
                     'attribute' => 'category_id',
                     'format' => 'html',
                     'value' => function ($model) {
-                        if(!$model->page){
+                        if(!$model->page || !$model->page->product){
                             return  null;
                         }
                         return Html::tag("p",

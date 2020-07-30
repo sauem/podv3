@@ -35,6 +35,9 @@ use common\helper\Component;
                     'attribute' => 'category_id',
                     'format' => 'html',
                     'value' => function ($model) {
+                        if(!$model->page->product){
+                            return null;
+                        }
                         return Html::tag("p",
                             $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
                             "<small><i>{$model->page->category->name}</i></small>");

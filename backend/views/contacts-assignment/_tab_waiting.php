@@ -17,7 +17,7 @@ use yii\helpers\Url;
         'tableOptions' => [
                 'id' => 'gridviewData'
         ],
-        'layout' => "{items}\n{pager}",
+        'layout' => "{summary}{items}\n{pager}",
         'headerRowOptions' => [
             'class' => 'thead-light'
         ],

@@ -42,7 +42,7 @@ class ContactsSearchModel extends ContactsModel
     public function search($params, $group = true)
     {
         $query = ContactsModel::find()->orderBy(['contacts.status' => SORT_ASC]);
-        if(Helper::userRole(UserModel::_ADMIN) && $group){
+        if(Helper::userRole(!UserModel::_SALE) && $group){
             $query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
         }
         // add conditions that should always apply here
@@ -69,7 +69,7 @@ class ContactsSearchModel extends ContactsModel
         }
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->orFilterWhere(['like', 'phone', $this->name])
+            ->andFilterWhere(['=', 'phone', $this->phone])
             ->orFilterWhere(['like', 'email', $this->name])
             ->andFilterWhere(['IN', 'contacts.status', $this->status]);
 

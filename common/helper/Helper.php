@@ -1,4 +1,5 @@
 <?php
+
 namespace common\helper;
 
 use yii\helpers\ArrayHelper;
@@ -7,53 +8,85 @@ use yii\helpers\Url;
 
 class Helper
 {
-    static function prinf($data){
+    static function prinf($data)
+    {
         echo "<pre>";
         var_dump($data);
         echo "</pre>";
         die;
     }
-    static function firstError($model){
+
+    static function firstError($model)
+    {
         $modelErrs = $model->getFirstErrors();
         foreach ($modelErrs as $err) {
             return $err;
         }
         return "No error founded";
     }
-    static function getHost($link){
+
+    static function getHost($link)
+    {
         $parse = parse_url($link);
-        return isset($parse['host'])  ? $parse['host'] : $link;
+        return isset($parse['host']) ? $parse['host'] : $link;
     }
 
-    static function userRole($role){
+    static function userRole($role)
+    {
         return \Yii::$app->user->can(ucfirst($role));
     }
-    static function option($option){
+
+    static function option($option)
+    {
         return preg_split("/\r\n|\n|\r/", $option);
     }
 
-    static function caculateDate($start , $end, $number = false){
-        $newDate = strtotime("+ $end hour",$start);
-        if($number){
-            return  $newDate;
+    static function caculateDate($start, $end, $number = false)
+    {
+        $newDate = strtotime("+ $end hour", $start);
+        if ($number) {
+            return $newDate;
         }
         return date('H:i:s - d/m', $newDate);
     }
-    static function getCountry($code){
+
+    static function getCountry($code)
+    {
         $country = \Yii::$app->params['country'];
-        $country = ArrayHelper::map($country,"code","name");
-        return ArrayHelper::getValue($country,$code);
+        $country = ArrayHelper::map($country, "code", "name");
+        return ArrayHelper::getValue($country, $code);
     }
-    static function money($number){
-        return number_format($number,2,',','.');
+
+    static function money($number)
+    {
+        return number_format($number, 2, ',', '.');
     }
-    static function toDate($number, $format = "H:i:s d/m"){
-        return date($format,$number);
+
+    static function toDate($number, $format = "H:i:s d/m")
+    {
+        return date($format, $number);
     }
-    static function getImage($name){
+
+    static function getImage($name)
+    {
         return Url::to("/file/$name");
     }
-    static function formatExcel($num){
-        return number_format($num,2,'.',',');
+
+    static function formatExcel($num)
+    {
+        return number_format($num, 2, '.', ',');
+    }
+
+    static function countryFromIP($ip)
+    {
+
+        $ipdat = @json_decode(file_get_contents(
+            "http://www.geoplugin.net/json.gp?ip=" . $ip));
+
+        return [
+            'name' => $ipdat->geoplugin_countryName,
+            'country_code' => $ipdat->geoplugin_countryCode,
+            'city' => $ipdat->geoplugin_city,
+        ];
     }
 }
