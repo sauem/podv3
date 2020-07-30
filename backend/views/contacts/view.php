@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= DetailView::widget([
             'model' => $model,
             'attributes' => [
+                'register_time:datetime',
                 'name',
                 'phone',
                 'email:email',
@@ -31,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'utm_content',
                 'utm_term',
                 'utm_campaign',
-                'host',
             ],
         ]) ?>
 

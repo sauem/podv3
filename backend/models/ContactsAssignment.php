@@ -92,7 +92,7 @@ class ContactsAssignment extends BaseModel
      */
     public function getUser()
     {
-        return $this->hasOne(UserModel::className(), ['id' => 'user_id']);
+        return $this->hasOne(UserModel::className(), ['id' => 'user_id'])->with('userRole');
     }
 
     public function getContacts(){

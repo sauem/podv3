@@ -60,7 +60,7 @@ use yii\helpers\Url;
                 }
             ],
             [
-                'label' => 'Số lượng',
+                'label' => 'SL đăng kí',
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {

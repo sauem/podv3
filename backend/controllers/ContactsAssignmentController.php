@@ -129,6 +129,7 @@ class ContactsAssignmentController extends Controller
                 'pageSize' => 10
             ]
         ]);
+        $assigment = ContactsAssignment::findOne(['contact_phone' => $phone]);
 
         return $this->render('view', [
             'model' => $model,
@@ -136,7 +137,8 @@ class ContactsAssignmentController extends Controller
             'callbackProvider' => $callbackTime,
             'successProvider' => $successProvider,
             'info' => $info,
-            'histories' => $histories
+            'histories' => $histories,
+            'assignment' => $assigment
         ]);
     }
 

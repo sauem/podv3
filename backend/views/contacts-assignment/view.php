@@ -15,6 +15,7 @@ $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Contacts Assignments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
 <div class="row">
     <div class="col-md-6">
@@ -24,18 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="ibox-body">
                 <table class="table">
-                    <?php if(isset($model->user)) { ?>
+                    <?php if(isset($assignment->user)) { ?>
                     <tr>
                         <td>Tên tài khoản:</td>
-                        <td><?= $model->user->username ?></td>
+                        <td><?= $assignment->user->username ?></td>
                     </tr>
                     <tr>
                         <td>Email:</td>
-                        <td><?= $model->user->email ?></td>
+                        <td><?= $assignment->user->email ?></td>
                     </tr>
                     <tr>
                         <td>Bộ phận:</td>
-                        <td><?= $model->user->role->item_name ?></td>
+                        <td><?= $assignment->user->userRole->item_name ?></td>
                     </tr>
                     <?php }else{ ?>
                         <tr>

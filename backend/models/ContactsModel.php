@@ -194,7 +194,7 @@ class ContactsModel extends BaseModel
     public function getAssignment()
     {
         return $this->hasOne(ContactsAssignment::className(), ['contact_phone' => 'phone'])
-            ->where(['contacts_assignment.status' => ContactsAssignment::_PROCESSING])->with('user');
+            ->where(['contacts_assignment.status' => [ContactsAssignment::_PROCESSING, ContactsAssignment::_PENDING, ContactsAssignment::_COMPLETED]])->with('user');
     }
 
     public function getSaleAssign()

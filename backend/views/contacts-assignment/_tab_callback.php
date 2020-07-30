@@ -54,18 +54,11 @@ use backend\models\ContactsModel;
                 }
             ],
             [
-                'label' => 'Trạng thái',
+                'label' => 'Ngày liên hệ',
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
                     return ContactsModel::label($model->status);
-                }
-            ],
-            [
-                'attribute' => 'register_time',
-                'format' => 'html',
-                'value' => function($model){
-                    return date("d/m/Y H:i:s",$model->register_time);
                 }
             ],
             [
