@@ -156,7 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     ?></td>
                                 <td><?=
-                                    $contact->contact->page->product->name. "<br>".
+                                    $contact->contact->page->product ? $contact->contact->page->product->name : "Không thiết lập". "<br>".
                                     $contact->contact->option
                                     ?></td>
                                 <td><?= $contact->contact->link?></td>
