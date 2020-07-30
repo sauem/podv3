@@ -7,6 +7,7 @@ use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
 use backend\models\LogsImport;
 use backend\models\UploadForm;
+use backend\models\UserModel;
 use common\helper\Component;
 use common\helper\Helper;
 use Yii;
@@ -35,7 +36,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ));
+        ),true);
 
         $callProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -47,7 +48,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ));
+        ),true);
         $pendingProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -57,7 +58,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ));
+        ),true);
         $logs = new ActiveDataProvider([
             'query' => LogsImport::find()->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
