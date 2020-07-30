@@ -19,4 +19,21 @@ class SystemLogController extends BaseController
             'dataProvider' => $dataProvider
         ]);
     }
+
+    function actionDemo()
+    {
+        $data = [
+            'phone' => "0349991834",
+            'name' => "Nguyễn đình thắng",
+            'address' => 'Hà Nội',
+            'zipcode' => 100000,
+            'ip' => '123.24.177.254',
+            'type' => 'capture_form',
+            'option' => 'Lựa chọn 2',
+            'link' => 'https://ladi.huynguyen.info',
+        ];
+        $m = new ContactsModel;
+        $m->load($data, '');
+        $m->save();
+    }
 }

@@ -79,14 +79,8 @@ class Helper
 
     static function countryFromIP($ip)
     {
-
         $ipdat = @json_decode(file_get_contents(
             "http://www.geoplugin.net/json.gp?ip=" . $ip));
-
-        return [
-            'name' => $ipdat->geoplugin_countryName,
-            'country_code' => $ipdat->geoplugin_countryCode,
-            'city' => $ipdat->geoplugin_city,
-        ];
+        return $ipdat->geoplugin_countryCode;
     }
 }

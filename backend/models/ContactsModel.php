@@ -121,10 +121,12 @@ class ContactsModel extends BaseModel
     {
         if ($insert) {
             //$this->address = $this->address;
+            $maxIDNumber = ContactsModel::find()->max('id');
+
             $this->hashkey = md5($this->phone . $this->option);
             $this->short_link = Helper::getHost($this->link);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-            $this->code = md5(time());
+            $this->code = "CC" . Helper::countryFromIP($this->ip) . $maxIDNumber;
             if (self::findOne(['hashkey' => $this->hashkey])) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;
