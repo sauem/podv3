@@ -33,33 +33,38 @@ function onUpload(element) {
 }
 
 function handleFile(file) {
-    var reader = new FileReader();
+    let reader = new FileReader();
     reader.onerror = function (stuff) {
         alert(stuff.currentTarget.error.message);
     };
-
+    reader.readAsBinaryString(file);
     reader.onload = function (evt) {
-        var data = evt.target.result;
-        var workbook = XLSX.read(data, {
-            type: 'array'
+        let data = evt.target.result;
+        let workbook = XLSX.read(data, {
+            type: 'binary',
+            cellDates: true
         });
-        doProcessWorkbook(workbook, file);
+        doProcessWorkbook(workbook,file)
     };
-    reader.readAsArrayBuffer(file);
+    //reader.readAsArrayBuffer(file);
 }
 
 function doProcessWorkbook(workbook, file) {
-    var firstSheet = workbook.SheetNames[0];
-    var sheet = workbook.Sheets[firstSheet];
-    var rows = [];
-    var rowsIndex = 2;
-    var row = getRow(sheet, rowsIndex, 7);
+    let firstSheet = workbook.SheetNames[0];
+    let sheet = workbook.Sheets[firstSheet];
+    let rows = [];
+    let rowsIndex = 2;
+    let maxColumn = 7;
+    if (firstSheet !== "product") {
+        maxColumn = 15;
+    }
+    let row = getRow(sheet, rowsIndex, maxColumn);
 
     while (row !== null) {
-        var item = switchItem(firstSheet, row);
+        let item = switchItem(firstSheet, row);
         rows.push(item);
         rowsIndex++;
-        row = getRow(sheet, rowsIndex, 7);
+        row = getRow(sheet, rowsIndex, maxColumn);
     }
     let data = {
         rows: rows,
@@ -70,6 +75,7 @@ function doProcessWorkbook(workbook, file) {
         rows: rows,
         fileName: file.name
     }
+
     /// render view example
     switch (firstSheet) {
         case "product":
@@ -129,7 +135,7 @@ function renderViewTemplate(result = "result", template = "excel-template", data
 }
 
 function switchItem(sheet, row) {
-    var item = null;
+    let item = null;
     switch (sheet) {
 
         case "product":
@@ -142,14 +148,22 @@ function switchItem(sheet, row) {
             break;
         default:
             item = new contactModel();
-            item.phone = row[0] ? row[0].v : "";
+            item.register_time = row[0] ? (row[0].v.getTime() /1000) : null;
             item.name = row[1] ? row[1].v : "";
-            item.address = row[2] ? row[2].v : "";
-            item.zipcode = row[3] ? row[3].v : "";
-            item.option = row[4] ? row[4].v : "";
-            item.note = row[5] ? row[5].v : "";
-            item.link = row[6] ? row[6].v : "";
-            item.host = window.location.hostname;
+            item.phone = row[2] ? row[2].v : "";
+            item.address = row[3] ? row[3].v : "";
+            item.zipcode = row[4] ? row[4].v : "";
+            item.option = row[5] ? row[5].v : "";
+            item.note = row[6] ? row[6].v : "";
+            item.link = row[7] ? row[7].v : "";
+            item.utm_source = row[8] ? row[8].v : "",
+                item.utm_medium = row[9] ? row[9].v : "",
+                item.utm_campaign = row[10] ? row[10].v : "",
+                item.utm_term = row[11] ? row[11].v : "",
+                item.utm_content = row[12] ? row[12].v : "",
+                item.ip = row[13] ? row[13].v : "",
+                item.type = row[14] ? row[14].v : "",
+                item.host = window.location.hostname;
             break
     }
     return item;
@@ -164,6 +178,14 @@ function contactModel() {
         zipcode: "",
         note: "",
         link: "",
+        ip: "",
+        utm_source: "",
+        utm_campaign: "",
+        utm_medium: "",
+        utm_term: "",
+        utm_content: "",
+        type: "",
+        register_time: Date.now(),
         created_at: Date.now(),
         updated_at: Date.now(),
         host: window.location.hostname
@@ -189,11 +211,11 @@ function getMaterial() {
 }
 
 function getRow(sheet, index, columnLength) {
-    var alphabets = getMaterial();
-    var row = [];
-    for (var i = 0; i < columnLength; i++) {
-        var col = alphabets[i];
-        var cell = col + index;
+    let alphabets = getMaterial();
+    let row = [];
+    for (let i = 0; i < columnLength; i++) {
+        let col = alphabets[i];
+        let cell = col + index;
         if (i === 0 && sheet[cell] === undefined) {
             return row = null;
         }

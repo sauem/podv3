@@ -33,11 +33,7 @@ class SystemLogController extends BaseController
             'register_time' => '7/30/2020 1:09:33 PM',
             'link' => 'https://ladi.huynguyen.info',
         ];
-        $m = new ContactsModel;
-        $m->load($data,"");
+        Helper::prinf(date("d/m/Y H:i:s", 1596089369));
 
-        $m->save();
-
-        Helper::prinf(Helper::firstError($m));
     }
 }

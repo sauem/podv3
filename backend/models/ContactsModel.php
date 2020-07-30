@@ -124,7 +124,9 @@ class ContactsModel extends BaseModel
         if ($insert) {
             //$this->address = $this->address;
             $maxIDNumber = ContactsModel::find()->max('id');
-
+            if(!$maxIDNumber){
+                $maxIDNumber = 0;
+            }
             $this->hashkey = md5($this->phone . $this->option);
             $this->short_link = Helper::getHost($this->link);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());

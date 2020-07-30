@@ -56,6 +56,7 @@ use kartik\grid\ExpandRowColumn;
                         }
                         return Html::tag("p",
                             "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
+                            "<small class='text-info'>CTCODE: <i>{$model->code}</i></small><br>".
                             "<small class='text-info'>address: <i>{$model->address}</i></small><br>".
                             "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>".
                             "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
@@ -72,11 +73,11 @@ use kartik\grid\ExpandRowColumn;
                     }
                 ],
                 [
-                    'label' => 'Ngày nhận',
+                    'label' => 'Ngày đặt hàng',
                     'attribute' => 'created_at',
                     'format' => 'html',
                     'value' => function ($model) {
-                        return Html::tag("small",date("H:i:s d/m/Y",$model->created_at));
+                        return Html::tag("small",date("d/m/Y H:i:s",$model->register_time));
                     }
                 ],
                 [

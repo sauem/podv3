@@ -1,16 +1,21 @@
 <?php
 
 namespace console\controllers;
+
 use backend\jobs\doScanContact;
 use backend\models\ContactsModel;
+use common\helper\Helper;
+
 class RescanController extends \yii\console\Controller
 {
-    public function actionIndex(){
-      echo  doScanContact::apply();
-      return 0;
+    public function actionIndex()
+    {
+        echo doScanContact::apply();
+        return 0;
     }
 
-    public function actionFake(){
+    public function actionFake()
+    {
         for ($i = 1; $i < 500; $i++) {
             $phone = rand(1111111111, 9999999999);
 
@@ -26,8 +31,14 @@ class RescanController extends \yii\console\Controller
                     'code' => 'CTVN', //Helper::countryFromIP($_SERVER['REMOTE_ADDR'])
                 ];
                 $contact = new ContactsModel;
-               $contact->load($data,"");
-               $contact->save();
+                $contact->load($data, "");
+                $res = $contact->save();
+                if (!$res) {
+                    echo Helper::firstError($contact);
+               } else {
+                    echo "done $i";
+                }
+
             }
         }
 

@@ -31,6 +31,7 @@ use yii\widgets\ActiveForm;
                 <th>Zipcode</th>
                 <th>Landing page</th>
                 <th>Option</th>
+                <th>IP</th>
                 <th>Ghi chú</th>
             </tr>
             </thead>
@@ -43,6 +44,7 @@ use yii\widgets\ActiveForm;
                 <td>{{zipcode}}</td>
                 <td>{{link}}</td>
                 <td>{{option}}</td>
+                <td>{{ip}}</td>
                 <td>{{note}}</td>
             </tr>
             {{/each}}
