@@ -29,11 +29,15 @@ class SystemLogController extends BaseController
             'zipcode' => 100000,
             'ip' => '123.24.177.254',
             'type' => 'capture_form',
-            'option' => 'Lựa chọn 2',
+            'option' => 'Lựa chọn 3',
+            'register_time' => '7/30/2020 1:09:33 PM',
             'link' => 'https://ladi.huynguyen.info',
         ];
         $m = new ContactsModel;
-        $m->load($data, '');
+        $m->load($data,"");
+
         $m->save();
+
+        Helper::prinf(Helper::firstError($m));
     }
 }

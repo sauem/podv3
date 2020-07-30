@@ -83,4 +83,11 @@ class Helper
             "http://www.geoplugin.net/json.gp?ip=" . $ip));
         return $ipdat->geoplugin_countryCode;
     }
+
+    static function convertTime($date){
+        if(!is_numeric($date)){
+            return strtotime($date);
+        }
+        return $date;
+    }
 }
