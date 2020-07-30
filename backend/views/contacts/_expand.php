@@ -110,38 +110,6 @@ $js = <<<JS
         })  
     };
     
-    $("body").on("click",".submitLog",function(e) {
-        let _key = $(this).data('key');
-        let _form = $(this).closest("#noteForm_"+ _key );
-        let _url = _form.attr("action");
-        let _formData = new FormData(_form[0]);
-
-        if((_formData.get("status") == "pending" ||
-         _formData.get("status") == "callback") && 
-         _formData.get("callback_time") == ""){
-            toastr.warning("Hãy đặt thời gian gọi lại!");
-            return false;
-        }
-        $.ajax({    
-            url : _url,
-            data : _formData,
-            type : 'POST',
-            cache : false,
-            contentType: false,
-            processData: false,
-            success : function(res) {
-                if(res.success){
-                    swal.fire('Thông báo!',"Thêm trạng thái thành công.","success").then(() => {window.location.reload()})
-                    return false;              
-                }else{
-                    toastr.warning(res.msg);
-                }
-            }
-        });
-        return false;
-    });
-    
-    
     $("body").on("change","select[name='status']",function() {
             let _val = $(this).val();
             switch (_val) {

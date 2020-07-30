@@ -294,7 +294,7 @@ $js = <<<JS
                     toastr.success("Tạo đơn hàng thành công!");
                     $("#collapse-order").collapse("hide");
                     restOrder();
-                    __reloadData("$currentPage");
+                    __reloadData();
                     return;
                 }
                 toastr.warning(res);
@@ -311,7 +311,7 @@ $js = <<<JS
     $("body").on("change","select[name='payment_method']",function() {
       let _val = $(this).val();
         switch (_val) {
-          case "1":
+          case "9999":
               $(".bill-image").css({"display" : "block"});
               $(".bill-image").find("input[type='file']").attr("required",true);
               break;

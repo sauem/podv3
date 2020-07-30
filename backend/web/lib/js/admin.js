@@ -182,11 +182,11 @@ function __reloadData() {
     $.each(pjaxs, function (index, item) {
         if (pjaxs.length > index + 1) {
             $(item).one('pjax:end', function (xhr, options) {
-                $.pjax.reload({container: pjaxs[index + 1], timeout: false});
+                $.pjax.reload({container: pjaxs[index + 1], replace: false , timeout: false});
             });
         }
     });
-    $.pjax.reload({container: pjaxs[0], timeout: false});
+    $.pjax.reload({container: pjaxs[0], replace: false , timeout: false});
 }
 
 function _removeImage() {
@@ -234,3 +234,36 @@ $(".block").click(function () {
     let _key = $(this).data("key");
     alert(_key);
 })
+
+
+$("body").on("click",".submitLog",function(e) {
+    e.preventDefault();
+    let _key = $(this).data('key');
+    let _form = $(this).closest("#noteForm_"+ _key );
+    let _url = _form.attr("action");
+    let _formData = new FormData(_form[0]);
+
+    if((_formData.get("status") == "pending" ||
+        _formData.get("status") == "callback") &&
+        _formData.get("callback_time") == ""){
+        toastr.warning("Hãy đặt thời gian gọi lại!");
+        return false;
+    }
+    $.ajax({
+        url : _url,
+        data : _formData,
+        type : 'POST',
+        cache : false,
+        contentType: false,
+        processData: false,
+        success : function(res) {
+            if(res.success){
+                __reloadData();
+                return false;
+            }else{
+                toastr.warning(res.msg);
+            }
+        }
+    });
+    return false;
+});
