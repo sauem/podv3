@@ -53,10 +53,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ]
                             ])
                             ->label("Sản phẩm") ?>
+                        <small class="text-warning">#Lời khuyên : Nên chọn sản phẩm với danh mục tương ứng</small>
                     </div>
-
                 </div>
-                <div class="text-right">
+                <div class="mt-3 text-right">
                     <?= Component::reset() ?>
                     <?= Html::submitButton("Lưu", ['class' => 'btn btn-success']) ?>
                 </div>

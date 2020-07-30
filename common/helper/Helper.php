@@ -22,7 +22,7 @@ class Helper
     }
     static function getHost($link){
         $parse = parse_url($link);
-        return isset($parse['host'])  ? $parse['host'] : "";
+        return isset($parse['host'])  ? $parse['host'] : $link;
     }
 
     static function userRole($role){
