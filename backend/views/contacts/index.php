@@ -200,6 +200,7 @@ $js = <<<JS
            restOrder();
            loadProducts(keys);
            loadSku(getSelectedColum());
+           
         });
         
        $("#collapse-order").on("hidden.bs.collapse", function() {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7a6d21c6570d372aa822536aa69fa44",
+    "content-hash": "d4c3937ca8e6e74b247c97b9e876a462",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -374,53 +374,44 @@
             "time": "2020-06-29T00:56:53+00:00"
         },
         {
-            "name": "geoip/geoip",
-            "version": "v1.17",
+            "name": "ip2location/ip2location-php",
+            "version": "8.2.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/maxmind/geoip-api-php.git",
-                "reference": "2053a85c2ed3e7adcbaf0117e26832f57366e370"
+                "url": "https://github.com/chrislim2888/IP2Location-PHP-Module.git",
+                "reference": "9cbb8ab32b940523ea5b08ca3bab7adc4dde019f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxmind/geoip-api-php/zipball/2053a85c2ed3e7adcbaf0117e26832f57366e370",
-                "reference": "2053a85c2ed3e7adcbaf0117e26832f57366e370",
+                "url": "https://api.github.com/repos/chrislim2888/IP2Location-PHP-Module/zipball/9cbb8ab32b940523ea5b08ca3bab7adc4dde019f",
+                "reference": "9cbb8ab32b940523ea5b08ca3bab7adc4dde019f",
                 "shasum": ""
-            },
-            "conflict": {
-                "ext-geoip": "*"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*",
-                "satooshi/php-coveralls": "1.0.*"
             },
             "type": "library",
             "autoload": {
-                "files": [
-                    "src/geoip.inc",
-                    "src/geoipcity.inc",
-                    "src/timezone.php"
+                "classmap": [
+                    "IP2Location.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL 2.1+"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "MaxMind, Inc.",
-                    "email": "support@maxmind.com",
-                    "homepage": "http://www.maxmind.com/"
+                    "name": "IP2Location",
+                    "email": "support@ip2location.com",
+                    "homepage": "http://www.ip2location.com"
                 }
             ],
-            "description": "MaxMind GeoIP PHP API",
-            "homepage": "http://dev.maxmind.com/geoip/legacy/downloadable",
+            "description": "[Official Release] IP2Location PHP API to get location info from IPv4 and IPv6 address.",
+            "homepage": "http://www.ip2location.com",
             "keywords": [
-                "geoip",
                 "geolocation",
-                "maxmind"
+                "ip2location",
+                "ip2locationlite"
             ],
-            "time": "2016-05-16T19:06:50+00:00"
+            "time": "2020-03-25T00:20:36+00:00"
         },
         {
             "name": "kartik-v/bootstrap-fileinput",
@@ -3766,6 +3757,55 @@
                 "fixtures"
             ],
             "time": "2020-05-11T08:39:57+00:00"
+        },
+        {
+            "name": "geoip/geoip",
+            "version": "v1.17",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maxmind/geoip-api-php.git",
+                "reference": "2053a85c2ed3e7adcbaf0117e26832f57366e370"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maxmind/geoip-api-php/zipball/2053a85c2ed3e7adcbaf0117e26832f57366e370",
+                "reference": "2053a85c2ed3e7adcbaf0117e26832f57366e370",
+                "shasum": ""
+            },
+            "conflict": {
+                "ext-geoip": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "1.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/geoip.inc",
+                    "src/geoipcity.inc",
+                    "src/timezone.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL 2.1+"
+            ],
+            "authors": [
+                {
+                    "name": "MaxMind, Inc.",
+                    "email": "support@maxmind.com",
+                    "homepage": "http://www.maxmind.com/"
+                }
+            ],
+            "description": "MaxMind GeoIP PHP API",
+            "homepage": "http://dev.maxmind.com/geoip/legacy/downloadable",
+            "keywords": [
+                "geoip",
+                "geolocation",
+                "maxmind"
+            ],
+            "time": "2016-05-16T19:06:50+00:00"
         },
         {
             "name": "guzzlehttp/psr7",

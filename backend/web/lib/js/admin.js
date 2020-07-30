@@ -200,3 +200,15 @@ function _removeImage() {
         }
     })
 }
+
+function __zipcodeSate(zipcode) {
+    $.ajax({
+        url : "http://www.zipcodeapi.com/rest/"+ config.zipcodeAPI +"/info.json/" + zipcode + "/radians",
+        dataType: "json",
+        type : "GET",
+        cache : false,
+        success : function (res) {
+            console.log(res)
+        }
+    })
+}

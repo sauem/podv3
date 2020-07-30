@@ -139,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <thead>
                     <tr>
                         <th>Đăng kí</th>
-                        <th>Lựa chọn</th>
+                        <th>Sản phẩm</th>
                         <th>Trang đích</th>
                         <th>Ngày đăng kí</th>
                     </tr>
@@ -159,7 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $contact->contact->page->product ? $contact->contact->page->product->name : "Không thiết lập". "<br>".
                                     $contact->contact->option
                                     ?></td>
-                                <td><?= $contact->contact->link?></td>
+                                <td><?= Html::a($contact->contact->short_link,$contact->contact->link,['target' => '_blank'])?></td>
                                 <td><?= Helper::toDate($contact->updated_at)?></td>
                             </tr>
                             <?php

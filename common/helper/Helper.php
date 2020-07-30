@@ -59,7 +59,7 @@ class Helper
 
     static function money($number)
     {
-        return number_format($number, 2, ',', '.');
+        return number_format($number, 2, '.', ',');
     }
 
     static function toDate($number, $format = "H:i:s d/m")

@@ -36,7 +36,8 @@ AppAsset::register($this);
             pushContact: "<?= \yii\helpers\Url::toRoute(['ajax/push-contact'])?>",
             pushProduct: "<?= \yii\helpers\Url::toRoute(['ajax/push-product'])?>",
             removeImages: "<?= \yii\helpers\Url::toRoute(['ajax/remove-image'])?>",
-            maxSize: 10485760
+            maxSize: 10485760,
+            zipcodeAPI : "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx"
         }
 
     </script>

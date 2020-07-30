@@ -53,7 +53,7 @@ class OrdersModel extends BaseModel
         return [
             [['customer_name', 'customer_phone','address','zipcode'], 'required'],
             [['zipcode', 'user_id', 'created_at', 'updated_at','payment_method'], 'integer'],
-            [['sale', 'sub_total', 'total'], 'number'],
+            [['sale', 'sub_total', 'total','shipping_price'], 'number'],
             [['customer_name', 'address', 'city', 'district', 'country', 'order_note', 'status_note','contact_id','vendor_note'], 'string', 'max' => 255],
             [['customer_phone'], 'string', 'max' => 15],
             [['customer_email'], 'string', 'max' => 100],
