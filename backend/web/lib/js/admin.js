@@ -229,3 +229,8 @@ $(".export").click(function() {
         }
     })
 });
+
+$(".block").click(function () {
+    let _key = $(this).data("key");
+    alert(_key);
+})

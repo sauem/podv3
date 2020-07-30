@@ -104,7 +104,10 @@ use common\helper\Helper;
 
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => '{view}{export}',
+                    'template' => '{view}{export}{block}',
+                    'headerOptions' => [
+                            'width' => '10%'
+                    ],
                     'buttons' => [
                         'view' => function ($url) {
                             return Component::view($url);
@@ -115,6 +118,21 @@ use common\helper\Helper;
                                 'data-key' => $model->id,
                                 'data-pjax' => '0'
                             ]);
+                        },
+                        'block' => function($url,$model){
+                            $button =  Html::a("<i class='fa fa-lock'></i> Khóa sửa",'javascript:;',[
+                                'class' => 'bg-white block btn btn-sm mt-2',
+                                'data-key' => $model->id,
+                                'data-pjax' => '0'
+                            ]);
+                             if($model->block_time > 0){
+                                 $button =  Html::a("<i class='fa fa-lock'></i> Mở khóa",'javascript:;',[
+                                     'class' => 'bg-white block btn btn-sm mt-2',
+                                     'data-key' => $model->id,
+                                     'data-pjax' => '0'
+                                 ]);
+                             }
+                             return $button;
                         }
                     ]
                 ],
