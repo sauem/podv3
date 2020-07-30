@@ -5,56 +5,67 @@ use kartik\grid\CheckboxColumn;
 use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
-use yii\helpers\Url;
+use backend\models\ContactsModel;
+
 ?>
 <div class="table-responsive">
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,
-        'layout' => "{items}\n{pager}",
-        'headerRowOptions' => [
-            'class' => 'thead-light'
-        ],
+        'layout' => "{summary}{items}\n{pager}",
         'pjax' => true,
         'pjaxSettings' => [
             'neverTimeout' => true,
         ],
+        'headerRowOptions' => [
+            'class' => 'thead-light'
+        ],
         'columns' => [
             [
-                'label' => 'Số điện thoại',
-                'attribute' => 'phone',
+                'label' => 'Trang đích',
+                'attribute' => 'link',
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $count = sizeof($model->sumContact);
-                    return Html::a("$model->phone", Url::toRoute(['view', 'phone' => $model->phone]));
-                }
-            ],
-            [
-                'label' => 'Tên khách hàng',
-                'attribute' => 'name',
-                'format' => 'html',
-                'value' => function ($model) {
-                    return $model->name;
-                }
-            ],
-            [
-                'label' => 'Quản lý',
-                'attribute' => 'status',
-                'format' => 'html',
-                'value' => function ($model) {
-                    if(!$model->assignment){
+                    if (!$model->page) {
                         return null;
                     }
-                    return $model->assignment->user->username;
+                    return Html::tag("p",
+                        "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
+                        "<small class='text-info'>CTCODE: <i>{$model->code}</i></small><br>" .
+                        "<small class='text-info'>address: <i>{$model->address}</i></small><br>" .
+                        "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>" .
+                        "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
+
+                    );
                 }
             ],
             [
-                'label' => 'Số lượng',
+                'label' => 'sản phẩm',
+                'attribute' => 'category_id',
+                'format' => 'html',
+                'value' => function ($model) {
+                    if (!$model->page || !$model->page->product) {
+                        return null;
+                    }
+                    return Html::tag("p",
+                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
+                        "<small><i>{$model->page->category->name}</i></small>");
+                }
+            ],
+            [
+                'label' => 'Trạng thái',
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
-                    $count = sizeof($model->sumContact);
-                    return $count;
+                    return ContactsModel::label($model->status);
+                }
+            ],
+            [
+                'attribute' => 'register_time',
+                'format' => 'html',
+                'value' => function($model){
+                    return date("d/m/Y H:i:s",$model->register_time);
                 }
             ],
             [
@@ -62,9 +73,12 @@ use yii\helpers\Url;
                 'template' => '{view}',
                 'buttons' => [
                     'view' => function ($url, $model) {
-                        return Html::a("<i class='fa fa-eye'></i> chi tiết",
-                            \yii\helpers\Url::toRoute(['view', 'phone' => $model->phone]),
-                            ['class' => 'btn btn-sm bg-white']);
+                        return Html::a("<i class='fa fa-eye'></i> chi tiết", '#viewNote', [
+                            'data-remote' => \yii\helpers\Url::toRoute(['contacts/view', 'id' => $model->id]),
+                            'data-target' => "#viewNote",
+                            'data-toggle' => 'modal',
+                            'class' => 'btn btn-sm bg-white'
+                        ]);
                     }
                 ]
             ],

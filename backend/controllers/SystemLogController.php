@@ -33,7 +33,9 @@ class SystemLogController extends BaseController
             'register_time' => '7/30/2020 1:09:33 PM',
             'link' => 'https://ladi.huynguyen.info',
         ];
-        Helper::prinf(date("d/m/Y H:i:s", 1596089369));
+
+        Helper::countryFromIP(null);
+        die;
 
     }
 }
