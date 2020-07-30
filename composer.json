@@ -33,7 +33,8 @@
         "yii2tech/crontab": "^1.0@dev",
         "yiisoft/yii2-redis": "~2.0.0",
         "cakebake/yii2-actionlog": "*",
-        "yii2tech/spreadsheet": "^1.0@dev"
+        "yii2tech/spreadsheet": "^1.0@dev",
+        "geoip/geoip": "~1.16"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
