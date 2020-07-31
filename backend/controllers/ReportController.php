@@ -64,7 +64,7 @@ class ReportController extends Controller
                 $query->select(['sku', 'name']);
             }])
             ->groupBy('product_sku')
-            ->addSelect(['product_sku', 'sum(price*qty) as total'])
+            ->addSelect(['product_sku', 'sum(price) as total'])
             ->orderBy(['total' => SORT_DESC]);
         switch ($sortBy) {
             case "last_month":
