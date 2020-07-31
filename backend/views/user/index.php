@@ -36,8 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php } ?>
                         <div class="form-group col-md-12">
                             <?php
-                            $role = AuthAssignment::findOne(['user_id' => $model->id]);
-                            $model->role = $role ? $role->getAttribute("item_name") : null?>
+                            $model->role = $model->userRole ? $model->userRole->item_name: null?>
                             <?= $form->field($model, 'role')->dropDownList(
                                 \backend\models\AuthItem::Roles(),
                                 ['prompt' => 'Chọn quyền quản trị'])->label('Quyền quản trị') ?>
@@ -78,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return UserModel::label($model->status);
                             }],
                             ['attribute' => 'role', 'format' => 'html', 'value' => function ($model) {
-                                return $model->getRole()->one()->item_name;
+                                return $model->userRole->item_name;
                             }],
                             [
                                 'class' => ActionColumn::class,
