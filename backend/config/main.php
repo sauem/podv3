@@ -80,11 +80,11 @@ return [
         'class' => \mdm\admin\components\AccessControl::class,
         'allowActions' => [
             'api/*',
-            'ajax/*',
+           // 'ajax/*',
             'rbac/*',
             'site/logout',
             'report/*',
-            'export/*',
+           // 'export/*',
             'system-log/*'
         ]
     ],
