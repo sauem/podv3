@@ -62,7 +62,7 @@ class ExportController extends BaseController
         $export->renderCell("B7",$order->city);
         $export->renderCell("B8",$order->zipcode);
         $export->renderCell("B9",Helper::getCountry($order->country));
-        $export->renderCell("B10",$order->payment->name);
+        $export->renderCell("B10", $order->payment ? $order->payment->name : "Không thiết lập");
 
         $colB = 10;
         if($order->billings){
