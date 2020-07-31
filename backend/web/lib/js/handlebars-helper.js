@@ -25,7 +25,7 @@ Handlebars.registerHelper("money", function (value,options) {
 })
 Handlebars.registerHelper("selected",function (val1, val2) {
 
-    if(typeof val1 == "undefined" || typeof val2 == "undefined"){
+    if(typeof val1 == "undefined" || typeof val2 == "undefined" || val1 == null || val2 == null){
         return "";
     }
     if(val1.toString().trim() == val2.toString().trim()){
