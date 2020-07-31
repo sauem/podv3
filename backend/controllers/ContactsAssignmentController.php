@@ -58,6 +58,8 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
+        $select = ContactsModel::find()->all();
+        Helper::prinf($select);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
