@@ -38,8 +38,8 @@ $this->title = 'My Yii Application';
         <div class="col-lg-3 col-md-6">
             <div class="ibox bg-danger color-white widget-stat">
                 <div class="ibox-body">
-                    <h2 class="m-b-5 font-strong"><?= \common\helper\Helper::money($totalAmount) ?></h2>
-                    <div class="m-b-5">Đơn hàng thành công</div>
+                    <h2 class="m-b-5 font-strong"><?= $totalAmount ?></h2>
+                    <div class="m-b-5">Liên hệ thành công</div>
                     <i class="fa fa-money widget-stat-icon"></i>
                     <div><i class="fa fa-level-down m-r-5"></i><small>-12% Lower</small></div>
                 </div>
@@ -105,7 +105,7 @@ $this->title = 'My Yii Application';
                     {{user.username}}
                 </td>
                 <td class="text-right">
-                    {{money total}}đ
+                    {{money total}}
                 </td>
             </tr>
             {{/each}}
@@ -132,7 +132,7 @@ $this->title = 'My Yii Application';
                     <strong>{{product_sku}}</strong> | {{product.name}}
                 </td>
                 <td class="text-right">
-                    {{money total}}đ
+                    {{money total}}
                 </td>
             </tr>
             {{/each}}

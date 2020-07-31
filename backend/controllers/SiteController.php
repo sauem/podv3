@@ -8,6 +8,8 @@ use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use backend\models\OrdersContacts;
+use backend\models\OrdersItems;
 use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
@@ -45,11 +47,12 @@ class SiteController extends BaseController
     {
         $totalContact = ContactsModel::find()->count();
         $totalOrder = OrdersModel::find()->count();
-        $totalAmount = OrdersModel::find()->sum('total');
+
         $conversionRate = 0;
         if($totalContact > 0 && $totalOrder > 0){
             $conversionRate = $totalOrder/ $totalContact * 100;
         }
+        $totalAmount = OrdersContacts::find()->count('id');
         return $this->render('index',[
             'totalContact'  => $totalContact,
             'totalOrder' => $totalOrder,
