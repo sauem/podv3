@@ -58,7 +58,7 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
-        $select = ContactsModel::find()->all();
+        $select = ContactsModel::find()->groupBy('phone')->all();
         Helper::prinf($select);
         return $this->render('index', [
             'searchModel' => $searchModel,
