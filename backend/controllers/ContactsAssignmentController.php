@@ -58,7 +58,7 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ));
-        Helper::prinf(Helper::userRole(UserModel::_ADMIN));
+
         $sql = $pendingProvider->query->createCommand()->getRawSql();
         $select = $pendingProvider->query->count();
         Helper::prinf($select ."\n$sql");
