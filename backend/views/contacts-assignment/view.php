@@ -100,57 +100,57 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="ibox">
-            <div class="ibox-head">
-                <h2 class="ibox-title">Lịch sử đơn hàng</h2>
-            </div>
-            <div class="ibox-body">
-                <?= GridView::widget([
-                    'dataProvider' => $histories,
-                    'responsive' => true,
-                    'layout' => "{items}\n{pager}",
-                    'pjax' => true,
-                    'pjaxSettings' => [
-                        'neverTimeout' => true,
-                    ],
-                    'headerRowOptions' => [
-                        'class' => 'thead-light'
-                    ],
-                    'columns' => [
-                        [
-                            'class' => SerialColumn::class,
-                        ],
-                        'created_at',
-                        [
-                            'label' => 'Sản phẩm',
-                            'attribute' => 'contacts.name',
-                            'format' => 'raw',
-                            'value' => function ($model) {
-                                if(!$model->contact->page){
-                                    return "không thiết lập";
-                                }
-                                $html = $model->contact->page->product->name . "<br>";
-                                $html .= $model->contact->page->product->sku . " | ";
-                                $html .= $model->contact->page->product->regular_price . " | ";
-                                $html .= $model->contact->page->product->category->name . "<br>";
-                                $html .= $model->contact->option;
-                                return $html;
-                            }
-                        ],
-                        'total',
-                        [
-                            'label' => 'Trạng thái',
-                            'attribute' => 'status',
-                            'format' => 'html',
-                            'value' => function ($model) {
-                                return ContactsModel::label($model->status);
-                            }
-                        ],
-                        'note'
-                    ],
-                ]) ?>
-            </div>
-        </div>
+<!--        <div class="ibox">-->
+<!--            <div class="ibox-head">-->
+<!--                <h2 class="ibox-title">Lịch sử đơn hàng</h2>-->
+<!--            </div>-->
+<!--            <div class="ibox-body">-->
+<!--                --><?//= GridView::widget([
+//                    'dataProvider' => $histories,
+//                    'responsive' => true,
+//                    'layout' => "{items}\n{pager}",
+//                    'pjax' => true,
+//                    'pjaxSettings' => [
+//                        'neverTimeout' => true,
+//                    ],
+//                    'headerRowOptions' => [
+//                        'class' => 'thead-light'
+//                    ],
+//                    'columns' => [
+//                        [
+//                            'class' => SerialColumn::class,
+//                        ],
+//                        'created_at',
+//                        [
+//                            'label' => 'Sản phẩm',
+//                            'attribute' => 'contacts.name',
+//                            'format' => 'raw',
+//                            'value' => function ($model) {
+//                                if(!$model->contact->page){
+//                                    return "không thiết lập";
+//                                }
+//                                $html = $model->contact->page->product->name . "<br>";
+//                                $html .= $model->contact->page->product->sku . " | ";
+//                                $html .= $model->contact->page->product->regular_price . " | ";
+//                                $html .= $model->contact->page->product->category->name . "<br>";
+//                                $html .= $model->contact->option;
+//                                return $html;
+//                            }
+//                        ],
+//                        'total',
+//                        [
+//                            'label' => 'Trạng thái',
+//                            'attribute' => 'status',
+//                            'format' => 'html',
+//                            'value' => function ($model) {
+//                                return ContactsModel::label($model->status);
+//                            }
+//                        ],
+//                        'note'
+//                    ],
+//                ]) ?>
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 
