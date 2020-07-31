@@ -53,9 +53,9 @@ class ContactsAssignmentController extends Controller
             Yii::$app->request->queryParams,
             [
                 'ContactsSearchModel' => [
-                    'status' => [
-                        ContactsModel::_NEW
-                    ]
+//                    'status' => [
+//                        ContactsModel::_NEW
+//                    ]
                 ]
             ]
         ),true);
