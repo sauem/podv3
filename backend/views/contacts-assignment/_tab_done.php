@@ -73,12 +73,9 @@ use backend\models\ContactsModel;
                 'template' => '{view}',
                 'buttons' => [
                     'view' => function ($url, $model) {
-                        return Html::a("<i class='fa fa-eye'></i> chi tiết", '#viewNote', [
-                            'data-remote' => \yii\helpers\Url::toRoute(['contacts/view', 'id' => $model->id]),
-                            'data-target' => "#viewNote",
-                            'data-toggle' => 'modal',
-                            'class' => 'btn btn-sm bg-white'
-                        ]);
+                        return Html::a("<i class='fa fa-eye'></i> chi tiết",
+                            \yii\helpers\Url::toRoute(['view', 'phone' => $model->phone]),
+                            ['class' => 'btn btn-sm bg-white','data-pjax' => '0']);
                     }
                 ]
             ],
