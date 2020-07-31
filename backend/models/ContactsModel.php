@@ -55,7 +55,7 @@ class ContactsModel extends BaseModel
     const _SKIP = 'skip';
     const _DUPLICATE = 'duplicate';
     const _NUMBER_FAIL = 'number_fail';
-    const _NEW = null;
+    const _NEW = "";
 
     const STATUS = [
         self::_NEW => 'Đợi xử lý',
