@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                     <tr>
                         <td>Hình thức thanh toán</td>
-                        <td><?= $model->payment->name?></td>
+                        <td><?= $model->payment ? $model->payment->name : "Không thiế lập"?></td>
                     </tr>
                     <?php if($model->billings){
                         ?>
