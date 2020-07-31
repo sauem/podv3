@@ -89,7 +89,8 @@ class ProductsModel extends BaseModel
     public function afterFind()
     {
         //$this->regular_price = number_format($this->regular_price,2,'.',',') ."đ";
-        $this->category_id = CategoriesModel::findOne($this->category_id)->name;
+        $cate = CategoriesModel::findOne($this->category_id);
+        $this->category_id = $cate ? $cate->name : $this->category_id;
         parent::afterFind();
     }
     public function afterSave($insert, $changedAttributes)

@@ -44,12 +44,12 @@ class AppAsset extends AssetBundle
         '/lib/js/handlebars-helper.js?v=1.3',
         '/lib/js/admin.js?v=1.4',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
-        '/js/site.js?v=1.3',
+        '/js/site.js?v=1.4',
 
 
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+        //'yii\bootstrap\BootstrapAsset',
     ];
 }

@@ -61,7 +61,7 @@ class ReportController extends Controller
         $sortBy = \Yii::$app->request->post('sort');
         $query = OrdersItems::find()
             ->with(['product' => function ($query) {
-                $query->select(['sku', 'name']);
+                $query->select(['sku', 'name','category_id']);
             }])
             ->groupBy('product_sku')
             ->addSelect(['product_sku', 'sum(price) as total'])

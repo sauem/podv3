@@ -38,6 +38,7 @@ AppAsset::register($this);
             removeImages: "<?= Url::toRoute(['ajax/remove-image'])?>",
             drafImage: "<?= Url::toRoute(['ajax/draf-image'])?>",
             maxSize: 10485760,
+            maxRowUpload : 5000,
             zipcodeAPI: "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx",
             exportURL: "<?=Url::toRoute(['export/order'])?>",
             blockOrder : "<?=Url::toRoute(['ajax/block-order'])?>",

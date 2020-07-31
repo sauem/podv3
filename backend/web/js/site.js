@@ -9,7 +9,14 @@ function onUpload(element) {
         alert("Dung lượng file nhỏ hơn hoặc bàng 10M!");
         return;
     }
-    _this.parent().closest(".input-file").find(".text-note").text(file.name);
+    _this.parent().closest(".input-file").find(".text-note").html("<div class=\"spinner-grow text-danger\" role=\"status\">\n" +
+        "  <span class=\"sr-only\">Loading...</span>\n" +
+        "</div>");
+
+    window.EXCEL = {
+        rows: [],
+        fileName: ""
+    }
 
     $.ajax({
         url: config.ajaxUpload,
@@ -24,7 +31,7 @@ function onUpload(element) {
     });
 
     function successResponse(success) {
-
+        _this.parent().closest(".input-file").find(".text-note").text(file.name);
     }
 
     function errorResponse(error) {
@@ -71,7 +78,7 @@ function doProcessWorkbook(workbook, file) {
         size: file.size,
         total: rows.length
     }
-    window.EXCEL = {
+    EXCEL = {
         rows: rows,
         fileName: file.name
     }
@@ -87,15 +94,25 @@ function doProcessWorkbook(workbook, file) {
     }
 }
 
-$("#handleData").click(function () {
+$(".handleData").click(function () {
     let _importAction = $(this).data("action");
 
     let _url = config.pushContact;
     if (_importAction == "product") {
         _url = config.pushProduct;
     }
+    if(typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0){
+        toastr.warning("Vui lòng chọn file dữ liệu!");
+        return false;
+    }
+    if((EXCEL.rows).length > config.maxRowUpload){
+        toastr.warning("File dữ liệu tối đa 20000 dòng");
+        return false;
+    }
     swal.fire({
         title: "Đang nhập liệu",
+        icon :"info",
+        allowOutsideClick:false,
         onBeforeOpen: () => {
             Swal.showLoading()
             $.ajax({

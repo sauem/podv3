@@ -25,14 +25,7 @@ use yii\widgets\ActiveForm;
         <table class="fixed_header table table-bordered table-striped table-hover">
             <thead>
             <tr>
-                <th>Khách hàng</th>
-                <th>SĐT</th>
-                <th>Địa chỉ</th>
-                <th>Zipcode</th>
-                <th>Landing page</th>
-                <th>Option</th>
-                <th>IP</th>
-                <th>Ghi chú</th>
+                <th colspan="7" class="text-center">Thông tin dữ liệu</th>
             </tr>
             </thead>
 <!--            <tbody>-->

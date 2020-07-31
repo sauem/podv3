@@ -5,6 +5,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsModel;
 use backend\models\LogsImport;
+use backend\models\OrdersItems;
 use cakebake\actionlog\model\ActionLog;
 use cakebake\actionlog\model\ActionLogSearch;
 use common\helper\Helper;
@@ -48,8 +49,13 @@ class SystemLogController extends BaseController
             'link' => 'https://ladi.huynguyen.info',
         ];
 
-        $time = strtotime("midnight",time());
-        Helper::prinf( Helper::getTimeLeft());
-
+        $query = OrdersItems::find()
+            ->with(['product' => function ($query) {
+                $query->select(['sku', 'name']);
+            }])
+            ->groupBy('product_sku')
+            ->addSelect(['product_sku', 'sum(price) as total'])
+            ->orderBy(['total' => SORT_DESC]);
+        Helper::prinf($query->all());
     }
 }

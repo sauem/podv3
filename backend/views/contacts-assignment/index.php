@@ -60,9 +60,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Nhập liên hệ</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <div>
+                        <button type="button" id="handleData" class="btn handleData btn-primary">Nhập liên hệ</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Đóng</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-body">
 
@@ -72,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 class="fa fa-download"></i> File dữ liệu mẫu</a>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="button" id="handleData" class="btn btn-primary">Nhập liên hệ</button>
+                        <button type="button" id="handleData" class="btn handleData btn-primary">Nhập liên hệ</button>
                     </div>
                 </div>
             </div>
