@@ -71,8 +71,8 @@ class ContactsSearchModel extends ContactsModel
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['=', 'phone', $this->phone])
             ->orFilterWhere(['like', 'email', $this->name])
-            ->andFilterWhere(['IN', 'contacts.status', $this->status]);
-
+            ->andFilterWhere(['IN', 'contacts.status', $this->status])
+            ->orFilterWhere(['IS', 'status', $this->status]);
         return $dataProvider;
     }
 }
