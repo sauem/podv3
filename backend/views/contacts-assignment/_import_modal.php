@@ -35,20 +35,20 @@ use yii\widgets\ActiveForm;
                 <th>Ghi chú</th>
             </tr>
             </thead>
-            <tbody>
-            {{#each this.rows}}
-            <tr>
-                <td>{{name}}</td>
-                <td>{{phone}}</td>
-                <td>{{address}}</td>
-                <td>{{zipcode}}</td>
-                <td>{{link}}</td>
-                <td>{{option}}</td>
-                <td>{{ip}}</td>
-                <td>{{note}}</td>
-            </tr>
-            {{/each}}
-            </tbody>
+<!--            <tbody>-->
+<!--            {{#each this.rows}}-->
+<!--            <tr>-->
+<!--                <td>{{name}}</td>-->
+<!--                <td>{{phone}}</td>-->
+<!--                <td>{{address}}</td>-->
+<!--                <td>{{zipcode}}</td>-->
+<!--                <td>{{link}}</td>-->
+<!--                <td>{{option}}</td>-->
+<!--                <td>{{ip}}</td>-->
+<!--                <td>{{note}}</td>-->
+<!--            </tr>-->
+<!--            {{/each}}-->
+<!--            </tbody>-->
             <tfoot>
             <tr>
                 <td>Exel size:</td>
