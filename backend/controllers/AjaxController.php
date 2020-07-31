@@ -321,15 +321,13 @@ class AjaxController extends BaseController
     function actionRemoveImage()
     {
         $names = Yii::$app->request->post('images');
-        $count = OrdersBilling::find()->where(['path' => $names])
-            ->andWhere(['status' => 'active'])
-            ->andWhere(['is not', 'order_id', ''])
-            ->count();
-        if ($count == 0) {
-            foreach ($names as $name) {
-                unlink(Yii::getAlias("@files") . "/$name");
+
+        foreach ($names as $name) {
+            $exit = OrdersBilling::findOne(['path' => $name, 'active' => 'active']);
+            if($exit){
+                continue;
             }
-            OrdersBilling::deleteAll(['path' => $names, 'order_id' => '']);
+            unlink(Yii::getAlias("@files") . "/$name");
         }
         return [
             'success' => 0

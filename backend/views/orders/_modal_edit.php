@@ -261,7 +261,9 @@ $js = <<<JS
          switch (_val) {
                 case "9999":
                     $(".bill-image").css({"display" : "block"});
-                    $(".bill-image").find("input[type='file']").attr("required",true);
+                    if((ORDER.billings).length <= 0){
+                        $(".bill-image").find("input[type='file']").attr("required",true);
+                    }
                     break;
                 default:
                     $(".bill-image").css({"display" : "none"});
