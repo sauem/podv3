@@ -36,7 +36,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ),true);
+        ));
 
         $callProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -44,24 +44,20 @@ class ContactsAssignmentController extends Controller
                 'ContactsSearchModel' => [
                     'status' => [
                         ContactsModel::_PENDING,
-                        ContactsModel::_CALLBACK
                     ]
                 ]
             ]
-        ),true);
+        ));
         $pendingProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
                 'ContactsSearchModel' => [
                     'status' => [
-                        ContactsModel::_NEW,
-                        ContactsModel::_CANCEL
+                        ContactsModel::_NEW
                     ]
                 ]
             ]
-        ),true);
-
-    //    Helper::prinf($pendingProvider->query->createCommand()->getRawSql());
+        ));
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
