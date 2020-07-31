@@ -36,7 +36,7 @@ class OrdersItems extends BaseModel
     public function rules()
     {
         return [
-            [['order_id','qty'], 'integer'],
+            [['order_id'], 'integer'],
             [['order_id', 'product_sku','price'], 'required'],
             [['price'], 'number'],
             [['product_sku','product_option'], 'string']
@@ -51,7 +51,6 @@ class OrdersItems extends BaseModel
         return [
             'id' => 'ID',
             'order_id' => 'Order ID',
-            'qty' => 'Số lượng',
             'price' => 'Giá sản phẩm',
             'product_sku' => 'Product SKU',
             'created_at' => 'Created At',

@@ -65,7 +65,7 @@ use kartik\form\ActiveForm;
                 <div class="form-group">
                     <label>Tên khách hàng <span class="text-danger">(*)</span></label>
                     <input required name="customer_name" value="{{this.info.customer_name}}" class="form-control">
-                    <input required name="order_id" value="{{this.info.id}}" class="form-control">
+                    <input type="hidden" required name="order_id" value="{{this.info.id}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -400,11 +400,10 @@ $js = <<<JS
            contentType :false,
            data : _formData,
            success : function(res) {
-                console.log(res);
-                return;
+                
                 if(res.success){
                     toastr.success("Tạo đơn hàng thành công!");
-                    $("#collapse-order").collapse("hide");
+                    $("#orderEdit").modal("hide");
                     restOrder();
                     __reloadData();
                     return;
