@@ -61,7 +61,7 @@ class ContactsAssignmentController extends Controller
             ]
         ),true);
 
-        Helper::prinf($pendingProvider->query->createCommand()->getRawSql());
+    //    Helper::prinf($pendingProvider->query->createCommand()->getRawSql());
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
