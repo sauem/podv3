@@ -2,6 +2,7 @@
 
 namespace console\controllers;
 
+use backend\jobs\doScanBilling;
 use backend\jobs\doScanContact;
 use backend\models\ContactsModel;
 use common\helper\Helper;
@@ -13,7 +14,10 @@ class RescanController extends \yii\console\Controller
         echo doScanContact::apply();
         return 0;
     }
-
+    public function actionImage(){
+        echo doScanBilling::scan();
+        return 0;
+    }
     public function actionFake()
     {
         for ($i = 1; $i < 500; $i++) {
