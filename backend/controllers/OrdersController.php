@@ -158,7 +158,6 @@ class OrdersController extends Controller
         if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
                 if ($model->save()) {
-
                     foreach ($product as $k => $item) {
                         $p = [
                           'order_id' => $model->id,
@@ -181,11 +180,23 @@ class OrdersController extends Controller
                             ];
                         }
                     }
+                    //xóa các sản phẩm đã loại bỏ
                     $condition =  [
                         'AND',['NOT',['product_sku' => $curentSku]],
                         ['order_id' => $model->id]
                     ];
                     OrdersItems::deleteAll($condition);
+                    // cập nhật lại hình ảnh hóa đơn thanh toán
+
+                    OrdersBilling::updateAll([
+                        'order_id' => $model->id,
+                        'active' => OrdersBilling::ACTIVE
+                    ], ['IN', 'path', $path]);
+
+                    OrdersBilling::deleteAll([
+                       'AND', ['NOT', ['path' => $path]],
+                        ['order_id' => $model->id]
+                        ]);
 
                     ActionLog::add("success", "Cập nhật đơn hàng $model->id");
                     return [

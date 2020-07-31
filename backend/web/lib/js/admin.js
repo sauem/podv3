@@ -353,6 +353,7 @@ $("body").on("click",".removeImage",function () {
     }).then(val =>{
         if(val.value){
             $(this).closest(".bill-item").parent().remove();
+            ORDER.billings = ORDER.billings.filter(item => item !== _path)
         }
     });
 });

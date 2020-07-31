@@ -297,6 +297,7 @@ $js = <<<JS
             type : 'POST',
             data : { key : _key},
             success : function(res) {
+              
                 if(res.success){
                     __complieTemplate(res);
                 }else{
@@ -309,7 +310,8 @@ $js = <<<JS
         
         $("#resultInfo").html(compileTemplate("info-template",res.customer));
          ORDER.shipping = res.customer.info.shipping_price;
-       
+         ORDER.billings = res.customer.path;
+        
         let items = res.items;
         if(items.length > 0){
              $.each(items, function(index, item) {

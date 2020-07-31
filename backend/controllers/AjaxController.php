@@ -321,17 +321,15 @@ class AjaxController extends BaseController
     function actionRemoveImage()
     {
         $names = Yii::$app->request->post('images');
-        if (sizeof($names) > 0) {
-            $count = OrdersBilling::find()->where(['path' => $names])
-                ->andWhere(['status' => 'active'])
-                ->andWhere(['is not','order_id',''])
-                ->count();
-            if($count == 0){
-                foreach ($names as $name) {
-                    unlink(Yii::getAlias("@files") . "/$name");
-                }
-                OrdersBilling::deleteAll(['path' => $names,'order_id' => '']);
+        $count = OrdersBilling::find()->where(['path' => $names])
+            ->andWhere(['status' => 'active'])
+            ->andWhere(['is not', 'order_id', ''])
+            ->count();
+        if ($count == 0) {
+            foreach ($names as $name) {
+                unlink(Yii::getAlias("@files") . "/$name");
             }
+            OrdersBilling::deleteAll(['path' => $names, 'order_id' => '']);
         }
         return [
             'success' => 0
@@ -352,7 +350,7 @@ class AjaxController extends BaseController
         $order->block_time = $type == "open" ? Helper::getTimeLeft() : 0;
         $order->admin_block = Yii::$app->user->getId();
         if ($order->save()) {
-            ActionLog::add("success",Yii::$app->user->getIdentity()->username . ($type == "open" ? "Mở chỉnh sửa " : " khóa chỉnh sửa")) . " đơn hàng $key";
+            ActionLog::add("success", Yii::$app->user->getIdentity()->username . ($type == "open" ? "Mở chỉnh sửa " : " khóa chỉnh sửa")) . " đơn hàng $key";
             return [
                 'success' => 1,
             ];
@@ -363,18 +361,19 @@ class AjaxController extends BaseController
         ];
     }
 
-    function actionOrderData(){
+    function actionOrderData()
+    {
         $key = Yii::$app->request->post("key");
 
-        $order  = OrdersModel::find()->where(['id' => $key])
+        $order = OrdersModel::find()->where(['id' => $key])
             ->with('items')
             ->with('contacts')
             ->with('billings')
             ->asArray()->one();
-        if(!$order){
+        if (!$order) {
             return [
-              'success' => 0,
-              'msg' => 'Không tồn tại đơn hàng này!',
+                'success' => 0,
+                'msg' => 'Không tồn tại đơn hàng này!',
             ];
         }
         $payment = Payment::find()->with('infos')->all();
@@ -382,19 +381,25 @@ class AjaxController extends BaseController
         $skus = ProductsModel::find()->distinct('sku')->asArray()->all();
 
         $items = $order['items'];
-        foreach ($items as $k => $item){
+        foreach ($items as $k => $item) {
             $items[$k]['product']['option'] = Helper::option($item['product']['option']);
             $items[$k]['product']['selected'] = $item['product_option'];
         }
         $order['items'] = $items;
+
+        $path = null;
+        if ($order['billings']) {
+            $path = ArrayHelper::getColumn($order['billings'], 'path');
+        }
         return [
             'success' => 1,
-            'items' => ArrayHelper::getValue($order,'items'),
+            'items' => ArrayHelper::getValue($order, 'items'),
             'skus' => $skus,
             'customer' => [
                 'info' => $order,
                 'payment' => $payment,
-                'countries' => $countries
+                'countries' => $countries,
+                'path' => $path
             ],
         ];
     }
