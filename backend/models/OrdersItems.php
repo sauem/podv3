@@ -77,6 +77,6 @@ class OrdersItems extends BaseModel
      */
     public function getProduct()
     {
-        return $this->hasOne(ProductsModel::className(), ['sku' => 'product_sku']);
+        return $this->hasOne(ProductsModel::className(), ['sku' => 'product_sku'])->with('category');
     }
 }

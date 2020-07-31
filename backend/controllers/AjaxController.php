@@ -356,4 +356,32 @@ class AjaxController extends BaseController
             'msg' => Helper::firstError($order)
         ];
     }
+
+    function actionOrderData(){
+        $key = Yii::$app->request->post("key");
+
+        $order  = OrdersModel::find()->where(['id' => $key])
+            ->with('items')
+            ->with('contacts')
+            ->asArray()->one();
+        if(!$order){
+            return [
+              'success' => 0,
+              'msg' => 'Không tồn tại đơn hàng này!',
+            ];
+        }
+        $payment = Payment::find()->with('infos')->all();
+        $countries = Yii::$app->params['country'];
+        $skus = ProductsModel::find()->distinct('sku')->asArray()->all();
+        return [
+            'success' => 1,
+            'items' => ArrayHelper::getValue($order,'items'),
+            'skus' => $skus,
+            'customer' => [
+                'info' => $order,
+                'payment' => $payment,
+                'countries' => $countries
+            ],
+        ];
+    }
 }

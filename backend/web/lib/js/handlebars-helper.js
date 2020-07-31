@@ -25,12 +25,15 @@ Handlebars.registerHelper("selected",function (val1, val2) {
     if(typeof val1 == "undefined" || typeof val2 == "undefined"){
         return "";
     }
-    if(val1.trim() == val2.trim()){
+    if(val1.toString().trim() == val2.toString().trim()){
         return 'selected';
     }
     return  '';
 })
 Handlebars.registerHelper("hasArray",function (filter , array) {
+    if(typeof filter == "undefined" || typeof array == "undefined"){
+        return  true;
+    }
     if(array.length > 0 && !filter){
         return true;
     }

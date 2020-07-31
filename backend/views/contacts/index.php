@@ -235,7 +235,7 @@ $js = <<<JS
                $("#resultProduct").html(compileTemplate('template-sku',res))
                initSelect2();
             }
-        })
+            })
         }
         function getSelectedColum(grid_id = 'grid-view') {
             let cate = [];

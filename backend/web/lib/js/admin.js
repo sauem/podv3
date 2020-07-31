@@ -137,14 +137,14 @@ function restOrder() {
     $("#resultInfo").empty();
 }
 
-function __addItemProduct(item) {
+function __addItemProduct(item, order_price) {
     let _item = {
         sku: item.sku,
-        price: parseFloat(item.regular_price),
+        price: order_price ? parseFloat(order_price) : parseFloat(item.regular_price),
         name: item.name,
         option: item.option,
         category: item.category.name,
-        selected: item.selected
+        selected: item.selected ? item.selected : item.product_option
     };
     ORDER.products.push(_item);
     __reloadTotal();
@@ -262,6 +262,19 @@ $("body").on("click", ".submitLog", function (e) {
     });
     return false;
 });
+$("body").on("change","select[name='payment_method']",function() {
+    let _val = $(this).val();
+    switch (_val) {
+        case "9999":
+            $(".bill-image").css({"display" : "block"});
+            $(".bill-image").find("input[type='file']").attr("required",true);
+            break;
+        default:
+            $(".bill-image").css({"display" : "none"});
+            $(".bill-image").find("input[type='file']").attr("required",false);
+            break;
+    }
+});
 
 $("body").on("click",".block",function () {
     let _key = $(this).data("key");
@@ -297,3 +310,35 @@ $("body").on("click",".block",function () {
     })
 })
 
+$("body").on("change","input[name='bill_transfer[]']",function() {
+    let _file = $(this)[0].files;
+    let _type = ["application/pdf","image/jpeg","image/png","image/jpg"];
+    let _form = new FormData();
+
+    $.each(_file, function(index,item) {
+        if(!_type.includes(item.type)){
+            toastr.warning(item.name + " không đúng định dạng!");
+            return;
+        }
+        _form.append("ImageUpload[bill_transfer][]", _file[index]);
+    })
+    $(this).parent().find("label").text(_file.length + " được chọn");
+    $.ajax({
+        url : config.billstranfer,
+        type: 'POST',
+        data : _form,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success : function(res) {
+
+            if(res.success){
+                ORDER.billings = res.path;
+                toastr.success("Thành công!");
+            }else{
+                toastr.warning(res.path);
+            }
+        }
+    });
+
+});

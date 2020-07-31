@@ -308,51 +308,5 @@ $js = <<<JS
         __reloadTotal();
     });
     
-    $("body").on("change","select[name='payment_method']",function() {
-      let _val = $(this).val();
-        switch (_val) {
-          case "9999":
-              $(".bill-image").css({"display" : "block"});
-              $(".bill-image").find("input[type='file']").attr("required",true);
-              break;
-              default:
-                  $(".bill-image").css({"display" : "none"});
-                   $(".bill-image").find("input[type='file']").attr("required",false);
-                  break;
-        }
-    });
-    
-    $("body").on("change","input[name='bill_transfer[]']",function() {
-        let _file = $(this)[0].files;
-        let _type = ["application/pdf","image/jpeg","image/png","image/jpg"];
-        let _form = new FormData();
-        
-            $.each(_file, function(index,item) {
-              if(!_type.includes(item.type)){
-                    toastr.warning(item.name + " không đúng định dạng!");
-                    return;
-                }
-              _form.append("ImageUpload[bill_transfer][]", _file[index]);
-            })
-         $(this).parent().find("label").text(_file.length + " được chọn");
-        $.ajax({
-            url : '$billtransfer',
-            type: 'POST',
-            data : _form,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success : function(res) {
-                
-               if(res.success){
-                   ORDER.billings = res.path;
-                   toastr.success("Thành công!");
-               }else{
-                   toastr.warning(res.path);
-               }
-            }
-        });
-      
-    });
 JS;
 $this->registerJs($js);
