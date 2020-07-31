@@ -53,7 +53,11 @@ class ContactsAssignmentController extends Controller
             [
                 'ContactsSearchModel' => [
                     'status' => [
-                        ContactsModel::_NEW
+                        ContactsModel::_NEW,
+                        ContactsModel::_CANCEL,
+                        ContactsModel::_DUPLICATE,
+                        ContactsModel::_NUMBER_FAIL,
+                        ContactsModel::_SKIP,
                     ]
                 ]
             ]
