@@ -126,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute' => 'contacts.name',
                             'format' => 'raw',
                             'value' => function ($model) {
-                                if(!$model->contact->page->product){
+                                if(!$model->contact->page){
                                     return "không thiết lập";
                                 }
                                 $html = $model->contact->page->product->name . "<br>";
