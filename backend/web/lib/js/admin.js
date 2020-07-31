@@ -340,5 +340,19 @@ $("body").on("change","input[name='bill_transfer[]']",function() {
             }
         }
     });
+});
 
+$("body").on("click",".removeImage",function () {
+    let _key = $(this).data("key");
+    let _path = $(this).data("path");
+    swal.fire({
+        title : 'Cảnh báo',
+        icon : "error",
+        text  : 'Loại bỏ hình ảnh này',
+        showCancelButton : true
+    }).then(val =>{
+        if(val.value){
+            $(this).closest(".bill-item").parent().remove();
+        }
+    });
 });

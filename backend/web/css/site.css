@@ -22,7 +22,8 @@
   display: none;
   position: relative;
   border: dashed 1px #ccc;
-  height: 50px; }
+  height: 50px;
+  margin-bottom: 0px; }
   .bill-image label {
     position: absolute;
     z-index: 0;
@@ -39,5 +40,12 @@
     height: 100%;
     opacity: 0;
     z-index: 1; }
+
+#bill-view .bill-item {
+  position: relative; }
+  #bill-view .bill-item button {
+    position: absolute;
+    right: 0;
+    top: 0px; }
 
 /*# sourceMappingURL=site.css.map */

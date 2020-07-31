@@ -2,6 +2,9 @@ Handlebars.registerHelper("caculate", function (singular_price, sale_price) {
     let price = singular_price - sale_price;
     return price.formatMoney();
 })
+Handlebars.registerHelper("asset", function (path) {
+    return "/file/" + path;
+})
 
 Handlebars.registerHelper("money", function (value,options) {
     var dl = options.hash['decimalLength'] || 2;

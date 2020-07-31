@@ -14,6 +14,11 @@ class removeImageDraft extends BaseObject implements JobInterface
 
     public function execute($queue)
     {
-        $model = OrdersBilling::deleteAll(['status' => 'draft']);
+        $model = OrdersBilling::find()->where(['status' =>'draft'])
+        ->andWhere(["is",'order_id' ,""])
+            ->all();
+        if($model){
+
+        }
     }
 }

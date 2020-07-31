@@ -322,10 +322,16 @@ class AjaxController extends BaseController
     {
         $names = Yii::$app->request->post('images');
         if (sizeof($names) > 0) {
-            foreach ($names as $name) {
-                unlink(Yii::getAlias("@files") . "/$name");
+            $count = OrdersBilling::find()->where(['path' => $names])
+                ->andWhere(['status' => 'active'])
+                ->andWhere(['is not','order_id',''])
+                ->count();
+            if($count == 0){
+                foreach ($names as $name) {
+                    unlink(Yii::getAlias("@files") . "/$name");
+                }
+                OrdersBilling::deleteAll(['path' => $names,'order_id' => '']);
             }
-            OrdersBilling::deleteAll(['path' => $names]);
         }
         return [
             'success' => 0
@@ -363,6 +369,7 @@ class AjaxController extends BaseController
         $order  = OrdersModel::find()->where(['id' => $key])
             ->with('items')
             ->with('contacts')
+            ->with('billings')
             ->asArray()->one();
         if(!$order){
             return [

@@ -36,6 +36,7 @@ AppAsset::register($this);
             pushContact: "<?= Url::toRoute(['ajax/push-contact'])?>",
             pushProduct: "<?=Url::toRoute(['ajax/push-product'])?>",
             removeImages: "<?= Url::toRoute(['ajax/remove-image'])?>",
+            drafImage: "<?= Url::toRoute(['ajax/draf-image'])?>",
             maxSize: 10485760,
             zipcodeAPI: "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx",
             exportURL: "<?=Url::toRoute(['export/order'])?>",

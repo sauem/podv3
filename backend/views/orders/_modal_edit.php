@@ -14,7 +14,7 @@ use kartik\form\ActiveForm;
             ]) ?>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Thêm trạng thái cuộc gọi</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa đơn hàng</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -141,6 +141,29 @@ use kartik\form\ActiveForm;
                     </label>
                     <input type="file" name="bill_transfer[]" multiple>
                 </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <small data-toggle="collapse" data-target="#bill-view" class="text-danger float-right btn"><i
+                                    class="fa fa-file-pdf-o"></i> Hiển thị hóa đơn</small>
+                    </div>
+                    <div class="col-12">
+                        <div id="bill-view" class="collapse  mt-2">
+                            <div class="row">
+                                {{#each this.info.billings}}
+                                <div class="col-md-6">
+                                    <div class="bill-item ">
+                                        <button data-key="{{../info.id}}" data-path="{{this.path}}" type="button"
+                                                class="removeImage btn-xs btn-rounded rounded-circle"><i
+                                                    class="fa fa-times"></i></button>
+                                        <img src="{{asset this.path}}" class="img-fluid img-thumbnail rounded">
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
@@ -251,6 +274,9 @@ $js = <<<JS
         $("#resultProduct").empty();
         $("#resultItemProduct").empty();
         $("#resutlTotal").empty();
+        if(ORDER.billings.length > 0){
+                _removeImage();
+            }
         
        
     });
