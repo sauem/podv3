@@ -52,6 +52,7 @@ class ContactsSearchModel extends ContactsModel
                 ->where(['=','contacts_assignment.user_id', \Yii::$app->user->getId() ])
                 ->andWhere(['=','contacts_assignment.status', ContactsAssignment::_PROCESSING]);
         }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -72,6 +73,8 @@ class ContactsSearchModel extends ContactsModel
             ->andFilterWhere(['=', 'phone', $this->phone])
             ->orFilterWhere(['like', 'email', $this->name])
             ->andFilterWhere(['IN', 'contacts.status', $this->status]);
+
+
         return $dataProvider;
     }
 }

@@ -54,12 +54,14 @@ class ContactsAssignmentController extends Controller
             [
                 'ContactsSearchModel' => [
                     'status' => [
-                        ContactsModel::_NEW
+                        ContactsModel::_NEW,
+                        ContactsModel::_CANCEL
                     ]
                 ]
             ]
         ),true);
 
+        Helper::prinf($pendingProvider->query->createCommand()->getRawSql());
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
