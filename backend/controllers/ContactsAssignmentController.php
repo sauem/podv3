@@ -59,9 +59,7 @@ class ContactsAssignmentController extends Controller
             ]
         ));
 
-        $sql = $pendingProvider->query->createCommand()->getRawSql();
-        $select = $pendingProvider->query->count();
-        Helper::prinf($select ."\n$sql");
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
