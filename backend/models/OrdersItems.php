@@ -39,7 +39,7 @@ class OrdersItems extends BaseModel
             [['order_id','qty'], 'integer'],
             [['order_id', 'product_sku','price'], 'required'],
             [['price'], 'number'],
-            [['product_sku'], 'string']
+            [['product_sku','product_option'], 'string']
         ];
     }
 
@@ -55,6 +55,7 @@ class OrdersItems extends BaseModel
             'price' => 'Giá sản phẩm',
             'product_sku' => 'Product SKU',
             'created_at' => 'Created At',
+            'product_option' => 'Yêu cầu sản phẩm',
             'updated_at' => 'Updated At',
         ];
     }

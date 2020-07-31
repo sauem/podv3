@@ -380,6 +380,13 @@ class AjaxController extends BaseController
         $payment = Payment::find()->with('infos')->all();
         $countries = Yii::$app->params['country'];
         $skus = ProductsModel::find()->distinct('sku')->asArray()->all();
+
+        $items = $order['items'];
+        foreach ($items as $k => $item){
+            $items[$k]['product']['option'] = Helper::option($item['product']['option']);
+            $items[$k]['product']['selected'] = $item['product_option'];
+        }
+        $order['items'] = $items;
         return [
             'success' => 1,
             'items' => ArrayHelper::getValue($order,'items'),

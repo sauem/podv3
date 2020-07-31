@@ -9,7 +9,7 @@ use kartik\form\ActiveForm;
          aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <?php $form = ActiveForm::begin([
-                'id' => 'noteForm',
+                'id' => 'formOrder',
                 'action' => Url::toRoute(['orders/update'])
             ]) ?>
             <div class="modal-content">
@@ -65,6 +65,7 @@ use kartik\form\ActiveForm;
                 <div class="form-group">
                     <label>Tên khách hàng <span class="text-danger">(*)</span></label>
                     <input required name="customer_name" value="{{this.info.customer_name}}" class="form-control">
+                    <input required name="order_id" value="{{this.info.id}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -143,6 +144,7 @@ use kartik\form\ActiveForm;
                 </div>
 
                 <div class="row">
+                    {{#if this.info.billings}}
                     <div class="col-12">
                         <small data-toggle="collapse" data-target="#bill-view" class="text-danger float-right btn"><i
                                     class="fa fa-file-pdf-o"></i> Hiển thị hóa đơn</small>
@@ -163,22 +165,19 @@ use kartik\form\ActiveForm;
                             </div>
                         </div>
                     </div>
+                    {{/if}}
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Ghi chú đơn hàng</label>
-                    <textarea name="order_note" class="form-control">
-                        {{this.info.order_note}}
-                    </textarea>
+                    <textarea name="order_note" class="form-control">{{this.info.order_note}}</textarea>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Ghi chú nhà cung cấp</label>
-                    <textarea name="vendor_note" class="form-control">
-                           {{this.info.vendor_note}}
-                    </textarea>
+                    <textarea name="vendor_note" class="form-control">{{this.info.vendor_note}}</textarea>
                 </div>
             </div>
         </div>
@@ -388,6 +387,33 @@ $js = <<<JS
         ORDER.shipping = typeof _val == "undefined" ? 0 : _val;
         __reloadTotal();
     });
+    
+    $(document).on("beforeSubmit", "#formOrder",function(res) {
+      res.preventDefault();
+        let _formData = new FormData($(this)[0]);
+        let _action = $(this).attr("action");
+        _formData.append("bills" , ORDER.billings);
+        $.ajax({
+           url : _action,
+           type : "POST",
+           processData : false,
+           contentType :false,
+           data : _formData,
+           success : function(res) {
+                console.log(res);
+                return;
+                if(res.success){
+                    toastr.success("Tạo đơn hàng thành công!");
+                    $("#collapse-order").collapse("hide");
+                    restOrder();
+                    __reloadData();
+                    return;
+                }
+                toastr.warning(res);
+           }
+        })
+      return false;
+    })
     
     
 JS;

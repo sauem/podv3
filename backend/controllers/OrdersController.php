@@ -76,18 +76,20 @@ class OrdersController extends Controller
         $model = new OrdersModel();
         $post = Yii::$app->request->post();
         $product = ArrayHelper::getValue($post, "product");
-        $path  = ArrayHelper::getValue($post,'bills');
-        $path = explode(',',$path);
+        $path = ArrayHelper::getValue($post, 'bills');
+        $path = explode(',', $path);
 
         if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
                 if ($model->save()) {
                     foreach ($product as $k => $item) {
 
-                        $p['order_id'] = $model->id;
-                        $p['price'] = $item['price'];
-                        $p['product_sku'] = $item['product_sku'];
-                        $p['product_option'] = $item['product_option'];
+                        $p = [
+                            'order_id' => $model->id,
+                            'price' => $item['price'],
+                            'product_sku' => $item['product_sku'],
+                            'product_option' => isset( $item['product_option']) ?  $item['product_option'] : null
+                        ];
 
                         $items = new OrdersItems;
                         if ($items->load($p, "") && $items->save()) {
@@ -102,7 +104,7 @@ class OrdersController extends Controller
                     OrdersBilling::updateAll([
                         'order_id' => $model->id,
                         'active' => OrdersBilling::ACTIVE
-                    ],['IN','path' ,  $path]);
+                    ], ['IN', 'path', $path]);
                     ActionLog::add("success", "Tạo đơn hàng mới $model->id");
                     $msg = ContactsModel::updateCompleteAndNextProcess();
                     return [
@@ -134,17 +136,77 @@ class OrdersController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post("order_id");
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model = OrdersModel::findOne($id);
+        if (!$model) {
+            return [
+                'success' => 0,
+                'msg' => 'Đơn hàng không tồn tại'
+            ];
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        $post = Yii::$app->request->post();
+        $product = ArrayHelper::getValue($post, "product");
+        $path = ArrayHelper::getValue($post, 'bills');
+        $path = explode(',', $path);
+        $curentSku = ArrayHelper::getColumn($product,'product_sku');
+
+        if (Yii::$app->request->isPost && $model->load($post, '')) {
+            try {
+                if ($model->save()) {
+
+                    foreach ($product as $k => $item) {
+                        $p = [
+                          'order_id' => $model->id,
+                          'price' => $item['price'],
+                          'product_sku' => $item['product_sku'],
+                          'product_option' => isset( $item['product_option']) ?  $item['product_option'] : null
+                        ];
+
+                        $items = OrdersItems::findOne(['order_id' => $model->id,
+                            'product_sku' => $item['product_sku']]);
+                        if(!$items){
+                            $items = new OrdersItems;
+                        }
+                        if ($items->load($p, "") && $items->save()) {
+                            continue;
+                        } else {
+                            return [
+                                'success' => 0,
+                                'msg' => Helper::firstError($items)
+                            ];
+                        }
+                    }
+                    $condition =  [
+                        'AND',['NOT',['product_sku' => $curentSku]],
+                        ['order_id' => $model->id]
+                    ];
+                    OrdersItems::deleteAll($condition);
+
+                    ActionLog::add("success", "Cập nhật đơn hàng $model->id");
+                    return [
+                        'success' => 1,
+                        'msg' => 'Cập nhật đơn hàng thành công!'
+                    ];
+                }
+            } catch (\Exception $e) {
+                ActionLog::add("error", "Cập nhật đơn hàng thất bại " . $e->getMessage());
+                return [
+                    'success' => 0,
+                    'msg' => $e->getMessage()
+                ];
+            }
+
+        }
+
+        return [
+            'success' => 0,
+            'msg' => Helper::firstError($model)
+        ];
     }
 
     /**
