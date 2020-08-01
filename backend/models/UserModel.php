@@ -32,6 +32,8 @@ class UserModel extends User
     /**
      * {@inheritdoc}
      */
+
+
     public $role;
     const _ADMIN = 'admin';
     const _SALE = 'sale';
@@ -220,4 +222,6 @@ class UserModel extends User
             ->count();
         return $count;
     }
+
+
 }

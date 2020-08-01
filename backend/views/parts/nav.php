@@ -38,11 +38,11 @@
                         <img src="/lib/img/admin-avatar.png"/>
                         <span></span><?= Yii::$app->user->getIdentity()->username?><i class="fa fa-angle-down m-l-5"></i></a>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="<?= \yii\helpers\Url::toRoute(['user/view','id' => Yii::$app->user->getId()])?>"><i class="fa fa-user"></i>Tài khoản</a>
+                        <a class="dropdown-item" href="<?= \yii\helpers\Url::toRoute(['/user/view','id' => Yii::$app->user->getId()])?>"><i class="fa fa-user"></i>Tài khoản</a>
                         <li class="dropdown-divider"></li>
                         <?php \yii\widgets\ActiveForm::begin([
                             'method' => 'POST',
-                            'action' => \yii\helpers\Url::toRoute(['site/logout'])
+                            'action' => \yii\helpers\Url::toRoute(['/site/logout'])
                         ]) ?>
                         <button class="dropdown-item" type="submit" href="#"><i class="fa fa-power-off"></i>Logout
                         </button>

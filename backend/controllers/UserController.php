@@ -2,38 +2,17 @@
 
 namespace backend\controllers;
 
+use backend\models\ChangePass;
 use common\helper\Helper;
 use Yii;
 use backend\models\UserModel;
 use backend\models\UserSearchModel;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
-/**
- * UserController implements the CRUD actions for UserModel model.
- */
+
 class UserController extends BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
-    /**
-     * Lists all UserModel models.
-     * @return mixed
-     */
     public function actionIndex($id = null)
     {
         $searchModel = new UserSearchModel();
@@ -53,20 +32,23 @@ class UserController extends BaseController
             }
             return $this->redirect(['index']);
         }
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => $model
+            'model' => $model,
         ]);
     }
-
-    /**
-     * Displays a single UserModel model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+    public function actionChangePassword(){
+        $model = new ChangePass;
+        if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
+            if($model->change()){
+                self::success("Đổi mật khẩu thành công!");
+            }else{
+                self::error(Helper::firstError($model));
+            }
+            return $this->goBack();
+        }
+    }
     public function actionView($id)
     {
         $model = $this->findModel($id);
@@ -77,8 +59,11 @@ class UserController extends BaseController
             return $this->refresh();
         }
         unset($model->password_hash);
+        $changePassword = new ChangePass;
+
         return $this->render('view', [
             'model' => $model,
+            'changePass' => $changePassword
         ]);
     }
 
