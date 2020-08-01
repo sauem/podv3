@@ -150,17 +150,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                             <tr>
                                 <td><?=
-                                    $contact->contact->name."<br>".
-                                    "<small class='text-warning'>{$contact->contact->code}</small><br>".
-                                    $contact->contact->address."<br>".
-                                    $contact->contact->zipcode
+                                    "|".$contact->contact->name."<br>".
+                                    "|<small class='text-warning'>{$contact->contact->code}</small><br>".
+                                    "|".$contact->contact->address."<br>".
+                                    "|".$contact->contact->zipcode
 
                                     ?></td>
                                 <td><?=
                                     $contact->contact->page->product ? $contact->contact->page->product->name : "Không thiết lập". "<br>".
                                     $contact->contact->option
                                     ?></td>
-                                <td><?= Html::a($contact->contact->short_link,$contact->contact->link,['target' => '_blank'])?></td>
+                                <td>
+                                    <?= Html::a($contact->contact->short_link,$contact->contact->link,['target' => '_blank'])?>
+                                    <br>
+                                    Marketer : <?= $contact->contact->page? $contact->contact->page->user->username : 'Không thiết lập'?>
+                                </td>
                                 <td><?= Helper::toDate($contact->updated_at)?></td>
                             </tr>
                             <?php
