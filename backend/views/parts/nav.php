@@ -2,9 +2,9 @@
     <div class="page-brand">
         <a class="link" href="index.html">
                     <span class="brand">
-                        <span class="brand-tip">LEADS</span>
+                        <span class="brand-tip">Tcom.asia</span>
                     </span>
-            <span class="brand-mini">AC</span>
+            <span class="brand-mini">Tc</span>
         </a>
     </div>
     <div class="flexbox flex-1">
