@@ -11,15 +11,22 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+<div class="container">
+    <div class="box">
+        <input type="checkbox" id="toggle" class="box__toggle" hidden>
+        <img src="https://source.unsplash.com/zv3ckJKftC4/300x400" alt="Picture by Autumn Studio" class="box__image">
+        <form class="form form--register" action="">
+        </form>
 
-<?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-<?= $form->field($model, 'password')->passwordInput() ?>
-<?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Login', ['class' => 'form-control button', 'name' => 'login-button']) ?>
+        <?php $form = ActiveForm::begin([
+            'options' => [
+                'class' => 'form form--login'
+            ]
+        ]); ?>
+        <h1 class="form__title">Tcom.asia</h1>
+        <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'class' => 'form__input'])->label('Tài khoản') ?>
+        <?= $form->field($model, 'password')->passwordInput(['class' => 'form__input'])->label('Mật khẩu') ?>
+        <button type="submit" class="form__button">Đăng nhập</button>
+        <?php ActiveForm::end(); ?>
     </div>
-    <span class="check_1">Forgot password ?</span>
-<?php ActiveForm::end(); ?>
+</div>

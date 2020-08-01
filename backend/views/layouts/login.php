@@ -23,7 +23,7 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <link href="/lib/css/pages/auth-light.css" rel="stylesheet" />
+    <?php $this->registerCssFile('/css/login.css')?>
 </head>
 <body class="bg-silver-300">
 <?php $this->beginBody() ?>
