@@ -83,6 +83,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             <i class="ti-time"></i> Hẹn gọi lại</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="#failure" data-toggle="tab">
+                            <i class="ti-time"></i> Thất bại</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
                             công</a>
                     </li>
@@ -93,6 +97,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="tab-pane fade" id="callback">
                         <?= $this->render('_table', ['dataProvider' => $callbackProvider]) ?>
+                    </div>
+                    <div class="tab-pane fade" id="failure">
+                        <?= $this->render('_table', ['dataProvider' => $failureProvider]) ?>
                     </div>
                     <div class="tab-pane fade" id="success">
                         <?= $this->render('_table', ['dataProvider' => $successProvider]) ?>

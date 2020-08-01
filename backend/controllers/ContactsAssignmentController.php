@@ -122,6 +122,20 @@ class ContactsAssignmentController extends Controller
                 ]
             ]
         ),false);
+        $failureProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $phone,
+                    'status' => [
+                        ContactsModel::_CANCEL,
+                        ContactsModel::_NUMBER_FAIL,
+                        ContactsModel::_DUPLICATE,
+                        ContactsModel::_SKIP
+                    ],
+                ]
+            ]
+        ),false);
 
         $histories = new ActiveDataProvider([
             'query' => ContactsLog::find()
@@ -140,6 +154,7 @@ class ContactsAssignmentController extends Controller
             'dataProvider' => $dataProvider,
             'callbackProvider' => $callbackTime,
             'successProvider' => $successProvider,
+            'failureProvider' =>$failureProvider,
             'info' => $info,
             'histories' => $histories,
             'assignment' => $assigment
