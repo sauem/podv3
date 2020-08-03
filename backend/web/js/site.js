@@ -134,7 +134,7 @@ $(".handleData").click(function () {
                         Swal.hideLoading()
                         swal.fire({
                             title: "Thông báo!",
-                            html: _error,
+                            html: "Đã xảy ra lỗi, hãy kiểm tra lỗi nhập liệu tại mục hệ thống",
                             icon: _icon
                         })
                             .then(() => {
