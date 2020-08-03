@@ -137,4 +137,13 @@ class ContactsAssignment extends BaseModel
         }
         return null;
     }
+    static function lastStatusAssignment(){
+        $phone =  self::find()->where([
+            'user_id' => Yii::$app->user->getId(),
+        ])->orderBy(['updated_at' => SORT_DESC])->one();
+        if(!$phone){
+            return ContactsAssignment::_PROCESSING;
+        }
+        return $phone->getAttribute("status");
+    }
 }
