@@ -37,7 +37,7 @@ class ContactsController extends BaseController
         if (Helper::userRole(UserModel::_SALE)) {
             $saleID = Yii::$app->user->getId();
             $phone = UserModel::findOne($saleID);
-            $phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
+            //$phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
         }
 
         $searchModel = new ContactsSearchModel();
