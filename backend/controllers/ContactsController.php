@@ -105,7 +105,7 @@ class ContactsController extends BaseController
             ]
         ]);
 
-      //  Helper::prinf($failureProvider->query->createCommand()->getRawSql());
+        Helper::prinf($failureProvider->query->createCommand()->getRawSql());
 
         return $this->render('index', [
             'searchModel' => $searchModel,
