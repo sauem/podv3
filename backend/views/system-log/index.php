@@ -10,7 +10,7 @@ use yii\helpers\Html;
         <h2 class="ibox-title">Lịch sử thao tác tài khoản</h2>
     </div>
     <div class="ibox-body">
-        <?= $this->render("_search",['model' =>$searchModel])?>
+        <?= $this->render("_search", ['model' => $searchModel]) ?>
         <?=
         GridView::widget([
             'dataProvider' => $dataProvider,
@@ -35,7 +35,12 @@ use yii\helpers\Html;
                         return Html::tag("span", $model->status, ['class' => "badge badge-$model->status"]);
                     }
                 ],
-                'message:ntext'
+                [
+                    'attribute' => 'message',
+                    'value' => function ($model) {
+                        return unserialize($model->message);
+                    }
+                ]
             ]
         ])
         ?>
