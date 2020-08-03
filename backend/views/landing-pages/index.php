@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'format' => 'raw',
                             'value' => function ($model) {
                                 return Html::tag("strong",$model->name). "<br>"
-                                    .Html::a("<i class='fa fa-link'></i> xem trang",'https://' .$model->link,["target" => "_blank"]);
+                                    .Html::a("<i class='fa fa-link'></i> xem trang",'http://' .$model->link,["target" => "_blank"]);
                             }
                         ],
                         [
