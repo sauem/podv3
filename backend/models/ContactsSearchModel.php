@@ -50,7 +50,9 @@ class ContactsSearchModel extends ContactsModel
                 ->where(['=','contacts_assignment.user_id', \Yii::$app->user->getId() ])
                 ->andWhere(['=','contacts_assignment.status', ContactsAssignment::_PROCESSING]);
         }else{
-            $query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
+            if($group){
+                $query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
+            }
         }
 
         $dataProvider = new ActiveDataProvider([
