@@ -76,19 +76,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 <ul class="nav nav-tabs tabs-line">
                     <li class="nav-item">
                         <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ
-                            xử lý</a>
+                            xử lý (<?=$dataProvider->getCount()?>)</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#callback" data-toggle="tab">
-                            <i class="ti-time"></i> Hẹn gọi lại</a>
+                            <i class="ti-time"></i> Hẹn gọi lại (<?=$callbackProvider->getCount()?>)</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#failure" data-toggle="tab">
-                            <i class="ti-time"></i> Thất bại</a>
+                            <i class="ti-time"></i> Thất bại (<?=$failureProvider->getCount()?>)</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
-                            công</a>
+                            công (<?=$successProvider->getCount()?>)</a>
                     </li>
                 </ul>
                 <div class="tab-content">
