@@ -104,6 +104,12 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+        $contactHistories = new ActiveDataProvider([
+           'query' => ContactsLog::find()->where(['user_id' => Yii::$app->user->getId()]),
+           'pagination' => [
+               'pageSize' => 10
+           ]
+        ]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -115,7 +121,8 @@ class ContactsController extends BaseController
             'order' => $order,
             'user' => $user,
             'info' => $info,
-            'histories' => $histories
+            'histories' => $histories,
+            'contactHistories' => $contactHistories
         ]);
     }
 
