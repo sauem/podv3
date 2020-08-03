@@ -38,6 +38,7 @@ class ContactsController extends BaseController
             $saleID = Yii::$app->user->getId();
             $phone = UserModel::findOne($saleID);
             $phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
+            Helper::prinf($phone);
         }
 
         $searchModel = new ContactsSearchModel();
