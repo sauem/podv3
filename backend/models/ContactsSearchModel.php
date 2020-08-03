@@ -49,7 +49,7 @@ class ContactsSearchModel extends ContactsModel
             $query->innerJoin('contacts_assignment',
                 'contacts_assignment.contact_phone=contacts.phone')
                 ->where(['=','contacts_assignment.user_id', \Yii::$app->user->getId() ])
-                ->andWhere(['=','contacts_assignment.status', $status]);
+                ->andWhere(['=','contacts_assignment.status', ContactsAssignment::_PROCESSING]);
         }else{
             if($group){
                 $query->groupBy(['phone'])->orderBy(['created_at'  => SORT_DESC])->with('assignment');
