@@ -3,10 +3,7 @@
 use common\helper\Component;
 use yii\helpers\Html;
 use yii\grid\GridView;
-
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\ContactsAssignmentSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+use yii\helpers\Url;
 
 $this->title = 'Contacts Assignments';
 $this->params['breadcrumbs'][] = $this->title;
@@ -26,11 +23,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-head">
                     <h2 class="ibox-title">Liên hệ chờ xử lý/thất bại</h2>
                     <div class="ibox-tools">
+                        <a href="javascript:;" class="approvePhone"><i class="fa fa-cogs"></i> Phân bổ</a>
                         <a data-toggle="collapse" href="#filter1"><i class="fa fa-filter"></i> Tìm kiếm</a>
                     </div>
                 </div>
                 <div class="ibox-body">
-                    <?= $this->render('_tab_waiting', ['dataProvider' => $pendingProvider,'searchModel' => $searchModel]) ?>
+                    <?= $this->render('_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
                 </div>
             </div>
         </div>
@@ -81,8 +79,34 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+<?= $this->render("_modal_approve") ?>
 <?php
+
 $js = <<<JS
     initRemote("remote-import");
+    window.PHONES = [];
+    $(".approvePhone").click(function(e) {
+        var keys = $('.grid-view').yiiGridView('getSelectedRows');
+            if(keys.length <= 0){
+                swal.fire({
+                    title : "Thông báo",
+                    text : "Để lên đơn hàng hãy chọn liên hệ",
+                    icon : "error",
+                });
+                return;
+            }
+        $("#modalApprove").modal("show");
+            window.PHONES = [];
+         let _phones =  $('.grid-view').find("input[type='checkbox']");
+         _phones.each(function() {
+                let _phone = $(this).data("phone");
+                if(typeof _phone !== "undefined" && $(this).is(":checked")){
+                   if(!PHONES.includes(_phone)){
+                        PHONES.push(_phone);
+                   }
+                }
+         });
+          $("#resultPhone").html(compileTemplate("phone-template", window.PHONES))
+    });
 JS;
 $this->registerJs($js);

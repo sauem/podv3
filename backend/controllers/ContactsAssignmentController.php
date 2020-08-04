@@ -64,11 +64,12 @@ class ContactsAssignmentController extends Controller
         ));
 
 
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
             'callbackProvider' => $callProvider,
-            'pendingProvider' => $pendingProvider
+            'pendingProvider' => $pendingProvider,
         ]);
     }
 
@@ -157,7 +158,7 @@ class ContactsAssignmentController extends Controller
             'failureProvider' =>$failureProvider,
             'info' => $info,
             'histories' => $histories,
-            'assignment' => $assigment
+            'assignment' => $assigment,
         ]);
     }
 

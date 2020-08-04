@@ -30,8 +30,8 @@ use yii\widgets\ActiveForm;
                 <?= $form->field($model, 'name')->textInput(['placeholder' => 'Tìm tên, SĐT,...'])->label(false) ?>
             </div>
             <div class="col-md-4">
-                <?= Html::submitButton('Tìm kiếm', ['class' => 'btn btn-secondary']) ?>
                 <?= \common\helper\Component::reset() ?>
+                <?= Html::submitButton('Tìm', ['class' => 'btn btn-secondary']) ?>
             </div>
         </div>
         <?php ActiveForm::end(); ?>

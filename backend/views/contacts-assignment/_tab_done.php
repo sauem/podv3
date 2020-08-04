@@ -31,7 +31,7 @@ use backend\models\ContactsModel;
                         return null;
                     }
                     return Html::tag("p",
-                        "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
+                        "<a target='_blank' href='{$model->link}' >{$model->page->link}</a><br>" .
                         "<small class='text-info'>CTCODE: <i><strong>{$model->code}</strong></i> | Marketing: <strong>{$model->page->user->username}</strong></small><br>" .
                         "<small class='text-info'>address: <i>{$model->address}</i></small><br>" .
                         "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>" .

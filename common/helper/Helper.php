@@ -82,7 +82,7 @@ class Helper
         $ipdat = @json_decode(file_get_contents(
             "http://www.geoplugin.net/json.gp?ip=" . $ip));
         if(!$ipdat){
-            return "-unknow-";
+            return "";
         }
         return $ipdat->geoplugin_countryCode;
     }

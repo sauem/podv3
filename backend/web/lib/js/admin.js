@@ -30,7 +30,9 @@ function initSelect2() {
 
     $(".select2").select2({
         placeholder: "Lựa chọn...",
-        allowClear: true
+        allowClear: true,
+        width : "100%",
+        dropdownAutoWidth : true
     });
 }
 
