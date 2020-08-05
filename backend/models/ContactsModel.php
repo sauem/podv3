@@ -36,6 +36,7 @@ use yii\helpers\StringHelper;
  * @property int $updated_at
  * @property int $callback_time
  * @property int $code
+ * @property string|null $country
  * @property int|null $register_time
  *
  * @property ContactsLog[] $contactsLogs
@@ -105,10 +106,10 @@ class ContactsModel extends BaseModel
     {
         return [
             [['phone'], 'required', 'message' => '{attribute} không được để trống!'],
-            [['address', 'option', 'link', 'short_link', 'street','code'], 'string'],
+            [['address', 'option', 'link', 'short_link', 'street','code','note','country'], 'string'],
             [['register_time'],'safe'],
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
-            [['name', 'note', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
+            [['name', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 100],
            // [['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
@@ -130,10 +131,11 @@ class ContactsModel extends BaseModel
             $this->hashkey = md5($this->phone . $this->option);
             $this->short_link = Helper::getHost($this->link);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-            $this->code = "CC" . Helper::countryFromIP($this->ip) . $maxIDNumber;
+            $this->code = Helper::makeCodeIncrement($maxIDNumber, $this->country);
+
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
 
-            if (self::findOne(['hashkey' => $this->hashkey])) {
+            if (self::findOne(['hashkey' => $this->hashkey]) && !empty($this->option)) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;
             }
@@ -162,6 +164,7 @@ class ContactsModel extends BaseModel
             'utm_term' => 'Utm Term',
             'utm_campaign' => 'Utm Campaign',
             'host' => 'Host',
+            'country' => 'Quốc gia',
             'hashkey' => 'Hashkey',
             'status' => 'Trạng hái',
             'register_time' => 'Ngày đặt hàng',

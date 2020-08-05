@@ -44,7 +44,7 @@ return [
             'class' => 'yii\redis\Connection',
             'hostname' => REDIS_HOST,
             'port' => REDIS_PORT,
-            'password' => REDIS_PASS,
+            //'password' => REDIS_PASS,
             'database' => 0,
             'retries' => 1,
         ],
@@ -52,6 +52,7 @@ return [
             'class' => Queue::class,
             'redis' => 'redis',
             'channel' => 'queue',
+            'as log' => \yii\queue\LogBehavior::class,
         ],
 //        'assetManager' => [
 //            'bundles' => [

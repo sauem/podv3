@@ -4,6 +4,7 @@
 namespace backend\controllers;
 
 
+use backend\jobs\importExcel;
 use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
@@ -41,17 +42,21 @@ class AjaxController extends BaseController
                     'user_id' => (int)$user,
                     'status' => ContactsAssignment::_PENDING,
                 ];
-                $model = new ContactsAssignment;
-                if($model->load($data,"")){
-                    if(!$model->save()){
-                        return  [
+                $model = ContactsAssignment::findOne(['contact_phone' => $phone]);
+                if (!$model) {
+                    $model = new ContactsAssignment;
+                }
+                if ($model->load($data, "")) {
+                    if (!$model->save()) {
+                        return [
                             'success' => 0,
                             'msg' => Helper::firstError($model)
                         ];
                     }
                 }
+                ActionLog::add("success", Yii::$app->user->getIdentity()->username . " Phân bổ SDT " . $phone . " cho tài khoản " . $model->user->username);
             }
-            return  [
+            return [
                 'success' => 1
             ];
         }
@@ -256,12 +261,34 @@ class AjaxController extends BaseController
     {
         $contacts = Yii::$app->request->post("contacts");
         $fileName = Yii::$app->request->post("fileName");
+
         $errors = [];
         if (!empty($contacts)) {
 
-            foreach ($contacts as $k => $item) {
+            foreach ($contacts as $k => $contact) {
                 $model = new ContactsModel;
-                if (!$model->load($item, '') || !$model->save()) {
+                $data = [
+                  'phone' => $contact['phone'],
+                  'name' => $contact['name'],
+                  'address' => $contact['address'],
+                  'option' => $contact['option'],
+                  'zipcode' => (int)$contact['zipcode'],
+                  'note' => $contact['note'],
+                  'link' => $contact['link'],
+                  'ip' => $contact['ip'],
+                  'utm_source' => $contact['utm_source'],
+                  'utm_campaign' => $contact['utm_campaign'],
+                  'utm_medium' => $contact['utm_medium'],
+                  'utm_term' => $contact['utm_term'],
+                  'utm_content' => $contact['utm_content'],
+                  'country' => $contact['country'],
+                  'type' => $contact['type'],
+                  'register_time' => (int)$contact['register_time'],
+                  'created_at' =>   time(),
+                  'updated_at' => time(),
+                  'host' => $contact['host'],
+                ];
+                if (!$model->load($data, '') || !$model->save()) {
                     $errors[$k] = Helper::firstError($model);
                     $logs = new LogsImport;
                     $data = [
@@ -289,7 +316,6 @@ class AjaxController extends BaseController
                 'totalInsert' => $count
             ];
         }
-
     }
 
     function actionPushProduct()

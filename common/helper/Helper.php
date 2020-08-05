@@ -98,4 +98,11 @@ class Helper
         $endDay = strtotime("today 23:59:59");
         return  $endDay ;
     }
+
+    static function makeCodeIncrement($lastID, $country = "VN"){
+        $defaultCode = "#CC".$country."0000000";
+        $maxLen = strlen($lastID);
+        $code = substr_replace($defaultCode,$lastID,-$maxLen );
+        return $code;
+    }
 }
