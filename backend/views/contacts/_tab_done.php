@@ -5,7 +5,7 @@ use kartik\grid\CheckboxColumn;
 use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
-
+use backend\models\ContactsModel;
 ?>
     <div class="table-responsive">
 
@@ -27,6 +27,9 @@ use common\helper\Component;
                 [
                     'class' => CheckboxColumn::class,
                     'checkboxOptions' => function ($model) {
+                        if(! $model->page){
+                            return null;
+                        }
                         return ['data-cate' => $model->page->category_id,'disabled' => true];
                     }
                 ],
@@ -35,7 +38,7 @@ use common\helper\Component;
                     'attribute' => 'category_id',
                     'format' => 'html',
                     'value' => function ($model) {
-                        if(!$model->page->product){
+                        if(!$model->page){
                             return null;
                         }
                         return Html::tag("p",
@@ -66,7 +69,7 @@ use common\helper\Component;
                     'attribute' => 'status',
                     'format' => 'html',
                     'value' => function ($model) {
-                        return \backend\models\ContactsModel::label($model->status);
+                        return ContactsModel::label($model->status);
                     }
                 ],
                 'created_at:date',

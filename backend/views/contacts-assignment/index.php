@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">Liên hệ chờ xử lý/thất bại</h2>
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">Hẹn gọi lại</h2>
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">Hoành thành</h2>

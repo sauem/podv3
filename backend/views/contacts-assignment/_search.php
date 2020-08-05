@@ -8,11 +8,11 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <?php yii\widgets\Pjax::begin([
-        'id' => 'search-form',
+    'id' => 'search-form',
     'enablePushState' => false,
     'clientOptions' =>
         ['method' => 'POST']
-    ]) ?>
+]) ?>
     <div class="contacts-assignment-search collapse <?= Yii::$app->request->get('ContactsSearchModel') ? 'show' : '' ?>"
          id="filter1">
 
@@ -26,10 +26,23 @@ use yii\widgets\ActiveForm;
         ]); ?>
 
         <div class="row">
-            <div class="col-md-8">
-                <?= $form->field($model, 'name')->textInput(['placeholder' => 'Tìm tên, SĐT,...'])->label(false) ?>
-            </div>
             <div class="col-md-4">
+                <?= $form->field($model, 'name')->textInput(['placeholder' => 'Tìm tên, code, SĐT,...'])->label(false) ?>
+            </div>
+            <div class="col-md-2">
+                <?= $form->field($model, 'code')->dropDownList([
+                    'Trạng thái' => [
+                        'assignment' => 'Đã phân bổ',
+                        'none' => 'Hàng chờ'
+                    ]
+                ],['prompt' => 'Trạng thái xử lý'])->label(false) ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model, 'code')->dropDownList([
+                   'Sales' => \backend\models\UserModel::listSales()
+                ],['prompt' => 'Sale phụ trách','class' => 'select2','multiple' => true])->label(false) ?>
+            </div>
+            <div class="col-md-3">
                 <?= \common\helper\Component::reset() ?>
                 <?= Html::submitButton('Tìm', ['class' => 'btn btn-secondary']) ?>
             </div>

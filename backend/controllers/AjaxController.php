@@ -8,6 +8,7 @@ use backend\jobs\importExcel;
 use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
+use backend\models\Customers;
 use backend\models\LogsImport;
 use backend\models\OrdersBilling;
 use backend\models\OrdersModel;
@@ -112,7 +113,12 @@ class AjaxController extends BaseController
             $product[$k]['option'] = Helper::option($p['option']);
             $product[$k]['selected'] = $selected[$k];
         }
-        $customer = $contacts[0];
+
+        $phone =  ArrayHelper::getValue($contacts[0],'phone');
+        $customer  = Customers::findOne(['phone' => $phone]);
+        if(!$customer){
+            $customer = $contacts[0];
+        }
         $ids = ArrayHelper::getColumn($contacts, 'id');
         $payment = Payment::find()->with('infos')->all();
         $countries = Yii::$app->params['country'];

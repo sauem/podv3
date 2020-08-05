@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ContactsModel;
+use backend\models\Customers;
 use backend\models\OrdersBilling;
 use backend\models\OrdersItems;
 use cakebake\actionlog\model\ActionLog;
@@ -78,6 +79,7 @@ class OrdersController extends Controller
         $product = ArrayHelper::getValue($post, "product");
         $path = ArrayHelper::getValue($post, 'bills');
         $path = explode(',', $path);
+        $defaultInfo = ArrayHelper::getValue($post, "default_info");
 
         if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
@@ -88,7 +90,7 @@ class OrdersController extends Controller
                             'order_id' => $model->id,
                             'price' => $item['price'],
                             'product_sku' => $item['product_sku'],
-                            'product_option' => isset( $item['product_option']) ?  $item['product_option'] : null
+                            'product_option' => isset($item['product_option']) ? $item['product_option'] : null
                         ];
 
                         $items = new OrdersItems;
@@ -101,12 +103,26 @@ class OrdersController extends Controller
                             ];
                         }
                     }
+                    //sale image billing
                     OrdersBilling::updateAll([
                         'order_id' => $model->id,
                         'active' => OrdersBilling::ACTIVE
                     ], ['IN', 'path', $path]);
+                    //save log create order
                     ActionLog::add("success", "Tạo đơn hàng mới $model->id");
+                    //update next phone processing
                     $msg = ContactsModel::updateCompleteAndNextProcess();
+                    //save defaultInfo
+                    if ($defaultInfo == "on") {
+                       $info =  self::updateOrCreateCustomer($model);
+
+                       if(!$info){
+                            return  [
+                                'success' => 1,
+                                'msg' => $info
+                            ];
+                       }
+                    }
                     return [
                         'success' => 1,
                         'msg' => $msg
@@ -128,6 +144,27 @@ class OrdersController extends Controller
         ];
 
     }
+    static function updateOrCreateCustomer(OrdersModel $model){
+        $customer = Customers::findOne(['phone' => $model->customer_phone]);
+        if(!$customer){
+            $customer = new Customers;
+        }
+        $info = [
+            'name' => $model->customer_name,
+            'phone' => $model->customer_phone,
+            'email' => $model->customer_email,
+            'city' => $model->city,
+            'address' => $model->address,
+            'district' => $model->district,
+            'zipcode' => $model->zipcode,
+            'country' => $model->country
+        ];
+
+        if ($customer->load($info, "")) {
+            $res =  $customer->save();
+        }
+        return $res ? true : Helper::firstError($customer);
+    }
 
     /**
      * Updates an existing OrdersModel model.
@@ -140,7 +177,6 @@ class OrdersController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post("order_id");
-
         $model = OrdersModel::findOne($id);
         if (!$model) {
             return [
@@ -153,22 +189,24 @@ class OrdersController extends Controller
         $product = ArrayHelper::getValue($post, "product");
         $path = ArrayHelper::getValue($post, 'bills');
         $path = explode(',', $path);
-        $curentSku = ArrayHelper::getColumn($product,'product_sku');
+        $curentSku = ArrayHelper::getColumn($product, 'product_sku');
+
+        $defaultInfo = ArrayHelper::getValue($post, "default_info");
 
         if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
                 if ($model->save()) {
                     foreach ($product as $k => $item) {
                         $p = [
-                          'order_id' => $model->id,
-                          'price' => $item['price'],
-                          'product_sku' => $item['product_sku'],
-                          'product_option' => isset( $item['product_option']) ?  $item['product_option'] : null
+                            'order_id' => $model->id,
+                            'price' => $item['price'],
+                            'product_sku' => $item['product_sku'],
+                            'product_option' => isset($item['product_option']) ? $item['product_option'] : null
                         ];
 
                         $items = OrdersItems::findOne(['order_id' => $model->id,
                             'product_sku' => $item['product_sku']]);
-                        if(!$items){
+                        if (!$items) {
                             $items = new OrdersItems;
                         }
                         if ($items->load($p, "") && $items->save()) {
@@ -181,10 +219,15 @@ class OrdersController extends Controller
                         }
                     }
                     //xóa các sản phẩm đã loại bỏ
-                    $condition =  [
-                        'AND',['NOT',['product_sku' => $curentSku]],
+                    $condition = [
+                        'AND', ['NOT', ['product_sku' => $curentSku]],
                         ['order_id' => $model->id]
                     ];
+                    //cập nhật defaultInfo
+                    if ($defaultInfo && $defaultInfo == "on") {
+                        self::updateOrCreateCustomer($model);
+                    }
+                    // xóa các sản phẩm được loại bỏ
                     OrdersItems::deleteAll($condition);
                     // cập nhật lại hình ảnh hóa đơn thanh toán
 
@@ -194,9 +237,9 @@ class OrdersController extends Controller
                     ], ['IN', 'path', $path]);
 
                     OrdersBilling::deleteAll([
-                       'AND', ['NOT', ['path' => $path]],
+                        'AND', ['NOT', ['path' => $path]],
                         ['order_id' => $model->id]
-                        ]);
+                    ]);
 
                     ActionLog::add("success", "Cập nhật đơn hàng $model->id");
                     return [

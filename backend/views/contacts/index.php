@@ -224,6 +224,7 @@ $js = <<<JS
                     data : {keys : keys},
                     cache : false,
                     success: function(res) {
+                        console.log(res);
                         let html =  compileTemplate("template-product",res.customer);
                         $("#resultInfo").html(html);
                          setORDER(res);

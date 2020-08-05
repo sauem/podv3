@@ -91,7 +91,7 @@ use yii\helpers\Url;
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Email</label>
-                    <input name="customer_email" value="{{this.info.email}}" class="form-control">
+                    <input type="email" name="customer_email" value="{{this.info.email}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -103,13 +103,13 @@ use yii\helpers\Url;
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Quận/huyện <span class="text-danger"></span></label>
-                    <input name="district" class="form-control">
+                    <input value="{{this.info.district}}" name="district" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Thành phố <span class="text-danger"></span></label>
-                    <input name="city" class="form-control">
+                    <input value="{{this.info.city}}" name="city" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -124,7 +124,7 @@ use yii\helpers\Url;
                     <select class="form-control select2" name="country">
                         <option value="">Chọn quốc gia</option>
                         {{#each this.countries}}
-                        <option value="{{this.code}}">{{this.name}}</option>
+                        <option {{selected ../info.country this.code}} value="{{this.code}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -166,6 +166,15 @@ use yii\helpers\Url;
                     <textarea name="vendor_note" class="form-control"></textarea>
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="text-warning ui-checkbox ui-checkbox-success">
+                        <input type="checkbox" name="default_info">
+                       <span class="input-span"></span>
+                        Tạo thông tin đơn hàng mặc định <br>(*thông tin sau sẽ ghi đè thông tin trước)
+                    </label>
+                </div>
+            </div>
         </div>
     </script>
     <script type="text/x-handlebars-template" id="template-sku">
@@ -201,7 +210,7 @@ use yii\helpers\Url;
             </td>
             <td class="text-right">
                 <input data-sku="{{this.sku}}" value="{{ this.price}}"
-                       name="product[{{this.sku}}][price]" type="text"
+                       name="product[{{this.sku}}][price]" type="number"
                        class="money form-control">
             </td>
             <td>
@@ -272,7 +281,12 @@ $js = <<<JS
     
     $("body").on("change",".money",function() {
       let _sku = $(this).data("sku");
-      let _val = $(this).val();
+      let _val = parseFloat($(this).val());
+      if(typeof _val !== "number" || !_val){
+          toastr.warning("Giá trị nhập phải là số!");
+          $(this).val(0);
+          return false;
+      }
       __changeProductPrice(_sku,_val);
     });
 
@@ -282,6 +296,13 @@ $js = <<<JS
         let _formData = new FormData($(this)[0]);
         let _action = $(this).attr("action");
         _formData.append("bills" , ORDER.billings);
+        if(ORDER.products.length <= 0){
+            swal.fire("Chú ý!","Đơn hàng chưa có sản phẩm nào!","warning");
+            return false;
+        }else if( parseInt(_formData.get("total")) <= 0){
+             swal.fire("Chú ý!","Tổng giá đơn hàng > 0","warning");
+            return false;
+        }
         $.ajax({
            url : _action,
            type : "POST",
@@ -305,7 +326,7 @@ $js = <<<JS
     $("body").on("change","input[name='shipping_price']",function() {
         let _val = $(this).val();
         ORDER.shipping = typeof _val == "undefined" ? 0 : _val;
-        __reloadTotal();
+        __reloadTotal();    
     });
     
 JS;

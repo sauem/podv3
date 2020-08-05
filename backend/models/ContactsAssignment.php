@@ -152,7 +152,7 @@ class ContactsAssignment extends BaseModel
     {
         $phone = self::find()->where([
             'user_id' => Yii::$app->user->getId(),
-        ])->andWhere(['IN', 'status' => [self::_PROCESSING]])
+        ])->andWhere(['IN', 'status' , [self::_PROCESSING]])
             ->orderBy(['updated_at' => SORT_DESC])->one();
         if (!$phone) {
             return ContactsAssignment::_PROCESSING;
