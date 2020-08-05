@@ -359,3 +359,7 @@ $("body").on("click",".removeImage",function () {
         }
     });
 });
+
+function getHostName(url) {
+    return (new URL(url).hostname);
+}

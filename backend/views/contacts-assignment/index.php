@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <div class="modal fade" tabindex="-1" id="remote-import" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl  modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Nhập liên hệ</h5>

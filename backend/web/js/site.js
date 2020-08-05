@@ -68,7 +68,6 @@ function doProcessWorkbook(workbook, file) {
     let row = getRow(sheet, rowsIndex, maxColumn);
     while (row !== null) {
         let item = switchItem(firstSheet, row);
-
         rows.push(item);
         rowsIndex++;
         row = getRow(sheet, rowsIndex, maxColumn);
@@ -80,7 +79,9 @@ function doProcessWorkbook(workbook, file) {
     }
     EXCEL = {
         rows: rows,
-        fileName: file.name
+        fileName: file.name,
+        size: file.size,
+        total: EXCEL.rows.length
     }
 
     /// render view example
@@ -172,7 +173,7 @@ function switchItem(sheet, row) {
             item.zipcode = row[4] ? row[4].v : "";
             item.option = row[5] ? row[5].v : "";
             item.note = row[6] ? row[6].v : "";
-            item.link = row[7] ? row[7].v : "";
+            item.link = row[7] ? getHostName(row[7].v) : "";
             item.utm_source = row[8] ? row[8].v : "",
                 item.utm_medium = row[9] ? row[9].v : "",
                 item.utm_campaign = row[10] ? row[10].v : "",
