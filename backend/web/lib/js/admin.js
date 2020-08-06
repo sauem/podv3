@@ -139,11 +139,13 @@ function restOrder() {
     $("#resultInfo").empty();
 }
 
-function __addItemProduct(item, order_price) {
+function __addItemProduct(item, order_price , _qty = 1) {
+
     let _item = {
         sku: item.sku,
         price: order_price ? parseFloat(order_price) : parseFloat(item.regular_price),
         name: item.name,
+        qty: _qty,
         option: item.option,
         category: item.category.name,
         selected: item.selected ? item.selected : item.product_option

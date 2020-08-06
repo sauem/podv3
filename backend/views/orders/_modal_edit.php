@@ -35,6 +35,7 @@ use kartik\form\ActiveForm;
                                 <tr>
                                     <td width="30%">Sản phẩm</td>
                                     <td width="30%">Option</td>
+                                    <td width="20%">Số lượng</td>
                                     <td width="20%" class="text-right">Tổng cộng</td>
                                     <td></td>
                                 </tr>
@@ -203,6 +204,11 @@ use kartik\form\ActiveForm;
                 {{/if}}
             </td>
             <td class="text-right">
+                <input data-sku="{{this.sku}}" value="{{ this.qty }}"
+                       name="product[{{this.sku}}][qty]" type="number"
+                       class=" form-control">
+            </td>
+            <td class="text-right">
                 <input data-sku="{{this.sku}}" value="{{ this.price}}"
                        name="product[{{this.sku}}][price]" type="text"
                        class="money form-control">
@@ -226,12 +232,12 @@ use kartik\form\ActiveForm;
 
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
-            <td colspan="2">Phí ship</td>
+            <td colspan="4">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
             <td></td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Tổng đơn</strong></td>
+            <td colspan="4"><strong>Tổng đơn</strong></td>
             <td class="text-left">
                 <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
@@ -299,7 +305,7 @@ $js = <<<JS
             type : 'POST',
             data : { key : _key},
             success : function(res) {
-              
+               
                 if(res.success){
                     __complieTemplate(res);
                 }else{
@@ -317,8 +323,8 @@ $js = <<<JS
         let items = res.items;
         if(items.length > 0){
              $.each(items, function(index, item) {
-                 
-                 let _item =  __addItemProduct(item.product, item.price);
+                
+                 let _item =  __addItemProduct(item.product, item.price, item.qty);
                  if(!ORDER.skus.includes(_item.sku)){
                      ORDER.skus.push(_item.sku);
                  }
