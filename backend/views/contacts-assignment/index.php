@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="row">
         <div class="col-12 text-right mb-2">
-            <button data-remote="<?= \yii\helpers\Url::toRoute(['contacts-assignment/import']) ?>" data-toggle="modal"
+            <button data-backdrop="static" data-keyboard="false" data-remote="<?= \yii\helpers\Url::toRoute(['contacts-assignment/import']) ?>" data-toggle="modal"
                     data-target="#remote-import" class="btn btn-success">
                 <i class="fa fa-file-excel-o"></i> Nhập liên hệ
             </button>
@@ -53,6 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+
+
     <div class="modal fade" tabindex="-1" id="remote-import" role="dialog">
         <div class="modal-dialog modal-xl  modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -79,7 +81,29 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+
+
 <?= $this->render("_modal_approve") ?>
+
+    <div class="modal fade in" id="editRowModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sửa thông tin liên hệ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="resultRowImport"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="saveRowImport btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 
 $js = <<<JS

@@ -60,7 +60,8 @@ use yii\widgets\ActiveForm;
                             <button data-key="{{@index}}" type="button" data-toggle="tooltip" title="Xoá liên hệ"
                                     class="removeRowImport btn btn-sm btn-warning"><i
                                         class="fa fa-trash"></i></button>
-                            <button type="button" data-toggle="tooltip" title="Sửa liên hệ" class="btn btn-sm btn-info">
+                            <button data-key="{{@index}}" type="button" data-toggle="tooltip" title="Sửa liên hệ"
+                                    class="btn editRowImport btn-sm btn-info">
                                 <i
                                         class="fa fa-edit"></i></button>
                         </div>
@@ -88,6 +89,54 @@ use yii\widgets\ActiveForm;
             </table>
         </div>
     </script>
+    <script id="row-import-template" type="text/x-handlebars-template">
+        <form id="rowForm" data-key="{{key}}">
+            <div class="row">
+                <div class="form-group col-12">
+                    <label>Tên</label>
+                    <input name="name" value="{{name}}" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>SĐT</label>
+                    <input name="phone" value="{{phone}}" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Zipcode</label>
+                    <input name="zipcode" value="{{zipcode}}" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Quốc gia</label>
+                    <input name="country" value="{{country}}" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Loại contact</label>
+                    <input name="type" value="{{type}}" class="form-control">
+                </div>
+                <div class="form-group col-12">
+                    <label>Địa chỉ</label>
+                    <input name="address" value="{{address}}" class="form-control">
+                </div>
+
+                <div class="form-group col-12">
+                    <label>Yêu cầu</label>
+                    <textarea name="option" class="form-control">{{option}}</textarea>
+                </div>
+                <div class="form-group col-12">
+                    <label>Ghi chú</label>
+                    <textarea name="note" class="form-control">{{note}}</textarea>
+                </div>
+            </div>
+            <input type="hidden" name="host" value="{{host}}" class="form-control">
+            <input type="hidden" name="ip" value="{{ip}}" class="form-control">
+            <input type="hidden" name="link" value="{{link}}" class="form-control">
+            <input type="hidden" name="register_time" value="{{register_time}}" class="form-control">
+            <input type="hidden" name="utm_campaign" value="{{utm_campaign}}" class="form-control">
+            <input type="hidden" name="utm_content" value="{{utm_content}}" class="form-control">
+            <input type="hidden" name="utm_medium" value="{{utm_medium}}" class="form-control">
+            <input type="hidden" name="utm_source" value="{{utm_source}}" class="form-control">
+            <input type="hidden" name="utm_term" value="{{utm_term}}" class="form-control">
+        </form>
+    </script>
 <?php
 $js = <<<JS
     $("body").on("keyup",".filterContact",function(e) {
@@ -100,7 +149,6 @@ $js = <<<JS
     $("body").on("click",".removeAllRowChecked",function() {
         let _keys = [];
         let _checks = $("table.viewTable > tbody > tr > td > input[type='checkbox']");
-        let Rows = EXCEL.rows;
         swal.fire({
              title : "Cảnh báo!",
              icon : "info",
@@ -114,14 +162,14 @@ $js = <<<JS
                   $.each(_checks, function() {
                         if($(this).is(":checked")){
                             let _key = $(this).val();
-                            window.EXCEL.rows =  Rows.filter( (item , index) => index !== _key);
+                            _keys.push(parseInt(_key));
                             $(this).closest("tr").remove();
                         }
                   });
-                 
+                 window.EXCEL.rows = EXCEL.rows.filter( (item , index) => !_keys.includes(index));
                  window.EXCEL.total = EXCEL.rows.length;
                  toastr.success("Xoá hàng thành công!");
-                // renderViewTemplate("result", "excel-template", window.EXCEL);
+                 renderViewTemplate("result", "excel-template", window.EXCEL);
             }
         })
        
@@ -144,6 +192,34 @@ $js = <<<JS
                 renderViewTemplate("result", "excel-template", EXCEL);
             }
         })
+    });
+    
+    $("body").on("click",".editRowImport",function() {
+        let _key = $(this).data("key");
+        $("#editRowModal").modal({ "backdrop" : 'static', "keyboard" : false});
+        let _row = EXCEL.rows[_key];
+        _row["key"] = _key;
+        
+        console.log(_row)
+        if(_row){
+            $("#resultRowImport").html(compileTemplate("row-import-template", _row));   
+        }
+    });
+     $(".saveRowImport").click(function() {
+            let _form  = $("#rowForm").serializeArray();
+            let _key = $("#rowForm").data("key");
+            let _row = {}
+            $.each( _form , (index , item ) => {
+                if(item.name == "key"){
+                     return true;
+                }
+                _row[item.name] = item.value;
+            })
+            EXCEL.rows[_key] = _row;
+            EXCEL.total = EXCEL.rows.length;
+            renderViewTemplate("result", "excel-template", EXCEL);
+            $("#editRowModal").modal("hide");
+            toastr.success("Thay đổi thanh công!");
     });
 JS;
 $this->registerJs($js);
