@@ -250,6 +250,7 @@ class AjaxController extends BaseController
             $time = explode(" - ", $time);
             $start = strtotime($time[0]);
             $end = strtotime($time[1]);
+
             if ($start && $end) {
                 $query->andFilterWhere(['between', 'created_at', $start, $end]);
             }
@@ -463,6 +464,30 @@ class AjaxController extends BaseController
                 'countries' => $countries,
                 'path' => $path
             ],
+        ];
+    }
+
+    function actionOrderStatus(){
+        $key = Yii::$app->request->post('key');
+        $status = Yii::$app->request->post('status');
+
+        $model = OrdersModel::findOne($key);
+        if(!$model){
+            return [
+                'success' => 0,
+                'msg' => "Đơn hàng không tồn tại"
+            ];
+        }
+        $model->status = $status;
+        if($model->save()){
+            return [
+                'success' => 1,
+                'msg' => 'Thay đổi trạng thái thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => Helper::firstError($model)
         ];
     }
 }

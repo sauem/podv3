@@ -44,6 +44,7 @@ AppAsset::register($this);
             blockOrder : "<?=Url::toRoute(['ajax/block-order'])?>",
             orderData : "<?=Url::toRoute(['ajax/order-data'])?>",
             billstranfer : "<?=Url::toRoute(['ajax/upload-bill'])?>",
+            changeOrderStatus : "<?=Url::toRoute(['ajax/order-status'])?>",
         }
 
     </script>

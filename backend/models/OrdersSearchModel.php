@@ -21,7 +21,7 @@ class OrdersSearchModel extends OrdersModel
     {
         return [
             [['id', 'zipcode'], 'integer'],
-            [['customer_name','user_id', 'customer_phone', 'customer_email', 'address', 'city', 'district', 'country', 'order_note', 'status', 'status_note', 'created_at', 'updated_at'], 'safe'],
+            [['customer_name', 'user_id', 'customer_phone', 'customer_email', 'address', 'city', 'district', 'country', 'order_note', 'status', 'status_note', 'created_at', 'updated_at'], 'safe'],
             [['sale', 'sub_total', 'total'], 'number'],
         ];
     }
@@ -61,18 +61,6 @@ class OrdersSearchModel extends OrdersModel
             return $dataProvider;
         }
 
-        $range = ArrayHelper::getValue($params,'OrdersSearchModel.created_at');
-        $range = explode(" - ",$range);
-        $range = array_map(function ($item){
-            return trim($item);
-        },$range);
-        $start = null;
-        $end = null;
-        if(!empty($params['created_at'])){
-            $start = strtotime(trim($range[0]));
-            $end = strtotime(trim($range[1]));
-        }
-
 
         $query->andFilterWhere(['like', 'customer_name', $this->customer_name])
             ->orFilterWhere(['like', 'customer_phone', $this->customer_name])
@@ -85,9 +73,32 @@ class OrdersSearchModel extends OrdersModel
             ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'status_note', $this->status_note])
             ->andFilterWhere(['IN', 'user_id', $this->user_id]);
-        if($start && $end){
-            $query->andFilterWhere(['between','created_at',$start,$end]);
+
+        $isSearch = \Yii::$app->request->get("OrdersSearchModel");
+        if ($isSearch) {
+            $range = ArrayHelper::getValue($params, 'OrdersSearchModel.created_at');
+            if($range){
+                $range = explode(" - ", $range);
+
+                $start = $range ? trim($range[0]) : null;
+                $end = $range ? trim($range[1]) : null;
+
+
+                $start = \DateTime::createFromFormat('m/d/Y',$start)->format('m/d/Y');
+                $start = strtotime($start);
+                $end = \DateTime::createFromFormat('m/d/Y',$end)->format('m/d/Y');
+                $end = strtotime($end);
+
+                if ($start !== $end) {
+                    $query->andFilterWhere(['between', 'created_at', $start, $end]);
+                }else{
+                    $start = strtotime("today", $start);
+                    $end = strtotime("today 23:59:59",$end);
+                    $query->andFilterWhere(['between', 'created_at', $start, $end]);
+                }
+            }
         }
+
         return $dataProvider;
     }
 }

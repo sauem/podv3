@@ -29,7 +29,7 @@ use backend\models\UserModel;
                 'presetDropdown'=>true,
                 'convertFormat'=>true,
                 'includeMonthsFilter'=>true,
-                'pluginOptions' => ['locale' => ['format' => 'm-d-Y']],
+                'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
                 'options' => ['placeholder' => 'Chọn ngày tạo đơn']
             ])->label(false)?>
         </div>
