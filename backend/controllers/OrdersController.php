@@ -90,6 +90,7 @@ class OrdersController extends Controller
                             'order_id' => $model->id,
                             'price' => $item['price'],
                             'product_sku' => $item['product_sku'],
+                            'qty' => $item['qty'],
                             'product_option' => isset($item['product_option']) ? $item['product_option'] : null
                         ];
 

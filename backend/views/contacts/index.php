@@ -165,14 +165,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-8">
-                    <?= $this->render('_histories', ['dataProvider' => $histories]) ?>
-                </div>
-                <div class="col-md-4">
-                    <?= $this->render('_contact_histories', ['dataProvider' => $contactHistories]) ?>
-                </div>
-            </div>
+            <?= $this->render('_contact_histories', ['dataProvider' => $contactHistories]) ?>
         </div>
     </div>
 

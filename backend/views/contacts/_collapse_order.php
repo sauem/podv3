@@ -47,6 +47,7 @@ use yii\helpers\Url;
                             <tr>
                                 <td width="30%">Sản phẩm</td>
                                 <td width="30%">Option</td>
+                                <td width="20%">Số lượng</td>
                                 <td width="20%" class="text-right">Tổng cộng</td>
                                 <td></td>
                             </tr>
@@ -124,7 +125,8 @@ use yii\helpers\Url;
                     <select class="form-control select2" name="country">
                         <option value="">Chọn quốc gia</option>
                         {{#each this.countries}}
-                        <option {{selected ../info.country this.code}} value="{{this.code}}">{{this.name}}</option>
+                        <option {{selected ..
+                        /info.country this.code}} value="{{this.code}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -170,7 +172,7 @@ use yii\helpers\Url;
                 <div class="form-group">
                     <label class="text-warning ui-checkbox ui-checkbox-success">
                         <input type="checkbox" name="default_info">
-                       <span class="input-span"></span>
+                        <span class="input-span"></span>
                         Tạo thông tin đơn hàng mặc định <br>(*thông tin sau sẽ ghi đè thông tin trước)
                     </label>
                 </div>
@@ -208,6 +210,10 @@ use yii\helpers\Url;
                 <input class="form-control" name="product[{{this.sku}}][product_option]" value="{{this.selected}}">
                 {{/if}}
             </td>
+            <td>
+                <input name="product[{{this.sku}}][qty]" data-sku="{{this.sku}}" value="1" min="1" type="number"
+                       class="form-control">
+            </td>
             <td class="text-right">
                 <input data-sku="{{this.sku}}" value="{{ this.price}}"
                        name="product[{{this.sku}}][price]" type="number"
@@ -221,12 +227,12 @@ use yii\helpers\Url;
     </script>
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
-            <td colspan="2">Phí ship</td>
+            <td colspan="3">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
             <td></td>
         </tr>
         <tr>
-            <td colspan="2"><strong>Tổng đơn</strong></td>
+            <td colspan="3"><strong>Tổng đơn</strong></td>
             <td class="text-left">
                 <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
@@ -324,9 +330,15 @@ $js = <<<JS
       return false;
     })
     $("body").on("change","input[name='shipping_price']",function() {
-        let _val = $(this).val();
-        ORDER.shipping = typeof _val == "undefined" ? 0 : _val;
-        __reloadTotal();    
+        let _val = parseFloat($(this).val());
+             if(typeof _val !== "number" || !_val){
+                  toastr.warning("Giá trị nhập phải là số!");
+                  $(this).val(0);
+                   ORDER.shipping = 0;
+             }else{
+                 ORDER.shipping =  _val;
+             }
+                 __reloadTotal();
     });
     
 JS;
