@@ -135,7 +135,7 @@ $(".handleData").click(function () {
                         Swal.hideLoading()
                         swal.fire({
                             title: "Thông báo!",
-                            html: "Đã xảy ra lỗi, hãy kiểm tra lỗi nhập liệu tại mục hệ thống",
+                            html: "Đã nhập thành công "+res.totalInsert+" liên hệ <br> Số liên hệ lỗi : " + errors.length,
                             icon: _icon
                         })
                             .then(() => {
