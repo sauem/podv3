@@ -123,20 +123,13 @@ $(".handleData").click(function () {
                 data: {contacts: window.EXCEL.rows, fileName: window.EXCEL.fileName},
                 success: function (res) {
 
-                    let _icon = res.success == 1 ? 'success' : 'error';
-                    let errors = res.error;
-                    let _error = "Nhập liệu thành công " + res.totalInsert + " dữ liệu.<br>";
-                    if (errors.length !== 0) {
-                        for (let i in errors) {
-                            _error += " Lỗi tại dòng " + (parseInt(i) + 2) + " : " + errors[i] + "<br>";
-                        }
-                    }
+                    console.log(res)
                     setTimeout(() => {
                         Swal.hideLoading()
                         swal.fire({
                             title: "Thông báo!",
-                            html: "Đã nhập thành công "+res.totalInsert+" liên hệ <br> Số liên hệ lỗi : " + errors.length,
-                            icon: _icon
+                            html: "Đã nhập thành công "+res.totalInsert+" liên hệ <br> Số liên hệ lỗi : " + res.totalErrors,
+                            icon: 'success'
                         })
                             .then(() => {
                                 window.location.reload()

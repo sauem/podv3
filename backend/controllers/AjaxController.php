@@ -313,13 +313,15 @@ class AjaxController extends BaseController
                 return [
                     'success' => 1,
                     'error' => $errors,
-                    'totalInsert' => $count
+                    'totalInsert' => $count,
+                    'totalErrors' => sizeof($errors)
                 ];
             }
             return [
                 'success' => 0,
                 'error' => $errors,
-                'totalInsert' => $count
+                'totalInsert' => $count,
+                'totalErrors' => sizeof($errors)
             ];
         }
     }
@@ -375,6 +377,7 @@ class AjaxController extends BaseController
         return [
             'success' => $status,
             'error' => $errors,
+            'totalErrors' => sizeof($errors),
             'totalInsert' => $count
         ];
     }
