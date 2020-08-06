@@ -75,9 +75,14 @@ use common\helper\Helper;
                 [
                     'label' => 'Ngày liên hệ',
                     'attribute' => 'created_at',
-                    'format' => 'html',
+                    'headerOptions' => ['width' => '15%'],
+                    'format' => 'raw',
                     'value' => function ($model) {
-                        return $model->created_at;
+                        $html = "Liên hệ cuối :<br>". $model->created_at;
+                        if($model->contact->callback_time){
+                            $html .= "</br>Giờ gọi lại: <br>". "<strong class='text-danger'>{$model->created_at}</strong>";
+                        }
+                        return $html;
                     }
                 ],
                 [
