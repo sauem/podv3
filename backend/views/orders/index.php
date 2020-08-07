@@ -7,6 +7,7 @@ use common\helper\Component;
 use backend\models\UserModel;
 use backend\models\OrdersModel;
 use yii\helpers\Url;
+use kartik\export\ExportMenu;
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -21,11 +22,41 @@ use common\helper\Helper;
         </div>
         <div class="ibox-body">
             <?= $this->render("_search", ['model' => $searchModel]) ?>
-
+            <?= ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'customer_name',
+                    'customer_phone',
+                    'customer_email',
+                    'address',
+                    'city',
+                    'district',
+                    'zipcode',
+                    'country',
+                    'total',
+                    'order_note',
+                    'status_note',
+                    'status',
+                    'vendor_note',
+                    'shipping_price',
+                    'payment_method',
+                    'created_at',
+                    'updated_at'
+                ],
+                'exportConfig' => [
+                    ExportMenu::FORMAT_TEXT => false,
+                    ExportMenu::FORMAT_HTML => false,
+                    ExportMenu::FORMAT_PDF => false,
+                ],
+            ]); ?>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'layout' => "{items}\n{pager}",
                 //'resizableColumns' => false,
+                'export' => [
+                    'showConfirmAlert' => false,
+                    'target' => GridView::TARGET_BLANK
+                ],
                 'showFooter' => true,
                 'pjax' => true,
                 'pjaxSettings' => [
@@ -34,6 +65,7 @@ use common\helper\Helper;
                         'id' => 'pjax-order'
                     ]
                 ],
+
                 'headerRowOptions' => [
                     'class' => [
                         'thead-light'
@@ -46,7 +78,7 @@ use common\helper\Helper;
                         'format' => 'html',
                         'footer' => '<strong>Tổng </strong>',
                         'value' => function ($model) {
-                            $html = "<a data-pjax='0' href='".Url::toRoute(['view','id' => $model->id])."'>{$model->customer_name}</a><br>";
+                            $html = "<a data-pjax='0' href='" . Url::toRoute(['view', 'id' => $model->id]) . "'>{$model->customer_name}</a><br>";
                             $html .= $model->customer_phone . "<br>";
                             $html .= $model->customer_email . '<br>';
                             $html .= "<span class='badge-info badge'>{$model->zipcode}</span>";
@@ -128,7 +160,7 @@ use common\helper\Helper;
                     ],
                     [
                         'class' => 'yii\grid\ActionColumn',
-                        'template' => '{update}{export}{block}{status}',
+                        'template' => '{update}{block}{status}',
                         'headerOptions' => [
                             'width' => '10%',
                         ],

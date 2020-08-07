@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\jobs\autoBackup;
 use backend\jobs\doScanContact;
 use backend\jobs\scanNewContact;
 use backend\models\AuthAssignment;

@@ -105,4 +105,8 @@ class Helper
         $code = substr_replace($defaultCode,$lastID,-$maxLen );
         return $code;
     }
+    static function getDBName(){
+        preg_match("/dbname=([^;]*)/", Yii::$app->db->dsn , $matches);
+        return $matches[1];
+    }
 }

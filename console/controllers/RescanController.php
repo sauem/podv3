@@ -2,6 +2,7 @@
 
 namespace console\controllers;
 
+use backend\jobs\autoBackup;
 use backend\jobs\doScanBilling;
 use backend\jobs\doScanContact;
 use backend\models\ContactsModel;
@@ -45,6 +46,20 @@ class RescanController extends \yii\console\Controller
 
             }
         }
+
+    }
+
+    public function actionBackup(){
+        $command = autoBackup::save();
+        $res = exec($command['command']);
+    }
+    static function pushFileDriver($file){
+        $client = new \Google_Client();
+       $client->setClientId(\Yii::$app->params['clientID']);
+       $client->setClientSecret(\Yii::$app->params['client_secret']);
+       $client->refreshToken(\Yii::$app->params['refreshToken']);
+       $service = new \Google_Service($client);
+
 
     }
 }

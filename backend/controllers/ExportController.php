@@ -186,4 +186,22 @@ class ExportController extends BaseController
         return $export;
     }
 
+
+    function actionBasic(){
+        $orderId = \Yii::$app->request->post('orderID');
+        $orderId = [333];
+
+        $orders =  OrdersModel::findAll(['id' => $orderId]);
+        if(!$orders){
+            return [
+                'success' => 0,
+                'msg' => 'Đơn hàng không tồn tại!'
+            ];
+        }
+
+
+    }
+    static function singleExcel(){
+        
+    }
 }

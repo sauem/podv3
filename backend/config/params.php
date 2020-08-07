@@ -3,6 +3,12 @@ return [
     'bsDependencyEnabled' => false,
     'bsVersion' => '4.x',
     'adminEmail' => 'admin@example.com',
+    "clientID" => "406123247192-r2mh163dlk7tc48hd2nt2ttdnvbo1drs.apps.googleusercontent.com",
+    "project_id" => "tcombackup-1596773508245",
+    "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
+    "token_uri" => "https://oauth2.googleapis.com/token",
+    "client_secret" => "oeMEQH5FKRzSLPqunTG4K2CO",
+    "refreshToken" => "",
     'country' => [
         ["name" => 'Afghanistan', "code" => 'AF'],
         ["name" => 'Åland Islands', "code" => 'AX'],

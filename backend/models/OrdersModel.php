@@ -155,6 +155,7 @@ class OrdersModel extends BaseModel
             'approved_user_id' => 'Người duyệt đơn',
             'total' => 'Total',
             'order_note' => 'Ghi chú đơn hàng',
+            'vendor_note' => 'Ghi chú vận đơn',
             'user_id' => 'Người tạo đơn',
             'status' => 'Trạng thái',
             'payment_method' => 'Phuơng thức thanh toán',
