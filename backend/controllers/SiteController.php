@@ -6,6 +6,7 @@ use backend\jobs\autoBackup;
 use backend\jobs\doScanContact;
 use backend\jobs\scanNewContact;
 use backend\models\AuthAssignment;
+use backend\models\Backups;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
@@ -14,8 +15,10 @@ use backend\models\OrdersItems;
 use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
+use common\models\Common;
 use common\models\User;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\rbac\Assignment;
 use yii\web\Controller;
@@ -32,12 +35,36 @@ class SiteController extends BaseController
 
     public function actions()
     {
+
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
+            'web-settings' => [
+                'class' => \yii2mod\settings\actions\SettingsAction::class,
+                'viewParams' => [
+                    'dataProvider' => new ActiveDataProvider([
+                        'query' => Backups::find()
+                    ])
+                ],
+                // also you can use events as follows:
+                'on beforeSave' => function ($event) {
+                    // your custom code
+                    // your custom code
+                    foreach ($event->form->attributes as $key => $attribute) {
+                        if (empty($attribute)) {
+                            Yii::$app->settings->remove("Common", $key);
+                        }
+                    }
+                },
+                'on afterSave' => function ($event) {
+
+                },
+                'modelClass' => Common::class,
+            ],
         ];
     }
+
 
     /**
      * Displays homepage.
@@ -120,5 +147,13 @@ class SiteController extends BaseController
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $country = Yii::$app->params['country'];
         return $country;
+    }
+    function actionDeleteBackup($id){
+        $md = Backups::findOne($id);
+        if($md){
+            $md->delete();
+            return $this->redirect(['site/web-settings']);
+        }
+        return  $this->redirect(['site/web-settings']);
     }
 }

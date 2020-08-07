@@ -35,9 +35,10 @@
         "cakebake/yii2-actionlog": "*",
         "yii2tech/spreadsheet": "^1.0@dev",
         "ip2location/ip2location-php": "8.*",
-        "google/auth": "*",
-        "google/apiclient": "*",
-        "kartik-v/yii2-export": "@dev"
+        "kartik-v/yii2-export": "@dev",
+        "yii2mod/yii2-settings": "*",
+        "google/auth": "1.10",
+        "google/apiclient": "2.7"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -4,7 +4,9 @@
 namespace backend\controllers;
 
 
+use backend\jobs\autoBackup;
 use backend\jobs\importExcel;
+use backend\models\Backups;
 use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
@@ -488,6 +490,26 @@ class AjaxController extends BaseController
         return [
             'success' => 0,
             'msg' => Helper::firstError($model)
+        ];
+    }
+
+    function actionReloadBackup(){
+        $command  = autoBackup::save();
+        exec($command['command'], $output , $return_var);
+        if($return_var){
+            autoBackup::pushDriver($command['path']);
+
+            $saveDB = new Backups;
+            $saveDB->name = basename($command['path']);
+            $saveDB->save();
+            return [
+                'success' => 1,
+                'msg' => 'Cập nhật dữ liệu thành công! ' .$return_var
+            ];
+        }
+        return  [
+            'success' => 0,
+            'msg' => 'Lỗi hệ thống!'
         ];
     }
 }

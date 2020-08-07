@@ -2,9 +2,11 @@
 
 namespace common\helper;
 
+use backend\models\Backups;
 use yii\helpers\ArrayHelper;
 use Yii;
 use yii\helpers\Url;
+use yii2mod\settings\models\SettingModel;
 
 class Helper
 {
@@ -108,5 +110,10 @@ class Helper
     static function getDBName(){
         preg_match("/dbname=([^;]*)/", Yii::$app->db->dsn , $matches);
         return $matches[1];
+    }
+
+    static function setting($name){
+        $bk =  SettingModel::findOne(['section' => "Common", "key" => $name]);
+        return ArrayHelper::getValue($bk,'value');
     }
 }

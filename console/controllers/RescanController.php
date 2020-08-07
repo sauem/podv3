@@ -7,6 +7,7 @@ use backend\jobs\doScanBilling;
 use backend\jobs\doScanContact;
 use backend\models\ContactsModel;
 use common\helper\Helper;
+use GuzzleHttp\Client;
 
 class RescanController extends \yii\console\Controller
 {
@@ -15,10 +16,13 @@ class RescanController extends \yii\console\Controller
         echo doScanContact::apply();
         return 0;
     }
-    public function actionImage(){
+
+    public function actionImage()
+    {
         echo doScanBilling::scan();
         return 0;
     }
+
     public function actionFake()
     {
         for ($i = 1; $i < 500; $i++) {
@@ -40,7 +44,7 @@ class RescanController extends \yii\console\Controller
                 $res = $contact->save();
                 if (!$res) {
                     echo Helper::firstError($contact);
-               } else {
+                } else {
                     echo "done $i";
                 }
 
@@ -49,17 +53,32 @@ class RescanController extends \yii\console\Controller
 
     }
 
-    public function actionBackup(){
+    public function actionBackup()
+    {
         $command = autoBackup::save();
-        $res = exec($command['command']);
+        exec($command['command']);
+        autoBackup::pushDriver($command['path']);
+        print ($command['path']);
     }
-    static function pushFileDriver($file){
-        $client = new \Google_Client();
-       $client->setClientId(\Yii::$app->params['clientID']);
-       $client->setClientSecret(\Yii::$app->params['client_secret']);
-       $client->refreshToken(\Yii::$app->params['refreshToken']);
-       $service = new \Google_Service($client);
 
+    static function actionPushDriver($filePath)
+    {
+        $client = new \Google_Client();
+        $client->setClientId(GOOGLE_DRIVE_CLIENT_ID);
+        $client->setClientSecret(GOOGLE_DRIVE_CLIENT_SECRET);
+        $client->refreshToken(GOOGLE_DRIVE_REFRESH_TOKEN);
+        $client->setHttpClient(new Client([
+            'verify' => "D:\cacert.pem"
+        ]));
+        $service = new \Google_Service_Drive($client);
+        $file = new \Google_Service_Drive_DriveFile();
+        $file->setName(basename($filePath));
+        $file->setParents([Helper::setting("drive_id")]);
+        $service->files->create($file,[
+            'data' => file_get_contents($filePath),
+            'mimeType' => 'application/sql',
+            'uploadType' => 'resumable'
+        ]);
 
     }
 }

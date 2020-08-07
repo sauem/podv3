@@ -26,9 +26,14 @@ return [
         'actionlog' => [
             'class' => 'cakebake\actionlog\Module',
         ],
+        'settings' => [
+            'class' => 'yii2mod\settings\Module',
+        ],
     ],
     'components' => [
-
+        'settings' => [
+            'class' => 'yii2mod\settings\components\Settings',
+        ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\DbManager'
         ],
