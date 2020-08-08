@@ -4,7 +4,7 @@ use common\helper\Component;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
-
+use kartik\export\ExportMenu;
 $this->title = 'Contacts Assignments';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -28,6 +28,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <div class="ibox-body">
+                    <?= ExportMenu::widget([
+                        'dataProvider' => $pendingProvider,
+                        'columns' => [
+                            'code',
+                            'name',
+                            'phone',
+                            'address',
+                            'zipcode',
+                            'option',
+                            'country',
+                            'ip',
+                            'note',
+                            'link',
+                            'utm_source',
+                            'utm_medium',
+                            'utm_content',
+                            'utm_term',
+                            'utm_campaign',
+                            'type',
+                            'created_at',
+                            'updated_at'
+                        ],
+                        'exportConfig' => [
+                            ExportMenu::FORMAT_TEXT => false,
+                            ExportMenu::FORMAT_HTML => false,
+                            ExportMenu::FORMAT_PDF => false,
+                        ],
+                    ]); ?>
                     <?= $this->render('_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
                 </div>
             </div>
