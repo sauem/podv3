@@ -535,7 +535,7 @@ class AjaxController extends BaseController
     function actionRemoveHistorySystem()
     {
         if (Yii::$app->request->isPost) {
-            $logs = LogsImport::deleteAll();
+            $logs = ActionLog::deleteAll();
             if ($logs) {
                 return [
                     'success' => 1
