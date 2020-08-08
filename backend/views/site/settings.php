@@ -53,7 +53,7 @@ use kartik\grid\GridView;
                                 'class' => \kartik\grid\ActionColumn::class,
                                 'template' => '{delete}',
                                 'buttons' => [
-                                    'delete' => function ($url , $model) {
+                                    'delete' => function ($url, $model) {
                                         $url = \yii\helpers\Url::toRoute(['delete-backup', 'id' => $model->id]);
                                         return \common\helper\Component::delete($url);
                                     }
@@ -69,17 +69,26 @@ use kartik\grid\GridView;
 
 $js = <<<JS
     $(".saveData").click(function() {
-        $.ajax({
-            url : '/ajax/reload-backup',
-            type : 'POST',
-            data : {},
-            success : function(res) {
-                if(res.success){
-                    toastr.success(res.msg);
-                    __reloadData();
-                    return false;
-                }
-                toastr.warning(res.msg);
+        swal.fire({
+            title : "Đang thực hiện....",
+            icon : 'info',
+            onBeforeOpen : function() {
+                swal.showLoading()
+                $.ajax({
+                    url : '/ajax/reload-backup',
+                    type : 'POST',
+                    data : {},
+                    success : function(res) {
+                        if(res.success){
+                            toastr.success(res.msg);
+                            __reloadData();
+                             swal.close()
+                            return false;
+                           
+                        }
+                        toastr.warning(res.msg);
+                    }
+                })
             }
         })
     });

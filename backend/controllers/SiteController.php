@@ -151,6 +151,7 @@ class SiteController extends BaseController
     function actionDeleteBackup($id){
         $md = Backups::findOne($id);
         if($md){
+            autoBackup::dropDriver($md->name);
             $md->delete();
             return $this->redirect(['site/web-settings']);
         }

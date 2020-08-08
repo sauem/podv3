@@ -496,10 +496,9 @@ class AjaxController extends BaseController
     function actionReloadBackup(){
         $command  = autoBackup::save();
         exec($command['command'], $output , $return_var);
-        if($return_var){
+        $saveDB = new Backups;
+        if(!$return_var){
             autoBackup::pushDriver($command['path']);
-
-            $saveDB = new Backups;
             $saveDB->name = basename($command['path']);
             $saveDB->save();
             return [
@@ -509,7 +508,7 @@ class AjaxController extends BaseController
         }
         return  [
             'success' => 0,
-            'msg' => 'Lỗi hệ thống!'
+            'msg' => 'Lỗi hệ thống!' . Helper::firstError($saveDB)
         ];
     }
 }
