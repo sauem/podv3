@@ -78,9 +78,9 @@ class autoBackup
         $client->setClientId(GOOGLE_DRIVE_CLIENT_ID);
         $client->setClientSecret(GOOGLE_DRIVE_CLIENT_SECRET);
         $client->refreshToken(GOOGLE_DRIVE_REFRESH_TOKEN);
-        $client->setHttpClient(new Client([
-            'verify' => "D:\cacert.pem"
-        ]));
+//        $client->setHttpClient(new Client([
+//            'verify' => "D:\cacert.pem"
+//        ]));
         return $client;
     }
 }

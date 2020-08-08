@@ -72,9 +72,9 @@ class RescanController extends \yii\console\Controller
         $client->setClientId(GOOGLE_DRIVE_CLIENT_ID);
         $client->setClientSecret(GOOGLE_DRIVE_CLIENT_SECRET);
         $client->refreshToken(GOOGLE_DRIVE_REFRESH_TOKEN);
-        $client->setHttpClient(new Client([
-            'verify' => "D:\cacert.pem"
-        ]));
+//        $client->setHttpClient(new Client([
+//            'verify' => "D:\cacert.pem"
+//        ]));
         $service = new \Google_Service_Drive($client);
         $file = new \Google_Service_Drive_DriveFile();
         $file->setName(basename($filePath));
