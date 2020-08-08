@@ -520,15 +520,15 @@ class AjaxController extends BaseController
     {
         if (Yii::$app->request->isPjax) {
             $logs = LogsImport::deleteAll();
-            if (!$logs) {
+            if ($logs) {
                 return [
-                    'success' => 0,
-                    'msg' => Helper::firstError($logs)
+                    'success' => 0
                 ];
             }
         }
         return [
             'success' => 1,
+            'msg' =>  Helper::firstError($logs)
         ];
     }
 
@@ -536,15 +536,15 @@ class AjaxController extends BaseController
     {
         if (Yii::$app->request->isPjax) {
             $logs = LogsImport::deleteAll();
-            if (!$logs) {
+            if ($logs) {
                 return [
-                    'success' => 0,
-                    'msg' => Helper::firstError($logs)
+                    'success' => 1
                 ];
             }
         }
         return [
-            'success' => 1,
+            'success' => 0,
+            'msg' => Helper::firstError($logs)
         ];
     }
 }
