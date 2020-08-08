@@ -78,10 +78,10 @@ use common\helper\Helper;
                         'format' => 'html',
                         'footer' => '<strong>Tổng </strong>',
                         'value' => function ($model) {
-                            $html = "<a data-pjax='0' href='" . Url::toRoute(['view', 'id' => $model->id]) . "'>{$model->customer_name}</a><br>";
+                            $html = "<a href='" . Url::toRoute(['view', 'id' => $model->id]) . "' class='badge-info badge'>{$model->contacts[0]->contact->code}</a><br>";
+                            $html .= "<a data-pjax='0' href='" . Url::toRoute(['view', 'id' => $model->id]) . "'>{$model->customer_name}</a><br>";
                             $html .= $model->customer_phone . "<br>";
                             $html .= $model->customer_email . '<br>';
-                            $html .= "<span class='badge-info badge'>{$model->zipcode}</span>";
                             return $html;
                         }
                     ],
