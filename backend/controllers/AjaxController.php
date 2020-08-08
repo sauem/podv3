@@ -501,14 +501,19 @@ class AjaxController extends BaseController
 
         exec($command['command'], $output, $return_var);
         $saveDB = new Backups;
-        autoBackup::pushDriver($command['path']);
-        $saveDB->name = basename($command['path']);
-        $saveDB->save();
+        if (!$return_var) {
+            autoBackup::pushDriver($command['path']);
+            $saveDB->name = basename($command['path']);
+            $saveDB->save();
+            return [
+                'success' => 1,
+                'msg' => 'Cập nhật dữ liệu thành công! ' . $return_var
+            ];
+        }
         return [
-            'success' => 1,
-            'msg' => 'Cập nhật dữ liệu thành công! ' . $return_var
+            'success' => 0,
+            'msg' => 'Lỗi hệ thống!' . Helper::firstError($saveDB)
         ];
-
     }
 
     function actionRemoveHistoryImport()
