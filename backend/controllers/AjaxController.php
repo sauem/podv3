@@ -518,33 +518,33 @@ class AjaxController extends BaseController
 
     function actionRemoveHistoryImport()
     {
-        if (Yii::$app->request->isPjax) {
+        if (Yii::$app->request->isPost) {
             $logs = LogsImport::deleteAll();
             if ($logs) {
                 return [
                     'success' => 0
                 ];
             }
+            return [
+                'success' => 1,
+                'msg' => Helper::firstError($logs)
+            ];
         }
-        return [
-            'success' => 1,
-            'msg' =>  Helper::firstError($logs)
-        ];
     }
 
     function actionRemoveHistorySystem()
     {
-        if (Yii::$app->request->isPjax) {
+        if (Yii::$app->request->isPost) {
             $logs = LogsImport::deleteAll();
             if ($logs) {
                 return [
                     'success' => 1
                 ];
             }
+            return [
+                'success' => 0,
+                'msg' => Helper::firstError($logs)
+            ];
         }
-        return [
-            'success' => 0,
-            'msg' => Helper::firstError($logs)
-        ];
     }
 }
