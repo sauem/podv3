@@ -5,6 +5,7 @@ namespace console\controllers;
 use backend\jobs\autoBackup;
 use backend\jobs\doScanBilling;
 use backend\jobs\doScanContact;
+use backend\models\Backups;
 use backend\models\ContactsModel;
 use common\helper\Helper;
 use GuzzleHttp\Client;
@@ -58,6 +59,10 @@ class RescanController extends \yii\console\Controller
         $command = autoBackup::save();
         exec($command['command']);
         autoBackup::pushDriver($command['path']);
+        $saveDB = new Backups();
+        $saveDB->name = basename($command['path']);
+        $saveDB->save();
+
         print ($command['path']);
     }
 

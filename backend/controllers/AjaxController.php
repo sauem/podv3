@@ -498,24 +498,22 @@ class AjaxController extends BaseController
     function actionReloadBackup()
     {
         $command = autoBackup::save();
-        try {
-            exec($command['command'], $output, $return_var);
-            $saveDB = new Backups;
-            if (!$return_var) {
-                autoBackup::pushDriver($command['path']);
-                $saveDB->name = basename($command['path']);
-                $saveDB->save();
-                return [
-                    'success' => 1,
-                    'msg' => 'Cập nhật dữ liệu thành công! ' . $return_var
-                ];
-            }
-        }catch (\Exception $e){
+
+        exec($command['command'], $output, $return_var);
+        $saveDB = new Backups;
+        if (!$return_var) {
+            autoBackup::pushDriver($command['path']);
+            $saveDB->name = basename($command['path']);
+            $saveDB->save();
             return [
-                'success' => 0,
-                'msg' => 'Lỗi hệ thống!' . $e->getMessage()
+                'success' => 1,
+                'msg' => 'Cập nhật dữ liệu thành công! ' . $return_var
             ];
         }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi hệ thống!' . Helper::firstError($saveDB)
+        ];
     }
 
     function actionRemoveHistoryImport()
