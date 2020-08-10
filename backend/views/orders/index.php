@@ -117,7 +117,7 @@ use common\helper\Helper;
                         'format' => 'raw', 'value' => function ($model) {
                         $html = '';
                         foreach ($model->items as $item) {
-                            $html .= "<span class='badge mb-1 badge-info'>{$item->product->sku} | {$item->product->name}</span><br>";
+                            $html .= "<span class='badge mb-1 badge-info'>{$item->product->sku} | {$item->product->name} | x{$item->qty}</span><br>";
                         }
                         return $html;
                     }],
