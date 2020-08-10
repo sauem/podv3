@@ -142,7 +142,7 @@ class OrdersModel extends BaseModel
     {
         return [
             'id' => 'ID',
-            'customer_name' => 'Tên kách hàng',
+            'customer_name' => 'Tên khách hàng',
             'customer_phone' => 'Số điện thoại',
             'customer_email' => 'Email',
             'address' => 'Địa chỉ',
