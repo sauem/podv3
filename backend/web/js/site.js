@@ -51,7 +51,7 @@ function handleFile(file) {
             type: 'binary',
             cellDates: true
         });
-        doProcessWorkbook(workbook,file)
+        doProcessWorkbook(workbook, file)
     };
     //reader.readAsArrayBuffer(file);
 }
@@ -71,7 +71,10 @@ function doProcessWorkbook(workbook, file) {
         rows.push(item);
         rowsIndex++;
         row = getRow(sheet, rowsIndex, maxColumn);
+
     }
+
+
     let data = {
         rows: rows,
         size: file.size,
@@ -102,18 +105,18 @@ $(".handleData").click(function () {
     if (_importAction == "product") {
         _url = config.pushProduct;
     }
-    if(typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0){
+    if (typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0) {
         toastr.warning("Vui lòng chọn file dữ liệu!");
         return false;
     }
-    if((EXCEL.rows).length > config.maxRowUpload){
+    if ((EXCEL.rows).length > config.maxRowUpload) {
         toastr.warning("File dữ liệu tối đa 20000 dòng");
         return false;
     }
     swal.fire({
         title: "Đang nhập liệu",
-        icon :"info",
-        allowOutsideClick:false,
+        icon: "info",
+        allowOutsideClick: false,
         onBeforeOpen: () => {
             Swal.showLoading()
             $.ajax({
@@ -122,13 +125,11 @@ $(".handleData").click(function () {
                 cache: false,
                 data: {contacts: window.EXCEL.rows, fileName: window.EXCEL.fileName},
                 success: function (res) {
-
-                    console.log(res)
                     setTimeout(() => {
                         Swal.hideLoading()
                         swal.fire({
                             title: "Thông báo!",
-                            html: "Đã nhập thành công "+res.totalInsert+" liên hệ <br> Số liên hệ lỗi : " + res.totalErrors,
+                            html: "Đã nhập thành công " + res.totalInsert + " liên hệ <br> Số liên hệ lỗi : " + res.totalErrors,
                             icon: 'success'
                         })
                             .then(() => {
@@ -159,7 +160,7 @@ function switchItem(sheet, row) {
             break;
         default:
             item = new contactModel();
-            item.register_time = row[0] ? (row[0].v.getTime() /1000) : null;
+            item.register_time = row[0] ? (row[0].v.getTime() / 1000) : null;
             item.name = row[1] ? row[1].v : "";
             item.phone = row[2] ? row[2].v : "";
             item.address = row[3] ? row[3].v : "";
@@ -198,10 +199,10 @@ function contactModel() {
         utm_content: "",
         type: "",
         register_time: Date.now(),
-        created_at: Date.now()/1000,
-        updated_at: Date.now()/1000,
+        created_at: Date.now() / 1000,
+        updated_at: Date.now() / 1000,
         host: window.location.hostname,
-        country : null
+        country: null
     }
 }
 

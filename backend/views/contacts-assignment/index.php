@@ -93,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="modal-header">
                     <h5 class="modal-title">Nhập liên hệ</h5>
                     <div>
+                        <button type="button" class="btn filterData btn-primary">Lọc</button>
                         <button type="button" id="handleData" class="btn handleData btn-primary">Nhập liên hệ</button>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">Đóng</span>
@@ -187,5 +188,6 @@ $js = <<<JS
             }
          });
     })
+   
 JS;
 $this->registerJs($js);
