@@ -39,7 +39,7 @@ use yii\helpers\Url;
                         </div>
                         <div class="form-group callback-group" style="display: none">
                             <label>Goị lại sau (giờ):</label>
-                            <input class="form-control" type="number" name="callback_time"
+                            <input class="form-control" type="text" name="callback_time"
                                    placeholder="Gọi lại sau 3 giờ">
                         </div>
                     </div>
@@ -116,10 +116,8 @@ $js = <<<JS
               case "callback":
                   case "pending":
                       $(".callback-group").show()
-                      $(".callback-group").find("input[name='callback_time']").attr("required",true);
                       break;
                       default:
-                             $(".callback-group").find("input[name='callback_time']").attr("required",false);
                              $(".callback-group").hide()
                           break;
             }

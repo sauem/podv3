@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use common\helper\Helper;
 use backend\models\ContactsModel;
 use kartik\grid\ExpandRowColumn;
+
 ?>
     <div class="table-responsive">
 
@@ -27,7 +28,7 @@ use kartik\grid\ExpandRowColumn;
                 [
                     'class' => CheckboxColumn::class,
                     'checkboxOptions' => function ($model) {
-                        if(!$model->page){
+                        if (!$model->page) {
                             return ['data-cate' => null];
                         }
                         return ['data-cate' => $model->page->category_id];
@@ -38,12 +39,12 @@ use kartik\grid\ExpandRowColumn;
                     'attribute' => 'category_id',
                     'format' => 'html',
                     'value' => function ($model) {
-                        if(!$model->page || !$model->page->product){
+                        if (!$model->page || !$model->page->product) {
                             return null;
                         }
                         return Html::tag("p",
                             $model->page->product->name .
-                            "<br><small>{$model->page->product->sku} |".Helper::money($model->page->product->regular_price)."</small> | <small><i>{$model->page->category->name}</i></small>" .
+                            "<br><small>{$model->page->product->sku} |" . Helper::money($model->page->product->regular_price) . "</small> | <small><i>{$model->page->category->name}</i></small>" .
                             "<br><small>{$model->option}</small>");
                     }
                 ],
@@ -57,7 +58,7 @@ use kartik\grid\ExpandRowColumn;
                         }
                         return Html::tag("p",
                             "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
-                            "<small class='text-info'>CTCODE: <i><strong>{$model->code}</strong></i> | Marketing: <strong>{$model->page->user->username}</strong></small><br>" .
+                            "<small class='text-info'>CTCODE: <i><strong>{$model->code}</strong></i> | marketer: <strong>{$model->page->marketer}</strong> | Type : <strong>{$model->type}</strong></small><br>" .
                             "<small class='text-info'>address: <i>{$model->address}</i></small><br>" .
                             "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>" .
                             "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
@@ -78,7 +79,7 @@ use kartik\grid\ExpandRowColumn;
                     'attribute' => 'created_at',
                     'format' => 'html',
                     'value' => function ($model) {
-                        return Html::tag("small",date("H:i:s d/m/Y",$model->created_at));
+                        return Html::tag("small", date("H:i:s d/m/Y", $model->created_at));
                     }
                 ],
                 [

@@ -171,7 +171,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="text-warning ui-checkbox ui-checkbox-success">
-                        <input type="checkbox" name="default_info">
+                        <input checked type="checkbox" name="default_info">
                         <span class="input-span"></span>
                         Tạo thông tin đơn hàng mặc định <br>(*thông tin sau sẽ ghi đè thông tin trước)
                     </label>

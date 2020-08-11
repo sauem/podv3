@@ -57,7 +57,7 @@ use common\helper\Helper;
                     'showConfirmAlert' => false,
                     'target' => GridView::TARGET_BLANK
                 ],
-                'showFooter' => true,
+                'showFooter' => false,
                 'pjax' => true,
                 'pjaxSettings' => [
                     'neverTimeout' => true,
@@ -229,7 +229,6 @@ $js = <<<JS
               inputOptions: {
                 'pending': 'Đợi duyệt',
                 'cancel': 'Hủy đơn',
-                'approved': 'Duyệt đơn',
               },
               inputPlaceholder: 'Lự chọn trạng thái',
               showCancelButton: true,
