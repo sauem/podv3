@@ -28,7 +28,7 @@ use yii\web\Response;
  */
 class ContactsController extends BaseController
 {
-    public function actionIndex()
+    public function actionIndex($phoneview = null)
     {
         $phone = Yii::$app->request->get("phone");
         if (Helper::userRole(UserModel::_ADMIN) && !$phone) {
@@ -38,6 +38,9 @@ class ContactsController extends BaseController
             $saleID = Yii::$app->user->getId();
             $phone = UserModel::findOne($saleID);
             $phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
+        }
+        if ($phoneview && $phoneview !== "null") {
+            $phone = $phoneview;
         }
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
@@ -97,18 +100,19 @@ class ContactsController extends BaseController
         $user = UserModel::findOne(Yii::$app->user->getId());
         $order = new OrdersModel;
 
-        $histories =  new ActiveDataProvider([
+        $histories = new ActiveDataProvider([
             'query' => OrdersModel::find()->where(['user_id' => Yii::$app->user->getId()]),
             'pagination' => [
                 'pageSize' => 10
             ]
         ]);
         $contactHistories = new ActiveDataProvider([
-           'query' => ContactsLog::find()->where(['user_id' => Yii::$app->user->getId()])->orderBy(['created_at' => SORT_DESC]),
-           'pagination' => [
-               'pageSize' => 10
-           ]
+            'query' => ContactsLog::find()->where(['user_id' => Yii::$app->user->getId()])->orderBy(['created_at' => SORT_DESC]),
+            'pagination' => [
+                'pageSize' => 10
+            ]
         ]);
+        $phonesAssign = ContactsAssignment::findAll(['user_id' => Yii::$app->user->getId()]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -121,6 +125,7 @@ class ContactsController extends BaseController
             'user' => $user,
             'info' => $info,
             'histories' => $histories,
+            'phonesAssign' => $phonesAssign,
             'contactHistories' => $contactHistories
         ]);
     }

@@ -245,8 +245,7 @@ $("body").on("click", ".submitLog", function (e) {
     if ((_formData.get("status") == "pending" ||
         _formData.get("status") == "callback") &&
         _formData.get("callback_time") == "") {
-        toastr.warning("Hãy đặt thời gian gọi lại!");
-        return false;
+        _formData.set("callback_time",1)
     }
     $.ajax({
         url: _url,

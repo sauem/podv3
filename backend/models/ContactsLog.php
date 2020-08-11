@@ -39,8 +39,8 @@ class ContactsLog extends BaseModel
     {
         return [
             [['user_id', 'contact_id'], 'required'],
-            [['user_id', 'contact_id', 'created_at', 'updated_at'], 'integer'],
-            [['status', 'phone','callback_time'], 'string', 'max' => 50],
+            [['user_id', 'contact_id', 'created_at', 'callback_time', 'updated_at'], 'integer'],
+            [['status', 'phone'], 'string', 'max' => 50],
             [['note'], 'string', 'max' => 255],
             [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContactsModel::className(), 'targetAttribute' => ['contact_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],

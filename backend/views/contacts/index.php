@@ -7,7 +7,6 @@ use common\helper\Helper;
 use backend\models\UserModel;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -20,12 +19,24 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-4">
             <?php Pjax::begin([
                 'id' => 'pjax-info'
-            ])?>
+            ]) ?>
             <div class="ibox">
                 <div class="ibox-head">
-                    <h2 class="ibox-title">Thông tin : <i class="fa fa-phone">
+                    <h2 class="ibox-title"><i class="fa fa-phone">
                         </i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
                     </h2>
+                    <div class="ibox-tools">
+                        <select class="form-control currentPhoneSelect select2">
+                            <?php
+                            if ($phonesAssign && count($phonesAssign) > 0) {
+                                foreach ($phonesAssign as $assign) {
+                                    $selected = $assign->contact_phone == Yii::$app->request->get("phoneview") ? "selected" : "";
+                                    echo "<option {$selected} value='{$assign->contact_phone}'>{$assign->contact_phone}</option>";
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="ibox-body">
@@ -106,19 +117,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     <ul class="nav nav-tabs tabs-line">
                         <li class="nav-item">
                             <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ
-                                xử lý (<?=$dataProvider->getCount()?>)</a>
+                                xử lý (<?= $dataProvider->getCount() ?>)</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#callback" data-toggle="tab">
-                                <i class="ti-time"></i> Gọi lại (<?=$callbackProvider->getCount()?>)</a>
+                                <i class="ti-time"></i> Gọi lại (<?= $callbackProvider->getCount() ?>)</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất
-                                bại (<?=$failureProvider->getCount()?>)</a>
+                                bại (<?= $failureProvider->getCount() ?>)</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
-                                công (<?=$successProvider->getCount()?>)</a>
+                                công (<?= $successProvider->getCount() ?>)</a>
                         </li>
 
                     </ul>
@@ -264,6 +275,18 @@ $js = <<<JS
                 $("#resultItemProduct").append(compileTemplate("template-item-product",product));
             })
         }
+        
+        
+        $("body").on("change",".currentPhoneSelect",function(res) {
+            let _current = $(this).val();
+     
+            if(_current == "null" || _current == null){
+                window.location.replace("$route");
+                return false;
+            }else{
+                window.location.replace("$route" + "?phoneview=" + _current);
+            }
+        });
     });
     
 JS;
