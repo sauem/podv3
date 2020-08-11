@@ -45,6 +45,7 @@ AppAsset::register($this);
             orderData : "<?=Url::toRoute(['ajax/order-data'])?>",
             billstranfer : "<?=Url::toRoute(['ajax/upload-bill'])?>",
             changeOrderStatus : "<?=Url::toRoute(['ajax/order-status'])?>",
+            autoScan : "<?= Url::toRoute(['ajax/scan-contact'])?>"
         }
 
     </script>

@@ -71,7 +71,7 @@ class doScanContact
                 }
             }
         }
-        return "done!";
+        return "success";
     }
 
     static function hasTime($user_id)

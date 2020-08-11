@@ -119,6 +119,7 @@ class ContactsLog extends BaseModel
         return $this->hasOne(UserModel::className(), ['id' => 'user_id']);
     }
 
+
     public function afterFind()
     {
         $this->created_at = date("d/m/Y H:i:s", $this->created_at);

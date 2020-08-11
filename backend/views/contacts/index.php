@@ -7,6 +7,7 @@ use common\helper\Helper;
 use backend\models\UserModel;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -25,18 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h2 class="ibox-title"><i class="fa fa-phone">
                         </i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
                     </h2>
-                    <div class="ibox-tools">
-                        <select class="form-control currentPhoneSelect select2">
-                            <?php
-                            if ($phonesAssign && count($phonesAssign) > 0) {
-                                foreach ($phonesAssign as $assign) {
-                                    $selected = $assign->contact_phone == Yii::$app->request->get("phoneview") ? "selected" : "";
-                                    echo "<option {$selected} value='{$assign->contact_phone}'>{$assign->contact_phone}</option>";
-                                }
-                            }
-                            ?>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="ibox-body">
@@ -200,10 +189,18 @@ $js = <<<JS
             if(keys.length <= 0){
                 swal.fire({
                     title : "Thông báo",
-                    text : "Để lên đơn hàng hãy chọn liên hệ",
+                    text : "Để lên đơn hàng hãy chọn 1 liên hệ",
                     icon : "error",
                 });
                 return;
+            }
+            if(keys.length > 1){
+                 swal.fire({
+                    title : "Thông báo",
+                    text : "Chỉ chọn duy nhất một liên hệ để tạo đơn hàng",
+                    icon : "info",
+                });
+                 return;
             }
            $("#collapse-order").collapse('show');
             

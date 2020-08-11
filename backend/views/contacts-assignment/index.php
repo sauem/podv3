@@ -5,12 +5,16 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use kartik\export\ExportMenu;
+
 $this->title = 'Contacts Assignments';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="row">
         <div class="col-12 text-right mb-2">
-            <button data-backdrop="static" data-keyboard="false" data-remote="<?= \yii\helpers\Url::toRoute(['contacts-assignment/import']) ?>" data-toggle="modal"
+            <button class="btn btn-info autoScan"><i class="fa fa-print"></i> Tự động phân bổ
+            </button>
+            <button data-backdrop="static" data-keyboard="false"
+                    data-remote="<?= \yii\helpers\Url::toRoute(['contacts-assignment/import']) ?>" data-toggle="modal"
                     data-target="#remote-import" class="btn btn-success">
                 <i class="fa fa-file-excel-o"></i> Nhập liên hệ
             </button>
@@ -160,5 +164,28 @@ $js = <<<JS
          });
           $("#resultPhone").html(compileTemplate("phone-template", window.PHONES))
     });
+    $(".autoScan").click(function() {
+         swal.fire({
+            title : 'Xin chờ....',
+            onBeforeOpen: function() {
+                swal.showLoading();
+                 $.ajax({
+                    url : config.autoScan,
+                    type: 'POST',
+                    data : {},
+                    cache : false,
+                    success : function(res) {
+                      if(res == "success"){
+                           swal.hideLoading();
+                           swal.fire("Thành công!","Đã cập nhật quản lý liên hệ","succeess")
+                           .then(() => {
+                               __reloadData();  
+                           })
+                      }
+                    }
+                  })
+            }
+         });
+    })
 JS;
 $this->registerJs($js);

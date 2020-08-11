@@ -245,7 +245,7 @@ $("body").on("click", ".submitLog", function (e) {
     if ((_formData.get("status") == "pending" ||
         _formData.get("status") == "callback") &&
         _formData.get("callback_time") == "") {
-        _formData.set("callback_time",1)
+        _formData.set("callback_time",1);
     }
     $.ajax({
         url: _url,
@@ -255,8 +255,8 @@ $("body").on("click", ".submitLog", function (e) {
         contentType: false,
         processData: false,
         success: function (res) {
+            __reloadData();
             if (res.success) {
-                __reloadData();
                 return false;
             } else {
                 toastr.warning(res.msg);

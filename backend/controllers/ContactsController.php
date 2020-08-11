@@ -28,7 +28,7 @@ use yii\web\Response;
  */
 class ContactsController extends BaseController
 {
-    public function actionIndex($phoneview = null)
+    public function actionIndex()
     {
         $phone = Yii::$app->request->get("phone");
         if (Helper::userRole(UserModel::_ADMIN) && !$phone) {
@@ -39,9 +39,7 @@ class ContactsController extends BaseController
             $phone = UserModel::findOne($saleID);
             $phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
         }
-        if ($phoneview && $phoneview !== "null") {
-            $phone = $phoneview;
-        }
+
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -56,6 +54,7 @@ class ContactsController extends BaseController
                 ]
             ]
         ));
+
         $failureProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -107,7 +106,11 @@ class ContactsController extends BaseController
             ]
         ]);
         $contactHistories = new ActiveDataProvider([
-            'query' => ContactsLog::find()->where(['user_id' => Yii::$app->user->getId()])->orderBy(['created_at' => SORT_DESC]),
+            'query' => ContactsLog::find()
+                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
+                ->where(['contacts.phone' => $phone])
+                ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
+                ->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => 10
             ]

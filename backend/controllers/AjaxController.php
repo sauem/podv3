@@ -5,6 +5,8 @@ namespace backend\controllers;
 
 
 use backend\jobs\autoBackup;
+use backend\jobs\doScanBilling;
+use backend\jobs\doScanContact;
 use backend\jobs\importExcel;
 use backend\models\Backups;
 use backend\models\CategoriesModel;
@@ -545,6 +547,12 @@ class AjaxController extends BaseController
                 'success' => 0,
                 'msg' => Helper::firstError($logs)
             ];
+        }
+    }
+
+    function actionScanContact(){
+        if(Yii::$app->request->isPost){
+            return doScanContact::apply();
         }
     }
 }

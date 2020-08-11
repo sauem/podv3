@@ -55,6 +55,7 @@ class ContactsSearchModel extends ContactsModel
                 'contacts_assignment.contact_phone=contacts.phone')
                 ->where(['=', 'contacts_assignment.user_id', \Yii::$app->user->getId()])
                 ->andWhere(['=', 'contacts_assignment.status', $status]);
+
         } else {
             if ($group) {
                 $query->groupBy(['phone'])
@@ -105,8 +106,8 @@ class ContactsSearchModel extends ContactsModel
         }
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['=', 'phone', $this->name])
             ->orFilterWhere(['like', 'email', $this->name])
+            ->andFilterWhere(['=', 'phone', $this->phone])
             ->andFilterWhere(['IN', 'contacts.status', $this->status]);
 
 
