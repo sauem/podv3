@@ -21,6 +21,7 @@ class Payment extends BaseModel
     /**
      * {@inheritdoc}
      */
+    const BANK_TRANSFER = 9999;
     public static function tableName()
     {
         return 'payment';

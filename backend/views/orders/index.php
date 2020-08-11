@@ -8,6 +8,7 @@ use backend\models\UserModel;
 use backend\models\OrdersModel;
 use yii\helpers\Url;
 use kartik\export\ExportMenu;
+use backend\models\Payment;
 
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
@@ -66,6 +67,20 @@ use common\helper\Helper;
                         'attribute' => 'payment_method',
                         'value' => function ($model) {
                             return $model->payment ? $model->payment->name : "";
+                        }
+                    ],
+                    [
+                        'label' => 'Hóa đơn chuyển khoản',
+                        'value' => function ($model) {
+                            $bills = $model->billings;
+                            $html = "";
+                            if($bills){
+                                foreach ($bills as $k => $bill){
+                                    $url = Url::toRoute("/file/$bill->path",'http');
+                                    $html.= "=HYPERLINK(\"$url\",\"Hóa đơn\")\n";
+                                }
+                            }
+                            return $html;
                         }
                     ],
                     [
