@@ -8,6 +8,7 @@ use backend\models\UserModel;
 use backend\models\OrdersModel;
 use yii\helpers\Url;
 use kartik\export\ExportMenu;
+
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -25,6 +26,7 @@ use common\helper\Helper;
             <?= ExportMenu::widget([
                 'dataProvider' => $dataProvider,
                 'columns' => [
+                    'code',
                     'customer_name',
                     'customer_phone',
                     'customer_email',
@@ -34,14 +36,96 @@ use common\helper\Helper;
                     'zipcode',
                     'country',
                     'total',
+                    [
+                        'attribute' => 'status',
+                        'value' => function ($model) {
+                            if ($model->status == OrdersModel::_PENDING) {
+                                return "OK";
+                            }
+                            return $model->status;
+                        }
+                    ],
+                    [
+                        'label' => 'Sale',
+                        'attribute' => 'user_id',
+                        'value' => function ($model) {
+                            return $model->user->username;
+                        }
+                    ],
+                    [
+                        'label' => 'Maketer',
+                        'attribute' => 'user_id',
+                        'value' => function ($model) {
+                            return $model->contacts[0]->contact->page->marketer;
+                        }
+                    ],
                     'order_note',
-                    'status_note',
-                    'status',
                     'vendor_note',
-                    'shipping_price',
-                    'payment_method',
-                    'created_at',
-                    'updated_at'
+                    [
+                        'label' => 'PTTT',
+                        'attribute' => 'payment_method',
+                        'value' => function ($model) {
+                            return $model->payment ? $model->payment->name : "";
+                        }
+                    ],
+                    [
+                        'label' => 'Giá vận chuyển',
+                        'attribute' => 'shipping_price',
+                        'value' => function ($model) {
+                            return $model->shipping_price ? Helper::formatExcel($model->shipping_price) : "";
+                        }
+                    ],
+                    [
+                        'label' => 'Sku',
+                        'value' => function ($model) {
+                            $items = $model->items;
+                            $html = "";
+                            if ($items) {
+                                foreach ($items as $item) {
+                                    $html .= $item->product_sku . ",";
+                                }
+                            }
+                            return substr($html, 0, -1);
+                        }
+                    ],
+                    [
+                        'label' => 'Số lượng',
+                        'value' => function ($model) {
+                            $items = $model->items;
+                            $html = "";
+                            if ($items) {
+                                foreach ($items as $item) {
+                                    $html .= $item->qty . ",";
+                                }
+                            }
+                            return substr($html, 0, -1);
+                        }
+                    ],
+                    [
+                        'label' => 'Tổng hợp',
+                        'value' => function ($model) {
+                            $items = $model->items;
+                            $html = "";
+                            if ($items) {
+                                foreach ($items as $item) {
+                                    $html .= $item->qty . "*" . $item->product_sku . ",";
+                                }
+                            }
+                            return substr($html, 0, -1);
+                        }
+                    ],
+                    [
+                        'attribute' => 'created_at',
+                        'value' => function ($model) {
+                            return date('d/m/Y', $model->created_at);
+                        }
+                    ],
+                    [
+                        'attribute' => 'updated_at',
+                        'value' => function ($model) {
+                            return date('d/m/Y', $model->updated_at);
+                        }
+                    ],
                 ],
                 'exportConfig' => [
                     ExportMenu::FORMAT_TEXT => false,
@@ -78,7 +162,7 @@ use common\helper\Helper;
                         'format' => 'html',
                         'footer' => '<strong>Tổng </strong>',
                         'value' => function ($model) {
-                            $html = "<a href='" . Url::toRoute(['view', 'id' => $model->id]) . "' class='badge-info badge'>{$model->contacts[0]->contact->code}</a><br>";
+                            $html = "<a href='" . Url::toRoute(['view', 'id' => $model->id]) . "' class='badge-info badge'>{$model->code}</a><br>";
                             $html .= "<a data-pjax='0' href='" . Url::toRoute(['view', 'id' => $model->id]) . "'>{$model->customer_name}</a><br>";
                             $html .= $model->customer_phone . "<br>";
                             $html .= $model->customer_email . '<br>';

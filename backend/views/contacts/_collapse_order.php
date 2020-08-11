@@ -81,6 +81,7 @@ use yii\helpers\Url;
                     <label>Tên khách hàng <span class="text-danger">(*)</span></label>
                     <input required name="customer_name" value="{{this.info.name}}" class="form-control">
                     <input type="hidden" name="contact_id" value="{{this.ids}}" class="form-control">
+                    <input type="hidden" name="code" value="{{this.info.code}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">

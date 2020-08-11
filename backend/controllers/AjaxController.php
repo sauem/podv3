@@ -300,6 +300,7 @@ class AjaxController extends BaseController
                     'updated_at' => time(),
                     'host' => $contact['host'],
                 ];
+
                 if (!$model->load($data, '') || !$model->save()) {
                     $errors[$k] = Helper::firstError($model);
                     $logs = new LogsImport;

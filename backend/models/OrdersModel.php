@@ -75,6 +75,7 @@ class OrdersModel extends BaseModel
             [['customer_phone'], 'string', 'max' => 15],
             [['customer_email'], 'string', 'max' => 100],
             [['status'], 'string', 'max' => 25],
+            [['code'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -146,6 +147,7 @@ class OrdersModel extends BaseModel
             'customer_phone' => 'Số điện thoại',
             'customer_email' => 'Email',
             'address' => 'Địa chỉ',
+            'code' => 'Mã đơn hàng',
             'city' => 'Thành phố',
             'district' => 'Quận/Huyện',
             'zipcode' => 'Zipcode',
