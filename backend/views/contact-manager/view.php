@@ -77,7 +77,7 @@ use common\helper\Helper;
             </div>
         </div>
     </div>
-    <div class="col-mc-12">
+    <div class="col-md-12">
         <div class="ibox">
             <div class="ibox-head">
                 <h2 class="ibox-title">Lịch sử liên hệ</h2>
