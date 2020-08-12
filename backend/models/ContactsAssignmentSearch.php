@@ -40,7 +40,7 @@ class ContactsAssignmentSearch extends ContactsAssignment
      */
     public function search($params)
     {
-        $query = ContactsAssignment::find();
+        $query = ContactsAssignment::find()->orderBy(['status' => SORT_DESC]);
 
         // add conditions that should always apply here
 
