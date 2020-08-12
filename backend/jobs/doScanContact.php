@@ -25,12 +25,16 @@ class doScanContact
             if ($count >= 2) {
                 self::openCallback($user);
                 if(!self::isLimitOfDay($user) && !self::hasProcessing($user)){
-                    foreach ($phones as $phone){
+                    foreach ($phones as $k => $phone){
                         if (self::isLimitOfDay($user)) {
                             break;
                         }
                         if(!self::phoneExitsts($phone)){
-                            self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                            if(!self::hasProcessing($user)){
+                                self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                            }else{
+                                self::assignUser($phone, $user, ContactsAssignment::_PENDING);
+                            }
                         }
                     }
                 }
@@ -52,6 +56,7 @@ class doScanContact
                     } else {
                         if (!self::phoneExitsts($phone) && self::countAssignUser($user) < 2) {
                             $count = self::countAssignUser($user);
+
                             switch ($count) {
                                 case 1:
                                     if (!self::hasCallback($user)) {
@@ -61,7 +66,11 @@ class doScanContact
                                     }
                                     break;
                                 default:
-                                    self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                                    if(self::hasProcessing($user)){
+                                        self::assignUser($phone, $user, ContactsAssignment::_PENDING);
+                                    }else{
+                                        self::assignUser($phone, $user, ContactsAssignment::_PROCESSING);
+                                    }
                                     break;
                             }
                         } else {

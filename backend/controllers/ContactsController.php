@@ -108,7 +108,6 @@ class ContactsController extends BaseController
         $contactHistories = new ActiveDataProvider([
             'query' => ContactsLog::find()
                 ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
-                ->where(['contacts.phone' => $phone])
                 ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
                 ->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [

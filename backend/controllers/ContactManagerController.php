@@ -6,6 +6,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsAssignment;
 use backend\models\ContactsAssignmentSearch;
+use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
 use backend\models\ManagerSearch;
@@ -53,9 +54,21 @@ class ContactManagerController extends BaseController
                 ]
             ]
         ));
+
+        $contactHistories = new ActiveDataProvider([
+            'query' => ContactsLog::find()
+                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
+                ->andWhere(['contacts_log.user_id' => \Yii::$app->user->getId(),])
+                ->andWhere(['contacts.phone' => $model->contact_phone])
+                ->orderBy(['created_at' => SORT_DESC]),
+            'pagination' => [
+                'pageSize' => 10
+            ]
+        ]);
         return $this->render("view", [
             'model' => $model,
-            'dataProvider' => $dataProvider
+            'dataProvider' => $dataProvider,
+            'histories' => $contactHistories
         ]);
     }
 }
