@@ -65,6 +65,7 @@ class ContactsAssignmentSearch extends ContactsAssignment
                 ->andWhere(['contacts_assignment.status' => [ContactsAssignment::_PENDING]])
                 ->andWhere(['contacts_assignment.callback_time' => 1]);
         }
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,

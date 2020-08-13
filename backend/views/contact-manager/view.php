@@ -76,7 +76,20 @@ use common\helper\Helper;
                             'value' => function ($model) {
                                 return Html::tag("small", date("d/m/Y H:i:s", $model->register_time));
                             }
-                        ]
+                        ],
+                        [
+                            'class' => ExpandRowColumn::class,
+                            'width' => '50px',
+                            'value' => function ($model, $key, $index, $column) {
+                                return GridView::ROW_EXPANDED;
+                            },
+                            'detail' => function ($model, $key, $index, $column) {
+                                return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
+                            },
+                            'headerOptions' => ['class' => 'expand-area'],
+                            'expandOneOnly' => true,
+                            'detailRowCssClass' => GridView::TYPE_DEFAULT
+                        ],
                     ],
                 ]) ?>
             </div>
