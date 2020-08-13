@@ -114,6 +114,16 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+        $currentHistories = new ActiveDataProvider([
+            'query' => ContactsLog::find()
+                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
+                ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
+                ->andWhere(['contacts.phone' => $phone])
+                ->orderBy(['created_at' => SORT_DESC]),
+            'pagination' => [
+                'pageSize' => 10
+            ]
+        ]);
         $phonesAssign = ContactsAssignment::findAll(['user_id' => Yii::$app->user->getId()]);
 
         return $this->render('index', [
@@ -128,7 +138,8 @@ class ContactsController extends BaseController
             'info' => $info,
             'histories' => $histories,
             'phonesAssign' => $phonesAssign,
-            'contactHistories' => $contactHistories
+            'contactHistories' => $contactHistories,
+            'currentHistories' => $currentHistories
         ]);
     }
 

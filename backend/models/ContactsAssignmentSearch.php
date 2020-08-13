@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\helper\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\ContactsAssignment;
@@ -14,11 +15,13 @@ class ContactsAssignmentSearch extends ContactsAssignment
     /**
      * {@inheritdoc}
      */
+    public $callback;
+
     public function rules()
     {
         return [
             [['id', 'user_id', 'callback_time', 'created_at', 'updated_at'], 'integer'],
-            [['contact_phone', 'status'], 'safe'],
+            [['contact_phone', 'status', 'callback'], 'safe'],
         ];
     }
 
@@ -56,6 +59,12 @@ class ContactsAssignmentSearch extends ContactsAssignment
             return $dataProvider;
         }
 
+        if ($this->callback == true) {
+            $query->innerJoin("contacts", "contacts.phone=contacts_assignment.contact_phone")
+                ->where(['contacts.status' => [ContactsModel::_CALLBACK,ContactsModel::_PENDING]])
+                ->andWhere(['contacts_assignment.status' => [ContactsAssignment::_PENDING]])
+                ->andWhere(['contacts_assignment.callback_time' => 1]);
+        }
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,

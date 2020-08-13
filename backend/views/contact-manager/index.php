@@ -10,18 +10,62 @@ use backend\models\ContactsAssignment;
 
 ?>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="ibox">
             <div class="ibox-body">
-                <table class="table-striped">
-                    <tbody>
-                    <tr>Tài khoản</tr>
-                    </tbody>
-                </table>
+                <?= GridView::widget([
+                    'dataProvider' => $callbackProvider,
+                    'responsive' => true,
+                    'tableOptions' => [
+                        'id' => 'gridviewData'
+                    ],
+                    'layout' => "{summary}{items}\n{pager}",
+                    'headerRowOptions' => [
+                        'class' => 'thead-light'
+                    ],
+                    'pjax' => true,
+                    'pjaxSettings' => [
+                        'neverTimeout' => true,
+                        'options' => [
+                            'id' => 'pjax-waiting'
+                        ],
+                        'enablePushState' => false
+                    ],
+                    'columns' => [
+                        [
+                            'label' => 'Số điện thoại',
+                            'attribute' => 'phone',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return Html::a($model->contact_phone,
+                                    Url::toRoute(['view', 'id' => $model->id]), ['data-pjax' => '0']);
+                            }
+                        ],
+                        [
+                            'label' => 'Trạng thái',
+                            'attribute' => 'status',
+                            'format' => 'html',
+                            'value' => function ($model) {
+                                return ContactsAssignment::label($model->status);
+                            }
+                        ],
+                        [
+                            'class' => ActionColumn::class,
+                            'template' => '{view}',
+                            'buttons' => [
+                                'view' => function ($url, $model) {
+                                    return Html::a("<i class='fa fa-eye'></i> chi tiết",
+                                        Url::toRoute(['view', 'id' => $model->id]),
+                                        ['class' => 'btn btn-sm bg-white', 'data-pjax' => '0']);
+                                }
+                            ]
+                        ],
+                    ],
+                ]) ?>
             </div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-6">
         <div class="ibox">
             <div class="ibox-body">
                 <?= GridView::widget([
@@ -48,10 +92,9 @@ use backend\models\ContactsAssignment;
                             'attribute' => 'phone',
                             'format' => 'raw',
                             'value' => function ($model) {
-                                return Html::a("$model->contact_phone",
-                                    Url::toRoute(['view', 'phone' => $model->contact_phone]), [
-                                        'data-pjax' => '0'
-                                    ]);
+                                return Html::a($model->contact_phone,
+                                    Url::toRoute(['view', 'id' => $model->id]), ['data-pjax' => '0']);
+
                             }
                         ],
                         [

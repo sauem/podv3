@@ -9,7 +9,9 @@ use common\helper\Helper;
 ?>
 <div class="ibox">
     <div class="ibox-head">
-        <h2 class="ibox-title">Lịch sử liên hệ</h2>
+        <h2 class="ibox-title">
+            <?= isset($title) ? $title : "Lịch sử tất cả liên hệ" ?>
+        </h2>
     </div>
     <div class="ibox-body">
         <?= GridView::widget([
@@ -20,7 +22,7 @@ use common\helper\Helper;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => 'pjax-contact_histories'
+                    'id' => 'pjax-contact_histories'.(isset($id) ? "_".$id : "")
                 ]
             ],
             'headerRowOptions' => [
@@ -78,7 +80,7 @@ use common\helper\Helper;
                     'headerOptions' => ['width' => '15%'],
                     'format' => 'raw',
                     'value' => function ($model) {
-                        $html = "Liên hệ cuối :<br>". $model->created_at;
+                        $html = "Lần xử lý cuối :<br>". $model->created_at;
                         if($model->contact->callback_time){
                             $html .= "</br>Giờ gọi lại: <br>". "<strong class='text-danger'>{$model->created_at}</strong>";
                         }

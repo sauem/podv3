@@ -1,13 +1,18 @@
 <?php
+
 use kartik\grid\GridView;
 use kartik\grid\ExpandRowColumn;
 use yii\helpers\Html;
 use backend\models\ContactsModel;
 use common\helper\Helper;
+
 ?>
 <div class="row">
     <div class="col-md-12">
         <div class="ibox">
+            <div class="ibox-head">
+                <h2 class="ibox-title">Tất cả liên hệ</h2>
+            </div>
             <div class="ibox-body">
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
@@ -29,12 +34,12 @@ use common\helper\Helper;
                             'attribute' => 'category_id',
                             'format' => 'html',
                             'value' => function ($model) {
-                                if(!$model->page || !$model->page->product){
+                                if (!$model->page || !$model->page->product) {
                                     return null;
                                 }
                                 return Html::tag("p",
                                     $model->page->product->name .
-                                    "<br><small>{$model->page->product->sku} |".Helper::money($model->page->product->regular_price)."</small> | <small><i>{$model->page->category->name}</i></small>" .
+                                    "<br><small>{$model->page->product->sku} |" . Helper::money($model->page->product->regular_price) . "</small> | <small><i>{$model->page->category->name}</i></small>" .
                                     "<br><small>{$model->option}</small>");
                             }
                         ],
@@ -43,7 +48,7 @@ use common\helper\Helper;
                             'attribute' => 'link',
                             'format' => 'raw',
                             'value' => function ($model) {
-                                if(!$model->page){
+                                if (!$model->page) {
                                     return null;
                                 }
                                 return Html::tag("p",
@@ -69,7 +74,7 @@ use common\helper\Helper;
                             'attribute' => 'created_at',
                             'format' => 'html',
                             'value' => function ($model) {
-                                return Html::tag("small",date("d/m/Y H:i:s",$model->register_time));
+                                return Html::tag("small", date("d/m/Y H:i:s", $model->register_time));
                             }
                         ]
                     ],
@@ -103,7 +108,8 @@ use common\helper\Helper;
                             'attribute' => 'created_at',
                             'format' => 'html',
                             'value' => function ($model) {
-                                return $model->contact->phone;
+                                $html = "<strong>{$model->contact->phone}</strong><span class='badge badge-info'>{$model->contact->code}</span><br>";
+                                return $html;
                             }
                         ],
                         [
@@ -149,9 +155,9 @@ use common\helper\Helper;
                             'headerOptions' => ['width' => '15%'],
                             'format' => 'raw',
                             'value' => function ($model) {
-                                $html = "Liên hệ cuối :<br>". $model->created_at;
-                                if($model->contact->callback_time){
-                                    $html .= "</br>Giờ gọi lại: <br>". "<strong class='text-danger'>{$model->created_at}</strong>";
+                                $html = "Liên hệ cuối :<br>" . $model->created_at;
+                                if ($model->contact->callback_time) {
+                                    $html .= "</br>Giờ gọi lại: <br>" . "<strong class='text-danger'>{$model->created_at}</strong>";
                                 }
                                 return $html;
                             }

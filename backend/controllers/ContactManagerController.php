@@ -23,9 +23,15 @@ class ContactManagerController extends BaseController
                 'user_id' => \Yii::$app->user->getId()
             ]
         ]));
-
+        $callbackProdvider = $searchModel->search(array_merge(\Yii::$app->request->queryParams, [
+            'ContactsAssignmentSearch' => [
+                'user_id' => \Yii::$app->user->getId(),
+                'callback' =>  true
+            ]
+        ]));
         return $this->render("index", [
-            'assignProvider' => $assignProvider
+            'assignProvider' => $assignProvider,
+            'callbackProvider' => $callbackProdvider
         ]);
     }
 

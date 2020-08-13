@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <strong>Thời gian tạo: <br>
                                         <span class="text-warning"><?= $time['created'] ?></span>
                                     </strong><br>
-                                    <strong>Lần gọi cuối: <br>
+                                    <strong>Lần xử lý cuối: <br>
                                         <span class="text-warning"><?= $time['last_called'] ?></span>
                                     </strong><br>
                                     <strong>Lần gọi tiếp theo: <br>
@@ -165,6 +165,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="col-md-12">
+            <?= $this->render('_contact_histories', [
+                'dataProvider' => $currentHistories,
+                'title' => $info ? "Lịch sử số " . $info->phone : "Lịch sử hiện tại",
+                'id' => 'current'
+                ]) ?>
+
             <?= $this->render('_contact_histories', ['dataProvider' => $contactHistories]) ?>
         </div>
     </div>
