@@ -46,7 +46,6 @@ use yii\helpers\Url;
                             <thead>
                             <tr>
                                 <td width="30%">Sản phẩm</td>
-                                <td width="30%">Option</td>
                                 <td width="20%">Số lượng</td>
                                 <td width="20%" class="text-right">Tổng cộng</td>
                                 <td></td>
@@ -200,18 +199,6 @@ use yii\helpers\Url;
                 <input type="hidden" value="{{this.sku}}" name="product[{{this.sku}}][product_sku]">
             </td>
             <td>
-                {{#if (hasArray selected this.option)}}
-                <select name="product[{{this.sku}}][product_option]" class="form-control">
-                    {{#each this.option}}
-                    <option {{selected ..
-                    /selected this}} value="{{this}}">{{this}}</option>
-                    {{/each}}
-                </select>
-                {{ else }}
-                <input class="form-control" name="product[{{this.sku}}][product_option]" value="{{this.selected}}">
-                {{/if}}
-            </td>
-            <td>
                 <input name="product[{{this.sku}}][qty]" data-sku="{{this.sku}}" value="1" min="1" type="number"
                        class="form-control">
             </td>
@@ -228,12 +215,12 @@ use yii\helpers\Url;
     </script>
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
-            <td colspan="3">Phí ship</td>
+            <td colspan="2">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
             <td></td>
         </tr>
         <tr>
-            <td colspan="3"><strong>Tổng đơn</strong></td>
+            <td colspan="2"><strong>Tổng đơn</strong></td>
             <td class="text-left">
                 <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">

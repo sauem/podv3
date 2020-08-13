@@ -169,7 +169,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= Html::a($contact->contact->short_link, $contact->contact->link, ['target' => '_blank']) ?>
                                         <br>
                                         Marketer
-                                        : <?= $contact->contact->page ? $contact->contact->page->user->username : 'Không thiết lập' ?>
+                                        : <?= $contact->contact->page ? $contact->contact->page->marketer : 'Không thiết lập' ?>
                                     </td>
                                     <td><?= Helper::toDate($contact->updated_at) ?></td>
                                 </tr>
