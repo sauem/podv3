@@ -41,7 +41,7 @@ class LandingPages extends BaseModel
     public function rules()
     {
         return [
-            [['name', 'link', 'category_id'], 'required'],
+            [['name', 'link', 'category_id','marketer','country'], 'required'],
             [['link', 'marketer', 'country'], 'string'],
             [['category_id', 'product_id', 'user_id', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 255],

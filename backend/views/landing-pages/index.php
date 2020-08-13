@@ -44,7 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->label("Danh mục sản phẩm") ?>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'country')->textInput(['placeholder' => 'Mã quốc gia']) ?>
+                            <?= $form->field($model, 'country')->dropDownList(
+                                \yii\helpers\ArrayHelper::map(Yii::$app->params['country'], 'code', 'name'),
+                                    ['class' => 'select2']
+                            ) ?>
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'marketer')->textInput(['placeholder' => 'Tên quản lý']) ?>

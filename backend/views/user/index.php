@@ -9,6 +9,7 @@ use kartik\grid\ActionColumn;
 use kartik\form\ActiveForm;
 use backend\models\AuthItem;
 use backend\models\AuthAssignment;
+
 $this->title = 'User Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -36,16 +37,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php } ?>
                         <div class="form-group col-md-12">
                             <?php
-                            $model->role = $model->userRole ? $model->userRole->item_name: null?>
+                            $model->role = $model->userRole ? $model->userRole->item_name : null ?>
                             <?= $form->field($model, 'role')->dropDownList(
                                 \backend\models\AuthItem::Roles(),
                                 ['prompt' => 'Chọn quyền quản trị'])->label('Quyền quản trị') ?>
                         </div>
                         <div class="form-group col-md-12">
+                            <?= $form->field($model, 'country')->dropDownList(
+                                \yii\helpers\ArrayHelper::map(Yii::$app->params['country'], 'code', 'name'),
+                                ['prompt' => 'Thị trường quản lý','class' => 'select2']) ?>
+                        </div>
+                        <div class="form-group col-md-12">
                             <?= $form->field($model, 'phone_of_day')->textInput(["type" => 'number', 'placeholder' => 'Số điện thoại giới hạn gọi']) ?>
                         </div>
                         <div class="col-md-12 text-right">
-                            <?= Component::reset()?>
+                            <?= Component::reset() ?>
                             <button type="submit" class="btn btn-primary">Lưu</button>
                         </div>
                     </div>
@@ -87,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Component::delete($url);
                                     },
                                     'update' => function ($url, $model) {
-                                        $url = \yii\helpers\Url::toRoute(['index','id' => $model->id]);
+                                        $url = \yii\helpers\Url::toRoute(['index', 'id' => $model->id]);
                                         return Component::update($url);
                                     },
                                 ]
