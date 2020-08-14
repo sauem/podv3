@@ -12,6 +12,7 @@ use Yii;
  * @property int $user_id
  * @property string $contact_phone
  * @property string|null $status
+ * @property string $country
  * @property int|null $callback_time
  * @property int $created_at
  * @property int $updated_at
@@ -68,7 +69,7 @@ class ContactsAssignment extends BaseModel
             [['user_id', 'contact_phone'], 'required'],
             [['user_id', 'callback_time', 'created_at', 'updated_at'], 'integer'],
             [['contact_phone'], 'string', 'max' => 15],
-            [['status'], 'string', 'max' => 50],
+            [['status','country'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -84,6 +85,7 @@ class ContactsAssignment extends BaseModel
             'contact_phone' => 'Contact Phone',
             'status' => 'Status',
             'callback_time' => 'Callback Time',
+            'country' => 'Thị trường',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -11,168 +11,188 @@ use yii\widgets\Pjax;
 $this->title = 'Contacts Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
-    <div class="row">
-        <div class="col-md-12">
-            <?= $this->render('_collapse_order', ['model' => $order]) ?>
-        </div>
-
-        <div class="col-md-4">
-            <?php Pjax::begin([
-                'id' => 'pjax-info'
-            ]) ?>
-            <div class="ibox">
-                <div class="ibox-head">
-                    <h2 class="ibox-title"><i class="fa fa-phone">
-                        </i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
-                    </h2>
+    <ul class="nav nav-tabs tabs-line">
+        <li class="nav-item">
+            <a class="nav-link active" href="#call_firts" data-toggle="tab">
+                <i class="ti-bar-chart"></i> Lần gọi 1</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#call_second" data-toggle="tab">
+                <i class="ti-bar-chart"></i> Lần gọi 2</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="call_firts">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->render('_collapse_order', ['model' => $order]) ?>
                 </div>
 
-                <div class="ibox-body">
-                    <table class="table">
-                        <tbody>
-                        <?php
-                        if ($info) {
-                            ?>
-                            <tr>
-                                <td>Trạng thái hiện tại</td>
-                                <td><?= ContactsAssignment::label(isset($info->assignment) ? $info->assignment->status : "") ?></td>
-                            </tr>
-                            <tr>
-                                <td>Khách hàng</td>
-                                <td><?= $info->name ?></td>
-                            </tr>
-                            <tr>
-                                <td>Địa chỉ</td>
-                                <td><?= $info->address ?></td>
-                            </tr>
-                            <tr>
-                                <td>Zipcode</td>
-                                <td><?= $info->zipcode ?></td>
-                            </tr>
-                        <?php } ?>
-                        </tbody>
-                        <?php
-                        if ($time = UserModel::hasCallback()) {
-                            ?>
-                            <tfoot>
-                            <tr>
-                                <td>Ghi chú gọi lại : <br>
-                                    <strong class="text-danger"><?= $time['phone'] ?></strong>
-                                </td>
-                                <td>
-                                    <strong>Thời gian tạo: <br>
-                                        <span class="text-warning"><?= $time['created'] ?></span>
-                                    </strong><br>
-                                    <strong>Lần xử lý cuối: <br>
-                                        <span class="text-warning"><?= $time['last_called'] ?></span>
-                                    </strong><br>
-                                    <strong>Lần gọi tiếp theo: <br>
-                                        <span class="text-danger"><?= $time['time'] ?></span>
-                                    </strong>
-                                </td>
-                            </tr>
-                            </tfoot>
-                        <?php } ?>
-                    </table>
-                </div>
-
-            </div>
-            <div class="ibox">
-                <div class="ibox-head">
-                    <h2 class="ibox-title">Tài khoản</h2>
-                </div>
-                <div class="ibox-body">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>Tài khoản:</td>
-                            <td><?= $user->username ?></td>
-                        </tr>
-                        <tr>
-                            <td>SĐT đã hoàn thành hôm nay:</td>
-                            <td><?= UserModel::completed() . " /" . $user->phone_of_day ?></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <?php Pjax::end() ?>
-        </div>
-
-        <div class="col-md-8">
-            <div class="ibox">
-                <div class="ibox-body">
-                    <ul class="nav nav-tabs tabs-line">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#wating" data-toggle="tab"><i class="ti-bar-chart"></i> Chờ
-                                xử lý (<?= $dataProvider->getCount() ?>)</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#callback" data-toggle="tab">
-                                <i class="ti-time"></i> Gọi lại (<?= $callbackProvider->getCount() ?>)</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i> Thất
-                                bại (<?= $failureProvider->getCount() ?>)</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#success" data-toggle="tab"><i class="ti-announcement"></i> Thành
-                                công (<?= $successProvider->getCount() ?>)</a>
-                        </li>
-
-                    </ul>
-                    <div class="tab-content">
-
-
-                        <?= $this->render('_search', ['model' => $searchModel]) ?>
-                        <div class="tab-pane fade show active" id="wating">
-                            <div class="d-flex justify-content-between">
-                                <div class="">
-                                    <?php if (Helper::userRole(UserModel::_ADMIN)) {
-                                        ?>
-                                        <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
-                                            thái</a>
-                                    <?php } ?>
-                                    <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                                </div>
-                                <a class="nav-link" href="#filter" data-toggle="collapse">
-                                    <i class="ti-filter"></i> Tìm kiếm</a>
-                            </div>
-                            <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
+                <div class="col-md-4">
+                    <?php Pjax::begin([
+                        'id' => 'pjax-info'
+                    ]) ?>
+                    <div class="ibox">
+                        <div class="ibox-head">
+                            <h2 class="ibox-title"><i class="fa fa-phone">
+                                </i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
+                            </h2>
                         </div>
-                        <div class="tab-pane fade" id="callback">
-                            <div class="mb-2">
-                                <?php if (Helper::userRole(UserModel::_ADMIN)) {
+
+                        <div class="ibox-body">
+                            <table class="table">
+                                <tbody>
+                                <?php
+                                if ($info) {
                                     ?>
-                                    <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
-                                        thái</a>
+                                    <tr>
+                                        <td>Trạng thái hiện tại</td>
+                                        <td><?= ContactsAssignment::label(isset($info->assignment) ? $info->assignment->status : "") ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Khách hàng</td>
+                                        <td><?= $info->name ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Địa chỉ</td>
+                                        <td><?= $info->address ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Zipcode</td>
+                                        <td><?= $info->zipcode ?></td>
+                                    </tr>
                                 <?php } ?>
-                                <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
-                            </div>
-
-                            <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
-                        </div>
-                        <div class="tab-pane fade" id="failure">
-                            <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
-                        </div>
-                        <div class="tab-pane fade" id="success">
-                            <?= $this->render('_tab_done', ['dataProvider' => $successProvider]) ?>
+                                </tbody>
+                                <?php
+                                if ($time = UserModel::hasCallback()) {
+                                    ?>
+                                    <tfoot>
+                                    <tr>
+                                        <td>Ghi chú gọi lại : <br>
+                                            <strong class="text-danger"><?= $time['phone'] ?></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Thời gian tạo: <br>
+                                                <span class="text-warning"><?= $time['created'] ?></span>
+                                            </strong><br>
+                                            <strong>Lần xử lý cuối: <br>
+                                                <span class="text-warning"><?= $time['last_called'] ?></span>
+                                            </strong><br>
+                                            <strong>Lần gọi tiếp theo: <br>
+                                                <span class="text-danger"><?= $time['time'] ?></span>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                <?php } ?>
+                            </table>
                         </div>
 
                     </div>
+                    <div class="ibox">
+                        <div class="ibox-head">
+                            <h2 class="ibox-title">Tài khoản</h2>
+                        </div>
+                        <div class="ibox-body">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>Tài khoản:</td>
+                                    <td><?= $user->username ?></td>
+                                </tr>
+                                <tr>
+                                    <td>SĐT đã hoàn thành hôm nay:</td>
+                                    <td><?= UserModel::completed() . " /" . $user->phone_of_day ?></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <?php Pjax::end() ?>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="ibox">
+                        <div class="ibox-body">
+                            <ul class="nav nav-tabs tabs-line">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#wating" data-toggle="tab"><i
+                                                class="ti-bar-chart"></i> Chờ
+                                        xử lý (<?= $dataProvider->getCount() ?>)</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#callback" data-toggle="tab">
+                                        <i class="ti-time"></i> Gọi lại (<?= $callbackProvider->getCount() ?>)</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#failure" data-toggle="tab"><i class="ti-settings"></i>
+                                        Thất
+                                        bại (<?= $failureProvider->getCount() ?>)</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#success" data-toggle="tab"><i
+                                                class="ti-announcement"></i> Thành
+                                        công (<?= $successProvider->getCount() ?>)</a>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content">
+
+
+                                <?= $this->render('_search', ['model' => $searchModel]) ?>
+                                <div class="tab-pane fade show active" id="wating">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="">
+                                            <?php if (Helper::userRole(UserModel::_ADMIN)) {
+                                                ?>
+                                                <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
+                                                    thái</a>
+                                            <?php } ?>
+                                            <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                                        </div>
+                                        <a class="nav-link" href="#filter" data-toggle="collapse">
+                                            <i class="ti-filter"></i> Tìm kiếm</a>
+                                    </div>
+                                    <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider]) ?>
+                                </div>
+                                <div class="tab-pane fade" id="callback">
+                                    <div class="mb-2">
+                                        <?php if (Helper::userRole(UserModel::_ADMIN)) {
+                                            ?>
+                                            <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
+                                                thái</a>
+                                        <?php } ?>
+                                        <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                                    </div>
+
+                                    <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider]) ?>
+                                </div>
+                                <div class="tab-pane fade" id="failure">
+                                    <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider]) ?>
+                                </div>
+                                <div class="tab-pane fade" id="success">
+                                    <?= $this->render('_tab_done', ['dataProvider' => $successProvider]) ?>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <?= $this->render('_contact_histories', [
+                        'dataProvider' => $currentHistories,
+                        'title' => $info ? "Lịch sử số " . $info->phone : "Lịch sử hiện tại",
+                        'id' => 'current'
+                    ]) ?>
+
+                    <?= $this->render('_contact_histories', ['dataProvider' => $contactHistories]) ?>
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
-            <?= $this->render('_contact_histories', [
-                'dataProvider' => $currentHistories,
-                'title' => $info ? "Lịch sử số " . $info->phone : "Lịch sử hiện tại",
-                'id' => 'current'
-                ]) ?>
-
-            <?= $this->render('_contact_histories', ['dataProvider' => $contactHistories]) ?>
+        <div class="tab-pane fade" id="call_second">
+            <?= $this->render('_call_2')?>
         </div>
+
     </div>
 
 <?php

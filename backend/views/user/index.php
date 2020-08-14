@@ -12,6 +12,8 @@ use backend\models\AuthAssignment;
 
 $this->title = 'User Models';
 $this->params['breadcrumbs'][] = $this->title;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 ?>
     <div class="row">
         <div class="col-md-4">
@@ -45,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="form-group col-md-12">
                             <?= $form->field($model, 'country')->dropDownList(
                                 \yii\helpers\ArrayHelper::map(Yii::$app->params['country'], 'code', 'name'),
-                                ['prompt' => 'Thị trường quản lý','class' => 'select2']) ?>
+                                ['prompt' => 'Thị trường quản lý', 'class' => 'select2']) ?>
                         </div>
                         <div class="form-group col-md-12">
                             <?= $form->field($model, 'phone_of_day')->textInput(["type" => 'number', 'placeholder' => 'Số điện thoại giới hạn gọi']) ?>
@@ -76,7 +78,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'thead-light'
                         ],
                         'columns' => [
-                            'username',
+                            [
+                                'attribute' => 'username',
+                                'format' => 'html',
+                                'value' => function ($model) {
+                                    $html = $model->username."<br>";
+                                    if($model->country){
+                                        $html .= $model->country . "|" . \common\helper\Helper::getCountry($model->country);
+                                    }
+                                    return $html;
+                                }
+                            ],
                             'email:email',
                             'phone_of_day',
                             ['attribute' => 'status', 'format' => 'html', 'value' => function ($model) {
@@ -93,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Component::delete($url);
                                     },
                                     'update' => function ($url, $model) {
-                                        $url = \yii\helpers\Url::toRoute(['index', 'id' => $model->id]);
+                                        $url = Url::toRoute(['index', 'id' => $model->id]);
                                         return Component::update($url);
                                     },
                                 ]
