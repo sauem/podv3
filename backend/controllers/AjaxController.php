@@ -300,7 +300,7 @@ class AjaxController extends BaseController
                     'updated_at' => time(),
                     'host' => $contact['host'],
                 ];
-                
+
                 if (!$model->load($data, '') || !$model->save()) {
                     $errors[$k] = Helper::firstError($model);
                     $logs = new LogsImport;
@@ -551,9 +551,29 @@ class AjaxController extends BaseController
         }
     }
 
-    function actionScanContact(){
-        if(Yii::$app->request->isPost){
+    function actionScanContact()
+    {
+        if (Yii::$app->request->isPost) {
             return doScanContact::apply();
+        }
+    }
+
+    function actionDeleteAll()
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = Yii::$app->request->post('model');
+            $keys = Yii::$app->request->post('keys');
+            $res = $model::deleteAll(['id' => $keys]);
+            if ($res) {
+                return [
+                    'success' => 1,
+                    'msg' => 'Xóa thành công!'
+                ];
+            }
+            return [
+                'success' => 0,
+                'msg' => Helper::firstError($model)
+            ];
         }
     }
 }

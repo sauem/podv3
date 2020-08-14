@@ -31,8 +31,8 @@ function initSelect2() {
     $(".select2").select2({
         placeholder: "Lựa chọn...",
         allowClear: true,
-        width : "100%",
-        dropdownAutoWidth : true
+        width: "100%",
+        dropdownAutoWidth: true
     });
 }
 
@@ -139,7 +139,7 @@ function restOrder() {
     $("#resultInfo").empty();
 }
 
-function __addItemProduct(item, order_price , _qty = 1) {
+function __addItemProduct(item, order_price, _qty = 1) {
 
     let _item = {
         sku: item.sku,
@@ -245,7 +245,7 @@ $("body").on("click", ".submitLog", function (e) {
     if ((_formData.get("status") == "pending" ||
         _formData.get("status") == "callback") &&
         _formData.get("callback_time") == "") {
-        _formData.set("callback_time",1);
+        _formData.set("callback_time", 1);
     }
     $.ajax({
         url: _url,
@@ -265,24 +265,24 @@ $("body").on("click", ".submitLog", function (e) {
     });
     return false;
 });
-$("body").on("change","select[name='payment_method']",function() {
+$("body").on("change", "select[name='payment_method']", function () {
     let _val = $(this).val();
     switch (_val) {
         case "9999":
-            $(".bill-image").css({"display" : "block"});
-            $(".bill-image").find("input[type='file']").attr("required",true);
+            $(".bill-image").css({"display": "block"});
+            $(".bill-image").find("input[type='file']").attr("required", true);
             break;
         default:
-            $(".bill-image").css({"display" : "none"});
-            $(".bill-image").find("input[type='file']").attr("required",false);
+            $(".bill-image").css({"display": "none"});
+            $(".bill-image").find("input[type='file']").attr("required", false);
             break;
     }
 });
 
-$("body").on("click",".block",function () {
+$("body").on("click", ".block", function () {
     let _key = $(this).data("key");
     let _type = $(this).data("type");
-    if(typeof _type == "undefined"){
+    if (typeof _type == "undefined") {
         _type = "block";
     }
 
@@ -296,15 +296,15 @@ $("body").on("click",".block",function () {
     }).then(({value}) => {
         if (value) {
             $.ajax({
-                url : config.blockOrder,
-                type : 'POST',
-                cache : false,
-                data : { key : _key,type : _type},
-                success : function (res) {
-                    if(res.success){
+                url: config.blockOrder,
+                type: 'POST',
+                cache: false,
+                data: {key: _key, type: _type},
+                success: function (res) {
+                    if (res.success) {
                         toastr.success("Đã khóa chỉnh sửa đơn hàng!");
                         __reloadData();
-                    }else{
+                    } else {
                         toastr.warning(res.msg);
                     }
                 }
@@ -313,13 +313,13 @@ $("body").on("click",".block",function () {
     })
 })
 
-$("body").on("change","input[name='bill_transfer[]']",function() {
+$("body").on("change", "input[name='bill_transfer[]']", function () {
     let _file = $(this)[0].files;
-    let _type = ["application/pdf","image/jpeg","image/png","image/jpg"];
+    let _type = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
     let _form = new FormData();
 
-    $.each(_file, function(index,item) {
-        if(!_type.includes(item.type)){
+    $.each(_file, function (index, item) {
+        if (!_type.includes(item.type)) {
             toastr.warning(item.name + " không đúng định dạng!");
             return;
         }
@@ -327,34 +327,34 @@ $("body").on("change","input[name='bill_transfer[]']",function() {
     })
     $(this).parent().find("label").text(_file.length + " được chọn");
     $.ajax({
-        url : config.billstranfer,
+        url: config.billstranfer,
         type: 'POST',
-        data : _form,
+        data: _form,
         cache: false,
         contentType: false,
         processData: false,
-        success : function(res) {
+        success: function (res) {
 
-            if(res.success){
+            if (res.success) {
                 ORDER.billings = res.path;
                 toastr.success("Thành công!");
-            }else{
+            } else {
                 toastr.warning(res.path);
             }
         }
     });
 });
 
-$("body").on("click",".removeImage",function () {
+$("body").on("click", ".removeImage", function () {
     let _key = $(this).data("key");
     let _path = $(this).data("path");
     swal.fire({
-        title : 'Cảnh báo',
-        icon : "error",
-        text  : 'Loại bỏ hình ảnh này',
-        showCancelButton : true
-    }).then(val =>{
-        if(val.value){
+        title: 'Cảnh báo',
+        icon: "error",
+        text: 'Loại bỏ hình ảnh này',
+        showCancelButton: true
+    }).then(val => {
+        if (val.value) {
             $(this).closest(".bill-item").parent().remove();
             ORDER.billings = ORDER.billings.filter(item => item !== _path)
         }
@@ -364,3 +364,39 @@ $("body").on("click",".removeImage",function () {
 function getHostName(url) {
     return (new URL(url).hostname);
 }
+
+$("body").on("click",".deleteAll",function () {
+    let _model = $(this).data("model");
+    let _column = $('.grid-view').yiiGridView('getSelectedRows');
+
+    if (_column == null || _column == "" || !_column) {
+        toastr.warning("Vui lòng chọn cột cần xóa!");
+        return false;
+    }
+    swal.fire({
+        title: "Cảnh báo!",
+        text: "Thao tác này sẽ xóa vĩnh viến dữ liệu đã chọn!",
+        showCancelButton: true,
+        cancelButtonText: "Hủy",
+        icon: "warning",
+        confirmButtonText: "Đồng ý",
+        confirmButtonColor: "#cb2525"
+    }).then(val => {
+        if (val.value) {
+            $.ajax({
+                url: config.deleteAll,
+                method: "POST",
+                cache: false,
+                data: {model: _model, keys: _column},
+                success: function (res) {
+                    if (res.success) {
+                        toastr.success(res.msg);
+                        __reloadData();
+                        return false;
+                    }
+                    toastr.warning(res.msg);
+                }
+            })
+        }
+    })
+});

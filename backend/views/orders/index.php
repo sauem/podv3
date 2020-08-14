@@ -24,8 +24,9 @@ use common\helper\Helper;
         </div>
         <div class="ibox-body">
             <?= $this->render("_search", ['model' => $searchModel]) ?>
-            <?= ExportMenu::widget([
+            <?php $fullExportMenu = ExportMenu::widget([
                 'dataProvider' => $dataProvider,
+                'asDropdown' => false,
                 'columns' => [
                     'code',
                     'customer_name',
@@ -74,10 +75,10 @@ use common\helper\Helper;
                         'value' => function ($model) {
                             $bills = $model->billings;
                             $html = "";
-                            if($bills){
-                                foreach ($bills as $k => $bill){
-                                    $url = Url::toRoute("/file/$bill->path",'http');
-                                    $html.= "=HYPERLINK(\"$url\",\"Hóa đơn\")\n";
+                            if ($bills) {
+                                foreach ($bills as $k => $bill) {
+                                    $url = Url::toRoute("/file/$bill->path", 'http');
+                                    $html .= "=HYPERLINK(\"$url\",\"Hóa đơn\")\n";
                                 }
                             }
                             return $html;
@@ -150,13 +151,17 @@ use common\helper\Helper;
             ]); ?>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                'layout' => "{items}\n{pager}",
-                //'resizableColumns' => false,
-                'export' => [
-                    'showConfirmAlert' => false,
-                    'target' => GridView::TARGET_BLANK
+                'panel' => [
+                    'type' => GridView::TYPE_INFO,
+                    'before' => Html::a('<i class="fa fa-trash"></i> Xóa cột', 'javascript:;',
+                        [
+                            'class' => 'btn deleteAll btn-warning',
+                            'data-pjax' => '0',
+                            'data-model' => $dataProvider->query->modelClass
+                        ]),
                 ],
-                'showFooter' => false,
+                'persistResize' => false,
+                'toggleDataOptions' => ['minCount' => 10],
                 'pjax' => true,
                 'pjaxSettings' => [
                     'neverTimeout' => true,
@@ -168,6 +173,13 @@ use common\helper\Helper;
                 'headerRowOptions' => [
                     'class' => [
                         'thead-light'
+                    ]
+                ],
+                'export' => [
+                    'itemsAfter' => [
+                        '<div role="presentation" class="dropdown-divider"></div>',
+                        '<div class="dropdown-header">Export All Data</div>',
+                        $fullExportMenu
                     ]
                 ],
                 'columns' => [
@@ -313,6 +325,10 @@ use common\helper\Helper;
                         ]
                     ],
                 ],
+                'toolbar' => [
+                    '{export} {toggleData}'
+                ],
+                'toggleDataContainer' => ['class' => 'btn-group mr-2'],
             ]); ?>
         </div>
     </div>
