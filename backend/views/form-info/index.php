@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use kartik\form\ActiveForm;
+use backend\models\ProductsModel;
+use backend\models\CategoriesModel;
 
 $this->title = 'Form Infos';
 $this->params['breadcrumbs'][] = $this->title;
@@ -14,11 +16,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h2 class="ibox-title">Tạo mẫu</h2>
                 </div>
                 <div class="ibox-body">
-                    <?php $form = ActiveForm::begin() ?>
+                    <?php $form = ActiveForm::begin([
+                        'id' => 'infoForm'
+                    ]) ?>
                     <div class="row">
                         <div class="col-md-6">
                             <?= $form->field($model, 'category_id')->dropDownList(
-                                \backend\models\CategoriesModel::select(),
+                                CategoriesModel::select(),
                                 ['class' => 'select2 form-control']
                             ) ?>
                         </div>
@@ -32,56 +36,56 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
                                     <?= Html::dropDownList('info[1][sku]', '',
-                                        \backend\models\ProductsModel::select("sku", "sku"),
+                                        ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[1][qty]', '', ['placeholder' => "Số lượng",'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[1][qty]', '', ['required' => true, 'placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
                                     <?= Html::dropDownList('info[2][sku]', '',
-                                        \backend\models\ProductsModel::select("sku", "sku"),
+                                        ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[2][qty]', '', ['placeholder' => "Số lượng",'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[2][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
                                     <?= Html::dropDownList('info[3][sku]', '',
-                                        \backend\models\ProductsModel::select("sku", "sku"),
+                                        ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[3][qty]', '', ['placeholder' => "Số lượng",'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[3][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
                                     <?= Html::dropDownList('info[4][sku]', '',
-                                        \backend\models\ProductsModel::select("sku", "sku"),
+                                        ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[4][qty]', '', ['placeholder' => "Số lượng",'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[4][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
                                     <?= Html::dropDownList('info[5][sku]', '',
-                                        \backend\models\ProductsModel::select("sku", "sku"),
+                                        ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[5][qty]', '', ['placeholder' => "Số lượng",'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[5][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                         </div>
@@ -113,22 +117,27 @@ $js = <<<JS
         count : 1,
         infos : []    
     }
-    $("#addItem").click(function() {
-        let _item = $(".item-sku")[0].outerHTML;
-        if(INFO.count >= 5){
-            toastr.warning("Giới hạn mã sản phẩm không vượt quá 5!");
-            return false;
-        }
-        INFO.count = INFO.count + 1;
-        $("#form-sku").append(_item);
-    });
-    $("body").on("click",".removeItem", function() {
-        if(INFO.count <= 1){
-            toastr.warning("Mã sản phẩm tối thiểu là 1");
-            return false;
-        }
-        $(this).parent().parent().remove();
-        INFO.count = INFO.count - 1;
+    $(document).on("beforeSubmit","#infoForm",function(event) {
+        event.preventDefault();
+        let _form = new FormData($(this)[0]);
+        $.ajax({
+            url : config.saveFormInfo,
+            type : "POST",
+            processData: false,
+            contentType : false,
+            data  : _form,
+            success : function(res) {
+                if(res.success){
+                    toastr.success(res.msg);
+                    $("#infoForm").trigger("reset");
+                    __reloadData();
+                   return false;
+                }
+                toastr.warning(res.msg);
+            }
+        })
+        return false;
+        
     })
 JS;
 $this->registerJs($js);

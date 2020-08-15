@@ -13,6 +13,8 @@ use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
 use backend\models\Customers;
+use backend\models\FormInfo;
+use backend\models\FormInfoSku;
 use backend\models\LogsImport;
 use backend\models\OrdersBilling;
 use backend\models\OrdersModel;
@@ -570,6 +572,53 @@ class AjaxController extends BaseController
                     'msg' => 'Xóa thành công!'
                 ];
             }
+            return [
+                'success' => 0,
+                'msg' => Helper::firstError($model)
+            ];
+        }
+    }
+
+    function actionFormInfo()
+    {
+        if (Yii::$app->request->isAjax) {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $data = Yii::$app->request->post();
+                $model = new FormInfo;
+                $model->load($data, 'FormInfo');
+                if ($model->save()) {
+                    $info = ArrayHelper::getValue($data, 'info');
+                    if ($info && count($info) > 0) {
+                        foreach ($info as $k => $sku) {
+                            if (!$sku['qty']) {
+                                continue;
+                            }
+                            $item = new FormInfoSku;
+                            $item->info_id = $model->id;
+                            $item->sku = $sku['sku'];
+                            $item->qty = $sku['qty'];
+
+                            if (!$item->save()) {
+                                throw new \Exception('Failed to save model 2');
+                            }
+                        }
+                    } else {
+                        throw new \Exception('Failed to save model 1');
+                    }
+                    $transaction->commit();
+                    return [
+                        'success' => 1,
+                        'msg' => "Tạo thành công!"
+                    ];
+                }
+
+
+
+            }catch (\Exception $e){
+                $transaction->rollBack();
+            }
+
             return [
                 'success' => 0,
                 'msg' => Helper::firstError($model)

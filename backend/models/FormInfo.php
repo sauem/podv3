@@ -35,7 +35,7 @@ class FormInfo extends BaseModel
         return [
             [['category_id', 'created_at', 'updated_at'], 'integer'],
             [['revenue'], 'number'],
-            [['created_at', 'updated_at'], 'required'],
+            [['category_id', 'revenue', 'content'], 'required'],
             [['content'], 'string', 'max' => 255],
             [['content'], 'unique'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => CategoriesModel::className(), 'targetAttribute' => ['category_id' => 'id']],

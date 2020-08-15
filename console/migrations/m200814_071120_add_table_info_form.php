@@ -29,7 +29,7 @@ class m200814_071120_add_table_info_form extends Migration
         $this->createTable('{{%form_info_sku}}', [
             'id' => $this->primaryKey(),
             'info_id' => $this->integer()->null(),
-            'sku' => $this->string(255)->unique(),
+            'sku' => $this->string(255),
             'qty' => $this->integer(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),

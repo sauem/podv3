@@ -11,6 +11,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
 use yii\helpers\Url;
+
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -38,15 +39,16 @@ AppAsset::register($this);
             removeImages: "<?= Url::toRoute(['ajax/remove-image'])?>",
             drafImage: "<?= Url::toRoute(['ajax/draf-image'])?>",
             maxSize: 10485760,
-            maxRowUpload : 5000,
+            maxRowUpload: 5000,
             zipcodeAPI: "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx",
             exportURL: "<?=Url::toRoute(['export/order'])?>",
-            blockOrder : "<?=Url::toRoute(['ajax/block-order'])?>",
-            orderData : "<?=Url::toRoute(['ajax/order-data'])?>",
-            billstranfer : "<?=Url::toRoute(['ajax/upload-bill'])?>",
-            changeOrderStatus : "<?=Url::toRoute(['ajax/order-status'])?>",
-            autoScan : "<?= Url::toRoute(['ajax/scan-contact'])?>",
-            deleteAll : "<?= Url::toRoute(['ajax/delete-all'])?>"
+            blockOrder: "<?=Url::toRoute(['ajax/block-order'])?>",
+            orderData: "<?=Url::toRoute(['ajax/order-data'])?>",
+            billstranfer: "<?=Url::toRoute(['ajax/upload-bill'])?>",
+            changeOrderStatus: "<?=Url::toRoute(['ajax/order-status'])?>",
+            autoScan: "<?= Url::toRoute(['ajax/scan-contact'])?>",
+            deleteAll: "<?= Url::toRoute(['ajax/delete-all'])?>",
+            saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
         }
 
     </script>

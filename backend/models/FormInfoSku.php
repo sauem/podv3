@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\mail\BaseMessage;
 
 /**
  * This is the model class for table "form_info_sku".
@@ -16,7 +17,7 @@ use Yii;
  *
  * @property FormInfo $info
  */
-class FormInfoSku extends \yii\db\ActiveRecord
+class FormInfoSku extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -32,10 +33,9 @@ class FormInfoSku extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['info_id', 'qty', 'created_at', 'updated_at'], 'integer'],
-            [['created_at', 'updated_at'], 'required'],
+            [['info_id', 'qty', 'updated_at', 'created_at'], 'integer'],
+            [['info_id', 'qty', 'sku'], 'required'],
             [['sku'], 'string', 'max' => 255],
-            [['sku'], 'unique'],
             [['info_id'], 'exist', 'skipOnError' => true, 'targetClass' => FormInfo::className(), 'targetAttribute' => ['info_id' => 'id']],
         ];
     }
