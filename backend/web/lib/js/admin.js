@@ -131,6 +131,10 @@ function getCountry(select) {
 
 function restOrder() {
     ORDER.total = 0;
+    ORDER.option = "";
+    ORDER.cate = null;
+    ORDER.formInfosBase = [];
+    ORDER.formInfosData = [];
     ORDER.products = [];
     ORDER.billings = [];
     ORDER.shipping = 0;
@@ -138,6 +142,13 @@ function restOrder() {
     $("#resultItemProduct").empty();
     $("#resultInfo").empty();
 }
+function renderProduct() {
+    $("#resultItemProduct").empty();
+    ORDER.products.map( product => {
+        $("#resultItemProduct").append(compileTemplate("template-item-product",product));
+    });
+}
+
 
 function __addItemProduct(item, order_price, _qty = 1) {
 
@@ -365,7 +376,7 @@ function getHostName(url) {
     return (new URL(url).hostname);
 }
 
-$("body").on("click",".deleteAll",function () {
+$("body").on("click", ".deleteAll", function () {
     let _model = $(this).data("model");
     let _column = $('.grid-view').yiiGridView('getSelectedRows');
 
@@ -400,3 +411,19 @@ $("body").on("click",".deleteAll",function () {
         }
     })
 });
+
+
+function __findOrderForm(_option, _category) {
+    $.ajax({
+        url: config.findFormInfo,
+        data: {option: _option, category: _category},
+        type: "POST",
+        success : function (res) {
+            if(res.success){
+                ORDER.formInfosBase = res.base;
+                ORDER.formInfosData = res.data;
+                $("#resultFormInfo").html(compileTemplate("template-form-info", res))
+            }
+        }
+    });
+}

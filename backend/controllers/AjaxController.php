@@ -631,4 +631,56 @@ class AjaxController extends BaseController
             ];
         }
     }
+
+    function actionFindFormInfo()
+    {
+        if (Yii::$app->request->isPost) {
+            $option = Yii::$app->request->post("option");
+            $category = Yii::$app->request->post("category");
+            if (!$option) {
+                return [
+                    'success' => 0,
+                    'msg' => 'Không mẫu sản phẩm phù hợp'
+                ];
+            }
+            $model = FormInfo::find()
+                ->with('skus')
+                ->where(['LIKE', 'content', $option])
+                ->andWhere(['category_id' => $category])->all();
+
+            if ($model) {
+                $data = [];
+                $base = [];
+                foreach ($model as $k => $info) {
+                    $base[$k] = [
+                        'category' => $info->category->name,
+                        'revenue' => $info->revenue,
+                        'content' => $info->content,
+                        'skus' => []
+                    ];
+                    $data[$k]['total'] = $info->revenue;
+                    foreach ($info->skus as $p => $product) {
+                        $data[$k]['product'][$p]['category'] = $info->category->name;
+                        $data[$k]['product'][$p]['name'] = $product->product->name;
+                        $data[$k]['product'][$p]['option'] = [];
+                        $data[$k]['product'][$p]['price'] = 0;
+                        $data[$k]['product'][$p]['qty'] = $product->qty;
+                        $data[$k]['product'][$p]['selected'] = $info->content;
+                        $data[$k]['product'][$p]['sku'] = $product->sku;
+                        $base[$k]['skus'][$p] = "$product->qty * $product->sku";
+                    }
+                }
+                return [
+                    'success' => 1,
+                    'data' => $data,
+                    'base' => $base,
+                    'msg' => "Phát hiện " . count($data) . " mẫu đơn hàng phù hợp!"
+                ];
+            }
+            return [
+                'success' => 0,
+                'msg' => 'Không có mẫu đơn hàng nào phù hợp!'
+            ];
+        }
+    }
 }

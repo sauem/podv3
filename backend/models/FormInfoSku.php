@@ -64,4 +64,8 @@ class FormInfoSku extends BaseModel
     {
         return $this->hasOne(FormInfo::className(), ['id' => 'info_id']);
     }
+    public function getProduct()
+    {
+        return $this->hasOne(ProductsModel::className(), ['sku' => 'sku']);
+    }
 }

@@ -41,7 +41,7 @@ use yii\helpers\Url;
                             <div id="resultProduct">
                             </div>
                         </div>
-
+                        <div id="resultFormInfo"></div>
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -72,6 +72,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?= $this->render('_modal_view_info') ?>
 <?php ActiveForm::end() ?>
     <script type="text/x-handlebars-template" id="template-product">
         <div class="row">
@@ -189,7 +190,6 @@ use yii\helpers\Url;
             <button type="button" id="addProduct" class="btn btn-success">Thêm sản phẩm</button>
         </div>
     </script>
-
     <script type="text/x-handlebars-template" id="template-item-product">
 
         <tr class="form-group">
@@ -213,7 +213,7 @@ use yii\helpers\Url;
         </tr>
 
     </script>
-    <script type="text/x-hanldebars-template" id="total-template">
+    <script type="text/x-handlebars-template" id="total-template">
         <tr>
             <td colspan="2">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
@@ -227,6 +227,10 @@ use yii\helpers\Url;
             </td>
             <td></td>
         </tr>
+    </script>
+
+    <script type="text/x-handlebars-template" id="template-form-info">
+        <p>{{msg}} <a class="btn btn-sm btn-warning" data-target="#modalViewFormInfo" data-toggle="modal">Xem</a></p>
     </script>
 <?php
 
@@ -329,5 +333,9 @@ $js = <<<JS
                  __reloadTotal();
     });
     
+    
+    $('#modalViewFormInfo').on('shown.bs.modal', function (e) {
+        $("#resultApplyInfo").html(compileTemplate("template-view-info",ORDER.formInfosBase));
+    });
 JS;
 $this->registerJs($js);

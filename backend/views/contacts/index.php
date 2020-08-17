@@ -190,7 +190,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="tab-pane fade" id="call_second">
-            <?= $this->render('_call_2')?>
+            <?= $this->render('_call_2') ?>
         </div>
 
     </div>
@@ -204,6 +204,9 @@ $js = <<<JS
     $("document").ready(function() {
         window.ORDER = {
             skus : [],
+            option : "",
+            cate : null,
+            formInfos : [],
             products : [],
             billings : [],
             total : 0,
@@ -231,10 +234,12 @@ $js = <<<JS
            $("#collapse-order").collapse('show');
             
            $("html, body").animate({ scrollTop: 0 }, "slow");
-           restOrder();
-           loadProducts(keys);
-           loadSku(getSelectedColum());
            
+           restOrder();
+           loadProducts(keys).then(() => loadSku(getSelectedColum()))
+           .then(() => {
+                __findOrderForm(ORDER.option, ORDER.cate);
+           })
         });
         
        $("#collapse-order").on("hidden.bs.collapse", function() {
@@ -243,9 +248,9 @@ $js = <<<JS
             }
        });
        
-        function loadProducts(keys) {
+       async function loadProducts(keys) {
             if(keys.length > 0){
-                $.ajax({    
+              await  $.ajax({    
                     url : "$loadProduct",
                     type : "POST",
                     data : {keys : keys},
@@ -260,7 +265,7 @@ $js = <<<JS
         }  
      
         function loadSku(_keys) {
-           $.ajax({
+            $.ajax({
             url : '$skuURL',
             data : {keys : _keys},
             type : 'POST',
@@ -282,22 +287,23 @@ $js = <<<JS
         }
         
         function setORDER(res) {
+            
             let _products = res.product;
             _products.map( item  => {
                 if(ORDER.skus.includes(item.sku)){
                     return 0;
                 };
+                
+                ORDER.option = item.selected;
+                ORDER.cate = item.category_id;
+            
                 ORDER.skus.push(item.sku);
                __addItemProduct(item);
             });
             renderProduct();
         }
-        function renderProduct() {
-            ORDER.products.map( product => {
-                $("#resultItemProduct").append(compileTemplate("template-item-product",product));
-            })
-        }
         
+       
         
         $("body").on("change",".currentPhoneSelect",function(res) {
             let _current = $(this).val();

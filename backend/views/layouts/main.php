@@ -49,6 +49,7 @@ AppAsset::register($this);
             autoScan: "<?= Url::toRoute(['ajax/scan-contact'])?>",
             deleteAll: "<?= Url::toRoute(['ajax/delete-all'])?>",
             saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
+            findFormInfo: "<?= Url::toRoute(['ajax/find-form-info'])?>",
         }
 
     </script>
