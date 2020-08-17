@@ -45,17 +45,21 @@ use yii\helpers\Url;
 <?php ActiveForm::end(); ?>
     <script type="text/x-handlebars-template" id="phone-template">
         {{#each this}}
-        <span class="badge badge-info p-2">{{this}} <a href="javascript:;" class="text-warning removePhone"><i
-                        class="fa fa-times"></i></a></span>
+        <span data-phone="{{this.phone}}" class="badge badge-info my-1 p-2">
+            {{this.phone}} | {{this.country}}
+            <a href="javascript:;" class="text-warning removePhone">
+                <i class="fa fa-times"></i>
+            </a>
+        </span>
         {{/each}}
     </script>
 <?php
 $js = <<<JS
     $("body").on("click",".removePhone",function() {
-        let _phone = $(this).parent().text().trim();
+        let _phone = $(this).parent().data("phone");
         let cof = confirm("Loại bỏ số điện thoại này?");
         if(cof){
-            window.PHONES = PHONES.filter( phone => phone != _phone);
+            window.PHONES = PHONES.filter( item => item.phone != _phone);
             $(this).parent().remove();
         }
         if(PHONES.length <= 0){

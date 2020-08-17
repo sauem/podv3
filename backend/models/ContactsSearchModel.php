@@ -58,7 +58,7 @@ class ContactsSearchModel extends ContactsModel
 
         } else {
             if ($group) {
-                $query->groupBy(['phone'])
+                $query->groupBy(['phone','country'])
                     ->with('assignment')
                     ->orderBy(['created_at' => SORT_ASC]);
 

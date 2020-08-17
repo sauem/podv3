@@ -66,7 +66,7 @@ class ContactsAssignment extends BaseModel
     public function rules()
     {
         return [
-            [['user_id', 'contact_phone'], 'required'],
+            [['user_id', 'contact_phone','country'], 'required'],
             [['user_id', 'callback_time', 'created_at', 'updated_at'], 'integer'],
             [['contact_phone'], 'string', 'max' => 15],
             [['status','country'], 'string', 'max' => 50],

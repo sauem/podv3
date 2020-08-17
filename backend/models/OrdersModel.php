@@ -1,9 +1,6 @@
 <?php
 
 namespace backend\models;
-use backend\jobs\doScanContact;
-use backend\jobs\scanNewContact;
-use backend\models\UserModel;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use Yii;

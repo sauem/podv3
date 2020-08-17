@@ -5,9 +5,7 @@ namespace backend\controllers;
 
 
 use backend\jobs\autoBackup;
-use backend\jobs\doScanBilling;
-use backend\jobs\doScanContact;
-use backend\jobs\importExcel;
+use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
 use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
@@ -19,6 +17,7 @@ use backend\models\LogsImport;
 use backend\models\OrdersBilling;
 use backend\models\OrdersModel;
 use backend\models\ProductsModel;
+use backend\models\UserModel;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
@@ -42,12 +41,20 @@ class AjaxController extends BaseController
     {
         $phones = Yii::$app->request->post("phones");
         $user = Yii::$app->request->post("user");
+        $userCountry = UserModel::findOne($user);
 
         if (!empty($phones)) {
             foreach ($phones as $phone) {
+                if ($userCountry->country !== $phone['country']) {
+                    return [
+                        'success' => 0,
+                        'msg' => "Tài khoản {$userCountry->username} không cùng thị trường với số điện thoại {$phone['phone']}"
+                    ];
+                }
                 $data = [
-                    'contact_phone' => $phone,
+                    'contact_phone' => $phone['phone'],
                     'user_id' => (int)$user,
+                    'country' => $phone['country'],
                     'status' => ContactsAssignment::_PENDING,
                 ];
                 $model = ContactsAssignment::findOne(['contact_phone' => $phone]);
@@ -62,7 +69,7 @@ class AjaxController extends BaseController
                         ];
                     }
                 }
-                ActionLog::add("success", Yii::$app->user->getIdentity()->username . " Phân bổ SDT " . $phone . " cho tài khoản " . $model->user->username);
+                ActionLog::add("success", Yii::$app->user->getIdentity()->username . " Phân bổ SDT " . $phone["phone"] . " cho tài khoản " . $model->user->username);
             }
             return [
                 'success' => 1
@@ -556,7 +563,7 @@ class AjaxController extends BaseController
     function actionScanContact()
     {
         if (Yii::$app->request->isPost) {
-            return doScanContact::apply();
+            return doScanContactByCountry::apply();
         }
     }
 

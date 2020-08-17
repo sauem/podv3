@@ -32,34 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <div class="ibox-body">
-                    <?= ExportMenu::widget([
-                        'dataProvider' => $pendingProvider,
-                        'columns' => [
-                            'code',
-                            'name',
-                            'phone',
-                            'address',
-                            'zipcode',
-                            'option',
-                            'country',
-                            'ip',
-                            'note',
-                            'link',
-                            'utm_source',
-                            'utm_medium',
-                            'utm_content',
-                            'utm_term',
-                            'utm_campaign',
-                            'type',
-                            'created_at',
-                            'updated_at'
-                        ],
-                        'exportConfig' => [
-                            ExportMenu::FORMAT_TEXT => false,
-                            ExportMenu::FORMAT_HTML => false,
-                            ExportMenu::FORMAT_PDF => false,
-                        ],
-                    ]); ?>
                     <?= $this->render('_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
                 </div>
             </div>
@@ -157,9 +129,13 @@ $js = <<<JS
          let _phones =  $('.grid-view').find("input[type='checkbox']");
          _phones.each(function() {
                 let _phone = $(this).data("phone");
+                let _country = $(this).data("country");
                 if(typeof _phone !== "undefined" && $(this).is(":checked")){
                    if(!PHONES.includes(_phone)){
-                        PHONES.push(_phone);
+                        PHONES.push({
+                            phone : _phone,
+                            country : _country
+                        });
                    }
                 }
          });

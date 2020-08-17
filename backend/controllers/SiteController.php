@@ -3,27 +3,17 @@
 namespace backend\controllers;
 
 use backend\jobs\autoBackup;
-use backend\jobs\doScanContact;
-use backend\jobs\scanNewContact;
-use backend\models\AuthAssignment;
+use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsModel;
-use backend\models\ContactsSearchModel;
 use backend\models\OrdersContacts;
-use backend\models\OrdersItems;
 use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
 use common\models\Common;
-use common\models\User;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
-use yii\rbac\Assignment;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use common\models\LoginForm;
 use yii\web\Response;
 
@@ -156,5 +146,10 @@ class SiteController extends BaseController
             return $this->redirect(['site/web-settings']);
         }
         return  $this->redirect(['site/web-settings']);
+    }
+
+    function actionTest(){
+        $appy = doScanContactByCountry::apply();
+        Helper::prinf($appy);
     }
 }

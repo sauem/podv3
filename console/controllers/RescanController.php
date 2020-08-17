@@ -4,17 +4,16 @@ namespace console\controllers;
 
 use backend\jobs\autoBackup;
 use backend\jobs\doScanBilling;
-use backend\jobs\doScanContact;
+use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
 use backend\models\ContactsModel;
 use common\helper\Helper;
-use GuzzleHttp\Client;
 
 class RescanController extends \yii\console\Controller
 {
     public function actionIndex()
     {
-        echo doScanContact::apply();
+        echo doScanContactByCountry::apply();
         return 0;
     }
 
