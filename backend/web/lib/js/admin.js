@@ -172,8 +172,10 @@ function __reloadTotal() {
     _p.map(item => {
         _total = _total + parseFloat(item.price);
     })
-    ORDER.total = parseFloat(_total) + parseFloat(ORDER.shipping);
-
+    let _subProductTotal = parseFloat(_total) + parseFloat(ORDER.shipping);
+    if(parseFloat(_total) > 0){
+        ORDER.total = _subProductTotal;
+    }
     $("#totalResult").html(compileTemplate("total-template", ORDER));
 }
 

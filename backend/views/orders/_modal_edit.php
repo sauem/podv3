@@ -34,7 +34,6 @@ use kartik\form\ActiveForm;
                                 <thead>
                                 <tr>
                                     <td width="30%">Sản phẩm</td>
-                                    <td width="30%">Option</td>
                                     <td width="20%">Số lượng</td>
                                     <td width="20%" class="text-right">Tổng cộng</td>
                                     <td></td>
@@ -191,18 +190,6 @@ use kartik\form\ActiveForm;
                 <small>{{this.category}}|{{this.sku}}</small>
                 <input type="hidden" value="{{this.sku}}" name="product[{{this.sku}}][product_sku]">
             </td>
-            <td>
-                {{#if (hasArray selected this.option)}}
-                <select name="product[{{this.sku}}][product_option]" class="form-control">
-                    {{#each this.option}}
-                    <option {{selected ..
-                    /selected this}} value="{{this}}">{{this}}</option>
-                    {{/each}}
-                </select>
-                {{ else }}
-                <input class="form-control" name="product[{{this.sku}}][product_option]" value="{{this.selected}}">
-                {{/if}}
-            </td>
             <td class="text-right">
                 <input data-sku="{{this.sku}}" value="{{ this.qty }}"
                        name="product[{{this.sku}}][qty]" type="number"
@@ -232,17 +219,15 @@ use kartik\form\ActiveForm;
 
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
-            <td colspan="4">Phí ship</td>
+            <td colspan="2">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
-            <td></td>
         </tr>
         <tr>
-            <td colspan="4"><strong>Tổng đơn</strong></td>
+            <td colspan="2"><strong>Tổng đơn</strong></td>
             <td class="text-left">
                 <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
             </td>
-            <td></td>
         </tr>
     </script>
 <?php
@@ -251,6 +236,9 @@ $loadProduct = Url::toRoute(['ajax/load-product']);
 $js = <<<JS
         window.ORDER = {
             skus : [],
+            option : "",
+            cate : null,
+            formInfos : [],
             products : [],
             billings : [],
             total : 0,
@@ -298,15 +286,15 @@ $js = <<<JS
         __moneyChange(this);
         });
       
-    function __loadData(_key){
+     function __loadData(_key){
         $.ajax({
             url : config.orderData,
             cache : false,
             type : 'POST',
             data : { key : _key},
             success : function(res) {
-               
                 if(res.success){
+                    ORDER.total = res.customer.info.total;
                     __complieTemplate(res);
                 }else{
                     toastr.warning(res.msg);
