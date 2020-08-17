@@ -1,10 +1,14 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
 use kartik\form\ActiveForm;
 use backend\models\ProductsModel;
 use backend\models\CategoriesModel;
+use kartik\grid\GridView;
+use common\helper\Helper;
+use yii\helpers\Url;
+use common\helper\Component;
+use kartik\grid\ActionColumn;
 
 $this->title = 'Form Infos';
 $this->params['breadcrumbs'][] = $this->title;
@@ -32,60 +36,63 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-12">
                             <?= $form->field($model, 'content')->textarea(['placeholer' => 'Nội dung']) ?>
                         </div>
+                        <?php
+                        $skus = $model->skus ? $model->skus : false;
+                        ?>
                         <div id="form-sku" class="col-12">
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
-                                    <?= Html::dropDownList('info[1][sku]', '',
+                                    <?= Html::dropDownList('info[1][sku]', $skus[0] ? $skus[0]->sku : "",
                                         ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[1][qty]', '', ['required' => true, 'placeholder' => "Số lượng", 'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[1][qty]', $skus[0] ? $skus[0]->qty : "", ['required' => true, 'placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
-                                    <?= Html::dropDownList('info[2][sku]', '',
+                                    <?= Html::dropDownList('info[2][sku]', isset($skus[1]) ? $skus[1]->sku : "",
                                         ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[2][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[2][qty]', isset($skus[1]) ? $skus[1]->qty : "", ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
-                                    <?= Html::dropDownList('info[3][sku]', '',
+                                    <?= Html::dropDownList('info[3][sku]', isset($skus[2]) ? $skus[2]->sku : "",
                                         ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[3][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[3][qty]', isset($skus[2]) ? $skus[2]->qty : "", ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
-                                    <?= Html::dropDownList('info[4][sku]', '',
+                                    <?= Html::dropDownList('info[4][sku]', isset($skus[3]) ? $skus[3]->sku : "",
                                         ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[4][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[4][qty]', isset($skus[3]) ? $skus[3]->qty : "", ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                             <div class="mt-2 item-sku row">
                                 <div class="col-md-6">
-                                    <?= Html::dropDownList('info[5][sku]', '',
+                                    <?= Html::dropDownList('info[5][sku]', isset($skus[4]) ? $skus[4]->sku : "",
                                         ProductsModel::select("sku", "sku"),
                                         ['class' => 'select2 form-control']
                                     ) ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?= Html::textInput('info[5][qty]', '', ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
+                                    <?= Html::textInput('info[5][qty]', isset($skus[4]) ? $skus[4]->qty : "", ['placeholder' => "Số lượng", 'class' => 'form-control']) ?>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +113,63 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h2 class="ibox-title">Danh sách mẫu</h2>
                 </div>
                 <div class="ibox-body">
-
+                    <?= GridView::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => [
+                            [
+                                'label' => 'Loại sản phẩm',
+                                'attribute' => 'category_id',
+                                'value' => function ($model) {
+                                    return $model->category->name;
+                                }
+                            ],
+                            [
+                                'label' => 'Doanh thu',
+                                'attribute' => 'trvenue',
+                                'value' => function ($model) {
+                                    return Helper::money($model->revenue);
+                                }
+                            ],
+                            [
+                                'label' => 'Nội dung',
+                                'headerOptions' => [
+                                    'width' => "35%"
+                                ],
+                                'attribute' => 'content',
+                                'value' => function ($model) {
+                                    return $model->content;
+                                }
+                            ],
+                            [
+                                'label' => 'Sku',
+                                'attribute' => 'content',
+                                'format' => 'html',
+                                'value' => function ($model) {
+                                    $skus = $model->skus;
+                                    $html = "";
+                                    if ($skus) {
+                                        foreach ($skus as $ku) {
+                                            $html .= "$ku->qty*$ku->sku<br>";
+                                        }
+                                    }
+                                    return $html;
+                                }
+                            ],
+                            [
+                                "class" => ActionColumn::className(),
+                                "template" => "{update}{delete}",
+                                "buttons" => [
+                                    "update" => function ($url, $model) {
+                                        $url = Url::toRoute(['index', 'id' => $model->id]);
+                                        return Component::update($url);
+                                    },
+                                    "delete" => function ($url, $model) {
+                                        return Component::delete($url);
+                                    }
+                                ]
+                            ],
+                        ]
+                    ]) ?>
                 </div>
             </div>
         </div>
@@ -120,6 +183,8 @@ $js = <<<JS
     $(document).on("beforeSubmit","#infoForm",function(event) {
         event.preventDefault();
         let _form = new FormData($(this)[0]);
+        let _infoID = "$model->id";
+        _form.append("info_id",_infoID);
         $.ajax({
             url : config.saveFormInfo,
             type : "POST",

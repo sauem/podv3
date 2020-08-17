@@ -586,10 +586,17 @@ class AjaxController extends BaseController
             try {
                 $data = Yii::$app->request->post();
                 $model = new FormInfo;
+                $formId = ArrayHelper::getValue($data, "info_id");
+                if ($formId) {
+                    $model = FormInfo::findOne($formId);
+                }
                 $model->load($data, 'FormInfo');
                 if ($model->save()) {
                     $info = ArrayHelper::getValue($data, 'info');
                     if ($info && count($info) > 0) {
+                        if (!$model->isNewRecord) {
+                            FormInfoSku::deleteAll(['info_id' => $model->id]);
+                        }
                         foreach ($info as $k => $sku) {
                             if (!$sku['qty']) {
                                 continue;
@@ -614,8 +621,7 @@ class AjaxController extends BaseController
                 }
 
 
-
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $transaction->rollBack();
             }
 

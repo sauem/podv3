@@ -33,15 +33,18 @@ class FormInfoController extends BaseController
      * Lists all FormInfo models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = "")
     {
         $searchModel = new FormInfoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = new FormInfo;
+        if($id){
+            $model = FormInfo::findOne($id);
+        }
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => $model
+            'model' => $model,
         ]);
     }
 

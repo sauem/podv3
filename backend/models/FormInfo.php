@@ -72,7 +72,7 @@ class FormInfo extends BaseModel
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getFormInfoSkus()
+    public function getSkus()
     {
         return $this->hasMany(FormInfoSku::className(), ['info_id' => 'id']);
     }
