@@ -56,8 +56,7 @@ use kartik\form\ActiveForm;
 <?php
 $js = <<<JS
     $("body").on("click",".applyInfo",function() {
-      ORDER.products = [];
-      ORDER.skus = [];
+      
       let _key = $(this).data("key");
       let _product = ORDER.formInfosData[_key];
       ORDER.products = _product.product;
