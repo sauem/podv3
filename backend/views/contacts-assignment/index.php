@@ -154,7 +154,7 @@ $js = <<<JS
                     success : function(res) {
                       if(res == "success"){
                            swal.hideLoading();
-                           swal.fire("Thành công!","Đã cập nhật quản lý liên hệ","succeess")
+                           swal.fire("Thành công!","Đã cập nhật quản lý liên hệ","success")
                            .then(() => {
                                __reloadData();  
                            })
