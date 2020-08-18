@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\UploadForm;
 use Yii;
 use backend\models\FormInfo;
 use backend\models\FormInfoSearch;
@@ -33,12 +34,20 @@ class FormInfoController extends BaseController
      * Lists all FormInfo models.
      * @return mixed
      */
+    function actionImport()
+    {
+        $this->layout = "empty";
+        $model = new UploadForm;
+        return $this->render("remote", ['model' => $model]);
+
+    }
+
     public function actionIndex($id = "")
     {
         $searchModel = new FormInfoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = new FormInfo;
-        if($id){
+        if ($id) {
             $model = FormInfo::findOne($id);
         }
         return $this->render('index', [

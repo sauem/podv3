@@ -388,6 +388,79 @@ class AjaxController extends BaseController
 
     }
 
+    public function actionPushOrder()
+    {
+        $orders = Yii::$app->request->post("contacts");
+        $createNew = Yii::$app->request->post('createNew');
+        $fileName = Yii::$app->request->post("fileName");
+        $transaction = Yii::$app->db->beginTransaction();
+        $createNew = $createNew == "ok";
+        $errors = [];
+        try {
+            foreach ($orders as $k => $data) {
+                $model = new FormInfo;
+                $category = CategoriesModel::findOne(['name' => $data['category']]);
+                if (!$category) {
+                    if (!$createNew) {
+
+                        $errors[$k] = "không tồn tại danh mục";
+                        continue;
+                    }
+                    $category = new CategoriesModel;
+                    $category->name = $data['category'];
+                    $category->save();
+                }
+                $info = [
+                    'category_id' => $category->id,
+                    'content' => $data['content'],
+                    'revenue' => $data['revenue']
+                ];
+                if ($model->load($info, "") && $model->save()) {
+                    $skus = ArrayHelper::getValue($data, 'skus');
+                    foreach ($skus as $sku) {
+
+                        $product = ProductsModel::findOne(['sku' => $sku['sku']]);
+                        if (!$product) {
+                            if (!$createNew) {
+                                $errors[$k] = "không tồn tại mã sản phẩm";
+                                continue;
+                            }
+                            $product = new ProductsModel;
+                            $product->name = $sku['sku'];
+                            $product->category_id = $category->id;
+                            $product->sku = $sku['sku'];
+                            $product->save();
+                        }
+
+                        if ($product->sku && $sku['qty']) {
+                            $item = new FormInfoSku;
+                            $item->info_id = $model->id;
+                            $item->sku = $product->sku;
+                            $item->qty = $sku['qty'];
+                            $item->save();
+                        }
+                    }
+                } else {
+                    return [
+                        'success' => 0,
+                        'msg' => Helper::firstError($model)
+                    ];
+                }
+            }
+
+            $transaction->commit();
+            $count = sizeof($orders);
+            ActionLog::add("success", "Nhập file mẫu đơn - $fileName số lượng $count");
+            return static::resultImport($count, $errors, 1);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return [
+                'success' => 0,
+                'msg' => $e->getMessage()
+            ];
+        }
+    }
+
     static function resultImport($count = 0, $errors, $status = 1)
     {
         return [

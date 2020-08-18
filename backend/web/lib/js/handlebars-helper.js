@@ -6,7 +6,7 @@ Handlebars.registerHelper("asset", function (path) {
     return "/file/" + path;
 })
 
-Handlebars.registerHelper("money", function (value,options) {
+Handlebars.registerHelper("money", function (value, options) {
     var dl = options.hash['decimalLength'] || 2;
     var ts = options.hash['thousandsSep'] || ',';
     var ds = options.hash['decimalSep'] || '.';
@@ -23,28 +23,36 @@ Handlebars.registerHelper("money", function (value,options) {
     // Returns the formatted number
     return (ds ? num.replace('.', ds) : num).replace(new RegExp(re, 'g'), '$&' + ts);
 })
-Handlebars.registerHelper("selected",function (val1, val2) {
+Handlebars.registerHelper("selected", function (val1, val2) {
 
-    if(typeof val1 == "undefined" || typeof val2 == "undefined" || val1 == null || val2 == null){
+    if (typeof val1 == "undefined" || typeof val2 == "undefined" || val1 == null || val2 == null) {
         return "";
     }
-    if(val1.toString().trim() == val2.toString().trim()){
+    if (val1.toString().trim() == val2.toString().trim()) {
         return 'selected';
     }
-    return  '';
+    return '';
 })
-Handlebars.registerHelper("hasArray",function (filter , array) {
-    if(typeof filter == "undefined" || typeof array == "undefined"){
-        return  true;
+
+
+Handlebars.registerHelper({
+    'notNull': function (value) {
+        return value !== null && value !== "" && !Handlebars.Utils.isEmpty(value);
     }
-    if(array.length > 0 && !filter){
+});
+
+Handlebars.registerHelper("hasArray", function (filter, array) {
+    if (typeof filter == "undefined" || typeof array == "undefined") {
+        return true;
+    }
+    if (array.length > 0 && !filter) {
         return true;
     }
     return array.includes(filter);
 })
 
 Handlebars.registerHelper("date", function (number) {
-    return new Date(parseInt(number ,10) * 1000).toLocaleString();
+    return new Date(parseInt(number, 10) * 1000).toLocaleString();
 })
 Handlebars.registerHelper("stt", function (number) {
     return number + 1;
@@ -53,17 +61,17 @@ Handlebars.registerHelper("stt", function (number) {
 Handlebars.registerHelper("toMb", function (x) {
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     let l = 0, n = parseInt(x, 10) || 0;
-    while(n >= 1024 && ++l){
-        n = n/1024;
+    while (n >= 1024 && ++l) {
+        n = n / 1024;
     }
-    return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
+    return (n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
 })
 Handlebars.registerHelper("isNull", function (number) {
     return number == "ok";
 })
-Handlebars.registerHelper("span", function (  value, array) {
-        let $tag = '';
-        switch (value){
+Handlebars.registerHelper("span", function (value, array) {
+    let $tag = '';
+    switch (value) {
         case "ok":
             $tag = "success";
             break;
@@ -82,7 +90,7 @@ Handlebars.registerHelper("span", function (  value, array) {
         default:
             $tag = "info";
             break;
-        }
+    }
 
-        return new Handlebars.SafeString("<span class='badge badge-"+$tag+"'>"+ array[value]+"</span>");
+    return new Handlebars.SafeString("<span class='badge badge-" + $tag + "'>" + array[value] + "</span>");
 })

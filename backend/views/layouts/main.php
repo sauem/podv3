@@ -36,6 +36,7 @@ AppAsset::register($this);
             ajaxUpload: "<?= Url::toRoute(['ajax/ajax-file'])?>",
             pushContact: "<?= Url::toRoute(['ajax/push-contact'])?>",
             pushProduct: "<?=Url::toRoute(['ajax/push-product'])?>",
+            pushOrder: "<?=Url::toRoute(['ajax/push-oder'])?>",
             removeImages: "<?= Url::toRoute(['ajax/remove-image'])?>",
             drafImage: "<?= Url::toRoute(['ajax/draf-image'])?>",
             maxSize: 10485760,

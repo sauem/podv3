@@ -1,14 +1,12 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
+use yii\helpers\Url;
 use backend\assets\AppAsset;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
-use common\widgets\Alert;
 
 AppAsset::register($this);
 ?>
@@ -25,9 +23,10 @@ AppAsset::register($this);
     <script>
         var config = {
             type: ["xlsx", "csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
-            ajaxUpload:  "<?= \yii\helpers\Url::toRoute(['ajax/ajax-file'])?>",
-            pushContact: "<?= \yii\helpers\Url::toRoute(['ajax/push-contact'])?>",
-            pushProduct: "<?= \yii\helpers\Url::toRoute(['ajax/push-product'])?>",
+            ajaxUpload: "<?= Url::toRoute(['ajax/ajax-file'])?>",
+            pushContact: "<?= Url::toRoute(['ajax/push-contact'])?>",
+            pushProduct: "<?=Url::toRoute(['ajax/push-product'])?>",
+            pushOrder: "<?=Url::toRoute(['ajax/push-order'])?>",
             maxSize: 10485760
         }
 
@@ -36,7 +35,7 @@ AppAsset::register($this);
 <body class="fixed-navbar">
 <?php $this->beginBody() ?>
 <div class="page-wrapper">
-    <?= $content?>
+    <?= $content ?>
 </div>
 
 <?php $this->endBody() ?>

@@ -130,7 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             class="fa fa-download"></i> File dữ liệu mẫu</a>
                 <div>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" data-action="product" id="handleData" class="btn btn-primary">Nhập sản phẩm</button>
+                    <button type="button" data-action="product" class="handleData btn btn-primary">Nhập sản phẩm</button>
                 </div>
             </div>
         </div>

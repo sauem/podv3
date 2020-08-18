@@ -61,9 +61,11 @@ function doProcessWorkbook(workbook, file) {
     let sheet = workbook.Sheets[firstSheet];
     let rows = [];
     let rowsIndex = 2;
-    let maxColumn = 7;
-    if (firstSheet !== "product") {
-        maxColumn = 16;
+    let maxColumn = 16;
+    if (firstSheet === "product") {
+        maxColumn = 7;
+    } else if (firstSheet === "order") {
+        maxColumn = 13;
     }
     let row = getRow(sheet, rowsIndex, maxColumn);
     while (row !== null) {
@@ -92,6 +94,9 @@ function doProcessWorkbook(workbook, file) {
         case "product":
             renderViewTemplate("result", "product-template", data)
             break;
+        case "order":
+            renderViewTemplate("result", "order-template", data)
+            break;
         default:
             renderViewTemplate("result", "excel-template", data)
             break;
@@ -99,12 +104,21 @@ function doProcessWorkbook(workbook, file) {
 }
 
 $(".handleData").click(function () {
-    let _importAction = $(this).data("action");
 
+    let _importAction = $(this).data("action");
+    let _createAction = false;
     let _url = config.pushContact;
-    if (_importAction == "product") {
+    if (_importAction === "product") {
         _url = config.pushProduct;
     }
+    if (_importAction === "order") {
+        _url = config.pushOrder;
+        let _form = $("form#formUpload").serializeArray();
+        if (typeof _form[1] !== "undefined" && _form[1].value === "on"){
+            _createAction = true;
+        }
+    }
+
     if (typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0) {
         toastr.warning("Vui lòng chọn file dữ liệu!");
         return false;
@@ -113,6 +127,7 @@ $(".handleData").click(function () {
         toastr.warning("File dữ liệu tối đa 20000 dòng");
         return false;
     }
+
     swal.fire({
         title: "Đang nhập liệu",
         icon: "info",
@@ -123,13 +138,24 @@ $(".handleData").click(function () {
                 url: _url,
                 type: "POST",
                 cache: false,
-                data: {contacts: window.EXCEL.rows, fileName: window.EXCEL.fileName},
+                data: {
+                    contacts: window.EXCEL.rows,
+                    fileName: window.EXCEL.fileName,
+                    createNew : _createAction ? "ok" : ""
+                },
                 success: function (res) {
+                    if (!res.success) {
+                        setTimeout(() => {
+                            Swal.hideLoading();
+                            swal.fire("Lỗi", res.msg, "error");
+                        }, 1000);
+                        return;
+                    }
                     setTimeout(() => {
                         Swal.hideLoading()
                         swal.fire({
                             title: "Thông báo!",
-                            html: "Đã nhập thành công " + res.totalInsert + " liên hệ <br> Số liên hệ lỗi : " + res.totalErrors,
+                            html: "Đã nhập thành công " + res.totalInsert + " mẫu đơn <br> Số mẫu lỗi : " + res.totalErrors,
                             icon: 'success'
                         })
                             .then(() => {
@@ -158,6 +184,22 @@ function switchItem(sheet, row) {
             item.regular_price = row[3] ? row[3].v : "";
             item.option = row[4] ? row[4].v : "";
             break;
+        case "order":
+            item = new formInfoModel();
+            item.category = row[0] ? row[0].v : "";
+            item.content = row[1] ? row[1].v : "";
+            item.revenue = row[2] ? row[2].v : "";
+            item.skus[0].sku = row[3] ? row[3].v : "";
+            item.skus[0].qty = row[4] ? row[4].v : "";
+            item.skus[1].sku = row[5] ? row[5].v : "";
+            item.skus[1].qty = row[6] ? row[6].v : "";
+            item.skus[2].sku = row[7] ? row[7].v : "";
+            item.skus[2].qty = row[8] ? row[8].v : "";
+            item.skus[3].sku = row[9] ? row[9].v : "";
+            item.skus[3].qty = row[10] ? row[10].v : "";
+            item.skus[4].sku = row[11] ? row[11].v : "";
+            item.skus[4].qty = row[12] ? row[12].v : "";
+            break;
         default:
             item = new contactModel();
             item.register_time = row[0] ? (row[0].v.getTime() / 1000) : null;
@@ -168,15 +210,15 @@ function switchItem(sheet, row) {
             item.option = row[5] ? row[5].v : "";
             item.note = row[6] ? row[6].v : "";
             item.link = row[7] ? getHostName(row[7].v) : "";
-            item.utm_source = row[8] ? row[8].v : "",
-                item.utm_medium = row[9] ? row[9].v : "",
-                item.utm_campaign = row[10] ? row[10].v : "",
-                item.utm_term = row[11] ? row[11].v : "",
-                item.utm_content = row[12] ? row[12].v : "",
-                item.ip = row[13] ? row[13].v : "",
-                item.type = row[14] ? row[14].v : "",
-                item.country = row[15] ? row[15].v : "",
-                item.host = window.location.hostname;
+            item.utm_source = row[8] ? row[8].v : "";
+            item.utm_medium = row[9] ? row[9].v : "";
+            item.utm_campaign = row[10] ? row[10].v : "";
+            item.utm_term = row[11] ? row[11].v : "";
+            item.utm_content = row[12] ? row[12].v : "";
+            item.ip = row[13] ? row[13].v : "";
+            item.type = row[14] ? row[14].v : "";
+            item.country = row[15] ? row[15].v : "";
+            item.host = window.location.hostname;
             break
     }
     return item;
@@ -213,6 +255,21 @@ function productModel() {
         category: "",
         regular_price: 0,
         option: ""
+    }
+}
+
+function formInfoModel() {
+    return {
+        category: "",
+        content: "",
+        revenue: 0,
+        skus: [
+            {sku: "", qty: 0},
+            {sku: "", qty: 0},
+            {sku: "", qty: 0},
+            {sku: "", qty: 0},
+            {sku: "", qty: 0},
+        ]
     }
 }
 

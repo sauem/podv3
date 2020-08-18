@@ -18,6 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="ibox">
                 <div class="ibox-head">
                     <h2 class="ibox-title">Tạo mẫu</h2>
+                    <div class="ibox-tools">
+                        <button class="btn btn-info btn-sm" data-toggle="modal"
+                                data-remote="<?= Url::toRoute(['import'])?>"
+                                data-target="#form-info-import">
+                            <i class="fa fa-file-excel-o"></i>
+                            Nhập mẫu đơn</button>
+                    </div>
                 </div>
                 <div class="ibox-body">
                     <?php $form = ActiveForm::begin([
@@ -174,8 +181,34 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+
+    <div class="modal fade" tabindex="-1" id="form-info-import" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nhập mẫu form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <a class="text-warning" href="<?= \yii\helpers\Url::toRoute(['/file/form_example.xlsx']) ?>"><i
+                                class="fa fa-download"></i> File dữ liệu mẫu</a>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" data-action="order" class="btn handleData btn-primary">Nhập sản phẩm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $js = <<<JS
+    initRemote("form-info-import");
+    
     window.INFO =  {
         count : 1,
         infos : []    
