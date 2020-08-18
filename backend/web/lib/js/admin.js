@@ -179,6 +179,8 @@ function __reloadTotal() {
     } else {
         ORDER.total = parseFloat(ORDER.total) + parseFloat(ORDER.shipping);
     }
+    console.log("TOTAL " , ORDER.total);
+    console.log("Shipping " , ORDER.shipping);
     $("#totalResult").html(compileTemplate("total-template", ORDER));
 }
 
