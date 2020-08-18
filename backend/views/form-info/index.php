@@ -195,7 +195,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
-                    <a class="text-warning" href="<?= \yii\helpers\Url::toRoute(['/file/form_example.xlsx']) ?>"><i
+                    <a class="text-warning" href="<?= \yii\helpers\Url::toRoute(['/file/order_example.xlsx']) ?>"><i
                                 class="fa fa-download"></i> File dữ liệu mẫu</a>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
