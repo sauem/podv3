@@ -177,7 +177,7 @@ function __reloadTotal() {
     if (parseFloat(_total) > 0) {
         ORDER.total = _subProductTotal + parseFloat(ORDER.shipping);
     } else {
-        ORDER.total = ORDER.total + parseFloat(ORDER.shipping);
+        ORDER.total = parseFloat(ORDER.total) + parseFloat(ORDER.shipping);
     }
     $("#totalResult").html(compileTemplate("total-template", ORDER));
 }
