@@ -142,10 +142,11 @@ function restOrder() {
     $("#resultItemProduct").empty();
     $("#resultInfo").empty();
 }
+
 function renderProduct() {
     $("#resultItemProduct").empty();
-    ORDER.products.map( product => {
-        $("#resultItemProduct").append(compileTemplate("template-item-product",product));
+    ORDER.products.map(product => {
+        $("#resultItemProduct").append(compileTemplate("template-item-product", product));
     });
 }
 
@@ -172,9 +173,11 @@ function __reloadTotal() {
     _p.map(item => {
         _total = _total + parseFloat(item.price);
     })
-    let _subProductTotal = parseFloat(_total) + parseFloat(ORDER.shipping);
-    if(parseFloat(_total) > 0){
-        ORDER.total = _subProductTotal;
+    let _subProductTotal = parseFloat(_total);
+    if (parseFloat(_total) > 0) {
+        ORDER.total = _subProductTotal + parseFloat(ORDER.shipping);
+    } else {
+        ORDER.total + parseFloat(ORDER.shipping);
     }
     $("#totalResult").html(compileTemplate("total-template", ORDER));
 }
@@ -420,8 +423,8 @@ function __findOrderForm(_option, _category) {
         url: config.findFormInfo,
         data: {option: _option, category: _category},
         type: "POST",
-        success : function (res) {
-            if(res.success){
+        success: function (res) {
+            if (res.success) {
                 ORDER.formInfosBase = res.base;
                 ORDER.formInfosData = res.data;
                 $("#resultFormInfo").html(compileTemplate("template-form-info", res))
