@@ -26,10 +26,10 @@ class doScanContactByCountry
             // bỏ qua sale đủ số lượng SĐT trong ngày
             if (self::hasLimit($currentUser)) {
                 // Kiểm tra số điện thoại gọi lại
-                self::rollbackPending($currentUser);
-                //
+                self::rollbackCallback($currentUser);
                 continue;
             }
+            self::applyPending($currentUser->id);
             //chưa có liên hệ nào được phân bổ
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
@@ -37,7 +37,7 @@ class doScanContactByCountry
                 // Bỏ qua SĐT nếu được phân bổ
                 if (self::exitsPhone($phoneNumber)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
-                    self::rollbackPending($currentUser);
+                    self::rollbackCallback($currentUser);
                     continue;
                 }
                 // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
@@ -65,7 +65,19 @@ class doScanContactByCountry
         }
         return false;
     }
-
+    static function applyPending($user_id){
+        if (!self::hasProcessing($user_id)) {
+          $model = ContactsAssignment::find()
+              ->where(['user_id' => $user_id,'status' => ContactsAssignment::_PENDING])
+              ->orderBy(['created_at' => SORT_ASC])
+              ->one();
+          if($model){
+              $model->status = ContactsAssignment::_PROCESSING;
+              return $model->save();
+          }
+        }
+        return false;
+    }
     static function assignPhoneToUser($phone, $user_id, $country, $status = ContactsAssignment::_PENDING)
     {
         $model = new ContactsAssignment;
@@ -97,12 +109,13 @@ class doScanContactByCountry
         return $count >= $user->phone_of_day;
     }
 
-    static function rollbackPending($user)
+    static function rollbackCallback($user)
     {
         $now = time();
         $model = ContactsAssignment::find()
             ->where(['user_id' => $user->id])
             ->andWhere(['is not', 'callback_time', new \yii\db\Expression('null')])
+            ->andWhere(['status' => ContactsAssignment::_PENDING])
             ->orderBy(['callback_time' => SORT_ASC])->all();
 
         if ($model) {
