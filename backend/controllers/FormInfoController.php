@@ -69,6 +69,15 @@ class FormInfoController extends BaseController
             ]
 
         ]);
+        $contents = ContactsModel::find()
+            ->with('page')
+            ->with('formInfo')
+            ->where(['<>', 'option', ''])
+            ->groupBy('option')
+            ->asArray()
+            ->all();
+        Helper::prinf($contents[0]['page']['category']['name']);
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,
