@@ -439,14 +439,14 @@ function __findOrderForm(_option, _category) {
     });
 }
 
-$("body").on("click",".applyInfo",function() {
+$("body").on("click", ".applyInfo", function () {
 
     let _key = $(this).data("key");
     let _product = ORDER.formInfosData[_key];
     ORDER.products = _product.product;
-    ORDER.subTotal  = _product.total;
+    ORDER.subTotal = _product.total;
     ORDER.products.map(item => {
-        if(ORDER.skus.includes(item.sku)){
+        if (ORDER.skus.includes(item.sku)) {
             toastr.warning("Mã sản phẩm này đã tồn tại!");
             return;
         }
@@ -459,9 +459,24 @@ $("body").on("click",".applyInfo",function() {
 
 });
 
-$("body").on("change",".maskMoneyTotal", function () {
+$("body").on("change", ".maskMoneyTotal", function () {
     let _val = $(this).val();
-    _val = _val.replace(",","");
+    _val = _val.replace(",", "");
     ORDER.subTotal = parseFloat(_val);
     __reloadTotal();
+});
+
+$("#exportInfoWait").click(function () {
+    $.ajax({
+        url: config.exportWaitInfo,
+        type: 'POST',
+        cache: false,
+        success: function (res) {
+            if (res.success) {
+                window.location.replace(res.file);
+                return false;
+            }
+            toastr.warning(res.msg);
+        }
+    });
 });

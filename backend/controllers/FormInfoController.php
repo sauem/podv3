@@ -61,7 +61,10 @@ class FormInfoController extends BaseController
             'query' => ContactsModel::find()
                 ->with('formInfo')
                 ->where(['<>','option', ''])
-                ->groupBy('option')
+                ->groupBy('option'),
+            'pagination' => [
+                'pageSize' => 10
+            ]
 
         ]);
 

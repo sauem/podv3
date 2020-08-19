@@ -51,6 +51,7 @@ AppAsset::register($this);
             deleteAll: "<?= Url::toRoute(['ajax/delete-all'])?>",
             saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
             findFormInfo: "<?= Url::toRoute(['ajax/find-form-info'])?>",
+            exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
         }
 
     </script>

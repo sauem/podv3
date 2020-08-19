@@ -20,6 +20,7 @@ use backend\models\ProductsModel;
 use backend\models\UserModel;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
+use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use Yii;
@@ -27,6 +28,7 @@ use backend\models\UploadForm;
 use yii\web\UploadedFile;
 use backend\models\ImageUpload;
 use backend\models\Payment;
+use yii2tech\spreadsheet\Spreadsheet;
 
 class AjaxController extends BaseController
 {
@@ -759,6 +761,99 @@ class AjaxController extends BaseController
             return [
                 'success' => 0,
                 'msg' => 'Không có mẫu đơn hàng nào phù hợp!'
+            ];
+        }
+    }
+
+    function actionExportWaitInfo()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $export = new Spreadsheet();
+
+            $contents = ContactsModel::find()
+                ->with('formInfo')
+                ->where(['<>', 'option', ''])
+                ->groupBy('option')
+                ->asArray()
+                ->all();
+            if(!$contents){
+                return [
+                    'success' => 0,
+                    'msg' => 'Không có giá trị nào phù hợp'
+                ];
+            }
+            $data = [];
+
+            $export->renderCell("A1","Danh mục");
+            $export->renderCell("B1","Nội dung");
+            $export->renderCell("C1","Doanh thu");
+            $export->renderCell("D1","Sku1");
+            $export->renderCell("E1","Qty1");
+            $export->renderCell("F1","Sku2");
+            $export->renderCell("G1","Qty2");
+            $export->renderCell("H1","Sku3");
+            $export->renderCell("I1","Qty3");
+            $export->renderCell("J1","Sku4");
+            $export->renderCell("K1","Qty4");
+            $export->renderCell("L1","Sku5");
+            $export->renderCell("M1","Qty5");
+
+            foreach ($contents as $k => $content) {
+                if ($content['option'] === $content['formInfo']['content']) {
+                    continue;
+                }
+                $data[$k] = [
+                    'category' => null,
+                    'content' => $content['option'],
+                    'revenue' => null,
+                    'sku1' => null,
+                    'qty1' => null,
+                    'sku2' => null,
+                    'qty2' => null,
+                    'sku3' => null,
+                    'qty3' => null,
+                    'sku4' => null,
+                    'qty4' => null,
+                    'sku5' => null,
+                    'qty5' => null,
+                ];
+            }
+            if(empty($data)){
+                return [
+                    'success' => 0,
+                    'msg' => 'Không có giá trị nào phù hợp'
+                ];
+            }
+            $export->configure([
+                'title' => 'Mẫu đơn',
+                'dataProvider' =>  new ArrayDataProvider([
+                    'allModels' => $data
+                ]),
+            ]);
+            $export->startRowIndex = 2;
+            $export->showHeader = false;
+            foreach (range("A","M") as $col){
+                $with = 10;
+                if(in_array($col,['A','C'])){
+                    $with = 20;
+                }
+                if($col == "B"){
+                    $with = 30;
+                }
+                $export->getDocument()->getActiveSheet()->getColumnDimension($col)->setWidth($with);
+            }
+            $maxRow = sizeof($data) + 1 ;
+
+            $export->getDocument()->getActiveSheet()
+                ->getStyle("B2:B$maxRow")
+                ->getAlignment()
+                ->setWrapText(true);
+
+            $export->render();
+            $export->save("file/demo.xlsx");
+            return [
+                'success' => 1,
+                'file' => "/file/demo.xlsx"
             ];
         }
     }
