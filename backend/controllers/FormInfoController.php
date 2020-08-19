@@ -9,6 +9,7 @@ use Yii;
 use backend\models\FormInfo;
 use backend\models\FormInfoSearch;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -69,15 +70,6 @@ class FormInfoController extends BaseController
             ]
 
         ]);
-        $contents = ContactsModel::find()
-            ->with('page')
-            ->with('formInfo')
-            ->where(['<>', 'option', ''])
-            ->groupBy('option')
-            ->asArray()
-            ->all();
-        Helper::prinf($contents[0]['page']['category']['name']);
-
 
         return $this->render('index', [
             'searchModel' => $searchModel,

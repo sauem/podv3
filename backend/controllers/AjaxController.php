@@ -777,7 +777,7 @@ class AjaxController extends BaseController
                 ->groupBy('option')
                 ->asArray()
                 ->all();
-            if(!$contents){
+            if (!$contents) {
                 return [
                     'success' => 0,
                     'msg' => 'Không có giá trị nào phù hợp'
@@ -785,26 +785,27 @@ class AjaxController extends BaseController
             }
             $data = [];
 
-            $export->renderCell("A1","Danh mục");
-            $export->renderCell("B1","Nội dung");
-            $export->renderCell("C1","Doanh thu");
-            $export->renderCell("D1","Sku1");
-            $export->renderCell("E1","Qty1");
-            $export->renderCell("F1","Sku2");
-            $export->renderCell("G1","Qty2");
-            $export->renderCell("H1","Sku3");
-            $export->renderCell("I1","Qty3");
-            $export->renderCell("J1","Sku4");
-            $export->renderCell("K1","Qty4");
-            $export->renderCell("L1","Sku5");
-            $export->renderCell("M1","Qty5");
+            $export->renderCell("A1", "Danh mục");
+            $export->renderCell("B1", "Nội dung");
+            $export->renderCell("C1", "Doanh thu");
+            $export->renderCell("D1", "Sku1");
+            $export->renderCell("E1", "Qty1");
+            $export->renderCell("F1", "Sku2");
+            $export->renderCell("G1", "Qty2");
+            $export->renderCell("H1", "Sku3");
+            $export->renderCell("I1", "Qty3");
+            $export->renderCell("J1", "Sku4");
+            $export->renderCell("K1", "Qty4");
+            $export->renderCell("L1", "Sku5");
+            $export->renderCell("M1", "Qty5");
 
             foreach ($contents as $k => $content) {
                 if ($content['option'] === $content['formInfo']['content']) {
                     continue;
                 }
+                $category = ArrayHelper::getValue($content,'page.category.name',null);
                 $data[$k] = [
-                    'category' => isset($content['page']) ? $content['page']['category']['name'] : null,
+                    'category' => $category,
                     'content' => $content['option'],
                     'revenue' => null,
                     'sku1' => null,
@@ -819,7 +820,7 @@ class AjaxController extends BaseController
                     'qty5' => null,
                 ];
             }
-            if(empty($data)){
+            if (empty($data)) {
                 return [
                     'success' => 0,
                     'msg' => 'Không có giá trị nào phù hợp'
@@ -827,23 +828,23 @@ class AjaxController extends BaseController
             }
             $export->configure([
                 'title' => 'Mẫu đơn',
-                'dataProvider' =>  new ArrayDataProvider([
+                'dataProvider' => new ArrayDataProvider([
                     'allModels' => $data
                 ]),
             ]);
             $export->startRowIndex = 2;
             $export->showHeader = false;
-            foreach (range("A","M") as $col){
+            foreach (range("A", "M") as $col) {
                 $with = 10;
-                if(in_array($col,['A','C'])){
+                if (in_array($col, ['A', 'C'])) {
                     $with = 20;
                 }
-                if($col == "B"){
+                if ($col == "B") {
                     $with = 30;
                 }
                 $export->getDocument()->getActiveSheet()->getColumnDimension($col)->setWidth($with);
             }
-            $maxRow = sizeof($data) + 1 ;
+            $maxRow = sizeof($data) + 1;
 
             $export->getDocument()->getActiveSheet()
                 ->getStyle("B2:B$maxRow")
