@@ -57,8 +57,10 @@ class FormInfoController extends BaseController
             $content = Yii::$app->request->get("content");
             $model->load(['content' => $content],"");
         }
+
         $optionProvider = new ActiveDataProvider([
             'query' => ContactsModel::find()
+                ->with('page')
                 ->with('formInfo')
                 ->where(['<>','option', ''])
                 ->groupBy('option'),

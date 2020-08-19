@@ -771,6 +771,7 @@ class AjaxController extends BaseController
             $export = new Spreadsheet();
 
             $contents = ContactsModel::find()
+                ->with('page')
                 ->with('formInfo')
                 ->where(['<>', 'option', ''])
                 ->groupBy('option')
@@ -803,7 +804,7 @@ class AjaxController extends BaseController
                     continue;
                 }
                 $data[$k] = [
-                    'category' => null,
+                    'category' => isset($content['page']) ? $content['page']['category']['name'] : null,
                     'content' => $content['option'],
                     'revenue' => null,
                     'sku1' => null,

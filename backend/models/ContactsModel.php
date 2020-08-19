@@ -221,7 +221,7 @@ class ContactsModel extends BaseModel
 
     function getPage()
     {
-        return $this->hasOne(LandingPages::className(), ['link' => 'short_link'])->with('product');
+        return $this->hasOne(LandingPages::className(), ['link' => 'short_link'])->with('category')->with('product');
     }
 
     public static function listPhoneContact()

@@ -195,7 +195,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-head">
                     <h2 class="ibox-title">Mẫu cần cập nhật</h2>
                     <div class="ibox-tools">
-                        <button id="exportInfoWait" class="btn-outline-danger btn btn-sm"><i class="fa fa-file-excel-o"></i> Xuất dữ liệu</button>
+                        <button id="exportInfoWait" class="btn-outline-danger btn btn-sm"><i
+                                    class="fa fa-file-excel-o"></i> Xuất dữ liệu
+                        </button>
                     </div>
                 </div>
                 <div class="ibox-body">
@@ -220,7 +222,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => 'Danh mục',
                                 'attribute' => 'content',
                                 'value' => function ($model) {
-                                    return "--";
+                                    if (!$model->page) {
+                                        return "--";
+                                    }
+                                    return $model->page->category->name;
                                 }
                             ],
                             [
