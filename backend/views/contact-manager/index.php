@@ -82,7 +82,7 @@ use backend\models\ContactsAssignment;
                     'pjaxSettings' => [
                         'neverTimeout' => true,
                         'options' => [
-                            'id' => 'pjax-waiting'
+                            'id' => 'pjax-all'
                         ],
                         'enablePushState' => false
                     ],
