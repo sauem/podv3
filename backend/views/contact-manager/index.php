@@ -41,6 +41,7 @@ use backend\models\ContactsAssignment;
                                     Url::toRoute(['view', 'id' => $model->id]), ['data-pjax' => '0']);
                             }
                         ],
+                        'name',
                         [
                             'label' => 'Trạng thái',
                             'attribute' => 'status',
@@ -97,6 +98,7 @@ use backend\models\ContactsAssignment;
 
                             }
                         ],
+                        'name',
                         [
                             'label' => 'Trạng thái',
                             'attribute' => 'status',

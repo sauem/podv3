@@ -441,6 +441,8 @@ class AjaxController extends BaseController
                             $item->sku = $product->sku;
                             $item->qty = $sku['qty'];
                             $item->save();
+                        }else{
+                            $errors[$k] = "Mỗi order cần tối thiểu 1 SKU và số lượng là 1";
                         }
                     }
                 } else {
