@@ -222,7 +222,7 @@ use yii\helpers\Url;
         <tr>
             <td colspan="2"><strong>Tổng đơn</strong></td>
             <td class="text-left">
-                <strong>{{money this.total}}</strong>
+                <strong><input class="maskMoneyTotal form-control" value="{{money this.total}}"></strong>
                 <input type="hidden" value="{{total}}" name="total">
             </td>
             <td></td>
@@ -318,7 +318,7 @@ $js = <<<JS
                 }
                 toastr.warning(res);
            }
-        })
+        })  
       return false;
     })
     $("body").on("change","input[name='shipping_price']",function() {

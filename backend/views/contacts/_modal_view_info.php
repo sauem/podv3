@@ -55,22 +55,6 @@ use kartik\form\ActiveForm;
     </script>
 <?php
 $js = <<<JS
-    $("body").on("click",".applyInfo",function() {
-      
-      let _key = $(this).data("key");
-      let _product = ORDER.formInfosData[_key];
-      ORDER.products = _product.product;
-      ORDER.total  = _product.total;
-      ORDER.products.map(item => {
-          if(ORDER.skus.includes(item.sku)){
-              toastr.warning("Mã sản phẩm này đã tồn tại!");
-              return;
-          }
-          ORDER.skus.push(item.sku);
-      })
-      renderProduct();
-      $("#totalResult").html(compileTemplate("total-template", ORDER));
-      $("#modalViewFormInfo").modal("hide");
-    });
+   
 JS;
 $this->registerJs($js);
