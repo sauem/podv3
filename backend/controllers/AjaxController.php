@@ -419,8 +419,14 @@ class AjaxController extends BaseController
                 ];
                 if ($model->load($info, "") && $model->save()) {
                     $skus = ArrayHelper::getValue($data, 'skus');
-                    foreach ($skus as $sku) {
 
+                    foreach ($skus as $sku) {
+                        if(!$sku['sku'] && !$sku['qty']){
+                            return [
+                                'success' => 0,
+                                'msg' => 'Mỗi order phải có ít nhất 1 mã sản phẩm và số lượng tối thiểu là 1'
+                            ];
+                        }
                         $product = ProductsModel::findOne(['sku' => $sku['sku']]);
                         if (!$product) {
                             if (!$createNew) {
