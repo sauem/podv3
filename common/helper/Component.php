@@ -22,7 +22,7 @@ class Component
 
     static function update($url)
     {
-        return Html::a('<i class="fa fa-edit"></i> sửa', $url, ['class' => 'btn mt-1 btn-sm bg-white']);
+        return Html::a('<i class="fa fa-edit"></i> sửa', $url, ['data-pjax' => '0','class' => 'btn mt-1 btn-sm bg-white']);
     }
 
     static function view($url)
@@ -43,12 +43,12 @@ class Component
         ]);
     }
 
-    static function reset(){
+    static function reset($name = "Làm mới"){
         $url = Url::toRoute(\Yii::$app->controller->getRoute());
         if(\Yii::$app->request->get('phone')){
             $url = Url::toRoute([\Yii::$app->controller->getRoute(),'phone' => \Yii::$app->request->get('phone')]);
         }
-        return Html::a('Làm mới', $url, ['class' => 'btn btn-outline-warning']);
+        return Html::a($name, $url, ['class' => 'btn btn-outline-warning']);
     }
 
     static function renderLogs(){

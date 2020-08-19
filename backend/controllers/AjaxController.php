@@ -663,9 +663,9 @@ class AjaxController extends BaseController
     {
         if (Yii::$app->request->isAjax) {
             $transaction = Yii::$app->db->beginTransaction();
+            $model = new FormInfo;
             try {
                 $data = Yii::$app->request->post();
-                $model = new FormInfo;
                 $formId = ArrayHelper::getValue($data, "info_id");
                 if ($formId) {
                     $model = FormInfo::findOne($formId);
@@ -704,7 +704,6 @@ class AjaxController extends BaseController
             } catch (\Exception $e) {
                 $transaction->rollBack();
             }
-
             return [
                 'success' => 0,
                 'msg' => Helper::firstError($model)

@@ -20,10 +20,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h2 class="ibox-title">Tạo mẫu</h2>
                     <div class="ibox-tools">
                         <button class="btn btn-info btn-sm" data-toggle="modal"
-                                data-remote="<?= Url::toRoute(['import'])?>"
+                                data-remote="<?= Url::toRoute(['import']) ?>"
                                 data-target="#form-info-import">
                             <i class="fa fa-file-excel-o"></i>
-                            Nhập mẫu đơn</button>
+                            Nhập mẫu đơn
+                        </button>
                     </div>
                 </div>
                 <div class="ibox-body">
@@ -105,7 +106,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="col-12">
                             <div class=" mt-4 text-right">
+                                <?php if($model->isNewRecord){ ?>
                                 <?= Html::resetButton("Làm mơi", ['class' => 'btn btn-warning']) ?>
+                                <?php }else{ ?>
+                                    <?= Component::reset('Hủy')?>
+                                <?php } ?>
                                 <?= Html::submitButton("Lưu", ['class' => 'btn btn-success']) ?>
                             </div>
                         </div>
@@ -122,6 +127,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-body">
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
+                        'pjax' => true,
+                        'pjaxSettings' => [
+                            'neverTimeout' => true,
+                            'options' => [
+                                'id' => 'pjax-info'
+                            ]
+                        ],
                         'columns' => [
                             [
                                 'label' => 'Loại sản phẩm',
@@ -199,7 +211,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 class="fa fa-download"></i> File dữ liệu mẫu</a>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="button" data-action="order" class="btn handleData btn-primary">Nhập sản phẩm</button>
+                        <button type="button" data-action="order" class="btn handleData btn-primary">Nhập sản phẩm
+                        </button>
                     </div>
                 </div>
             </div>
@@ -227,8 +240,10 @@ $js = <<<JS
             success : function(res) {
                 if(res.success){
                     toastr.success(res.msg);
-                    $("#infoForm").trigger("reset");
                     __reloadData();
+                    setTimeout(function() {
+                       window.location.replace("/form-info/index");
+                    },1500);
                    return false;
                 }
                 toastr.warning(res.msg);
