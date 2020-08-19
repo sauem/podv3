@@ -827,7 +827,7 @@ class AjaxController extends BaseController
                 ];
             }
             $export->configure([
-                'title' => 'Mẫu đơn',
+                'title' => 'order',
                 'dataProvider' => new ArrayDataProvider([
                     'allModels' => $data
                 ]),
