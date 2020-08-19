@@ -803,7 +803,7 @@ class AjaxController extends BaseController
                 if ($content['option'] === $content['formInfo']['content']) {
                     continue;
                 }
-                $category = ArrayHelper::getValue($content,'page.category.name',"--");
+                $category = ArrayHelper::getValue($content,'page.category.name',"");
                 $data[$k] = [
                     'category' => $category,
                     'content' => $content['option'],
@@ -852,10 +852,10 @@ class AjaxController extends BaseController
                 ->setWrapText(true);
 
             $export->render();
-            $export->save("file/demo.xlsx");
+            $export->save("file/form_info.xlsx");
             return [
                 'success' => 1,
-                'file' => "/file/demo.xlsx"
+                'file' => "/file/form_info.xlsx"
             ];
         }
     }
