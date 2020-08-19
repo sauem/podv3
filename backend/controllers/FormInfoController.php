@@ -2,10 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\ContactsModel;
 use backend\models\UploadForm;
+use common\helper\Helper;
 use Yii;
 use backend\models\FormInfo;
 use backend\models\FormInfoSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -50,10 +53,23 @@ class FormInfoController extends BaseController
         if ($id) {
             $model = FormInfo::findOne($id);
         }
+        if(Yii::$app->request->get('content')){
+            $content = Yii::$app->request->get("content");
+            $model->load(['content' => $content],"");
+        }
+        $optionProvider = new ActiveDataProvider([
+            'query' => ContactsModel::find()
+                ->with('formInfo')
+                ->where(['<>','option', ''])
+                ->groupBy('option')
+
+        ]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,
+            'optionProvider' => $optionProvider
         ]);
     }
 

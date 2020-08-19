@@ -104,4 +104,7 @@ class FormInfo extends BaseModel
     {
         return $this->hasMany(FormInfoSku::className(), ['info_id' => 'id']);
     }
+    public function getContacts(){
+        return $this->hasMany(ContactsModel::className(), ['option' => 'content'])->groupBy(['option']);
+    }
 }

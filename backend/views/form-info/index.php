@@ -106,10 +106,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="col-12">
                             <div class=" mt-4 text-right">
-                                <?php if($model->isNewRecord){ ?>
-                                <?= Html::resetButton("Làm mơi", ['class' => 'btn btn-warning']) ?>
-                                <?php }else{ ?>
-                                    <?= Component::reset('Hủy')?>
+                                <?php if ($model->isNewRecord && !$model->content) { ?>
+                                    <?= Html::resetButton("Làm mơi", ['class' => 'btn btn-warning']) ?>
+                                <?php } else { ?>
+                                    <?= Component::reset('Hủy') ?>
                                 <?php } ?>
                                 <?= Html::submitButton("Lưu", ['class' => 'btn btn-success']) ?>
                             </div>
@@ -185,6 +185,73 @@ $this->params['breadcrumbs'][] = $this->title;
                                     "delete" => function ($url, $model) {
                                         return Component::delete($url);
                                     }
+                                ]
+                            ],
+                        ]
+                    ]) ?>
+                </div>
+            </div>
+            <div class="ibox">
+                <div class="ibox-head">
+                    <h2 class="ibox-title">Mẫu cần cập nhật</h2>
+                </div>
+                <div class="ibox-body">
+                    <?= GridView::widget([
+                        'dataProvider' => $optionProvider,
+                        'pjax' => true,
+                        'layout' => "{items}{pager}",
+                        'rowOptions' => function ($model) {
+
+                            if ($model->formInfo['content'] == $model->option) {
+                                return ['style' => "display :none"];
+                            }
+                        },
+                        'pjaxSettings' => [
+                            'neverTimeout' => true,
+                            'options' => [
+                                'id' => 'pjax-info'
+                            ]
+                        ],
+                        'columns' => [
+                            [
+                                'label' => 'Danh mục',
+                                'attribute' => 'content',
+                                'value' => function ($model) {
+                                    return null;
+                                }
+                            ],
+                            [
+                                'label' => 'Doanh thu',
+                                'attribute' => 'content',
+                                'value' => function ($model) {
+                                    return null;
+                                }
+                            ],
+                            [
+                                'label' => 'Nội dung',
+                                'headerOptions' => [
+                                    'width' => "35%"
+                                ],
+                                'attribute' => 'content',
+                                'value' => function ($model) {
+                                    return $model->option;
+                                }
+                            ],
+                            [
+                                'label' => 'Sku',
+                                'attribute' => 'content',
+                                'value' => function ($model) {
+                                    return null;
+                                }
+                            ],
+                            [
+                                "class" => ActionColumn::className(),
+                                "template" => "{update}",
+                                "buttons" => [
+                                    "update" => function ($url, $model) {
+                                        $url = Url::toRoute(['index', 'content' => $model->option]);
+                                        return Component::update($url);
+                                    },
                                 ]
                             ],
                         ]
