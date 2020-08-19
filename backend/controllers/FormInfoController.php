@@ -70,7 +70,36 @@ class FormInfoController extends BaseController
             ]
 
         ]);
+        $contents = ContactsModel::find()
+            ->with('page')
+            ->with('formInfo')
+            ->where(['<>', 'option', ''])
+            ->groupBy('option')
+            ->asArray()
+            ->all();
 
+        foreach ($contents as $k => $content) {
+            if ($content['option'] === $content['formInfo']['content']) {
+                continue;
+            }
+            $category = ArrayHelper::getValue($content,'page.category.name',"");
+            $data[$k] = [
+                'category' => $category,
+                'content' => $content['option'],
+                'revenue' => null,
+                'sku1' => null,
+                'qty1' => null,
+                'sku2' => null,
+                'qty2' => null,
+                'sku3' => null,
+                'qty3' => null,
+                'sku4' => null,
+                'qty4' => null,
+                'sku5' => null,
+                'qty5' => null,
+            ];
+            Helper::prinf($data);
+        }
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
