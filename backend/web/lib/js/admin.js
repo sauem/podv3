@@ -458,5 +458,4 @@ $("body").on("change",".maskMoneyTotal", function () {
     _val = _val.replace(",","");
     ORDER.total = _val;
     __reloadTotal();
-    alert(ORDER.total)
 });
