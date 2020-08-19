@@ -803,7 +803,7 @@ class AjaxController extends BaseController
                 if ($content['option'] === $content['formInfo']['content']) {
                     continue;
                 }
-                $category = ArrayHelper::getValue($content,'page.category.name',null);
+                $category = ArrayHelper::getValue($content,'page.category.name',"--");
                 $data[$k] = [
                     'category' => $category,
                     'content' => $content['option'],
