@@ -421,12 +421,7 @@ class AjaxController extends BaseController
                     $skus = ArrayHelper::getValue($data, 'skus');
 
                     foreach ($skus as $sku) {
-                        if(!$sku['sku'] && !$sku['qty']){
-                            return [
-                                'success' => 0,
-                                'msg' => 'Mỗi order phải có ít nhất 1 mã sản phẩm và số lượng tối thiểu là 1'
-                            ];
-                        }
+
                         $product = ProductsModel::findOne(['sku' => $sku['sku']]);
                         if (!$product) {
                             if (!$createNew) {
@@ -858,10 +853,10 @@ class AjaxController extends BaseController
                 ->setWrapText(true);
 
             $export->render();
-            $export->save("file/form_info.xlsx");
+            $export->save("file/forminfo.xlsx");
             return [
                 'success' => 1,
-                'file' => "/file/form_info.xlsx"
+                'file' => "/file/forminfo.xlsx"
             ];
         }
     }
