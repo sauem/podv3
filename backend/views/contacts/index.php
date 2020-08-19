@@ -210,6 +210,7 @@ $js = <<<JS
             products : [],
             billings : [],
             total : 0,
+            subTotal : 0,
             shipping : 0
         }
         

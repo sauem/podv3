@@ -131,6 +131,7 @@ function getCountry(select) {
 
 function restOrder() {
     ORDER.total = 0;
+    ORDER.subTotal = 0;
     ORDER.option = "";
     ORDER.cate = null;
     ORDER.formInfosBase = [];
@@ -168,20 +169,23 @@ function __addItemProduct(item, order_price, _qty = 1) {
 }
 
 function __reloadTotal() {
+
     let _p = ORDER.products;
     let _total = 0;
     _p.map(item => {
         _total = _total + parseFloat(item.price);
     })
     let _subProductTotal = parseFloat(_total);
+
     if (parseFloat(_total) > 0) {
-        ORDER.total = _subProductTotal + parseFloat(ORDER.shipping);
+        ORDER.subTotal = _subProductTotal;
+        ORDER.total = ORDER.subTotal + parseFloat(ORDER.shipping);
     } else {
-        ORDER.total = parseFloat(ORDER.total) + parseFloat(ORDER.shipping);
+        ORDER.subTotal = parseFloat(ORDER.subTotal);
+        ORDER.total = parseFloat(ORDER.subTotal) + parseFloat(ORDER.shipping);
     }
-    console.log("TOTAL " , ORDER.total);
-    console.log("Shipping " , ORDER.shipping);
     $("#totalResult").html(compileTemplate("total-template", ORDER));
+    console.log(ORDER);
 }
 
 function __changeProductPrice(_sku, val) {
@@ -440,7 +444,7 @@ $("body").on("click",".applyInfo",function() {
     let _key = $(this).data("key");
     let _product = ORDER.formInfosData[_key];
     ORDER.products = _product.product;
-    ORDER.total  = _product.total;
+    ORDER.subTotal  = _product.total;
     ORDER.products.map(item => {
         if(ORDER.skus.includes(item.sku)){
             toastr.warning("Mã sản phẩm này đã tồn tại!");
@@ -449,13 +453,15 @@ $("body").on("click",".applyInfo",function() {
         ORDER.skus.push(item.sku);
     })
     renderProduct();
+    __reloadTotal();
     $("#totalResult").html(compileTemplate("total-template", ORDER));
     $("#modalViewFormInfo").modal("hide");
+
 });
 
 $("body").on("change",".maskMoneyTotal", function () {
     let _val = $(this).val();
     _val = _val.replace(",","");
-    ORDER.total = _val;
+    ORDER.subTotal = parseFloat(_val);
     __reloadTotal();
 });

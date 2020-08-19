@@ -47,7 +47,7 @@ use yii\helpers\Url;
                             <tr>
                                 <td width="30%">Sản phẩm</td>
                                 <td width="20%">Số lượng</td>
-                                <td width="20%" class="text-right">Tổng cộng</td>
+                                <td width="20%" class="text-left">Tổng cộng</td>
                                 <td></td>
                             </tr>
                             </thead>
@@ -214,6 +214,15 @@ use yii\helpers\Url;
 
     </script>
     <script type="text/x-handlebars-template" id="total-template">
+
+        <tr>
+            <td colspan="2"><strong>Tổng cộng</strong></td>
+            <td class="text-left">
+                <strong><input class="maskMoneyTotal form-control" value="{{money this.subTotal}}"></strong>
+                <input type="hidden" value="{{subTotal}}" name="sub_total">
+            </td>
+        </tr>
+
         <tr>
             <td colspan="2">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
@@ -222,7 +231,7 @@ use yii\helpers\Url;
         <tr>
             <td colspan="2"><strong>Tổng đơn</strong></td>
             <td class="text-left">
-                <strong><input class="maskMoneyTotal form-control" value="{{money this.total}}"></strong>
+                <strong>{{money this.total}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
             </td>
             <td></td>
@@ -283,7 +292,7 @@ $js = <<<JS
       if(typeof _val !== "number" || !_val){
           toastr.warning("Giá trị nhập phải là số!");
           $(this).val(0);
-          return false;
+          _val = 0;
       }
       __changeProductPrice(_sku,_val);
     });
