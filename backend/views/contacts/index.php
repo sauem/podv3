@@ -149,7 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
                                                     thái</a>
                                             <?php } ?>
-                                            <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                                            <button id="createOrder" class="createOrder btn btn-sm btn-info">Tạo đơn hàng</button>
                                         </div>
                                         <a class="nav-link" href="#filter" data-toggle="collapse">
                                             <i class="ti-filter"></i> Tìm kiếm</a>
@@ -226,7 +226,7 @@ $js = <<<JS
             shipping : 0
         }
         
-        $("#createOrder").click(function() {
+        $(".createOrder").click(function() {
             var keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(keys.length <= 0){
                 swal.fire({

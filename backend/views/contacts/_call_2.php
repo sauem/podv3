@@ -147,7 +147,7 @@ use yii\widgets\Pjax;
                                 <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
                                     thái</a>
                             <?php } ?>
-                            <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
+                            <button id="createOrder" class="createOrder btn btn-sm btn-info">Tạo đơn hàng</button>
                         </div>
 
                         <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider,'id' => 'callback2']) ?>
