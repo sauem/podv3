@@ -34,8 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]) ?>
                     <div class="ibox">
                         <div class="ibox-head">
-                            <h2 class="ibox-title"><i class="fa fa-phone">
-                                </i> <?= $info ? $info->phone : "Chưa có liên hệ mới" ?>
+                            <h2 style="cursor: pointer" data-toggle="tooltip" title="Click 2 lần để coppy"
+                                class="text-success ibox-title"><i
+                                        class="fa fa-phone"></i> <?= $info ? "<span ondblclick=\"coppy(this)\">0$info->phone</span>" : "Chưa có liên hệ mới" ?>
                             </h2>
                         </div>
 
@@ -190,7 +191,18 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="tab-pane fade" id="call_second">
-            <?= $this->render('_call_2') ?>
+            <?= $this->render('_call_2', [
+                'dataProvider' => $_dataProvider,
+                'failureProvider' => $_failureProvider,
+                'successProvider' => $_successProvider,
+                'order' => $order,
+                'info' => $_info,
+                'user' => $user,
+                'searchModel' => $searchModel,
+                'callbackProvider' => $_callbackProvider,
+                'currentHistories' => $_currentHistories,
+                'contactHistories' => $contactHistories,
+            ]) ?>
         </div>
 
     </div>
@@ -317,7 +329,6 @@ $js = <<<JS
             }
         });
     });
-    
 JS;
 
 $this->registerJs($js);

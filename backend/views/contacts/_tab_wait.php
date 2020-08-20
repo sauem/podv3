@@ -16,7 +16,7 @@ use kartik\grid\ExpandRowColumn;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => 'pjax-wait'
+                    'id' => isset($id) ? $id : 'pjax-wait'
                 ]
             ],
             'headerRowOptions' => [

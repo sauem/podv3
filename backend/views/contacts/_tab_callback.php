@@ -18,7 +18,7 @@ use common\helper\Helper;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => 'pjax-callback'
+                    'id' => isset($id) ? $id : 'pjax-callback'
                 ]
             ],
             'headerRowOptions' => [
@@ -36,8 +36,8 @@ use common\helper\Helper;
                     'attribute' => 'category_id',
                     'format' => 'html',
                     'value' => function ($model) {
-                        if(!$model->page || !$model->page->product){
-                            return  null;
+                        if (!$model->page || !$model->page->product) {
+                            return null;
                         }
                         return Html::tag("p",
                             $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
@@ -49,7 +49,7 @@ use common\helper\Helper;
                     'attribute' => 'link',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        if(!$model->page){
+                        if (!$model->page) {
                             return null;
                         }
                         return Html::tag("p",
@@ -76,8 +76,8 @@ use common\helper\Helper;
                     'attribute' => 'callback_time',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        $html = "Ngày gọi: </br>".date("H:i:s - d/m") ."<br>";
-                        $html .= "Gọi lại: </br>". Helper::caculateDate($model->updated_at,$model->callback_time);
+                        $html = "Ngày gọi: </br>" . date("H:i:s - d/m") . "<br>";
+                        $html .= "Gọi lại: </br>" . Helper::caculateDate($model->updated_at, $model->callback_time);
 
                         return $html;
                     }

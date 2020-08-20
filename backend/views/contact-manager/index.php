@@ -41,7 +41,14 @@ use backend\models\ContactsAssignment;
                                     Url::toRoute(['view', 'id' => $model->id]), ['data-pjax' => '0']);
                             }
                         ],
-                        'name',
+                        [
+                            'label' => 'Khách hàng',
+                            'attribute' => 'phone',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return $model->contacts[0]->name;
+                            }
+                        ],
                         [
                             'label' => 'Trạng thái',
                             'attribute' => 'status',
@@ -98,7 +105,14 @@ use backend\models\ContactsAssignment;
 
                             }
                         ],
-                        'name',
+                        [
+                            'label' => 'Khách hàng',
+                            'attribute' => 'phone',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return $model->contacts[0]->name;
+                            }
+                        ],
                         [
                             'label' => 'Trạng thái',
                             'attribute' => 'status',

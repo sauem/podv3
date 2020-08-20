@@ -480,3 +480,14 @@ $("#exportInfoWait").click(function () {
         }
     });
 });
+
+function coppy(element) {
+    let _phone = $(element).text();
+    let _input = "<input>";
+    _phone = _phone.trim();
+    $("body").append(_input);
+    $(_input).val(_phone).select();
+    document.execCommand("copy");
+    toastr.success("Đã coppy số điện thoại " + _phone  + " vào clipboard!");
+    $(_input).remove();
+}

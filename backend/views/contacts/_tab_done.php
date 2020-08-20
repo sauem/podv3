@@ -17,7 +17,7 @@ use backend\models\ContactsModel;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => 'pjax-done'
+                    'id' =>isset($id) ? $id :  'pjax-done'
                 ]
             ],
             'headerRowOptions' => [

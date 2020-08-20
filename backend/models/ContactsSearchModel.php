@@ -5,7 +5,6 @@ namespace backend\models;
 use common\helper\Helper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\ContactsModel;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -22,7 +21,7 @@ class ContactsSearchModel extends ContactsModel
     public function rules()
     {
         return [
-            [['assign', 'user_id'], 'safe'],
+            [['assign', 'user_id','pending'], 'safe'],
             [['id', 'zipcode', 'created_at', 'updated_at'], 'integer'],
             [['name', 'phone', 'email', 'address', 'option', 'ip', 'note', 'link', 'short_link', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey', 'status'], 'safe'],
         ];
@@ -42,19 +41,25 @@ class ContactsSearchModel extends ContactsModel
      *
      * @param array $params
      *
+     * @param bool $group
+     * @param bool $pending
      * @return ActiveDataProvider
+     * @throws \Exception
      */
-    public function search($params, $group = true)
+    public function search($params, $group = true, $pending = false)
     {
         $query = ContactsModel::find()->orderBy(['contacts.status' => SORT_ASC]);
 
         // add conditions that should always apply here
         if (Helper::userRole(UserModel::_SALE)) {
-            $status = ContactsAssignment::lastStatusAssignment();
+            $status = ContactsAssignment::lastStatusAssignment($pending);
             $query->innerJoin('contacts_assignment',
                 'contacts_assignment.contact_phone=contacts.phone')
                 ->where(['=', 'contacts_assignment.user_id', \Yii::$app->user->getId()])
                 ->andWhere(['=', 'contacts_assignment.status', $status]);
+            if($status == ContactsAssignment::_PENDING){
+                $query->andWhere(['<>','contacts_assignment.callback_time', ""]);
+            }
 
         } else {
             if ($group) {

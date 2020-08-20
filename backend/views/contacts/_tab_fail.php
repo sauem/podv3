@@ -18,7 +18,7 @@ use kartik\grid\ExpandRowColumn;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => 'pjax-fail'
+                    'id' => isset($id) ? $id : 'pjax-fail'
                 ]
             ],
             'headerRowOptions' => [

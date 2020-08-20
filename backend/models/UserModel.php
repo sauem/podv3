@@ -237,5 +237,11 @@ class UserModel extends User
         return $count;
     }
 
-
+    public function getPending()
+    {
+        return $this->hasOne(ContactsAssignment::className(), ['user_id' => 'id'])->where([
+            'contacts_assignment.status' => ContactsAssignment::_PENDING,
+            ])->andWhere(['<>','contacts_assignment.callback_time', ""])
+            ->orderBy(['contacts_assignment.updated_at' => SORT_DESC]);
+    }
 }

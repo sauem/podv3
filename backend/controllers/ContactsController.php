@@ -20,17 +20,16 @@ use yii\web\NotFoundHttpException;
  */
 class ContactsController extends BaseController
 {
-    public function actionIndex()
+    public function actionIndex($lastTime = null)
     {
         $phone = Yii::$app->request->get("phone");
         if (Helper::userRole(UserModel::_ADMIN) && !$phone) {
             $this->redirect(Url::toRoute(['/contacts-assignment/index']));
         }
-        if (Helper::userRole(UserModel::_SALE)) {
-            $saleID = Yii::$app->user->getId();
-            $phone = UserModel::findOne($saleID);
-            $phone = isset($phone->processing) ? $phone->processing->contact_phone : ContactsAssignment::prevAssignment();
-        }
+        $saleID = Yii::$app->user->getId();
+        $user = UserModel::findOne($saleID);
+        $phone = isset($user->processing) ? $user->processing->contact_phone : ContactsAssignment::prevAssignment();
+        $pendingPhone = isset($user->pending) ? $user->pending->contact_phone : null;
 
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
@@ -46,7 +45,6 @@ class ContactsController extends BaseController
                 ]
             ]
         ));
-
         $failureProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -83,11 +81,68 @@ class ContactsController extends BaseController
             ]
         ));
 
+
+        $_dataProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $pendingPhone,
+                    'status' => [
+                        ContactsModel::_NEW,
+                        ContactsModel::_PENDING,
+                        ContactsModel::_CALLBACK,
+                    ]
+                ]
+            ]
+        ),false,true);
+        $_failureProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $pendingPhone,
+                    'status' => [
+                        ContactsModel::_CANCEL,
+                        ContactsModel::_SKIP,
+                        ContactsModel::_DUPLICATE,
+                        ContactsModel::_NUMBER_FAIL
+                    ]
+                ]
+            ]
+        ),false,true);
+        $_successProvider = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $pendingPhone,
+                    'status' => ContactsModel::_OK
+                ]
+            ]
+        ),false,true);
+        $_callbackTime = $searchModel->search(array_merge(
+            Yii::$app->request->queryParams,
+            [
+                'ContactsSearchModel' => [
+                    'phone' => $pendingPhone,
+                    'status' => [
+                        ContactsModel::_PENDING,
+                        ContactsModel::_CALLBACK,
+                    ]
+                ]
+            ]
+        ),false,true);
+
+
         $modelNote = new ContactsLog;
         $info = ContactsModel::find()->where(['phone' => $phone])
             ->orderBy(['created_at' => SORT_ASC])
             ->with('saleAssign')
             ->one();
+
+        $_info = ContactsModel::find()->where(['phone' => $pendingPhone])
+            ->orderBy(['created_at' => SORT_ASC])
+            ->with('saleAssign')
+            ->one();
+
         $user = UserModel::findOne(Yii::$app->user->getId());
         $order = new OrdersModel;
 
@@ -116,6 +171,16 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+        $_currentHistories = new ActiveDataProvider([
+            'query' => ContactsLog::find()
+                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
+                ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
+                ->andWhere(['contacts.phone' => $pendingPhone])
+                ->orderBy(['created_at' => SORT_DESC]),
+            'pagination' => [
+                'pageSize' => 10
+            ]
+        ]);
         $phonesAssign = ContactsAssignment::findAll(['user_id' => Yii::$app->user->getId()]);
 
         return $this->render('index', [
@@ -124,14 +189,20 @@ class ContactsController extends BaseController
             'failureProvider' => $failureProvider,
             'successProvider' => $successProvider,
             'callbackProvider' => $callbackTime,
+            '_dataProvider' => $_dataProvider,
+            '_failureProvider' => $_failureProvider,
+            '_successProvider' => $_successProvider,
+            '_callbackProvider' => $_callbackTime,
             'modelNote' => $modelNote,
             'order' => $order,
             'user' => $user,
             'info' => $info,
+            '_info' => $_info,
             'histories' => $histories,
             'phonesAssign' => $phonesAssign,
             'contactHistories' => $contactHistories,
-            'currentHistories' => $currentHistories
+            'currentHistories' => $currentHistories,
+            '_currentHistories' => $_currentHistories
         ]);
     }
 
