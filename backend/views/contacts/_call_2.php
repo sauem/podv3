@@ -138,7 +138,7 @@ use yii\widgets\Pjax;
                             <a class="nav-link" href="#filter" data-toggle="collapse">
                                 <i class="ti-filter"></i> Tìm kiếm</a>
                         </div>
-                        <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider,'id' => '_waiting2']) ?>
+                        <?= $this->render('_tab_wait', ['dataProvider' => $dataProvider,'id' => 'waiting2']) ?>
                     </div>
                     <div class="tab-pane fade" id="_callback">
                         <div class="mb-2">
@@ -150,13 +150,13 @@ use yii\widgets\Pjax;
                             <button id="createOrder" class="btn btn-sm btn-info">Tạo đơn hàng</button>
                         </div>
 
-                        <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider,'id' => '_callback2']) ?>
+                        <?= $this->render('_tab_callback', ['dataProvider' => $callbackProvider,'id' => 'callback2']) ?>
                     </div>
                     <div class="tab-pane fade" id="_failure">
-                        <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider,'id' => '_failure2']) ?>
+                        <?= $this->render('_tab_fail', ['dataProvider' => $failureProvider,'id' => 'failure2']) ?>
                     </div>
                     <div class="tab-pane fade" id="_success">
-                        <?= $this->render('_tab_done', ['dataProvider' => $successProvider, 'id' => '_success2']) ?>
+                        <?= $this->render('_tab_done', ['dataProvider' => $successProvider, 'id' => 'success2']) ?>
                     </div>
 
                 </div>

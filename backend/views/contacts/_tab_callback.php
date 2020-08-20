@@ -18,7 +18,7 @@ use common\helper\Helper;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => isset($id) ? $id : 'pjax-callback'
+                    'id' => isset($id) ? "pjax-$id" : 'pjax-callback'
                 ]
             ],
             'headerRowOptions' => [
