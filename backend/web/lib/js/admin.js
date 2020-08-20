@@ -271,6 +271,9 @@ $("body").on("click", ".submitLog", function (e) {
     }
     swal.fire({
         title : "Đang xử lý...",
+        showConfirmAlert: false,
+        showConfirmButton: false,
+        allowOutsideClick : false,
         onBeforeOpen : () => {
             swal.showLoading();
             $.ajax({
