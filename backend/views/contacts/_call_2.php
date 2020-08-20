@@ -14,7 +14,7 @@ use yii\widgets\Pjax;
 
     <div class="col-md-4">
         <?php Pjax::begin([
-            'id' => 'pjax-info'
+            'id' => 'pjax-info2'
         ]) ?>
         <div class="ibox">
             <div class="ibox-head">
