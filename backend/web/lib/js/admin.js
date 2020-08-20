@@ -284,15 +284,17 @@ $("body").on("click", ".submitLog", function (e) {
                 contentType: false,
                 processData: false,
                 success: function (res) {
-                    swal.hideLoading();
                     __reloadData();
-                    swal.close();
                     if (res.success) {
+
                         return false;
                     } else {
                         toastr.warning(res.msg);
                     }
                 }
+            }).done(function () {
+                swal.hideLoading();
+                swal.close();
             });
         }
     })
