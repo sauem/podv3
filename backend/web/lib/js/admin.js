@@ -269,22 +269,31 @@ $("body").on("click", ".submitLog", function (e) {
         _formData.get("callback_time") == "") {
         _formData.set("callback_time", 1);
     }
-    $.ajax({
-        url: _url,
-        data: _formData,
-        type: 'POST',
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function (res) {
-            __reloadData();
-            if (res.success) {
-                return false;
-            } else {
-                toastr.warning(res.msg);
-            }
+    swal.fire({
+        title : "Đang xử lý...",
+        onBeforeOpen : () => {
+            swal.showLoading();
+            $.ajax({
+                url: _url,
+                data: _formData,
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    swal.hideLoading();
+                    __reloadData();
+                    swal.hide();
+                    if (res.success) {
+                        return false;
+                    } else {
+                        toastr.warning(res.msg);
+                    }
+                }
+            });
         }
-    });
+    })
+
     return false;
 });
 $("body").on("change", "select[name='payment_method']", function () {
