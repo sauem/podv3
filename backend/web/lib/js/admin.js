@@ -286,7 +286,7 @@ $("body").on("click", ".submitLog", function (e) {
                 success: function (res) {
                     swal.hideLoading();
                     __reloadData();
-                    swal.hide();
+                    swal.close();
                     if (res.success) {
                         return false;
                     } else {
