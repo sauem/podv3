@@ -115,7 +115,7 @@ class doScanContactByCountry
         $model = ContactsAssignment::find()
             ->where(['user_id' => $user->id])
             ->andWhere(['is not', 'callback_time', new \yii\db\Expression('null')])
-            ->orWhere(['is not', 'callback_time', ""])
+            ->orWhere(['<>', 'callback_time', ""])
             ->andWhere(['status' => ContactsAssignment::_PENDING])
             ->orderBy(['callback_time' => SORT_ASC])->all();
 
