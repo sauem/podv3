@@ -441,7 +441,7 @@ class AjaxController extends BaseController
                             $item->sku = $product->sku;
                             $item->qty = $sku['qty'];
                             $item->save();
-                        }else{
+                        } else {
                             $errors[$k] = "Mỗi order cần tối thiểu 1 SKU và số lượng là 1";
                         }
                     }
@@ -806,7 +806,7 @@ class AjaxController extends BaseController
                 if ($content['option'] === $content['formInfo']['content']) {
                     continue;
                 }
-                $category = ArrayHelper::getValue($content,'page.category.name',"");
+                $category = ArrayHelper::getValue($content, 'page.category.name', "");
                 $data[$k] = [
                     'category' => $category,
                     'content' => $content['option'],
@@ -859,6 +859,47 @@ class AjaxController extends BaseController
             return [
                 'success' => 1,
                 'file' => "/file/forminfo.xlsx"
+            ];
+        }
+    }
+
+    function actionChangeAddress()
+    {
+        if (Yii::$app->request->isPost) {
+            $address = Yii::$app->request->post("address");
+            $key = Yii::$app->request->post("cid");
+
+            $contact = ContactsModel::findOne($key);
+            if (!$contact) {
+                return [
+                    'success' => 0,
+                    'msg' => Helper::firstError($contact)
+                ];
+            }
+            $customer = Customers::findOne(['phone' => $contact->phone]);
+            if ($customer) {
+                $customer->address = $address;
+                if ($customer->save()) {
+                    return [
+                        'success' => 1,
+                        'msg' => 'Thay đổi địa chỉ thành công!'
+                    ];
+                }
+                return [
+                    'success' => 0,
+                    'msg' => Helper::firstError($customer)
+                ];
+            }
+            $contact->address = $address;
+            if ($contact->save()) {
+                return [
+                    'success' => 1,
+                    'msg' => 'Thay đổi địa chỉ thành công!'
+                ];
+            }
+            return [
+                'success' => 0,
+                'msg' => Helper::firstError($contact)
             ];
         }
     }

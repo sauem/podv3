@@ -270,11 +270,11 @@ $("body").on("click", ".submitLog", function (e) {
         _formData.set("callback_time", 1);
     }
     swal.fire({
-        title : "Đang xử lý...",
+        title: "Đang xử lý...",
         showConfirmAlert: false,
         showConfirmButton: false,
-        allowOutsideClick : false,
-        onBeforeOpen : () => {
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
             swal.showLoading();
             $.ajax({
                 url: _url,
@@ -286,7 +286,6 @@ $("body").on("click", ".submitLog", function (e) {
                 success: function (res) {
                     __reloadData();
                     if (res.success) {
-
                         return false;
                     } else {
                         toastr.warning(res.msg);
@@ -314,7 +313,39 @@ $("body").on("change", "select[name='payment_method']", function () {
             break;
     }
 });
-
+$("body").on("click", ".changeAddessDefault", function () {
+    const cid = $(this).data('key');
+    (async () => {
+        const {value: _address} = await swal.fire({
+            title: "Thay đổi địa chỉ",
+            input: "text",
+            showCancelButton: true,
+            inputValue: '',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Không có nội dung??'
+                }
+            }
+        });
+        if (_address) {
+            $.ajax({
+                url: config.changeAddess,
+                type: "POST",
+                cache: false,
+                data : {address : _address, cid : cid},
+                success : function (res) {
+                    if(res.success){
+                        toastr.success(res.msg);
+                        return;
+                    }else{
+                        toastr.warning(res.msg);
+                    }
+                    __reloadData();
+                }
+            })
+        }
+    })();
+});
 $("body").on("click", ".block", function () {
     let _key = $(this).data("key");
     let _type = $(this).data("type");
@@ -502,6 +533,6 @@ function coppy(element) {
     $("body").append(_input);
     $(_input).val(_phone).select();
     document.execCommand("copy");
-    toastr.success("Đã coppy số điện thoại " + _phone  + " vào clipboard!");
+    toastr.success("Đã coppy số điện thoại " + _phone + " vào clipboard!");
     $(_input).remove();
 }

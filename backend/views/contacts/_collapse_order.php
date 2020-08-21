@@ -98,7 +98,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Địa chỉ <span class="text-danger">(*)</span></label>
+                    <label>Địa chỉ <span class="text-danger">(*)</span> <small><a data-key="{{this.info.id}}" data-pjax="0" class="changeAddessDefault" href="javasript:;">Đổi địa chỉ</a></small></label>
                     <input required name="address" value="{{this.info.address}}" class="form-control">
                 </div>
             </div>

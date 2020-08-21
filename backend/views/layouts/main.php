@@ -52,6 +52,7 @@ AppAsset::register($this);
             saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
             findFormInfo: "<?= Url::toRoute(['ajax/find-form-info'])?>",
             exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
+            changeAddess: "<?= Url::toRoute(['ajax/change-address'])?>",
         }
 
     </script>
