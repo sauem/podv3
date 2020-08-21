@@ -12,6 +12,7 @@ class Common extends Model
     public $delete_time;
     public $rescan_contact_time;
     public $drive_id;
+    public $map_api;
 
     public function rules()
     {
@@ -19,7 +20,7 @@ class Common extends Model
             [[
                 'backup_time', 'delete_time', 'rescan_contact_time'
             ], 'integer'],
-            [['drive_id'], 'string']
+            [['drive_id','map_api'], 'string']
         ];
     }
 
@@ -30,6 +31,7 @@ class Common extends Model
             'delete_time' => 'Xóa dữ liệu cũ (giờ)',
             'rescan_contact_time' => 'Auto phân bổ SĐT (giờ)',
             'drive_id' => 'Thư mục driver lưu dữ liệu',
+            'map_api' => 'API google Maps'
         ];
     }
 

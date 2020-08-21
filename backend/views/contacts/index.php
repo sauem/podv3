@@ -149,7 +149,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <a id="changeStatus" class="btn btn-sm btn-info" href="#">Thay đổi trạng
                                                     thái</a>
                                             <?php } ?>
-                                            <button id="createOrder" class="createOrder btn btn-sm btn-info">Tạo đơn hàng</button>
+                                            <button id="createOrder" class="createOrder btn btn-sm btn-info">Tạo đơn
+                                                hàng
+                                            </button>
                                         </div>
                                         <a class="nav-link" href="#filter" data-toggle="collapse">
                                             <i class="ti-filter"></i> Tìm kiếm</a>
@@ -269,9 +271,36 @@ $js = <<<JS
                     data : {keys : keys},
                     cache : false,
                     success: function(res) {
-                        let html =  compileTemplate("template-product",res.customer);
-                        $("#resultInfo").html(html);
-                         setORDER(res);
+                        const { zipcode , country } = res.customer.info;
+                        const coutries  = res.customer.countries;
+                        let countryName = country;
+                        $.each(coutries, (index, item ) => {
+                           if(item.code == country){
+                               countryName = item.name;
+                               return 0;
+                           } 
+                        });
+                        stateCity(zipcode, countryName)
+                            .then(data => {
+                                let _info = data.results[0].address_components;
+                                $.each(_info, (index, item) => {
+                                    if (item.types.includes("administrative_area_level_1")) {
+                                        res.customer.info.city = item.short_name;
+                                    }
+                                    if (item.types.includes("administrative_area_level_2")) {
+                                        res.customer.info.district = item.short_name;
+                                    }
+                                })
+                            }).then(() => {
+                                    let html =  compileTemplate("template-product",res.customer);
+                                    $("#resultInfo").html(html);
+                                     setORDER(res);
+                            }).catch(error => {
+                                 let html =  compileTemplate("template-product",res.customer);
+                                    $("#resultInfo").html(html);
+                                     setORDER(res);
+                            })
+                    
                     }
                 })
             }

@@ -116,4 +116,10 @@ class Helper
         $bk =  SettingModel::findOne(['section' => "Common", "key" => $name]);
         return ArrayHelper::getValue($bk,'value');
     }
+
+    static function getState($code,$city){
+        $apiKEY = Helper::setting("map_api");
+        $geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=$code,$city&key=$apiKEY";
+       // $content = file_get_contents()
+    }
 }

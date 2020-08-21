@@ -185,7 +185,6 @@ function __reloadTotal() {
         ORDER.total = parseFloat(ORDER.subTotal) + parseFloat(ORDER.shipping);
     }
     $("#totalResult").html(compileTemplate("total-template", ORDER));
-    console.log(ORDER);
 }
 
 function __changeProductPrice(_sku, val) {
@@ -332,12 +331,12 @@ $("body").on("click", ".changeAddessDefault", function () {
                 url: config.changeAddess,
                 type: "POST",
                 cache: false,
-                data : {address : _address, cid : cid},
-                success : function (res) {
-                    if(res.success){
+                data: {address: _address, cid: cid},
+                success: function (res) {
+                    if (res.success) {
                         toastr.success(res.msg);
                         return;
-                    }else{
+                    } else {
                         toastr.warning(res.msg);
                     }
                     __reloadData();
@@ -536,3 +535,16 @@ function coppy(element) {
     toastr.success("Đã coppy số điện thoại " + _phone + " vào clipboard!");
     $(_input).remove();
 }
+
+async function stateCity(zipcode, city) {
+    if (!zipcode || !city) {
+        alert(`${zipcode} hoặc ${city} không hợp lệ!`);
+        return;
+    }
+    let _zipcodeCity = `${zipcode},${city}`;
+    let _APIKEY = "AIzaSyAJhK69YmHB0avkorsjxa73Fg7wJRiZz7w";
+    let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + _zipcodeCity + "&key=" + _APIKEY;
+    return await fetch(url).then(res => res.json());
+}
+
+
