@@ -251,10 +251,17 @@ $js = <<<JS
            $("html, body").animate({ scrollTop: 0 }, "slow");
            
            restOrder();
-           loadProducts(keys).then(() => loadSku(getSelectedColum()))
-           .then(() => {
-                __findOrderForm(ORDER.option, ORDER.cate);
-           })
+            swal.fire({
+            title : "Đang đọc dữ liệu...",
+            onBeforeOpen : function() {
+                swal.showLoading();
+                loadProducts(keys).then(() => loadSku(getSelectedColum()))
+                .then(() => {
+                        __findOrderForm(ORDER.option, ORDER.cate);
+                })
+                .then(() => {swal.close()});
+              }
+           });
         });
         
        $("#collapse-order").on("hidden.bs.collapse", function() {
@@ -264,6 +271,7 @@ $js = <<<JS
        });
        
        async function loadProducts(keys) {
+          
             if(keys.length > 0){
               await  $.ajax({    
                     url : "$loadProduct",
