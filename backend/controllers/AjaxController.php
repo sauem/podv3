@@ -18,6 +18,7 @@ use backend\models\OrdersBilling;
 use backend\models\OrdersModel;
 use backend\models\ProductsModel;
 use backend\models\UserModel;
+use backend\models\ZipcodeCountry;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\data\ArrayDataProvider;
@@ -279,6 +280,35 @@ class AjaxController extends BaseController
         ];
     }
 
+    function actionPushZipcode()
+    {
+        $contacts = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $errors = [];
+        $count = 0;
+        if (!empty($contacts)) {
+            foreach ($contacts as $k => $zipcode) {
+                $model = new ZipcodeCountry;
+                $data = [
+                    'country_name' => $zipcode['country_name'],
+                    'country_code' => $zipcode['country_code'],
+                    'zipcode' => $zipcode['zipcode'],
+                    'city' => $zipcode['city'],
+                    'district' => $zipcode['district'],
+                    'address' => $zipcode['address'],
+                ];
+
+                if (!$model->load($data, "") || !$model->save()) {
+                    $errors[$k] = Helper::firstError($model);
+                    ActionLog::add("error", Helper::firstError($model));
+                };
+            }
+            $count = sizeof($contacts) - sizeof($errors);
+
+            return self::resultImport($count, $errors, 1);
+        }
+        return self::resultImport($count, $errors, 0);
+    }
 
     function actionPushContact()
     {
@@ -900,6 +930,30 @@ class AjaxController extends BaseController
             return [
                 'success' => 0,
                 'msg' => Helper::firstError($contact)
+            ];
+        }
+    }
+
+    function actionFindCity()
+    {
+        if (Yii::$app->request->isPost) {
+            $zipcode = Yii::$app->request->post("zipcode");
+            $country = Yii::$app->request->post("country");
+
+            $model = ZipcodeCountry::findOne(['zipcode' => $zipcode, 'country_code' => $country]);
+            if ($model) {
+                return [
+                    'success' => 1,
+                    'result' => [
+                        'city' => $model->city,
+                        'district' => $model->district,
+                        'address' => $model->address
+                    ]
+                ];
+            }
+            return [
+                'success' => 0,
+                'msg' => "Không tìm thấy địa chỉ mặc định phù hợp"
             ];
         }
     }

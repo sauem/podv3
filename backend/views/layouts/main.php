@@ -37,6 +37,7 @@ AppAsset::register($this);
             pushContact: "<?= Url::toRoute(['ajax/push-contact'])?>",
             pushProduct: "<?=Url::toRoute(['ajax/push-product'])?>",
             pushOrder: "<?=Url::toRoute(['ajax/push-oder'])?>",
+            pushZipcode: "<?=Url::toRoute(['ajax/push-zipcode'])?>",
             removeImages: "<?= Url::toRoute(['ajax/remove-image'])?>",
             drafImage: "<?= Url::toRoute(['ajax/draf-image'])?>",
             maxSize: 10485760,
@@ -51,6 +52,7 @@ AppAsset::register($this);
             deleteAll: "<?= Url::toRoute(['ajax/delete-all'])?>",
             saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
             findFormInfo: "<?= Url::toRoute(['ajax/find-form-info'])?>",
+            findCity: "<?= Url::toRoute(['ajax/find-city'])?>",
             exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
             changeAddess: "<?= Url::toRoute(['ajax/change-address'])?>",
         }

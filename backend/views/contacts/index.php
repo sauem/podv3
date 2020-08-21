@@ -272,25 +272,12 @@ $js = <<<JS
                     cache : false,
                     success: function(res) {
                         const { zipcode , country } = res.customer.info;
-                        const coutries  = res.customer.countries;
-                        let countryName = country;
-                        $.each(coutries, (index, item ) => {
-                           if(item.code == country){
-                               countryName = item.name;
-                               return 0;
-                           } 
-                        });
-                        stateCity(zipcode, countryName)
-                            .then(data => {
-                                let _info = data.results[0].address_components;
-                                $.each(_info, (index, item) => {
-                                    if (item.types.includes("administrative_area_level_1")) {
-                                        res.customer.info.city = item.short_name;
-                                    }
-                                    if (item.types.includes("administrative_area_level_2")) {
-                                        res.customer.info.district = item.short_name;
-                                    }
-                                })
+                       
+                        detectLocalCity(zipcode, country)
+                            .then(data => { 
+                                const {city , district } = data;
+                                res.customer.info.city = city;
+                                res.customer.info.district = district;
                             }).then(() => {
                                     let html =  compileTemplate("template-product",res.customer);
                                     $("#resultInfo").html(html);

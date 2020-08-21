@@ -548,3 +548,30 @@ async function stateCity(zipcode, city) {
 }
 
 
+async function detectLocalCity(zipcode, country) {
+    let _city, _district, _address;
+    if (!zipcode || !country) {
+        alert(`${zipcode} hoặc ${country} không hợp lệ!`);
+        return;
+    }
+    await $.ajax({
+        url: config.findCity,
+        data: {zipcode: zipcode, country: country},
+        type: "POST",
+        success: function (res) {
+            if (res.success) {
+                const {city, district, address} = res.result
+                _city = city;
+                _district = district;
+                _address = address
+            }else{
+                toastr.warning(res.msg);
+            }
+        }
+    })
+    return {
+        city: _city,
+        district: _district,
+        address: _address
+    }
+}

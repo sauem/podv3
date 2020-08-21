@@ -27,6 +27,7 @@ AppAsset::register($this);
             pushContact: "<?= Url::toRoute(['ajax/push-contact'])?>",
             pushProduct: "<?=Url::toRoute(['ajax/push-product'])?>",
             pushOrder: "<?=Url::toRoute(['ajax/push-order'])?>",
+            pushZipcode: "<?=Url::toRoute(['ajax/push-zipcode'])?>",
             maxSize: 10485760
         }
 

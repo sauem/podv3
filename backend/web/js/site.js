@@ -66,6 +66,8 @@ function doProcessWorkbook(workbook, file) {
         maxColumn = 7;
     } else if (firstSheet === "order") {
         maxColumn = 13;
+    } else if (firstSheet === "zipcode") {
+        maxColumn = 6;
     }
     let row = getRow(sheet, rowsIndex, maxColumn);
     while (row !== null) {
@@ -97,6 +99,9 @@ function doProcessWorkbook(workbook, file) {
         case "order":
             renderViewTemplate("result", "order-template", data)
             break;
+        case "zipcode":
+            renderViewTemplate("result", "zipcode-template", data)
+            break;
         default:
             renderViewTemplate("result", "excel-template", data)
             break;
@@ -111,12 +116,16 @@ $(".handleData").click(function () {
     if (_importAction === "product") {
         _url = config.pushProduct;
     }
+
     if (_importAction === "order") {
         _url = config.pushOrder;
         let _form = $("form#formUpload").serializeArray();
-        if (typeof _form[1] !== "undefined" && _form[1].value === "on"){
+        if (typeof _form[1] !== "undefined" && _form[1].value === "on") {
             _createAction = true;
         }
+    }
+    if (_importAction === "zipcode") {
+        _url = config.pushZipcode;
     }
 
     if (typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0) {
@@ -141,7 +150,7 @@ $(".handleData").click(function () {
                 data: {
                     contacts: window.EXCEL.rows,
                     fileName: window.EXCEL.fileName,
-                    createNew : _createAction ? "ok" : ""
+                    createNew: _createAction ? "ok" : ""
                 },
                 success: function (res) {
                     if (!res.success) {
@@ -200,6 +209,16 @@ function switchItem(sheet, row) {
             item.skus[4].sku = row[11] ? row[11].v : "";
             item.skus[4].qty = row[12] ? row[12].v : "";
             break;
+
+        case "zipcode":
+            item = new zipcodeModel();
+            item.country_name = row[0] ? row[0].v : "";
+            item.country_code = row[1] ? row[1].v : "";
+            item.zipcode = row[2] ? row[2].v : "";
+            item.city = row[3] ? row[3].v : "";
+            item.district = row[4] ? row[4].v : "";
+            item.address = row[5] ? row[5].v : "";
+            break;
         default:
             item = new contactModel();
             item.register_time = row[0] ? (row[0].v.getTime() / 1000) : null;
@@ -255,6 +274,17 @@ function productModel() {
         category: "",
         regular_price: 0,
         option: ""
+    }
+}
+
+function zipcodeModel() {
+    return {
+        country_name: "",
+        country_code: "",
+        zipcode: "",
+        city: "",
+        district: "",
+        address: "",
     }
 }
 
