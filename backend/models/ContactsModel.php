@@ -249,7 +249,7 @@ class ContactsModel extends BaseModel
 
     public function afterSave($insert, $changedAttributes)
     {
-        static::updateCompleteAndNextProcess();
+        static::updateCompleteAndNextProcess($this->phone);
         if ($insert) {
             ActionLog::add("success", "Thêm liên hệ mới $this->id");
         } else {
@@ -282,10 +282,10 @@ class ContactsModel extends BaseModel
         return false;
     }
 
-    static function updateCompleteAndNextProcess()
+    static function updateCompleteAndNextProcess($phone)
     {
-        $processing = ContactsAssignment::findOne(['user_id' => Yii::$app->user->getId(), 'status' => ContactsAssignment::_PROCESSING]);
-        if ($processing && static::hasCompeleted($processing->contact_phone)) {
+        $processing = ContactsAssignment::findOne(['user_id' => Yii::$app->user->getId(), 'contact_phone' => $phone, 'status' => ContactsAssignment::_PROCESSING]);
+        if ($processing && static::hasCompeleted($phone)) {
             if (!ContactsAssignment::nextAssignment()) {
                 Yii::$app->session->setFlash("error", "Hiện tại đã hết liên hệ, xin hãy chờ!");
             } else {
