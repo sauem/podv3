@@ -181,13 +181,13 @@ use yii\helpers\Url;
         </div>
     </script>
     <script type="text/x-handlebars-template" id="template-sku">
-        <div class="form-group">
+        <div class="form-group btn-group">
             <select class="form-control select2">
                 {{#each this}}
                 <option value="{{this.sku}}">{{this.sku}} - {{this.name}}</option>
                 {{/each}}
             </select>
-            <button type="button" id="addProduct" class="btn btn-success">Thêm sản phẩm</button>
+            <button type="button" id="addProduct" class="btn btn-sm btn-success">Thêm sản phẩm</button>
         </div>
     </script>
     <script type="text/x-handlebars-template" id="template-item-product">
