@@ -564,7 +564,7 @@ async function detectLocalCity(zipcode, country) {
                 _city = city;
                 _district = district;
                 _address = address
-            }else{
+            } else {
                 toastr.warning(res.msg);
             }
         }
@@ -575,3 +575,18 @@ async function detectLocalCity(zipcode, country) {
         address: _address
     }
 }
+
+$("body").on("click", ".autoUpdateCity", function () {
+    let _form = $(this).closest("form#formOrder");
+
+    let _zip = _form.find("input[name='zipcode']").val();
+    let _country = _form.find("select[name='country']").val();
+    if (!_zip && _country) {
+        alert("zipcode hoặc thành phố không hợp lệ!");
+        return;
+    }
+    detectLocalCity(_zip, _country).then(res => {
+        _form.find("input[name='city']").val(res.city);
+        _form.find("input[name='district']").val(res.district);
+    }).catch(error => alert(error.message))
+});

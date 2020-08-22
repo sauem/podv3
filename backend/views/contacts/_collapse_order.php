@@ -110,7 +110,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Thành phố <span class="text-danger"></span></label>
+                    <label>Thành phố <span class="text-danger"></span> <a data-key="{{this.info.id}}" data-pjax="0" class="autoUpdateCity" href="javasript:;">Cập nhật</a></label>
                     <input value="{{this.info.city}}" name="city" class="form-control">
                 </div>
             </div>
