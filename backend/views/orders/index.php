@@ -153,7 +153,7 @@ use common\helper\Helper;
                 'dataProvider' => $dataProvider,
                 'panel' => [
                     'type' => GridView::TYPE_INFO,
-                    'before' => Html::a('<i class="fa fa-trash"></i> Xóa cột', 'javascript:;',
+                    'before' => Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
                         [
                             'class' => 'btn deleteAll btn-warning',
                             'data-pjax' => '0',

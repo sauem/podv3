@@ -27,8 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-head">
                     <h2 class="ibox-title">Liên hệ chờ xử lý/thất bại</h2>
                     <div class="ibox-tools">
-                        <a href="javascript:;" class="approvePhone"><i class="fa fa-cogs"></i> Phân bổ</a>
-                        <a data-toggle="collapse" href="#filter1"><i class="fa fa-filter"></i> Tìm kiếm</a>
+                        <a href="javascript:;" class="text-danger approvePhone"><i class="fa fa-cogs"></i> Phân bổ</a>
+                        <a class="text-danger" data-toggle="collapse" href="#filter1"><i class="fa fa-filter"></i> Tìm kiếm</a>
                     </div>
                 </div>
                 <div class="ibox-body">
