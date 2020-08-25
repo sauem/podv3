@@ -219,7 +219,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         'columns' => [
                             [
-                                'label' => 'Danh mục',
+                                'label' => 'loại sản phẩm',
                                 'attribute' => 'content',
                                 'value' => function ($model) {
                                     if (!$model->page) {

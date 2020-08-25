@@ -59,7 +59,7 @@ class ProductsModel extends BaseModel
             'sku' => 'Mã sản phẩm',
             'regular_price' => 'Giá gốc',
             'sale_price' => 'Giá giảm',
-            'category_id' => 'Danh mục',
+            'category_id' => 'loại sản phẩm',
             'description' => 'Mô tả',
             'option' => 'Tùy chọn',
             'created_at' => 'Ngày tạo',

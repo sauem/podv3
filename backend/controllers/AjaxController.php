@@ -435,7 +435,7 @@ class AjaxController extends BaseController
                 if (!$category) {
                     if (!$createNew) {
 
-                        $errors[$k] = "không tồn tại danh mục";
+                        $errors[$k] = "không tồn tại loại sản phẩm";
                         continue;
                     }
                     $category = new CategoriesModel;
@@ -818,7 +818,7 @@ class AjaxController extends BaseController
             }
             $data = [];
 
-            $export->renderCell("A1", "Danh mục");
+            $export->renderCell("A1", "loại sản phẩm");
             $export->renderCell("B1", "Nội dung");
             $export->renderCell("C1", "Doanh thu");
             $export->renderCell("D1", "Sku1");

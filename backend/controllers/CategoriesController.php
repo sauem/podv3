@@ -48,8 +48,8 @@ class CategoriesController extends BaseController
         if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
 
             if($model->save()){
-                ActionLog::add("success","Tạo danh mục mới!");
-                self::success("Tạo danh mục thành công!");
+                ActionLog::add("success","Tạo loại sản phẩm mới!");
+                self::success("Tạo loại sản phẩm thành công!");
             }else{
                 ActionLog::add("error",Helper::firstError($model));
                 self::error(Helper::firstError($model));

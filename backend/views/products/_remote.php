@@ -26,7 +26,7 @@ use kartik\form\ActiveForm;
             <tr>
                 <th>Tên sản phẩm</th>
                 <th>Mã sản phẩm</th>
-                <th>Danh mục</th>
+                <th>loại sản phẩm</th>
                 <th>Giá sản phẩm</th>
                 <th>Thuộc tính</th>
             </tr>

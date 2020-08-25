@@ -60,7 +60,7 @@ class LandingPages extends BaseModel
             'id' => 'ID',
             'name' => 'Tên trang',
             'link' => 'Link',
-            'category_id' => 'Danh mục',
+            'category_id' => 'Loại sản phẩm',
             'product_id' => 'Sản phẩm',
             'user_id' => 'Nguời tạo',
             'marketer' => 'Marketer',

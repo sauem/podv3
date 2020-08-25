@@ -38,10 +38,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'data' => \backend\models\CategoriesModel::select(),
                                     'theme' => \kartik\select2\Select2::THEME_DEFAULT,
                                     'options' => [
-                                        'prompt' => 'Chọn danh mục'
+                                        'prompt' => 'Chọn col-md-6'
                                     ]
                                 ])
-                                ->label("Danh mục sản phẩm") ?>
+                                ->label("col-md-6 sản phẩm") ?>
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'country')->dropDownList(
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]
                                 ])
                                 ->label("Sản phẩm") ?>
-                            <small class="text-warning">#Lời khuyên : Nên chọn sản phẩm với danh mục tương ứng</small>
+                            <small class="text-warning">#Lời khuyên : Nên chọn sản phẩm với loại sản phẩm tương ứng</small>
                         </div>
                     </div>
                     <div class="mt-3 text-right">
@@ -106,6 +106,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'category_id',
                                 'format' => 'html',
                                 'value' => function ($model) {
+                                    if(!$model->category){
+                                        return null;
+                                    }
                                     return $model->category->name;
                                 }
                             ],

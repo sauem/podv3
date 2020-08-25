@@ -19,7 +19,7 @@ use kartik\form\ActiveForm;
                     <table class="table table-hover table-bordered">
                         <thead>
                         <tr>
-                            <th>Danh mục</th>
+                            <th>loại sản phẩm</th>
                             <th>Doanh thu</th>
                             <th width="35%">Nội dung</th>
                             <th>Sản phẩm</th>

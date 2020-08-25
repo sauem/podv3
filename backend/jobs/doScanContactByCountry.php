@@ -6,6 +6,7 @@ namespace backend\jobs;
 
 use backend\models\AuthAssignment;
 use backend\models\ContactsAssignment;
+use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\UserModel;
 use common\helper\Helper;
@@ -65,19 +66,22 @@ class doScanContactByCountry
         }
         return false;
     }
-    static function applyPending($user_id){
+
+    static function applyPending($user_id)
+    {
         if (!self::hasProcessing($user_id)) {
-          $model = ContactsAssignment::find()
-              ->where(['user_id' => $user_id,'status' => ContactsAssignment::_PENDING])
-              ->orderBy(['created_at' => SORT_ASC])
-              ->one();
-          if($model){
-              $model->status = ContactsAssignment::_PROCESSING;
-              return $model->save();
-          }
+            $model = ContactsAssignment::find()
+                ->where(['user_id' => $user_id, 'status' => ContactsAssignment::_PENDING])
+                ->orderBy(['created_at' => SORT_ASC])
+                ->one();
+            if ($model) {
+                $model->status = ContactsAssignment::_PROCESSING;
+                return $model->save();
+            }
         }
         return false;
     }
+
     static function assignPhoneToUser($phone, $user_id, $country, $status = ContactsAssignment::_PENDING)
     {
         $model = new ContactsAssignment;
@@ -157,4 +161,18 @@ class doScanContactByCountry
         }
     }
 
+    static function skipPhoneToNewUser($phone)
+    {
+        $skip = ContactsModel::find()->where([
+            'phone' => $phone,
+            'status' => ContactsModel::_SKIP,
+        ])->all();
+        $count = sizeof($skip);
+        if ($count >= 3) {
+            $assignment = ContactsAssignment::findOne(['contact_phone' => $skip[0]->phone]);
+            if($assignment){
+                $assignment->delete();
+            }
+        }
+    }
 }

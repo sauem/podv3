@@ -82,7 +82,7 @@ class FormInfo extends BaseModel
                 'category_id' => $this->category_id
             ])->one();
             if ($exitst) {
-                $this->addError("content", "Đã tồn nội dung với danh mục trên!");
+                $this->addError("content", "Đã tồn nội dung với loại sản phẩm trên!");
                 return false;
             }
         } else {
@@ -91,7 +91,7 @@ class FormInfo extends BaseModel
                 'category_id' => $this->category_id
             ])->andWhere(['<>', 'id', $this->id])->one();
             if ($exitst) {
-                $this->addError("content", "Đã tồn nội dung với danh mục trên!");
+                $this->addError("content", "Đã tồn nội dung với loại sản phẩm trên!");
                 return false;
             }
         }

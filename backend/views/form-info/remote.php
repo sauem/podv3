@@ -24,7 +24,7 @@ use kartik\form\ActiveForm;
         </div>
         <div>
             <input type="checkbox" checked name="createNewIfNotExists">
-            <small class="text-right text-warning">Tạo sản phẩm/danh mục mới nếu chưa tồn tại trong hệ thống!<br>
+            <small class="text-right text-warning">Tạo sản phẩm/loại sản phẩm mới nếu chưa tồn tại trong hệ thống!<br>
                 Tên sản phẩm cần được điều chỉnh lại sau khi tạo tự động với chức năng này!
             </small>
         </div>
@@ -36,7 +36,7 @@ use kartik\form\ActiveForm;
         <table class="fixed_header table table-bordered table-striped table-hover">
             <thead>
             <tr>
-                <th>Danh mục</th>
+                <th>loại sản phẩm</th>
                 <th width="30%">Nội dung</th>
                 <th>Doanh thu</th>
                 <th>Sản phẩm</th>

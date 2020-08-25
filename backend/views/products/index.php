@@ -44,10 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'data' => \backend\models\CategoriesModel::select(),
                                 'theme' => \kartik\select2\Select2::THEME_DEFAULT,
                                 'options' => [
-                                    'prompt' => 'Chọn danh mục'
+                                    'prompt' => 'Chọn loại sản phẩm'
                                 ]
                             ])
-                            ->label('Danh mục sản phẩm') ?>
+                            ->label('loại sản phẩm sản phẩm') ?>
                     </div>
                     <div class="col-md-12">
                         <?= Component::money($form, $model, 'regular_price') ?>

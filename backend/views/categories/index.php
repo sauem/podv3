@@ -18,11 +18,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-5">
         <div class="ibox table-responsive">
             <div class="ibox-head">
-                <h2 class="ibox-title">Tạo danh mục</h2>
+                <h2 class="ibox-title">Tạo loại sản phẩm</h2>
             </div>
             <?php $form = ActiveForm::begin() ?>
             <div class="ibox-body">
-                <?= $form->field($model, 'name')->label('Tên danh mục') ?>
+                <?= $form->field($model, 'name')->label('Tên loại sản phẩm') ?>
                 <?= $form->field($model, 'description')->textarea()->label('Mô tả') ?>
                 <div class="text-right">
                     <?= Component::reset() ?>
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-7">
         <div class="ibox">
             <div class="ibox-head">
-                <h2 class="ibox-title">Danh mục</h2>
+                <h2 class="ibox-title">loại sản phẩm</h2>
             </div>
             <div class="ibox-body">
                 <?= GridView::widget([

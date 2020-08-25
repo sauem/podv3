@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::className(),[
                     'data' => \backend\models\CategoriesModel::select(),
                 'options' => [
-                        'prompt' => 'Danh mục sản phẩm'
+                        'prompt' => 'loại sản phẩm sản phẩm'
                 ]
             ])->label(false) ?>
         </div>
