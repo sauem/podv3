@@ -139,6 +139,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => 'Loại sản phẩm',
                                 'attribute' => 'category_id',
                                 'value' => function ($model) {
+                                    if(!$model->category){
+                                        return null;
+                                    }
                                     return $model->category->name;
                                 }
                             ],
