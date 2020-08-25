@@ -3,6 +3,7 @@
 namespace common\helper;
 
 use backend\models\Backups;
+use backend\models\ZipcodeCountry;
 use yii\helpers\ArrayHelper;
 use Yii;
 use yii\helpers\Url;
@@ -87,6 +88,13 @@ class Helper
             return "";
         }
         return $ipdat->geoplugin_countryCode;
+    }
+    static function findCountryFromZipcode($code){
+        $country = ZipcodeCountry::findOne(['zipcode'  => $code]);
+        if($country){
+            return $country->country_code;
+        }
+        return false;
     }
 
     static function convertTime($date){

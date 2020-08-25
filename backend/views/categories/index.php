@@ -44,6 +44,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerRowOptions' => [
                         'class' => 'thead-light'
                     ],
+
+                    'panel' => [
+                        'type' => GridView::TYPE_INFO,
+                        'before' => Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
+                            [
+                                'class' => 'btn deleteAll btn-warning',
+                                'data-pjax' => '0',
+                                'data-model' => $dataProvider->query->modelClass
+                            ]),
+                    ],
                     'columns' => [
                         ['class' => CheckboxColumn::class],
                         'name',

@@ -99,6 +99,15 @@ class ContactsModel extends BaseModel
         return Html::tag("span", ArrayHelper::getValue(self::STATUS, $status), ['class' => "badge badge-" . $tag]);
     }
 
+    const SCENARIO_API = 'SCENARIO_API';
+
+    public function scenarios()
+    {
+        $scenario = parent::scenarios();
+        $scenario[self::SCENARIO_API] = ['phone','name','zipcode','option','note'];
+        return $scenario;
+    }
+
     public static function tableName()
     {
         return 'contacts';
@@ -138,9 +147,8 @@ class ContactsModel extends BaseModel
             $this->hashkey = md5($this->phone . $this->short_link . $this->option);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
             $this->code = Helper::makeCodeIncrement($maxIDNumber, $this->country);
-
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
-
+            $this->country = Helper::findCountryFromZipcode($this->zipcode);
             if (self::checkExists($this->hashkey)) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;
