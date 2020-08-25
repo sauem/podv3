@@ -38,10 +38,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'data' => \backend\models\CategoriesModel::select(),
                                     'theme' => \kartik\select2\Select2::THEME_DEFAULT,
                                     'options' => [
-                                        'prompt' => 'Chọn col-md-6'
+                                        'prompt' => 'Chọn loại sản phẩm'
                                     ]
                                 ])
-                                ->label("col-md-6 sản phẩm") ?>
+                                ->label("Loại sản phẩm") ?>
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'country')->dropDownList(
