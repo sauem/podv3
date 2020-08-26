@@ -28,6 +28,9 @@ use common\helper\Helper;
                 [
                     'class' => CheckboxColumn::class,
                     'checkboxOptions' => function ($model) {
+                         if (!$model->page ) {
+                             return null;
+                         }
                         return ['data-cate' => $model->page->category_id];
                     }
                 ],
