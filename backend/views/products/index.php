@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'prompt' => 'Chọn loại sản phẩm'
                                 ]
                             ])
-                            ->label('loại sản phẩm sản phẩm') ?>
+                            ->label('loại sản phẩm ') ?>
                     </div>
                     <div class="col-md-12">
                         <?= Component::money($form, $model, 'regular_price') ?>
