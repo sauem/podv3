@@ -57,12 +57,15 @@ class doScanContactByCountry
         }
         return "success";
     }
-    static function limitByStep($user_id){
+
+    static function limitByStep($user_id)
+    {
         $limit = 2;
         $model = ContactsAssignment::find()->where(['user_id' => $user_id])
             ->andWhere(['status' => [ContactsAssignment::_PENDING, ContactsAssignment::_PROCESSING]])
+            ->andWhere(['is', 'callback_time', new \yii\db\Expression('null')])
             ->count();
-        if($model < $limit){
+        if ($model < $limit) {
             return true;
         }
         return false;
@@ -85,7 +88,7 @@ class doScanContactByCountry
         if (!self::hasProcessing($user_id)) {
             $model = ContactsAssignment::find()
                 ->where(['user_id' => $user_id, 'status' => ContactsAssignment::_PENDING])
-                ->andWhere(['is','callback_time', new \yii\db\Expression('null')])
+                ->andWhere(['is', 'callback_time', new \yii\db\Expression('null')])
                 ->orderBy(['created_at' => SORT_ASC])
                 ->one();
             if ($model) {
@@ -184,7 +187,7 @@ class doScanContactByCountry
         $count = sizeof($skip);
         if ($count >= 3) {
             $assignment = ContactsAssignment::findOne(['contact_phone' => $skip[0]->phone]);
-            if($assignment){
+            if ($assignment) {
                 $assignment->delete();
             }
         }
