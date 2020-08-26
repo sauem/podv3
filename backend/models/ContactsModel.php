@@ -290,7 +290,7 @@ class ContactsModel extends BaseModel
         return false;
     }
 
-    static function updateCompleteAndNextProcess($phone)
+    static function updateCompleteAndNextProcess($phone = null)
     {
         $processing = ContactsAssignment::findOne(['user_id' => Yii::$app->user->getId(), 'contact_phone' => $phone, 'status' => ContactsAssignment::_PROCESSING]);
         if ($processing && static::hasCompeleted($phone)) {
