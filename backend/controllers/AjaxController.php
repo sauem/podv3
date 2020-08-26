@@ -551,6 +551,10 @@ class AjaxController extends BaseController
     {
         $key = Yii::$app->request->post("key");
 
+        $payment = Payment::find()->with('infos')->all();
+        $countries = Yii::$app->params['country'];
+        $skus = ProductsModel::find()->distinct('sku')->asArray()->all();
+
         $order = OrdersModel::find()->where(['id' => $key])
             ->with('items')
             ->with('contacts')
@@ -558,13 +562,20 @@ class AjaxController extends BaseController
             ->asArray()->one();
         if (!$order) {
             return [
+                'isCreated' => 1,
                 'success' => 0,
-                'msg' => 'Không tồn tại đơn hàng này!',
+                'msg' => 'Không tồn tại đơn hàng này!, chế độ tạo mới được áp dụng',
+                'skus' => $skus,
+                'items' => [],
+                'customer' => [
+                    'info' => [],
+                    'payment' => $payment,
+                    'countries' => $countries,
+                    'path' => []
+                ],
             ];
         }
-        $payment = Payment::find()->with('infos')->all();
-        $countries = Yii::$app->params['country'];
-        $skus = ProductsModel::find()->distinct('sku')->asArray()->all();
+
 
         $items = $order['items'];
         foreach ($items as $k => $item) {

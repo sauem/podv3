@@ -83,7 +83,9 @@ class OrdersModel extends BaseModel
     public function afterSave($insert, $changedAttributes)
     {
         if($insert){
-
+            if(!$this->user_id){
+                $this->user_id = Yii::$app->user->getId();
+            }
             $contact = explode(",",$this->contact_id);
             if(is_array($contact)){
                 foreach ($contact as $id){

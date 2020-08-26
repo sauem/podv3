@@ -178,8 +178,12 @@ class OrdersController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post("order_id");
+        $isCreated = Yii::$app->request->post("isCreated");
         $model = OrdersModel::findOne($id);
         if (!$model) {
+            if($isCreated){
+                return  $this->actionCreate();
+            }
             return [
                 'success' => 0,
                 'msg' => 'Đơn hàng không tồn tại'

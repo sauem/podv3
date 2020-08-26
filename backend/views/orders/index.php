@@ -153,12 +153,14 @@ use common\helper\Helper;
                 'dataProvider' => $dataProvider,
                 'panel' => [
                     'type' => GridView::TYPE_INFO,
-                    'before' => Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
-                        [
-                            'class' => 'btn deleteAll btn-warning',
-                            'data-pjax' => '0',
-                            'data-model' => $dataProvider->query->modelClass
-                        ]),
+                    'before' =>
+                        Html::a("<i class='fa fa-cart-plus'></i> Tạo đơn", "javascript:;", ['class' => 'mr-2 btn createOrder btn-info', 'data-pjax' => '0']) .
+                        Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
+                            [
+                                'class' => 'btn deleteAll btn-warning',
+                                'data-pjax' => '0',
+                                'data-model' => $dataProvider->query->modelClass
+                            ]),
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
@@ -221,6 +223,9 @@ use common\helper\Helper;
                         'attribute' => 'total',
                         'format' => 'html',
                         'value' => function ($model) {
+                            if(!$model->user){
+                                return null;
+                            }
                             return $model->user->username;
                         }
                     ],
@@ -364,6 +369,9 @@ $js = <<<JS
                     })
               }
             })
+    });
+    $(".createOrder").click(function() {
+            $("#orderEdit").modal({backdrop:"static"});
     });
 JS;
 

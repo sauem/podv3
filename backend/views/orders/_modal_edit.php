@@ -66,6 +66,7 @@ use kartik\form\ActiveForm;
                     <label>Tên khách hàng <span class="text-danger">(*)</span></label>
                     <input required name="customer_name" value="{{this.info.customer_name}}" class="form-control">
                     <input type="hidden" required name="order_id" value="{{this.info.id}}" class="form-control">
+                    <input type="hidden" required name="isCreated" value="{{this.info.isCreated}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -219,6 +220,13 @@ use kartik\form\ActiveForm;
 
     <script type="text/x-hanldebars-template" id="total-template">
         <tr>
+            <td colspan="2"><strong>Tổng cộng</strong></td>
+            <td class="text-left">
+                <strong><input class="maskMoneyTotal form-control" value="{{money this.subTotal}}"></strong>
+                <input type="hidden" value="{{subTotal}}" name="sub_total">
+            </td>
+        </tr>
+        <tr>
             <td colspan="2">Phí ship</td>
             <td><strong>{{money this.shipping}}</strong></td>
         </tr>
@@ -235,6 +243,7 @@ $skuURL = Url::toRoute(['ajax/load-sku']);
 $loadProduct = Url::toRoute(['ajax/load-product']);
 $js = <<<JS
         window.ORDER = {
+            isCreated : 0,
             skus : [],
             option : "",
             cate : null,
@@ -242,6 +251,7 @@ $js = <<<JS
             products : [],
             billings : [],
             total : 0,
+            subTotal : 0,
             shipping : 0
         }
     $("#orderEdit").on("show.bs.modal",function(e) {
@@ -264,6 +274,11 @@ $js = <<<JS
                     $(".bill-image").find("input[type='file']").attr("required",false);
                     break;
             }
+            if(ORDER.isCreated == 1){
+                $("#orderEdit").find(".modal-title").text( "Tạo đơn hàng mới!");
+            }else{
+                 $("#orderEdit").find(".modal-title").text("Chỉnh sửa đơn hàng!"); 
+            }
     });
     $("#orderEdit").on("hidden.bs.modal",function(e) {
         $("#resultProduct").empty();
@@ -272,7 +287,7 @@ $js = <<<JS
         if(ORDER.billings.length > 0){
                 _removeImage();
             }
-        
+        restOrder();
        
     });
     $("body").on("click",".removeItem",function() {
@@ -295,10 +310,19 @@ $js = <<<JS
             success : function(res) {
                 if(res.success){
                     ORDER.total = res.customer.info.total;
-                    __complieTemplate(res);
+                    ORDER.subTotal = res.customer.info.sub_total;
                 }else{
                     toastr.warning(res.msg);
+                    restOrder();
                 }
+                if(res.isCreated){
+                    ORDER.isCreated = 1;
+                    res.customer.info.isCreated = 1;
+                }else{
+                    ORDER.isCreated = 0;
+                    res.customer.info.isCreated = 0;
+                }
+                 __complieTemplate(res);
             }
         })        
     }
