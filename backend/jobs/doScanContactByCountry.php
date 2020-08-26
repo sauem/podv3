@@ -25,20 +25,23 @@ class doScanContactByCountry
         foreach ($users as $k => $user) {
             $currentUser = $user->user[0];
             // bỏ qua sale đủ số lượng SĐT trong ngày
-            if (self::hasLimit($currentUser)) {
+            if (self::hasLimit($currentUser) || self::hasProcessing($currentUser->id)) {
                 // Kiểm tra số điện thoại gọi lại
                 self::rollbackCallback($currentUser);
+                self::applyPending($currentUser->id);
                 continue;
             }
+
             self::applyPending($currentUser->id);
             //chưa có liên hệ nào được phân bổ
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
                 // Bỏ qua SĐT nếu được phân bổ
-                if (self::exitsPhone($phoneNumber)) {
+                if (self::exitsPhone($phoneNumber) || !self::limitByStep($currentUser->id)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
                     self::rollbackCallback($currentUser);
+                    self::applyPending($currentUser->id);
                     continue;
                 }
                 // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
@@ -53,6 +56,16 @@ class doScanContactByCountry
             }
         }
         return "success";
+    }
+    static function limitByStep($user_id){
+        $limit = 2;
+        $model = ContactsAssignment::find()->where(['user_id' => $user_id])
+            ->andWhere(['status' => [ContactsAssignment::_PENDING, ContactsAssignment::_PROCESSING]])
+            ->count();
+        if($model < $limit){
+            return true;
+        }
+        return false;
     }
 
     static function hasProcessing($user)
@@ -72,6 +85,7 @@ class doScanContactByCountry
         if (!self::hasProcessing($user_id)) {
             $model = ContactsAssignment::find()
                 ->where(['user_id' => $user_id, 'status' => ContactsAssignment::_PENDING])
+                ->andWhere(['is','callback_time', new \yii\db\Expression('null')])
                 ->orderBy(['created_at' => SORT_ASC])
                 ->one();
             if ($model) {
