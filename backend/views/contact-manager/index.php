@@ -12,6 +12,9 @@ use backend\models\ContactsAssignment;
 <div class="row">
     <div class="col-md-6">
         <div class="ibox">
+            <div class="ibox-head">
+                <h3 class="ibox-title">Số điện thoại gọi lại</h3>
+            </div>
             <div class="ibox-body">
                 <?= GridView::widget([
                     'dataProvider' => $callbackProvider,
@@ -74,7 +77,11 @@ use backend\models\ContactsAssignment;
         </div>
     </div>
     <div class="col-md-6">
+
         <div class="ibox">
+            <div class="ibox-head">
+                <h3 class="ibox-title">Số điện thoại đang quản lý</h3>
+            </div>
             <div class="ibox-body">
                 <?= GridView::widget([
                     'dataProvider' => $assignProvider,
