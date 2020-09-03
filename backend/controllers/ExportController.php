@@ -218,7 +218,11 @@ class ExportController extends BaseController
                 'dataProvider' => new ActiveDataProvider([
                     'query' => ContactsModel::find()
                         ->with('saleAssign')->with('page')->with('order')->with('contactsLogs')
-                        ->orderBy([new Expression('FIELD (status, \'duplicate\',\'number_fail\',\'cancel\',\'skip\',\'callback\',\'pending\',\'ok\')')])
+                        ->orderBy([new Expression('
+                       CASE WHEN status IS NULL THEN 1 ELSE 0 END,
+                       FIELD (status, \'duplicate\',\'number_fail\',\'cancel\',\'skip\',\'ok\',\'pending\',\'callback\')
+                       ')])
+
                 ]),
                 'columns' => [
                     ['label' => 'Code', 'attribute' => 'code'],
