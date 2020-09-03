@@ -6,6 +6,7 @@ use kartik\grid\ActionColumn;
 use yii\helpers\Html;
 use common\helper\Component;
 use backend\models\ContactsModel;
+use common\helper\Helper;
 use kartik\grid\ExpandRowColumn;
 ?>
     <div class="table-responsive">
