@@ -104,7 +104,7 @@ class ContactsModel extends BaseModel
     public function scenarios()
     {
         $scenario = parent::scenarios();
-        $scenario[self::SCENARIO_API] = ['phone','name','zipcode','option','note'];
+        $scenario[self::SCENARIO_API] = ['phone', 'name', 'zipcode', 'option', 'note'];
         return $scenario;
     }
 
@@ -148,7 +148,7 @@ class ContactsModel extends BaseModel
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
             $this->code = Helper::makeCodeIncrement($maxIDNumber, $this->country);
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
-            $this->country = $this->country ? $this->country :  Helper::findCountryFromZipcode($this->zipcode);
+            $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
             if (self::checkExists($this->hashkey)) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;
@@ -227,9 +227,11 @@ class ContactsModel extends BaseModel
         return $this->hasMany(ContactsLog::className(), ['contact_id' => 'id']);
     }
 
+
     function getPage()
     {
-        return $this->hasOne(LandingPages::className(), ['link' => 'short_link'])->with('category')->with('product');
+        return $this->hasOne(LandingPages::className(), ['link' => 'short_link'])
+            ->with('user')->with('category')->with('product');
     }
 
     public static function listPhoneContact()
@@ -309,5 +311,10 @@ class ContactsModel extends BaseModel
     public function getFormInfo()
     {
         return $this->hasOne(FormInfo::className(), ['content' => 'option']);
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(OrdersModel::className(), ['code' => 'code']);
     }
 }

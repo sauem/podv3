@@ -7,9 +7,10 @@ use yii\helpers\Html;
 use common\helper\Component;
 use yii\helpers\Url;
 use kartik\export\ExportMenu;
+
 ?>
     <div class="table-responsive">
-        <?php $fullExport =  ExportMenu::widget([
+        <?php $fullExport = ExportMenu::widget([
             'dataProvider' => $dataProvider,
             'asDropdown' => false,
             'columns' => [
@@ -123,12 +124,18 @@ use kartik\export\ExportMenu;
             ],
             'panel' => [
                 'type' => GridView::TYPE_INFO,
-                'before' => Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
-                    [
-                        'class' => 'btn deleteAll btn-warning',
+                'before' =>
+                    Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
+                        [
+                            'class' => 'btn deleteAll btn-warning',
+                            'data-pjax' => '0',
+                            'data-model' => $dataProvider->query->modelClass
+                        ])
+                    . Html::a("<i class='fa fa-file-excel-o'></i> Xuất liên hệ", 'javascript:;', [
+                        'class' => 'btn btn-info ml-2 exportAll',
                         'data-pjax' => '0',
-                        'data-model' => $dataProvider->query->modelClass
-                    ]),
+                    ])
+                ,
             ],
             'toggleDataOptions' => ['minCount' => 10],
             'export' => [
@@ -144,6 +151,21 @@ use kartik\export\ExportMenu;
 <?php
 
 $js = <<<JS
-    
+    $(".exportAll").click(function() {
+        $.ajax({
+            url : config.exportContactURL,
+            type : 'POST',
+            data : {},
+            cache : false,
+            success : function(res) {
+                if(res.success){
+                    window.location.href = res.file;
+                    toastr.success("Đang tải!");
+                    return;
+                }
+                toastr.warning(res.msg);
+            }
+        })
+    })
 JS;
 $this->registerJs($js);

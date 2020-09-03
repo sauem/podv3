@@ -130,4 +130,7 @@ class Helper
         $geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=$code,$city&key=$apiKEY";
        // $content = file_get_contents()
     }
+    static function link($page){
+        return "http://" . $page;
+    }
 }

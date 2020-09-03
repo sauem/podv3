@@ -44,6 +44,7 @@ AppAsset::register($this);
             maxRowUpload: 5000,
             zipcodeAPI: "h94g7PyOk1NqmeTesbPlcXM6KDGj9ZI8EFcjA2jTcIcJHkt0tSa4gNhqI0QxNIEx",
             exportURL: "<?=Url::toRoute(['export/order'])?>",
+            exportContactURL: "<?=Url::toRoute(['export/contact-all'])?>",
             blockOrder: "<?=Url::toRoute(['ajax/block-order'])?>",
             orderData: "<?=Url::toRoute(['ajax/order-data'])?>",
             billstranfer: "<?=Url::toRoute(['ajax/upload-bill'])?>",
