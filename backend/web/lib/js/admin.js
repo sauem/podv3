@@ -590,3 +590,4 @@ $("body").on("click", ".autoUpdateCity", function () {
         _form.find("input[name='district']").val(res.district);
     }).catch(error => alert(error.message))
 });
+

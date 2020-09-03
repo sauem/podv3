@@ -34,7 +34,7 @@ use common\helper\Helper;
                     'attribute' => 'created_at',
                     'format' => 'html',
                     'value' => function ($model) {
-                        return $model->contact->phone;
+                        return $model->contact->phone . "<span class='badge badge-info'>{$model->contact->code}</span>";
                     }
                 ],
                 [
@@ -49,7 +49,6 @@ use common\helper\Helper;
                         $page = $model->contact->page;
                         $html = $page->product->name . "<br>";
                         $html .= "<small>{$page->product->sku}</small>|";
-                        $html .= "<small>" . Helper::money($page->product->regular_price) . "</small>|";
                         $html .= "<small>{$page->product->category->name}</small><br>";
                         $html .= "<small>{$model->contact->option}</small>";
 
@@ -66,10 +65,9 @@ use common\helper\Helper;
                         }
                         return Html::tag("p",
                             "<a target='_blank' href='{$model->contact->page->link}' >{$model->contact->page->link}  <i class='fa fa-chrome'></i></a><br>" .
-                            "<small class='text-info'>CTCODE: <i><strong>{$model->contact->code}</strong></i> | Marketer: <strong>{$model->contact->page->marketer}</strong> | Type : {$model->contact->type}</small><br>" .
                             "<small class='text-info'>address: <i>{$model->contact->address}</i></small><br>" .
                             "<small class='text-info'>zipcode: <i>{$model->contact->zipcode}</i></small><br>" .
-                            "<small class='text-danger'>Note: <i>{$model->contact->note}</i></small><br>"
+                            ($model->contact->note ? "<small class='text-danger'>Note: <i>{$model->contact->note}</i></small><br>" : "")
 
                         );
                     }

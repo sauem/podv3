@@ -34,6 +34,7 @@ use kartik\grid\ExpandRowColumn;
                         return ['data-cate' => $model->page->category_id];
                     }
                 ],
+                'code',
                 [
                     'label' => 'sản phẩm',
                     'attribute' => 'category_id',
@@ -44,7 +45,7 @@ use kartik\grid\ExpandRowColumn;
                         }
                         return Html::tag("p",
                             $model->page->product->name .
-                            "<br><small>{$model->page->product->sku} |" . Helper::money($model->page->product->regular_price) . "</small> | <small><i>{$model->page->category->name}</i></small>" .
+                            "<br><small>{$model->page->product->sku} </small> | <small><i>{$model->page->category->name}</i></small>" .
                             "<br><small>{$model->option}</small>");
                     }
                 ],
@@ -53,15 +54,14 @@ use kartik\grid\ExpandRowColumn;
                     'attribute' => 'link',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        if(!$model->page){
+                        if (!$model->page) {
                             return null;
                         }
                         return Html::tag("p",
-                            "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
-                            "<small class='text-info'>CTCODE: <i><strong>{$model->code}</strong></i> | marketer: <strong>{$model->page->marketer}</strong> | Type : <strong>{$model->type}</strong></small><br>" .
+                            "<a target='_blank' href='" . Helper::link($model->link) . "' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
                             "<small class='text-info'>address: <i>{$model->address}</i></small><br>" .
                             "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>" .
-                            "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
+                            ($model->note ? "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>" : "")
 
                         );
                     }
@@ -75,26 +75,13 @@ use kartik\grid\ExpandRowColumn;
                     }
                 ],
                 [
-                    'label' => 'Ngày nhận',
+                    'label' => 'Ngày đặt hàng',
                     'attribute' => 'created_at',
                     'format' => 'html',
                     'value' => function ($model) {
-                        return Html::tag("small", date("H:i:s d/m/Y", $model->created_at));
+                        return Html::tag("small", date("d/m/Y H:i:s", $model->register_time));
                     }
-                ],
-                [
-                    'class' => ExpandRowColumn::class,
-                    'width' => '50px',
-                    'value' => function ($model, $key, $index, $column) {
-                        return GridView::ROW_EXPANDED;
-                    },
-                    'detail' => function ($model, $key, $index, $column) {
-                        return Yii::$app->controller->renderPartial('_expand', ['model' => $model]);
-                    },
-                    'headerOptions' => ['class' => 'expand-area'],
-                    'expandOneOnly' => true,
-                    'detailRowCssClass' => GridView::TYPE_DEFAULT
-                ],
+                ]
             ],
         ]) ?>
     </div>
