@@ -12,71 +12,17 @@ use yii\widgets\Pjax;
         <?= $this->render('_collapse_order', ['model' => $order]) ?>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-12">
         <?php Pjax::begin([
             'id' => 'pjax-info2'
         ]) ?>
+
         <div class="ibox">
             <div class="ibox-head">
                 <h2 style="cursor: pointer" data-toggle="tooltip" title="Click 2 lần để coppy"
                     class="text-warning ibox-title"><i
                             class="fa fa-phone"></i> <?= $info ? "<span ondblclick=\"coppy(this)\">0$info->phone</span>" : "Chưa có liên hệ mới" ?>
                 </h2>
-            </div>
-
-            <div class="ibox-body">
-                <table class="table">
-                    <tbody>
-                    <?php
-                    if ($info) {
-                        ?>
-                        <tr>
-                            <td>Trạng thái hiện tại</td>
-                            <td><?= ContactsAssignment::label(isset($info->assignment) ? $info->assignment->status : "") ?></td>
-                        </tr>
-                        <tr>
-                            <td>Khách hàng</td>
-                            <td><?= $info->name ?></td>
-                        </tr>
-                        <tr>
-                            <td>Địa chỉ</td>
-                            <td><?= $info->address ?></td>
-                        </tr>
-                        <tr>
-                            <td>Zipcode</td>
-                            <td><?= $info->zipcode ?></td>
-                        </tr>
-                    <?php } ?>
-                    </tbody>
-                    <?php
-                    if ($time = UserModel::hasCallback()) {
-                        ?>
-                        <tfoot>
-                        <tr>
-                            <td>Ghi chú gọi lại : <br>
-                                <strong class="text-danger"><?= $time['phone'] ?></strong>
-                            </td>
-                            <td>
-                                <strong>Thời gian tạo: <br>
-                                    <span class="text-warning"><?= $time['created'] ?></span>
-                                </strong><br>
-                                <strong>Lần xử lý cuối: <br>
-                                    <span class="text-warning"><?= $time['last_called'] ?></span>
-                                </strong><br>
-                                <strong>Lần gọi tiếp theo: <br>
-                                    <span class="text-danger"><?= $time['time'] ?></span>
-                                </strong>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    <?php } ?>
-                </table>
-            </div>
-
-        </div>
-        <div class="ibox">
-            <div class="ibox-head">
-                <h2 class="ibox-title">Tài khoản</h2>
             </div>
             <div class="ibox-body">
                 <table class="table">
@@ -96,7 +42,7 @@ use yii\widgets\Pjax;
         <?php Pjax::end() ?>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="ibox">
             <div class="ibox-body">
                 <ul class="nav nav-tabs tabs-line">

@@ -212,7 +212,7 @@ $js = <<<JS
         
        $("#collapse-order").on("hidden.bs.collapse", function() {
             $('.grid-view').find("input[type='checkbox']").attr("checked",false);
-            alert("asad");
+          
             if(ORDER.billings.length > 0){
                 _removeImage();
             }
