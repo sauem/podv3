@@ -91,6 +91,18 @@ Handlebars.registerHelper("span", function (value, array) {
             $tag = "info";
             break;
     }
-
-    return new Handlebars.SafeString("<span class='badge badge-" + $tag + "'>" + array[value] + "</span>");
+    array = {
+        "ok": "Thành công",
+        "cancel": "Hủy",
+        "duplicate": "Trùng số",
+        "pending": "Thuê bao",
+        "callback": "Gọi lại",
+        "skip": "Bỏ qua",
+        "number_fail": "sai số"
+    }
+    let label = typeof array[value] !== "undefined" ? array[value] : false;
+    if (!label) {
+        return null;
+    }
+    return new Handlebars.SafeString("<span class='badge badge-" + $tag + "'>" + label + "</span>");
 })

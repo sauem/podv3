@@ -131,6 +131,9 @@ class Helper
        // $content = file_get_contents()
     }
     static function link($page){
+        if(strpos($page, "http://") !== false){
+            return  $page;
+        }
         return "http://" . $page;
     }
 }

@@ -66,6 +66,8 @@ function doProcessWorkbook(workbook, file) {
         maxColumn = 7;
     } else if (firstSheet === "order") {
         maxColumn = 13;
+    } else if (firstSheet === "logs") {
+        maxColumn = 14;
     } else if (firstSheet === "zipcode") {
         maxColumn = 6;
     }
@@ -99,6 +101,9 @@ function doProcessWorkbook(workbook, file) {
         case "order":
             renderViewTemplate("result", "order-template", data)
             break;
+        case "logs":
+            renderViewTemplate("result", "logs-template", data)
+            break;
         case "zipcode":
             renderViewTemplate("result", "zipcode-template", data)
             break;
@@ -127,13 +132,16 @@ $(".handleData").click(function () {
     if (_importAction === "zipcode") {
         _url = config.pushZipcode;
     }
+    if (_importAction === "logs") {
+        _url = config.pushLogs;
+    }
 
     if (typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0) {
         toastr.warning("Vui lòng chọn file dữ liệu!");
         return false;
     }
     if ((EXCEL.rows).length > config.maxRowUpload) {
-        toastr.warning("File dữ liệu tối đa 20000 dòng");
+        toastr.warning("File dữ liệu tối đa " + config.maxRowUpload + " dòng");
         return false;
     }
 
@@ -153,6 +161,7 @@ $(".handleData").click(function () {
                     createNew: _createAction ? "ok" : ""
                 },
                 success: function (res) {
+
                     if (!res.success) {
                         setTimeout(() => {
                             Swal.hideLoading();
@@ -209,7 +218,23 @@ function switchItem(sheet, row) {
             item.skus[4].sku = row[11] ? row[11].v : "";
             item.skus[4].qty = row[12] ? row[12].v : "";
             break;
-
+        case "logs":
+            item = new logModel();
+            item.phone = row[0] ? row[0].v : "";
+            item.link = row[1] ? row[1].v : "";
+            item.option = row[2] ? row[2].v : "";
+            item.user = row[3] ? row[3].v : "";
+            item.called[0].status = row[4] ? row[4].v : "";
+            item.called[0].note = row[5] ? row[5].v : "";
+            item.called[1].status = row[6] ? row[6].v : "";
+            item.called[1].note = row[7] ? row[7].v : "";
+            item.called[2].status = row[8] ? row[8].v : "";
+            item.called[2].note = row[9] ? row[9].v : "";
+            item.called[3].status = row[10] ? row[10].v : "";
+            item.called[3].note = row[11] ? row[11].v : "";
+            item.called[4].status = row[12] ? row[12].v : "";
+            item.called[4].note = row[13] ? row[13].v : "";
+            break;
         case "zipcode":
             item = new zipcodeModel();
             item.country_name = row[0] ? row[0].v : "";
@@ -274,6 +299,22 @@ function productModel() {
         category: "",
         regular_price: 0,
         option: ""
+    }
+}
+
+function logModel() {
+    return {
+        phone: "",
+        link: "",
+        user: "",
+        option: "",
+        called: [
+            {status: "", note: ""},
+            {status: "", note: ""},
+            {status: "", note: ""},
+            {status: "", note: ""},
+            {status: "", note: ""},
+        ]
     }
 }
 

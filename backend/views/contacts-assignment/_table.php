@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 use kartik\grid\GridView;
 use kartik\grid\CheckboxColumn;
@@ -22,6 +22,7 @@ use backend\models\ContactsModel;
             'class' => 'thead-light'
         ],
         'columns' => [
+            'code',
             [
                 'label' => 'Trang đích',
                 'attribute' => 'link',
@@ -31,8 +32,7 @@ use backend\models\ContactsModel;
                         return null;
                     }
                     return Html::tag("p",
-                        "<a target='_blank' href='{$model->link}' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
-                        "<small class='text-info'>CTCODE: <i><strong>{$model->code}</strong></i> | Marketer: <strong>{$model->page->user->username}</strong></small><br>" .
+                        "<a target='_blank' href='".\common\helper\Helper::link($model->link)."' >{$model->page->link}  <i class='fa fa-chrome'></i></a><br>" .
                         "<small class='text-info'>address: <i>{$model->address}</i></small><br>" .
                         "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>" .
                         "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
@@ -49,8 +49,7 @@ use backend\models\ContactsModel;
                         return null;
                     }
                     return Html::tag("p",
-                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
-                        "<small><i>{$model->page->category->name}</i></small>");
+                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->category->name}</small><br>");
                 }
             ],
             [
@@ -64,8 +63,8 @@ use backend\models\ContactsModel;
             [
                 'attribute' => 'register_time',
                 'format' => 'html',
-                'value' => function($model){
-                    return date("d/m/Y H:i:s",$model->register_time);
+                'value' => function ($model) {
+                    return date("d/m/Y H:i:s", $model->register_time);
                 }
             ],
             [

@@ -18,6 +18,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     data-target="#remote-import" class="btn btn-success">
                 <i class="fa fa-file-excel-o"></i> Nhập liên hệ
             </button>
+            <button data-backdrop="static" data-keyboard="false"
+                    data-remote="<?= \yii\helpers\Url::toRoute(['contacts-log/import']) ?>" data-toggle="modal"
+                    data-target="#logs-import" class="btn btn-secondary">
+                <i class="fa fa-file-excel-o"></i> Nhập lịch sử liên hệ
+            </button>
         </div>
     </div>
 
@@ -65,7 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="modal-header">
                     <h5 class="modal-title">Nhập liên hệ</h5>
                     <div>
-                        <button type="button" class="btn filterData btn-primary">Lọc</button>
                         <button type="button" id="handleData" class="btn handleData btn-primary">Nhập liên hệ</button>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">Đóng</span>
@@ -76,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
-                    <a class="text-warning" href="<?= \yii\helpers\Url::toRoute(['/file/contacts_example.xlsx']) ?>"><i
+                    <a class="text-warning" href="<?= Url::toRoute(['/file/contacts_example.xlsx']) ?>"><i
                                 class="fa fa-download"></i> File dữ liệu mẫu</a>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -86,7 +90,32 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" id="logs-import" role="dialog">
+        <div class="modal-dialog modal-xl  modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nhập lịch sử liên hệ</h5>
+                    <div>
+                        <button class="btn handleData btn-primary">Nhập liên hệ</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">Đóng</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
 
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <a class="text-warning" href="<?= Url::toRoute(['/file/log_example.xlsx']) ?>"><i
+                                class="fa fa-download"></i> File dữ liệu mẫu</a>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" data-action="logs" class="btn handleData btn-primary">Nhập liên hệ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <?= $this->render("_modal_approve") ?>
 
@@ -113,6 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $js = <<<JS
     initRemote("remote-import");
+    initRemote("logs-import");
     window.PHONES = [];
     $(".approvePhone").click(function(e) {
         var keys = $('.grid-view').yiiGridView('getSelectedRows');

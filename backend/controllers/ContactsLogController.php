@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsLog;
 use backend\models\ContactsModel;
+use backend\models\UploadForm;
 use backend\models\UserModel;
 use common\helper\Helper;
 use yii\helpers\ArrayHelper;
@@ -45,7 +46,6 @@ class ContactsLogController extends BaseController
         if (\Yii::$app->request->isPost) {
 
 
-
             $cids = \Yii::$app->request->post('contact_id');
             $cids = explode(",", $cids);
 
@@ -83,5 +83,14 @@ class ContactsLogController extends BaseController
     {
         $ids = \Yii::$app->request->post('contact_id');
         return $ids;
+    }
+
+    public function actionImport()
+    {
+        $this->layout = "empty";
+        $model = new UploadForm;
+        return $this->render('import', [
+            'model' => $model
+        ]);
     }
 }

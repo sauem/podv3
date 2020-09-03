@@ -87,21 +87,26 @@ class ContactsLog extends BaseModel
             $assignment = ContactsAssignment::findOne(['contact_phone' => $contact->phone]);
             $contact->status = $this->status;
             $contact->callback_time = null;
-            if ($this->callback_time && (
+            if ($this->callback_time && $this->callback_time !== null && (
                     $this->status == ContactsModel::_CALLBACK ||
                     $this->status == ContactsModel::_PENDING)) {
                 $contact->callback_time = $this->callback_time;
-                $assignment->callback_time = $this->callback_time;
-                $assignment->status = ContactsAssignment::_PENDING;
+                if($assignment){
+                    $assignment->callback_time = $this->callback_time;
+                    $assignment->status = ContactsAssignment::_PENDING;
+                }
             } else {
-
-                $assignment->callback_time = null;
-                $assignment->status = ContactsAssignment::_PROCESSING;
+                if ($assignment) {
+                    $assignment->callback_time = null;
+                    $assignment->status = ContactsAssignment::_PROCESSING;
+                }
             }
-            $assignment->save();
+            if ($assignment) {
+                $assignment->save();
+            }
             $contact->save();
-        }else{
-            if($this->status == ""){
+        } else {
+            if ($this->status == "") {
                 $this->status = null;
             }
         }

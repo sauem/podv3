@@ -9,6 +9,7 @@ use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
 use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
+use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\Customers;
 use backend\models\FormInfo;
@@ -278,6 +279,54 @@ class AjaxController extends BaseController
             'success' => 1,
             'data' => $result
         ];
+    }
+
+    function actionPushLogs()
+    {
+        $contacts = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $errors = [];
+        $count = 0;
+        if (!empty($contacts)) {
+            foreach ($contacts as $k => $log) {
+                $key = md5($log['phone'] . $log['link'] . $log['option']);
+                $contact = ContactsModel::findOne(['hashkey' => $key]);
+                $user = UserModel::findOne(['username' => $log['user']]);
+                if (!$user) {
+                    ActionLog::add("error", "Không tồn tại tài khoản " . $log['user'] . " dòng " . ($k + 1));
+                    $errors[$k] = "Không tồn tại tài khoản " . $log['user'] . " dòng " . ($k + 1);
+                    continue;
+                }
+                if (!$contact) {
+                    ActionLog::add("error", "Không tồn tại contact dòng " . ($k + 1));
+                    $errors[$k] = "Không tồn tại contact dòng " . ($k + 1);
+                    continue;
+                }
+                if (!empty($log['called'])) {
+
+                    foreach ($log['called'] as $note) {
+                        $model = new ContactsLog;
+                        if ($note['status'] && !empty($note['status'])) {
+                            $model->user_id = $user->id;
+                            $model->contact_id = $contact->id;
+                            $model->status = $note['status'];
+                            $model->note = $note['note'];
+                            if (!$model->save()) {
+                                $errors[$k] = Helper::firstError($model);
+                                ActionLog::add("error", Helper::firstError($model));
+
+                            } else {
+                                ActionLog::add("success", "Nhập lịch sử liên hệ " . $contact->id);
+                            }
+                        }
+
+                    }
+                }
+            }
+            $count = sizeof($contacts) - sizeof($errors);
+            return self::resultImport($count, $errors, 1);
+        }
+        return self::resultImport($count, $errors, 0);
     }
 
     function actionPushZipcode()
@@ -968,4 +1017,6 @@ class AjaxController extends BaseController
             ];
         }
     }
+
+
 }
