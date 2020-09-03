@@ -331,7 +331,7 @@ class ExportController extends BaseController
 
                 ]
             ]);
-            $export->save("/file/contacts.xlsx");
+            $export->save("file/contacts.xlsx");
             return [
                 'success' => 1,
                 'file' => "/file/contacts.xlsx"
