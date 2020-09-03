@@ -17,6 +17,8 @@ class SystemLogController extends BaseController
     {
         $model = new ActionLogSearch;
         $dataProvider = $model->search(\Yii::$app->request->queryParams);
+        $dataProvider->query->orderBy(['id' => SORT_DESC]);
+
         return $this->render("index", [
             'searchModel' => $model,
             'dataProvider' => $dataProvider

@@ -306,6 +306,7 @@ class AjaxController extends BaseController
 
                     foreach ($log['called'] as $note) {
                         $model = new ContactsLog;
+                        $logs = new LogsImport;
                         if ($note['status'] && !empty($note['status'])) {
                             $model->user_id = $user->id;
                             $model->contact_id = $contact->id;
@@ -313,7 +314,15 @@ class AjaxController extends BaseController
                             $model->note = $note['note'];
                             if (!$model->save()) {
                                 $errors[$k] = Helper::firstError($model);
-                                ActionLog::add("error", Helper::firstError($model));
+
+                                $data = [
+                                    'line' => (string)($k + 2),
+                                    'message' => Helper::firstError($model),
+                                    'name' => $fileName,
+                                    'user_id' => Yii::$app->user->getId()
+                                ];
+                                $logs->load($data, "");
+                                $logs->save();
 
                             } else {
                                 ActionLog::add("success", "Nhập lịch sử liên hệ " . $contact->id);
