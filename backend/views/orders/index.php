@@ -152,15 +152,15 @@ use common\helper\Helper;
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'panel' => [
-                    'type' => GridView::TYPE_INFO,
+                    'type' => GridView::TYPE_DEFAULT,
                     'before' =>
                         Html::a("<i class='fa fa-cart-plus'></i> Tạo đơn", "javascript:;", ['class' => 'mr-2 btn createOrder btn-info', 'data-pjax' => '0']) .
-                        Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
+                        (Helper::isAdmin() ?  Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
                             [
                                 'class' => 'btn deleteAll btn-warning',
                                 'data-pjax' => '0',
                                 'data-model' => $dataProvider->query->modelClass
-                            ]),
+                            ]) : ""),
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
@@ -233,7 +233,7 @@ use common\helper\Helper;
                         'format' => 'raw', 'value' => function ($model) {
                         $html = '';
                         foreach ($model->items as $item) {
-                            $html .= "<span class='badge mb-1 badge-info'>{$item->product->sku} | {$item->product->name} | x{$item->qty}</span><br>";
+                            $html .= "<span class='badge mb-1 badge-default'>{$item->product->sku} | {$item->product->name} | x{$item->qty}</span><br>";
                         }
                         return $html;
                     }],
@@ -254,19 +254,19 @@ use common\helper\Helper;
                             $create = Html::tag("span",
                                 "<i class='fa fa-plus'></i> | " . date('H:i:s d/m/Y', $model->created_at),
                                 [
-                                    'class' => 'badge badge-info ',
+                                    'class' => 'badge badge-default ',
                                     'data-toggle' => 'tooltip',
                                     'title' => 'giờ tạo đơn'
                                 ]);
                             $canEdit = Html::tag("span", "<i class='fa fa-lock'></i> | " . date('H:i:s d/m/Y', $model->block_time),
                                 [
-                                    'class' => 'badge badge-warning mt-2',
+                                    'class' => 'badge badge-default mt-2',
                                     'data-toggle' => 'tooltip',
                                     'title' => 'Giờ khóa đơn'
                                 ]);
                             if ($model->block_time == 0) {
                                 $canEdit = Html::tag("span", "<i class='fa fa-lock'></i> | đã khóa chỉnh sửa", [
-                                    'class' => 'badge badge-danger mt-2',
+                                    'class' => 'badge badge-default mt-2',
                                     'data-toggle' => 'tooltip',
                                     'title' => 'Trạng thái khóa'
                                 ]);
