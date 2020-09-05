@@ -23,6 +23,13 @@ use backend\models\ContactsModel;
         ],
         'columns' => [
             [
+                'label' => 'Số điện thoại',
+                'attribute' => 'phone',
+                'value' => function ($model) {
+                    return  $model->phone . " | " . $model->code;
+                }
+            ],
+            [
                 'label' => 'Trang đích',
                 'attribute' => 'link',
                 'format' => 'raw',
@@ -31,11 +38,10 @@ use backend\models\ContactsModel;
                         return null;
                     }
                     return Html::tag("p",
-                        "<a target='_blank' href='{$model->link}' >{$model->page->link}</a><br>" .
-                        "<small class='text-info'>CTCODE: <i><strong>{$model->code}</strong></i> | Marketing: <strong>{$model->page->user->username}</strong></small><br>" .
+                        "<a target='_blank' href='".\common\helper\Helper::link($model->link)."' >{$model->page->link}</a><br>" .
                         "<small class='text-info'>address: <i>{$model->address}</i></small><br>" .
                         "<small class='text-info'>zipcode: <i>{$model->zipcode}</i></small><br>" .
-                        "<small class='text-danger'>Note: <i>{$model->note}</i></small><br>"
+                        ($model->note ? "<small class='text-danger'>Note: <i>{$model->note}</i></small>" : "")
 
                     );
                 }
@@ -49,8 +55,7 @@ use backend\models\ContactsModel;
                         return null;
                     }
                     return Html::tag("p",
-                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
-                        "<small><i>{$model->page->category->name}</i></small>");
+                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->category->name}</small>");
                 }
             ],
             [
@@ -64,8 +69,8 @@ use backend\models\ContactsModel;
             [
                 'attribute' => 'register_time',
                 'format' => 'html',
-                'value' => function($model){
-                    return date("d/m/Y H:i:s",$model->register_time);
+                'value' => function ($model) {
+                    return date("d/m/Y H:i:s", $model->register_time);
                 }
             ],
             [
@@ -75,7 +80,7 @@ use backend\models\ContactsModel;
                     'view' => function ($url, $model) {
                         return Html::a("<i class='fa fa-eye'></i> chi tiết",
                             \yii\helpers\Url::toRoute(['view', 'phone' => $model->phone]),
-                            ['class' => 'btn btn-sm bg-white','data-pjax' => '0']);
+                            ['class' => 'btn btn-sm bg-white', 'data-pjax' => '0']);
                     }
                 ]
             ],
