@@ -7,10 +7,11 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 $callback = function ($menu) {
-
+   //var_dump($menu);
     return [
         'label' => $menu['name'],
         'url' => [$menu['route']],
+        'icon' => $menu['data'],
         'options' => [
             'class' => 'w-100',
         ],
@@ -22,6 +23,7 @@ $controller = Yii::$app->controller->id;
 $action = Url::toRoute(Yii::$app->controller->getRoute());
 $path = explode('/', $action);
 $path = array_filter($path);
+
 
 ?>
 
@@ -44,7 +46,7 @@ $path = array_filter($path);
 
                             ?>
                             <li>
-                                <a href="<?= $item['url'][0] ?>"><i class="sidebar-item-icon fa fa-bookmark"></i>
+                                <a href="<?= $item['url'][0] ?>"><i class="sidebar-item-icon <?= $item['icon']?>"></i>
                                     <span class="nav-label">
                                     <?= $item['label'] ?>
                                 </span><i class="fa fa-angle-left arrow"></i>
@@ -72,7 +74,7 @@ $path = array_filter($path);
                             <li>
 
                                 <a class="<?= $action == $item['url'][0] ? 'active' : '' ?>"
-                                   href="<?= $item['url'][0] ?>"><i class="sidebar-item-icon fa fa-th-large"></i>
+                                   href="<?= $item['url'][0] ?>"><i class="sidebar-item-icon <?= $item['icon']?>"></i>
                                     <span class="nav-label"><?= $item['label'] ?></span>
                                 </a>
                             </li>
