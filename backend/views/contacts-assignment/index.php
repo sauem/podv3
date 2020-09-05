@@ -5,10 +5,12 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use kartik\export\ExportMenu;
+use common\helper\Helper;
 
 $this->title = 'Contacts Assignments';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<?php if (Helper::isAdmin()) { ?>
     <div class="row">
         <div class="col-12 text-right mb-2">
             <button class="btn btn-info autoScan"><i class="fa fa-print"></i> Tự động phân bổ
@@ -25,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </button>
         </div>
     </div>
+<?php } ?>
 
     <div class="row">
         <div class="col-md-12">
@@ -32,8 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-head">
                     <h2 class="ibox-title">Liên hệ chờ xử lý/thất bại</h2>
                     <div class="ibox-tools">
+                        <?php if(Helper::isAdmin()){?>
                         <a href="javascript:;" class="text-danger approvePhone"><i class="fa fa-cogs"></i> Phân bổ</a>
-                        <a class="text-danger" data-toggle="collapse" href="#filter1"><i class="fa fa-filter"></i> Tìm kiếm</a>
+                        <?php } ?>
+                        <a class="text-danger" data-toggle="collapse" href="#filter1"><i class="fa fa-filter"></i> Tìm
+                            kiếm</a>
                     </div>
                 </div>
                 <div class="ibox-body">
@@ -110,7 +116,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 class="fa fa-download"></i> File dữ liệu mẫu</a>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="button" data-action="logs" class="btn handleData btn-primary">Nhập liên hệ</button>
+                        <button type="button" data-action="logs" class="btn handleData btn-primary">Nhập liên hệ
+                        </button>
                     </div>
                 </div>
             </div>

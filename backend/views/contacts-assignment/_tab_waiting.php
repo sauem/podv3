@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use common\helper\Component;
 use yii\helpers\Url;
 use kartik\export\ExportMenu;
+use common\helper\Helper;
 
 ?>
     <div class="table-responsive">
@@ -125,12 +126,12 @@ use kartik\export\ExportMenu;
             'panel' => [
                 'type' => GridView::TYPE_INFO,
                 'before' =>
-                    Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
+                    (Helper::isAdmin() ? Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
                         [
                             'class' => 'btn deleteAll btn-warning',
                             'data-pjax' => '0',
                             'data-model' => $dataProvider->query->modelClass
-                        ])
+                        ]) : "")
                     . Html::a("<i class='fa fa-file-excel-o'></i> Xuất liên hệ", 'javascript:;', [
                         'class' => 'btn btn-info ml-2 exportAll',
                         'data-pjax' => '0',

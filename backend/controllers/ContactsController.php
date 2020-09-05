@@ -23,7 +23,7 @@ class ContactsController extends BaseController
     public function actionIndex($lastTime = null)
     {
         $phone = Yii::$app->request->get("phone");
-        if (Helper::userRole(UserModel::_ADMIN) && !$phone) {
+        if ((Helper::userRole(UserModel::_ADMIN) || Helper::userRole(UserModel::_MARKETING)) && !$phone) {
             $this->redirect(Url::toRoute(['/contacts-assignment/index']));
         }
         $saleID = Yii::$app->user->getId();

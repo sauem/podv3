@@ -3,6 +3,7 @@
 namespace common\helper;
 
 use backend\models\Backups;
+use backend\models\UserModel;
 use backend\models\ZipcodeCountry;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -135,5 +136,14 @@ class Helper
             return  $page;
         }
         return "http://" . $page;
+    }
+    static function isAdmin(){
+        return Helper::userRole(UserModel::_ADMIN);
+    }
+    static function isMarketing(){
+        return Helper::userRole(UserModel::_MARKETING);
+    }
+    static function isSale(){
+        return Helper::userRole(UserModel::_SALE);
     }
 }
