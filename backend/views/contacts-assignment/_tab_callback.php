@@ -56,8 +56,7 @@ use backend\models\ContactsModel;
                         return null;
                     }
                     return Html::tag("p",
-                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->product->regular_price}</small><br>" .
-                        "<small><i>{$model->page->category->name}</i></small>");
+                        $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->category->name}</small><br>");
                 }
             ],
             [
