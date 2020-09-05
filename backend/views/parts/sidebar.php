@@ -24,7 +24,6 @@ $action = Url::toRoute(Yii::$app->controller->getRoute());
 $path = explode('/', $action);
 $path = array_filter($path);
 
-
 ?>
 
     <nav class="page-sidebar" id="sidebar">
@@ -42,6 +41,9 @@ $path = array_filter($path);
                     <?php
                     foreach ($menu as $item) {
                         $children = isset($item['items']) ? $item['items'] : [];
+                        if(Helper::isAdmin() && strpos($item['url'][0],'contact-manager')){
+                           continue;
+                        }
                         if ($children) {
 
                             ?>
