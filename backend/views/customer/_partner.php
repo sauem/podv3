@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'columns' => [
                         'username',
                         'email',
-                        'page_id',
                         'pic',
                         [
                             'class' => ActionColumn::class,
@@ -29,8 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $url = Url::toRoute(['partner', 'id' => $model->id]);
                                     return Component::update($url);
                                 },
-                                'delete' => function ($url,$model) {
-                                    $url = Url::toRoute(['user/delete','id' => $model->id]);
+                                'delete' => function ($url, $model) {
+                                    $url = Url::toRoute(['user/delete', 'id' => $model->id]);
                                     return Component::delete($url);
                                 }
                             ]

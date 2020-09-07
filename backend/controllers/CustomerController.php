@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\CustomerPages;
 use backend\models\UserModel;
 use backend\models\UserSearchModel;
 use common\helper\Helper;
@@ -41,7 +42,7 @@ class CustomerController extends BaseController
         $searchModel = new CustomersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = new Customers;
-        if($id){
+        if ($id) {
             $model = Customers::findOne($id);
         }
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
@@ -131,11 +132,20 @@ class CustomerController extends BaseController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['is_partner' => true]);
 
-        if($id){
+        if ($id) {
             $model = UserModel::findOne($id);
         }
-        if (Yii::$app->request->isPost) {
-            if ($model->save() && $model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                if ($id) {
+                     CustomerPages::deleteAll(['user_id' => $model->id]);
+                }
+                foreach ($model->page_id as $page) {
+                    $client = new CustomerPages;
+                    $client->page_id = $page;
+                    $client->user_id = $model->id;
+                    $client->save();
+                }
                 self::success("Tạo khách hàng thành công!");
             } else {
                 self::error(Helper::firstError($model));

@@ -19,9 +19,9 @@ use backend\models\LandingPages;
         </div>
         <div class="form-group col-md-12">
             <?= $form->field($model, 'email') ?>
-            <?= $form->field($model,'is_partner')->hiddenInput(['value' => 1])->label(false)?>
-            <?= $form->field($model,'role')->hiddenInput(['value' => 'Partner'])->label(false)?>
-            <?= $form->field($model,'phone_of_day')->hiddenInput(['value' => 0])->label(false)?>
+            <?= $form->field($model, 'is_partner')->hiddenInput(['value' => 1])->label(false) ?>
+            <?= $form->field($model, 'role')->hiddenInput(['value' => 'Partner'])->label(false) ?>
+            <?= $form->field($model, 'phone_of_day')->hiddenInput(['value' => 0])->label(false) ?>
         </div>
         <?php
         if ($model->isNewRecord) { ?>
@@ -30,11 +30,18 @@ use backend\models\LandingPages;
             </div>
         <?php } ?>
         <div class="form-group col-12">
-            <?= $form->field($model, 'page_id')->widget(Select2::className(), [
+            <?php
+            if (!$model->isNewRecord) {
+                $model->page_id = ArrayHelper::getColumn($model->clientPages, 'page_id');
+                // \common\helper\Helper::prinf($model->page_id);
+            }
+            ?>
+            <?= $form->field($model, 'page_id[]')->widget(Select2::className(), [
                 'data' => LandingPages::selectOption(),
                 'theme' => Select2::THEME_DEFAULT,
                 'options' => [
-                    'prompt' => 'Chọn landing page'
+                    'value' => $model->page_id,
+                    'multiple' => true
                 ]
             ]) ?>
         </div>
