@@ -65,7 +65,7 @@ class SiteController extends BaseController
     public function actionIndex()
     {
         if(Helper::userRole(UserModel::_PARTNER)){
-            return $this->redirect(Url::toRoute(['client/index']));
+            return $this->redirect('/client/index');
         }
 
         $totalContact = ContactsModel::find()->count();
