@@ -4,6 +4,9 @@
 namespace backend\controllers;
 
 
+use backend\models\UserModel;
+use common\helper\Helper;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class BaseController extends Controller
@@ -32,6 +35,7 @@ class BaseController extends Controller
     public function init()
     {
         parent::init();
+
     }
 
     static function success($msg){

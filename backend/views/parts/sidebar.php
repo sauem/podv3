@@ -18,7 +18,12 @@ $callback = function ($menu) {
         'items' => $menu['children']
     ];
 };
-$menu = MenuHelper::getAssignedMenu(Yii::$app->user->id, 2, $callback);
+$root = 2;
+if(Helper::userRole(\backend\models\UserModel::_PARTNER)){
+    $root = 23;
+}
+
+$menu = MenuHelper::getAssignedMenu(Yii::$app->user->id, $root , $callback);
 $controller = Yii::$app->controller->id;
 $action = Url::toRoute(Yii::$app->controller->getRoute());
 $path = explode('/', $action);

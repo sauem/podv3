@@ -15,6 +15,7 @@ use common\models\Common;
 use Yii;
 use yii\data\ActiveDataProvider;
 use common\models\LoginForm;
+use yii\helpers\Url;
 use yii\web\Response;
 
 /**
@@ -63,6 +64,10 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        if(Helper::userRole(UserModel::_PARTNER)){
+            return $this->redirect(Url::toRoute(['client/index']));
+        }
+
         $totalContact = ContactsModel::find()->count();
         $totalOrder = OrdersModel::find()->count();
 
