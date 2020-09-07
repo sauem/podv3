@@ -82,7 +82,9 @@ class ContactsAssignmentController extends Controller
     public function actionView($phone)
     {
         $model = ContactsModel::findOne(['phone' => $phone]);
-
+        if(!$model){
+            throw new NotFoundHttpException("Không tồn tại số điện thoại này!");
+        }
         $info = ContactsModel::find()->where(['phone' => $phone])
             ->orderBy(['created_at' => SORT_ASC])
             ->with('assignment')

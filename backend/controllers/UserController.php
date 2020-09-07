@@ -18,7 +18,7 @@ class UserController extends BaseController
         $searchModel = new UserSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-
+        $dataProvider->query->andWhere(['is_partner' => false]);
         $model = new UserModel;
         if($id){
             $model = $this->findModel($id);

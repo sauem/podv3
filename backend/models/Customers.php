@@ -52,14 +52,14 @@ class Customers extends BaseModel
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'phone' => 'Phone',
+            'name' => 'Tên khách hàng',
+            'phone' => 'Số điện thoại',
             'email' => 'Email',
-            'city' => 'City',
-            'address' => 'Address',
-            'district' => 'District',
+            'city' => 'Thành phố',
+            'address' => 'Địa chỉ',
+            'district' => 'Quận/Huyện',
             'zipcode' => 'Zipcode',
-            'country' => 'Country',
+            'country' => 'Quốc gia',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -13,7 +13,7 @@ class Component
 
         return Html::a('<i class="fa fa-trash"></i> xóa'
             , $urk, [
-                'class' => 'btn btn-sm bg-white',
+                'class' => 'btn btn-sm btn-warning',
                 'data-confirm' => 'Bạn chắc sẽ xóa dữ liệu này?',
                 'data-method' => 'post',
                 'data-pjax' => 0

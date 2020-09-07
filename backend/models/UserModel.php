@@ -22,6 +22,7 @@ use mdm\admin\models\Assignment;
  * @property string $email
  * @property int $status
  * @property int $created_at
+ * @property boolean $is_partner
  * @property int $updated_at
  * @property string|null $country
  * @property string|null $verification_token
@@ -41,6 +42,7 @@ class UserModel extends User
     const _MARKETING = 'marketing';
     const _LADING = 'lading';
     const _WAREHOUSE = 'warehouse';
+    const _PARTNER = 'partner';
 
 
     const STATUS = [
@@ -85,7 +87,8 @@ class UserModel extends User
     {
         return [
             [['username', 'password_hash', 'email', 'role', 'phone_of_day'], 'required'],
-            [['status', 'phone_of_day'], 'integer'],
+            [['status', 'phone_of_day','pic','page_id'], 'integer'],
+            ['is_partner','boolean'],
             [['role', 'username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key', 'role'], 'string', 'max' => 32],
             [['username'], 'unique'],
@@ -112,6 +115,8 @@ class UserModel extends User
             'status' => 'Trạng thái',
             'country' => 'Thị trường',
             'created_at' => 'Ngày tạo',
+            'pic' => 'Quản lý',
+            'page_id' => 'Trang đích',
             'updated_at' => 'Ngày cập nhật',
             'verification_token' => 'Verification Token',
         ];
