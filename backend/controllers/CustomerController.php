@@ -125,39 +125,6 @@ class CustomerController extends BaseController
         return $this->redirect(['index']);
     }
 
-    public function actionPartner($id = null)
-    {
-        $model = new UserModel;
-        $searchModel = new UserSearchModel;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['is_partner' => true]);
-
-        if ($id) {
-            $model = UserModel::findOne($id);
-        }
-        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
-                if ($id) {
-                     CustomerPages::deleteAll(['user_id' => $model->id]);
-                }
-                foreach ($model->page_id as $page) {
-                    $client = new CustomerPages;
-                    $client->page_id = $page;
-                    $client->user_id = $model->id;
-                    $client->save();
-                }
-                self::success("Tạo khách hàng thành công!");
-            } else {
-                self::error(Helper::firstError($model));
-            }
-            return $this->redirect(["partner"]);
-        }
-        return $this->render("_partner", [
-            'model' => $model,
-            'dataProvider' => $dataProvider
-        ]);
-    }
-
     /**
      * Finds the Customers model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
