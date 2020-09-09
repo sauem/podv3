@@ -317,4 +317,7 @@ class ContactsModel extends BaseModel
     {
         return $this->hasOne(OrdersModel::className(), ['code' => 'code']);
     }
+    public function getLatestContact () {
+        return $this->hasOne(ContactsModel::className(),['phone' => 'phone'])->orderBy(['register_time' => SORT_DESC]);
+    }
 }

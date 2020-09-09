@@ -109,6 +109,14 @@ use common\helper\Helper;
                     }
                 ],
                 [
+                    'label' => 'Đăng kí cuối',
+                    'attribute' => 'status',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        return date('d/m/Y H:i:s', $model->latestContact->register_time);
+                    }
+                ],
+                [
                     'class' => ActionColumn::class,
                     'template' => '{view}',
                     'buttons' => [
