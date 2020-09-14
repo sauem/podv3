@@ -101,6 +101,9 @@ class SiteController extends BaseController
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+            doScanContactByCountry::apply();
+
             return $this->goBack();
         } else {
             $model->password = '';

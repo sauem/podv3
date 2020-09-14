@@ -16,8 +16,14 @@ class doScanContactByCountry
 {
     static function apply()
     {
-        $phones = ContactsModel::find()->addSelect(['phone', 'country'])->groupBy(['phone', 'country'])->all();
+        // Tiêu chí phân bổ
+        // 1. Contacts được chỉ định trực tiếp
+        // 2. Số điện thoại phát sinh conctact mới
+        // 3. Số điện thoại thuê bao
+        // 4. Số điện thoại gọi lại
+        // 5. Contact mới số mới
 
+        $phones = ContactsModel::find()->addSelect(['phone', 'country'])->groupBy(['phone', 'country'])->all();
         $users = AuthAssignment::find()->with('user')
             ->where(['item_name' => UserModel::_SALE])
             ->all();
@@ -27,12 +33,10 @@ class doScanContactByCountry
             // bỏ qua sale đủ số lượng SĐT trong ngày
             if (self::hasLimit($currentUser) || self::hasProcessing($currentUser->id)) {
                 // Kiểm tra số điện thoại gọi lại
-                self::rollbackCallback($currentUser);
                 self::applyPending($currentUser->id);
+                self::rollbackCallback($currentUser);
                 continue;
             }
-
-            self::applyPending($currentUser->id);
             //chưa có liên hệ nào được phân bổ
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
@@ -40,8 +44,8 @@ class doScanContactByCountry
                 // Bỏ qua SĐT nếu được phân bổ
                 if (self::exitsPhone($phoneNumber) || !self::limitByStep($currentUser->id)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
-                    self::rollbackCallback($currentUser);
                     self::applyPending($currentUser->id);
+                    self::rollbackCallback($currentUser);
                     continue;
                 }
                 // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
@@ -54,13 +58,15 @@ class doScanContactByCountry
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
                 }
             }
+            // reset processing pending && callback
+            self::applyPending($currentUser->id);
         }
         return "success";
     }
 
     static function limitByStep($user_id)
     {
-        $limit = 2;
+        $limit = 1;
         $model = ContactsAssignment::find()->where(['user_id' => $user_id])
             ->andWhere(['status' => [ContactsAssignment::_PENDING, ContactsAssignment::_PROCESSING]])
             ->andWhere(['is', 'callback_time', new \yii\db\Expression('null')])
