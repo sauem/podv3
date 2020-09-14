@@ -12,6 +12,7 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $link
+ * @property string $country
  * @property int|null $category_id
  * @property int|null $product_id
  * @property int|null $user_id
@@ -28,6 +29,11 @@ use yii\helpers\ArrayHelper;
 
 class LandingPages extends BaseModel
 {
+    /**
+     * @var mixed|null
+     */
+
+
     /**
      * {@inheritdoc}
      */

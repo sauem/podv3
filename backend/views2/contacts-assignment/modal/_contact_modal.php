@@ -9,7 +9,7 @@ use yii\helpers\Url;
             <div class="modal-header">
                 <h5 class="modal-title">Nhập liên hệ</h5>
                 <div class="btn-group">
-                    <button data-action="logs" class="btn handleData btn-sm btn-success">
+                    <button class="btn handleData btn-sm btn-success">
                         <i class="fe-download-cloud"></i> Nhập liên hệ
                     </button>
                     <button type="button"
@@ -26,7 +26,7 @@ use yii\helpers\Url;
                 <a class="text-info" href="<?= Url::toRoute(['/file/contacts_example.xlsx']) ?>"><i
                             class="fa fa-download"></i> File dữ liệu mẫu</a>
                 <div class="btn-group">
-                    <button data-action="logs" class="btn handleData btn-sm btn-success">
+                    <button class="btn handleData btn-sm btn-success">
                         <i class="fe-download-cloud"></i> Nhập liên hệ
                     </button>
                     <button type="button"

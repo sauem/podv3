@@ -18,14 +18,14 @@ use yii\helpers\Url;
                                 </button>
                                 <button data-backdrop="static"
                                         data-keyboard="false"
-                                        data-remote="<?= \yii\helpers\Url::toRoute(['contacts-assignment/import']) ?>"
+                                        data-remote="<?= Url::toRoute(['contacts-assignment/import']) ?>"
                                         data-toggle="modal"
                                         data-target="#remote-import"
                                         type="button" class="btn btn-xs btn-warning">
                                     <i class="fe-download-cloud"></i> Nhập liên hệ
                                 </button>
                                 <button data-backdrop="static" data-keyboard="false"
-                                        data-remote="<?= \yii\helpers\Url::toRoute(['contacts-log/import']) ?>"
+                                        data-remote="<?= Url::toRoute(['contacts-log/import']) ?>"
                                         data-toggle="modal"
                                         data-target="#logs-import"
                                         type="button" class="btn btn-xs btn-success"><i class="fe-download-cloud"></i>
@@ -48,6 +48,7 @@ use yii\helpers\Url;
     <?= $this->render("modal/_log_modal") ?>
     <?= $this->render("modal/_modal_approve") ?>
     <?= $this->render("modal/_edit_row_modal")?>
+    <?= $this->render("modal/_error_row_modal")?>
 <?php
 $js = <<<JS
     initRemote("remote-import");
@@ -80,29 +81,5 @@ $js = <<<JS
          });
           $("#resultPhone").html(compileTemplate("phone-template", window.PHONES))
     });
-    $(".autoScan").click(function() {
-         swal.fire({
-            title : 'Xin chờ....',
-            onBeforeOpen: function() {
-                swal.showLoading();
-                 $.ajax({
-                    url : config.autoScan,
-                    type: 'POST',
-                    data : {},
-                    cache : false,
-                    success : function(res) {
-                      if(res == "success"){
-                           swal.hideLoading();
-                           swal.fire("Thành công!","Đã cập nhật quản lý liên hệ","success")
-                           .then(() => {
-                               __reloadData();  
-                           })
-                      }
-                    }
-                  })
-            }
-         });
-    })
-   
 JS;
 $this->registerJs($js);

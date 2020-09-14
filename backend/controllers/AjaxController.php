@@ -367,10 +367,7 @@ class AjaxController extends BaseController
 
             foreach ($contacts as $k => $contact) {
                 $model = new ContactsModel;
-                if($contact['link'] === null || $contact['link'] === ""){
-                    $errors[] =  "Trang đích không được để trống";
-                    break;
-                }
+
                 $data = [
                     'phone' => $contact['phone'],
                     'name' => $contact['name'],
@@ -385,7 +382,7 @@ class AjaxController extends BaseController
                     'utm_medium' => $contact['utm_medium'],
                     'utm_term' => $contact['utm_term'],
                     'utm_content' => $contact['utm_content'],
-                    'country' => $contact['country'],
+                    //'country' => $contact['country'],
                     'type' => $contact['type'],
                     'register_time' => (int)$contact['register_time'],
                     'created_at' => time(),

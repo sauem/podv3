@@ -3,6 +3,7 @@
 namespace common\helper;
 
 use backend\models\Backups;
+use backend\models\LandingPages;
 use backend\models\UserModel;
 use backend\models\ZipcodeCountry;
 use yii\helpers\ArrayHelper;
@@ -85,65 +86,86 @@ class Helper
     {
         $ipdat = @json_decode(file_get_contents(
             "http://www.geoplugin.net/json.gp?ip=" . $ip));
-        if(!$ipdat){
+        if (!$ipdat) {
             return "";
         }
         return $ipdat->geoplugin_countryCode;
     }
-    static function findCountryFromZipcode($code){
-        $country = ZipcodeCountry::findOne(['zipcode'  => $code]);
-        if($country){
+
+    static function findCountryFromZipcode($code, $link = null)
+    {
+        $country = ZipcodeCountry::findOne(['zipcode' => $code]);
+        $land = LandingPages::findOne(['link' => $link]);
+        if ($country) {
             return $country->country_code;
+        }
+        if ($land) {
+            return $land->country;
         }
         return false;
     }
 
-    static function convertTime($date){
-        if(!is_numeric($date)){
+    static function convertTime($date)
+    {
+        if (!is_numeric($date)) {
             return strtotime($date);
         }
         return $date;
     }
 
-    static function getTimeLeft(){
+    static function getTimeLeft()
+    {
         $endDay = strtotime("today 23:59:59");
-        return  $endDay ;
+        return $endDay;
     }
 
-    static function makeCodeIncrement($lastID, $country = "VN"){
-        $defaultCode = "#CC".$country."0000000";
+    static function makeCodeIncrement($lastID, $country = "VN")
+    {
+        $defaultCode = "#CC" . $country . "0000000";
         $maxLen = strlen($lastID);
-        $code = substr_replace($defaultCode,$lastID,-$maxLen );
+        $code = substr_replace($defaultCode, $lastID, -$maxLen);
         return $code;
     }
-    static function getDBName(){
-        preg_match("/dbname=([^;]*)/", Yii::$app->db->dsn , $matches);
+
+    static function getDBName()
+    {
+        preg_match("/dbname=([^;]*)/", Yii::$app->db->dsn, $matches);
         return $matches[1];
     }
 
-    static function setting($name){
-        $bk =  SettingModel::findOne(['section' => "Common", "key" => $name]);
-        return ArrayHelper::getValue($bk,'value');
+    static function setting($name)
+    {
+        $bk = SettingModel::findOne(['section' => "Common", "key" => $name]);
+        return ArrayHelper::getValue($bk, 'value');
     }
 
-    static function getState($code,$city){
+    static function getState($code, $city)
+    {
         $apiKEY = Helper::setting("map_api");
         $geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=$code,$city&key=$apiKEY";
-       // $content = file_get_contents()
+        // $content = file_get_contents()
     }
-    static function link($page){
-        if(strpos($page, "http://") !== false){
-            return  $page;
+
+    static function link($page)
+    {
+        if (strpos($page, "http://") !== false) {
+            return $page;
         }
         return "http://" . $page;
     }
-    static function isAdmin(){
+
+    static function isAdmin()
+    {
         return Helper::userRole(UserModel::_ADMIN);
     }
-    static function isMarketing(){
+
+    static function isMarketing()
+    {
         return Helper::userRole(UserModel::_MARKETING);
     }
-    static function isSale(){
+
+    static function isSale()
+    {
         return Helper::userRole(UserModel::_SALE);
     }
 }

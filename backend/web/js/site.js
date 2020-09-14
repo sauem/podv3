@@ -61,7 +61,8 @@ function doProcessWorkbook(workbook, file) {
     let sheet = workbook.Sheets[firstSheet];
     let rows = [];
     let rowsIndex = 2;
-    let maxColumn = 16;
+    let maxColumn = 15;
+    let warning = [];
     if (firstSheet === "product") {
         maxColumn = 7;
     } else if (firstSheet === "order") {
@@ -75,9 +76,13 @@ function doProcessWorkbook(workbook, file) {
     while (row !== null) {
         let item = switchItem(firstSheet, row);
         if (typeof item.status === "boolean" && item.status === false) {
-            toastr.error(`Dòng thứ ${rowsIndex + 2}, không được để trống ${item.column}`);
+            toastr.error(`Dòng thứ ${(rowsIndex + 2)}, không được để trống ${item.column}`);
             rows = [];
             return false;
+        }
+        if (typeof item.warning === "object" && item.warning.status === true) {
+            let msg = `${item.warning.column} tại dòng ${rowsIndex} không xác định!`;
+            warning.push(msg);
         }
         rows.push(item);
         rowsIndex++;
@@ -86,18 +91,21 @@ function doProcessWorkbook(workbook, file) {
     let data = {
         rows: rows,
         size: file.size,
-        total: rows.length
+        total: rows.length,
+        warning: {
+            total: warning.length,
+            data: warning
+        }
     }
     EXCEL = {
         rows: rows,
         fileName: file.name,
         size: file.size,
-        total: EXCEL.rows.length
-    }
-
-    //check empty landing page or phone row
-    if (firstSheet === "contacts") {
-
+        total: rows.length,
+        warning: {
+            total: warning.length,
+            data: warning
+        }
     }
 
     /// render view example
@@ -120,77 +128,99 @@ function doProcessWorkbook(workbook, file) {
     }
 }
 
-$(".handleData").click(function () {
 
-    let _importAction = $(this).data("action");
-    let _createAction = false;
-    let _url = config.pushContact;
-    if (_importAction === "product") {
-        _url = config.pushProduct;
-    }
+$(".handleData").click(function (e) {
 
-    if (_importAction === "order") {
-        _url = config.pushOrder;
-        let _form = $("form#formUpload").serializeArray();
-        if (typeof _form[1] !== "undefined" && _form[1].value === "on") {
-            _createAction = true;
-        }
-    }
-    if (_importAction === "zipcode") {
-        _url = config.pushZipcode;
-    }
-    if (_importAction === "logs") {
-        _url = config.pushLogs;
-    }
-
-    if (typeof EXCEL == 'undefined' || (EXCEL.rows).length <= 0) {
+    if (typeof EXCEL == 'undefined' || EXCEL.total <= 0) {
         toastr.warning("Vui lòng chọn file dữ liệu!");
         return false;
     }
-    if ((EXCEL.rows).length > config.maxRowUpload) {
-        toastr.warning("File dữ liệu tối đa " + config.maxRowUpload + " dòng");
-        return false;
-    }
-
-    swal.fire({
-        title: "Đang nhập liệu",
-        icon: "info",
-        allowOutsideClick: false,
-        onBeforeOpen: () => {
-            Swal.showLoading()
-            $.ajax({
-                url: _url,
-                type: "POST",
-                cache: false,
-                data: {
-                    contacts: window.EXCEL.rows,
-                    fileName: window.EXCEL.fileName,
-                    createNew: _createAction ? "ok" : ""
-                },
-                success: function (res) {
-
-                    if (!res.success) {
-                        setTimeout(() => {
-                            Swal.hideLoading();
-                            swal.fire("Lỗi", res.msg, "error");
-                        }, 1000);
-                        return;
-                    }
-                    setTimeout(() => {
-                        Swal.hideLoading()
-                        swal.fire({
-                            title: "Thông báo!",
-                            html: "Đã nhập thành công " + res.totalInsert + " mẫu đơn <br> Số mẫu lỗi : " + res.totalErrors,
-                            icon: 'success'
-                        })
-                            .then(() => {
-                                window.location.reload()
-                            })
-                    }, 1000)
-                }
-            });
+    if (EXCEL.total <= 0) {
+        EXCEL.warning = {
+            total: 0,
+            warning: []
         }
-    })
+    }
+    if (EXCEL.warning.total > 0) {
+        swal.fire({
+            title: "Cảnh báo!",
+            icon: "info",
+            text: `Đang có ${EXCEL.warning.total} cảnh báo cho dữ liệu nhập vào!`,
+            showCancelButton: true,
+            cancelButtonText: "Xem lại",
+            confirmButtonText: "Tiếp tục nhập"
+        }).then(val => {
+            if (val.value) {
+                processContact();
+                return true;
+            }
+            return false;
+        });
+    }
+    let processContact = () => {
+        let _importAction = $(this).data("action");
+        let _createAction = false;
+        let _url = config.pushContact;
+        if (_importAction === "product") {
+            _url = config.pushProduct;
+        }
+        if (_importAction === "order") {
+            _url = config.pushOrder;
+            let _form = $("form#formUpload").serializeArray();
+            if (typeof _form[1] !== "undefined" && _form[1].value === "on") {
+                _createAction = true;
+            }
+        }
+        if (_importAction === "zipcode") {
+            _url = config.pushZipcode;
+        }
+        if (_importAction === "logs") {
+            _url = config.pushLogs;
+        }
+        if (EXCEL.total > config.maxRowUpload) {
+            toastr.warning("File dữ liệu tối đa " + config.maxRowUpload + " dòng");
+            return false;
+        }
+        swal.fire({
+            title: "Đang nhập liệu",
+            icon: "info",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+                $.ajax({
+                    url: _url,
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        contacts: window.EXCEL.rows,
+                        fileName: window.EXCEL.fileName,
+                        createNew: _createAction ? "ok" : ""
+                    },
+                    success: function (res) {
+
+                        if (!res.success) {
+                            setTimeout(() => {
+                                Swal.hideLoading();
+                                swal.fire("Lỗi", res.msg, "error");
+                            }, 1000);
+                            return;
+                        }
+                        setTimeout(() => {
+                            Swal.hideLoading()
+                            swal.fire({
+                                title: "Thông báo!",
+                                html: "Đã nhập thành công " + res.totalInsert + " mẫu đơn <br> Số mẫu lỗi : " + res.totalErrors,
+                                icon: 'success'
+                            })
+                                .then(() => {
+                                    window.location.reload()
+                                })
+                        }, 1000)
+                    }
+                });
+            }
+        })
+    }
 })
 
 function renderViewTemplate(result = "result", template = "excel-template", data) {
@@ -270,7 +300,7 @@ function switchItem(sheet, row) {
             item.utm_content = row[12] ? row[12].v : "";
             item.ip = row[13] ? row[13].v : "";
             item.type = row[14] ? row[14].v : "";
-            item.country = row[15] ? row[15].v : "";
+            //  item.country = row[15] ? row[15].v : "";
             item.host = window.location.hostname;
 
             if (item.link === ""
@@ -284,6 +314,15 @@ function switchItem(sheet, row) {
                 || typeof item.phone === "undefined"
             ) {
                 return {column: " số điện thoại", status: false};
+            }
+            if (item.option === ""
+                || item.option === null
+                || typeof item.option === "undefined"
+            ) {
+                item.warning = {
+                    status: true,
+                    column: " yêu cầu đặt hàng"
+                }
             }
             break
     }
@@ -310,7 +349,8 @@ function contactModel() {
         created_at: Date.now() / 1000,
         updated_at: Date.now() / 1000,
         host: window.location.hostname,
-        country: null
+        warning: {}
+        //country: null
     }
 }
 
