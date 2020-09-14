@@ -235,7 +235,7 @@ class ContactsAssignmentController extends Controller
     function actionImport(){
         $this->layout = "empty";
         $model = new UploadForm;
-       return $this->render("_import_modal",[
+       return $this->render("modal/_contact_import",[
            'model' => $model
        ]);
     }

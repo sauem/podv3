@@ -74,11 +74,15 @@ function doProcessWorkbook(workbook, file) {
     let row = getRow(sheet, rowsIndex, maxColumn);
     while (row !== null) {
         let item = switchItem(firstSheet, row);
+        if (typeof item.status === "boolean" && item.status === false) {
+            toastr.error(`Dòng thứ ${rowsIndex + 2}, không được để trống ${item.column}`);
+            rows = [];
+            return false;
+        }
         rows.push(item);
         rowsIndex++;
         row = getRow(sheet, rowsIndex, maxColumn);
     }
-    console.log(rows)
     let data = {
         rows: rows,
         size: file.size,
@@ -89,6 +93,11 @@ function doProcessWorkbook(workbook, file) {
         fileName: file.name,
         size: file.size,
         total: EXCEL.rows.length
+    }
+
+    //check empty landing page or phone row
+    if (firstSheet === "contacts") {
+
     }
 
     /// render view example
@@ -217,21 +226,22 @@ function switchItem(sheet, row) {
             item.skus[4].qty = row[12] ? row[12].v : "";
             break;
         case "logs":
-            let time = ( row[1] && (typeof row[1].v.getTime === "function") ) ? row[1].v.getTime() / 1000 : row[1].v;
+            let time = (row[1] && (typeof row[1].v.getTime === "function")) ? row[1].v.getTime() / 1000 : row[1].v;
 
             item = new logModel();
             item.code = row[0] ? row[0].v : "";
             item.time_call = time;
-            item.phone = row[2] ? row[2].v :"";
-            item.address = row[3] ? row[3].v :"";
-            item.zipcode = row[4] ? row[4].v :"";
-            item.category = row[5] ? row[5].v :"";
-            item.option = row[6] ? row[6].v :"";
-            item.customer_note = row[7] ? row[7].v :"";
-            item.status = row[8] ? row[8].v :"";
-            item.note = row[9] ? row[9].v :"";
+            item.phone = row[2] ? row[2].v : "";
+            item.address = row[3] ? row[3].v : "";
+            item.zipcode = row[4] ? row[4].v : "";
+            item.category = row[5] ? row[5].v : "";
+            item.option = row[6] ? row[6].v : "";
+            item.customer_note = row[7] ? row[7].v : "";
+            item.status = row[8] ? row[8].v : "";
+            item.note = row[9] ? row[9].v : "";
             break;
         case "zipcode":
+
             item = new zipcodeModel();
             item.country_name = row[0] ? row[0].v : "";
             item.country_code = row[1] ? row[1].v : "";
@@ -241,8 +251,11 @@ function switchItem(sheet, row) {
             item.address = row[5] ? row[5].v : "";
             break;
         default:
+            let time_register = (row[0] && (typeof row[0].v.getTime === "function")) ? row[0].v.getTime() / 1000 : row[0].v;
             item = new contactModel();
-            item.register_time = row[0] ? (row[0].v.getTime() / 1000) : null;
+
+            // check empty phone or link contacts
+            item.register_time = time_register;
             item.name = row[1] ? row[1].v : "";
             item.phone = row[2] ? row[2].v : "";
             item.address = row[3] ? row[3].v : "";
@@ -259,6 +272,19 @@ function switchItem(sheet, row) {
             item.type = row[14] ? row[14].v : "";
             item.country = row[15] ? row[15].v : "";
             item.host = window.location.hostname;
+
+            if (item.link === ""
+                || item.link === null
+                || typeof item.link === "undefined"
+            ) {
+                return {column: " link trang landing page", status: false};
+            }
+            if (item.phone === ""
+                || item.phone === null
+                || typeof item.phone === "undefined"
+            ) {
+                return {column: " số điện thoại", status: false};
+            }
             break
     }
     return item;
@@ -307,9 +333,9 @@ function logModel() {
         zipcode: "",
         category: "",
         option: "",
-        customer_note : "",
-        status : "",
-        note : ""
+        customer_note: "",
+        status: "",
+        note: ""
     }
 }
 

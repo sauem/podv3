@@ -367,6 +367,10 @@ class AjaxController extends BaseController
 
             foreach ($contacts as $k => $contact) {
                 $model = new ContactsModel;
+                if($contact['link'] === null || $contact['link'] === ""){
+                    $errors[] =  "Trang đích không được để trống";
+                    break;
+                }
                 $data = [
                     'phone' => $contact['phone'],
                     'name' => $contact['name'],
