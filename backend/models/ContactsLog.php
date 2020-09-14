@@ -13,6 +13,7 @@ use Yii;
  * @property int $contact_id
  * @property string|null $status
  * @property string $note
+ * @property string $customer_note
  * @property int $created_at
  * @property int $updated_at
  *
@@ -38,10 +39,10 @@ class ContactsLog extends BaseModel
     public function rules()
     {
         return [
-            [['user_id', 'contact_id'], 'required'],
+            [['status', 'contact_id'], 'required'],
             [['user_id', 'contact_id', 'created_at', 'callback_time', 'updated_at'], 'integer'],
             [['status', 'phone'], 'string', 'max' => 50],
-            [['note'], 'string', 'max' => 255],
+            [['note','customer_note'], 'string', 'max' => 255],
             [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContactsModel::className(), 'targetAttribute' => ['contact_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -58,6 +59,7 @@ class ContactsLog extends BaseModel
             'contact_id' => 'Khách hàng',
             'status' => 'Trạng thái',
             'note' => 'Ghi chú liên hệ',
+            'customer_note' => 'Ghi chú nhà vận chuyển',
             'created_at' => 'Ngày liên hệ',
             'updated_at' => 'Updated At',
         ];
@@ -81,6 +83,7 @@ class ContactsLog extends BaseModel
                 $this->addError("contact_id", "Liên hệ quá số lần liên lạc!");
                 return false;
             }
+            
 
             $this->status = isset($this->status) ? $this->status : null;
             $contact = ContactsModel::findOne($this->contact_id);

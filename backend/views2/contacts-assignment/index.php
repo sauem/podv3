@@ -42,7 +42,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-<!--MODAL-->
+    <!--MODAL-->
     <div class="modal fade" tabindex="-1" id="remote-import" role="dialog">
         <div class="modal-dialog modal-xl  modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -74,10 +74,14 @@ use yii\helpers\Url;
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Nhập lịch sử liên hệ</h5>
-                    <div>
-                        <button class="btn handleData btn-primary">Nhập liên hệ</button>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">Đóng</span>
+                    <div class="btn-group">
+                        <button data-action="logs" class="btn handleData btn-sm btn-success">
+                            <i class="fe-download-cloud"></i> Nhập liên hệ
+                        </button>
+                        <button type="button"
+                                class="btn btn-sm btn-secondary"
+                                data-dismiss="modal">
+                            <i class="fe-x"></i> Đóng
                         </button>
                     </div>
                 </div>
@@ -86,17 +90,24 @@ use yii\helpers\Url;
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <a class="text-warning" href="<?= Url::toRoute(['/file/log_example.xlsx']) ?>"><i
-                                class="fa fa-download"></i> File dữ liệu mẫu</a>
+                                class="fe-download"></i> File dữ liệu mẫu</a>
                     <div>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="button" data-action="logs" class="btn handleData btn-primary">Nhập liên hệ
-                        </button>
+                        <div class="btn-group">
+                            <button data-action="logs" class="btn handleData btn-sm btn-success">
+                                <i class="fe-download-cloud"></i> Nhập liên hệ
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-secondary"
+                                    data-dismiss="modal">
+                                <i class="fe-x"></i> Đóng
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <?= $this->render("_modal_approve") ?>
+<?= $this->render("_modal_approve") ?>
     <div class="modal fade in" id="editRowModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">

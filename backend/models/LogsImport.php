@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\helper\Helper;
 use Yii;
 
 /**
@@ -51,5 +52,15 @@ class LogsImport extends BaseModel
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    public static function saveRecord($data = [])
+    {
+        $model = new LogsImport;
+        $data['user_id'] = Yii::$app->user->getId();
+        if ($model->load($data, "") && $model->save()) {
+            return true;
+        }
+        return Helper::firstError($model);
     }
 }

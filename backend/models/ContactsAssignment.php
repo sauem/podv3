@@ -38,6 +38,10 @@ class ContactsAssignment extends BaseModel
         self::_COMPLETED => 'Hoàn thành',
         self::_PROCESSING => 'Đang xử lý'
     ];
+    /**
+     * @var mixed|null
+     */
+
 
     static function label($status)
     {

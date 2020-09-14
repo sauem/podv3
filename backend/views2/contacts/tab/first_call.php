@@ -35,26 +35,26 @@ use yii\helpers\Url;
         <li class="nav-item">
             <a class="nav-link active" href="#first_wating" data-toggle="tab">
                 <i class="ti-bar-chart"></i>
-                Chờ xử lý
+                Chờ xử lý (<?= $dataProvider->getcount()?>)
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#first_callback" data-toggle="tab">
                 <i class="ti-time"></i>
-                Hẹn gọi lại/Thuê bao
+                Hẹn gọi lại/Thuê bao (<?= $callbackProvider->getcount()?>)
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#first_failed" data-toggle="tab">
                 <i class="fe-phone-missed"></i>
-                Thất bại
+                Thất bại (<?= $failureProvider->getcount()?>)
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="#first_ok" data-toggle="tab">
                 <i class="fe-phone-outgoing"></i>
-                Thành công
+                Thành công (<?= $successProvider->getcount()?>)
             </a>
         </li>
     </ul>

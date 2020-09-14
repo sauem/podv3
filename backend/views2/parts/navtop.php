@@ -90,62 +90,6 @@
                 </a>
             </li>
 
-            <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
-                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="fe-grid noti-icon"></i>
-                </a>
-                <div class="dropdown-menu dropdown-lg dropdown-menu-right">
-
-                    <div class="p-lg-1">
-                        <div class="row no-gutters">
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="/theme2/images/brands/slack.png" alt="slack">
-                                    <span>Slack</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="/theme2/images/brands/github.png" alt="Github">
-                                    <span>GitHub</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="/theme2/images/brands/dribbble.png" alt="dribbble">
-                                    <span>Dribbble</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="row no-gutters">
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="/theme2/images/brands/bitbucket.png" alt="bitbucket">
-                                    <span>Bitbucket</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="/theme2/images/brands/dropbox.png" alt="dropbox">
-                                    <span>Dropbox</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="/theme2/images/brands/g-suite.png" alt="G Suite">
-                                    <span>G Suite</span>
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </li>
-
-
-
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell noti-icon"></i>
@@ -241,7 +185,7 @@
                 <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <img src="/theme2/images/users/user-1.jpg" alt="user-image" class="rounded-circle">
                     <span class="pro-user-name ml-1">
-                                    Geneva <i class="mdi mdi-chevron-down"></i>
+                                    <?= Yii::$app->user->identity->username?> <i class="mdi mdi-chevron-down"></i>
                                 </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">

@@ -67,7 +67,7 @@ function doProcessWorkbook(workbook, file) {
     } else if (firstSheet === "order") {
         maxColumn = 13;
     } else if (firstSheet === "logs") {
-        maxColumn = 14;
+        maxColumn = 10;
     } else if (firstSheet === "zipcode") {
         maxColumn = 6;
     }
@@ -77,10 +77,8 @@ function doProcessWorkbook(workbook, file) {
         rows.push(item);
         rowsIndex++;
         row = getRow(sheet, rowsIndex, maxColumn);
-
     }
-
-
+    console.log(rows)
     let data = {
         rows: rows,
         size: file.size,
@@ -219,21 +217,19 @@ function switchItem(sheet, row) {
             item.skus[4].qty = row[12] ? row[12].v : "";
             break;
         case "logs":
+            let time = ( row[1] && (typeof row[1].v.getTime === "function") ) ? row[1].v.getTime() / 1000 : row[1].v;
+
             item = new logModel();
-            item.phone = row[0] ? row[0].v : "";
-            item.link = row[1] ? row[1].v : "";
-            item.option = row[2] ? row[2].v : "";
-            item.user = row[3] ? row[3].v : "";
-            item.called[0].status = row[4] ? row[4].v : "";
-            item.called[0].note = row[5] ? row[5].v : "";
-            item.called[1].status = row[6] ? row[6].v : "";
-            item.called[1].note = row[7] ? row[7].v : "";
-            item.called[2].status = row[8] ? row[8].v : "";
-            item.called[2].note = row[9] ? row[9].v : "";
-            item.called[3].status = row[10] ? row[10].v : "";
-            item.called[3].note = row[11] ? row[11].v : "";
-            item.called[4].status = row[12] ? row[12].v : "";
-            item.called[4].note = row[13] ? row[13].v : "";
+            item.code = row[0] ? row[0].v : "";
+            item.time_call = time;
+            item.phone = row[2] ? row[2].v :"";
+            item.address = row[3] ? row[3].v :"";
+            item.zipcode = row[4] ? row[4].v :"";
+            item.category = row[5] ? row[5].v :"";
+            item.option = row[6] ? row[6].v :"";
+            item.customer_note = row[7] ? row[7].v :"";
+            item.status = row[8] ? row[8].v :"";
+            item.note = row[9] ? row[9].v :"";
             break;
         case "zipcode":
             item = new zipcodeModel();
@@ -304,17 +300,16 @@ function productModel() {
 
 function logModel() {
     return {
+        code: "",
+        time_call: "",
         phone: "",
-        link: "",
-        user: "",
+        address: "",
+        zipcode: "",
+        category: "",
         option: "",
-        called: [
-            {status: "", note: ""},
-            {status: "", note: ""},
-            {status: "", note: ""},
-            {status: "", note: ""},
-            {status: "", note: ""},
-        ]
+        customer_note : "",
+        status : "",
+        note : ""
     }
 }
 

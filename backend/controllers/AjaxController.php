@@ -23,6 +23,7 @@ use backend\models\ZipcodeCountry;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\data\ArrayDataProvider;
+use yii\debug\models\search\Log;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use Yii;
@@ -283,56 +284,44 @@ class AjaxController extends BaseController
 
     function actionPushLogs()
     {
-        $contacts = Yii::$app->request->post("contacts");
+        $logs = Yii::$app->request->post("contacts");
         $fileName = Yii::$app->request->post("fileName");
         $errors = [];
         $count = 0;
-        if (!empty($contacts)) {
-            foreach ($contacts as $k => $log) {
-                $key = md5($log['phone'] . $log['link'] . $log['option']);
-                $contact = ContactsModel::findOne(['hashkey' => $key]);
-                $user = UserModel::findOne(['username' => $log['user']]);
-                if (!$user) {
-                    ActionLog::add("error", "Không tồn tại tài khoản " . $log['user'] . " dòng " . ($k + 1));
-                    $errors[$k] = "Không tồn tại tài khoản " . $log['user'] . " dòng " . ($k + 1);
+        if (!empty($logs)) {
+            ActionLog::add("success",Yii::$app->user->identity->username . " Nhập liên hệ excel {$fileName}");
+            foreach ($logs as $k => $log ) {
+                $modelLog = new ContactsLog;
+                $id = ContactsModel::findOne(['code' => $log['code']]);
+                if (!$id) {
+                    $errors[] = "Không tìm thấy contact code {$log['code']}";
+                    LogsImport::saveRecord([
+                        'msg' =>"Không tìm thấy contact code {$log['code']}",
+                        'name' => $fileName,
+                        'line' => $k + 2
+                    ]);
                     continue;
                 }
-                if (!$contact) {
-                    ActionLog::add("error", "Không tồn tại contact dòng " . ($k + 1));
-                    $errors[$k] = "Không tồn tại contact dòng " . ($k + 1);
-                    continue;
+                $userAssignment = ContactsAssignment::findOne(['contact_phone' => $log['phone']]);
+                if ($userAssignment) {
+                    $modelLog->user_id = $userAssignment->user_id;
                 }
-                if (!empty($log['called'])) {
-
-                    foreach ($log['called'] as $note) {
-                        $model = new ContactsLog;
-                        $logs = new LogsImport;
-                        if ($note['status'] && !empty($note['status'])) {
-                            $model->user_id = $user->id;
-                            $model->contact_id = $contact->id;
-                            $model->status = $note['status'];
-                            $model->note = $note['note'];
-                            if (!$model->save()) {
-                                $errors[$k] = Helper::firstError($model);
-
-                                $data = [
-                                    'line' => (string)($k + 2),
-                                    'message' => Helper::firstError($model),
-                                    'name' => $fileName,
-                                    'user_id' => Yii::$app->user->getId()
-                                ];
-                                $logs->load($data, "");
-                                $logs->save();
-
-                            } else {
-                                ActionLog::add("success", "Nhập lịch sử liên hệ " . $contact->id);
-                            }
-                        }
-
-                    }
+                $time_call = $log['time_call'];
+                $modelLog->contact_id = $id->id;
+                $modelLog->status = $log['status'];
+                $modelLog->note = $log['note'];
+                $modelLog->customer_note = $log['note'];
+                $modelLog->created_at = $time_call;
+                if (!$modelLog->save()) {
+                    $errors[] = Helper::firstError($modelLog);
+                    LogsImport::saveRecord([
+                        'msg' => Helper::firstError($modelLog),
+                        'name' => $fileName,
+                        'line' => $k + 2
+                    ]);
                 }
             }
-            $count = sizeof($contacts) - sizeof($errors);
+            $count = sizeof($logs) - sizeof($errors);
             return self::resultImport($count, $errors, 1);
         }
         return self::resultImport($count, $errors, 0);
