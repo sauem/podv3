@@ -1,3 +1,50 @@
+const toastr = {
+    warning: (text = "content", heading = "Cảnh báo!") => {
+        $.toast({
+            heading: heading,
+            text: text,
+            hideAfter: 3000,
+            icon: 'warning',
+            loaderBg: "#5ba035",
+            position: "top-right",
+            stack: 1
+        })
+    },
+    success: ( text = "content" , heading = "Thông báo!") => {
+        $.toast({
+            heading: heading,
+            text: text,
+            hideAfter: 3000,
+            icon: 'success',
+            loaderBg: "#5ba035",
+            position: "top-right",
+            stack: 1
+        })
+    },
+    error: ( text = "content" , heading = "Lỗi!") => {
+        $.toast({
+            heading: heading,
+            text: text,
+            hideAfter: 3000,
+            icon: 'danger',
+            loaderBg: "#5ba035",
+            position: "top-right",
+            stack: 1
+        })
+    },
+    info: ( text = "content" , heading = "Chú ý!") => {
+        $.toast({
+            heading: heading,
+            text: text,
+            hideAfter: 3000,
+            icon: 'info',
+            loaderBg: "#5ba035",
+            position: "top-right",
+            stack: 1
+        })
+    }
+}
+
 Number.prototype.formatMoney = function (n, x) {
     var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
     return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
@@ -24,8 +71,6 @@ function compileTemplate(template, data) {
     return template(data);
 }
 
-initSelect2();
-
 function initSelect2() {
 
     $(".select2").select2({
@@ -36,7 +81,7 @@ function initSelect2() {
     });
 }
 
-initDateRage()
+// initDateRage()
 
 function initDateRage() {
     $(".daterange").daterangepicker({
@@ -575,6 +620,66 @@ async function detectLocalCity(zipcode, country) {
         address: _address
     }
 }
+async function loadProducts(keys) {
+    if(!keys){
+        toastr.error('Liên hệ không xác định!');
+        return;
+    }
+    await  $.ajax({
+        url : config.ajaxProductSelect,
+        type : "POST",
+        data : {keys : keys},
+        cache : false,
+        success: function(res) {
+            const { zipcode , country } = res.customer.info;
+            console.log("Load product", res)
+            detectLocalCity(zipcode, country)
+                .then(data => {
+                    const {city , district } = data;
+                    res.customer.info.city = city;
+                    res.customer.info.district = district;
+                }).then(() => {
+                let html =  compileTemplate("template-product",res.customer);
+                $("#resultInfo").html(html);
+                setORDER(res);
+            }).catch(error => {
+                let html =  compileTemplate("template-product",res.customer);
+                $("#resultInfo").html(html);
+                setORDER(res);
+            })
+
+        }
+    })
+}
+
+function loadSku() {
+    $.ajax({
+        url : config.loadSkus,
+        data : {},
+        type : 'POST',
+        cache : false,
+        success : function(res) {
+            $("#resultProduct").html(compileTemplate('template-sku',res))
+            initSelect2();
+        }
+    })
+}
+function setORDER(res) {
+
+    let _products = res.product;
+    _products.map( item  => {
+        if(ORDER.skus.includes(item.sku)){
+            return 0;
+        };
+
+        ORDER.option = item.selected;
+        ORDER.cate = item.category_id;
+
+        ORDER.skus.push(item.sku);
+        __addItemProduct(item);
+    });
+    renderProduct();
+}
 
 $("body").on("click", ".autoUpdateCity", function () {
     let _form = $(this).closest("form#formOrder");
@@ -590,4 +695,10 @@ $("body").on("click", ".autoUpdateCity", function () {
         _form.find("input[name='district']").val(res.district);
     }).catch(error => alert(error.message))
 });
+
+$("body").on("click", ".cancelButton", function () {
+    let _key = $(this).data("key");
+    alert(_key);
+});
+
 

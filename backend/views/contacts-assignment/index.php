@@ -124,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-<?= $this->render("_modal_approve") ?>
+    <?= $this->render("_modal_approve") ?>
 
     <div class="modal fade in" id="editRowModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">

@@ -9,6 +9,8 @@ return [
     'timeZone' => 'Asia/Ho_Chi_Minh',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
+    'layoutPath' => '@backend/views2/layouts',
+    'layout' => 'main2',
     'bootstrap' => [
         'log'
     ],
@@ -31,6 +33,15 @@ return [
         ],
     ],
     'components' => [
+        'view' => [
+            'theme' => [
+                'basePath' => '@backend/views2',
+                'baseUrl' => '@backend/views2',
+                'pathMap' => [
+                    '@backend/views' => '@backend/views2',
+                ],
+            ]
+        ],
         'settings' => [
             'class' => 'yii2mod\settings\components\Settings',
         ],

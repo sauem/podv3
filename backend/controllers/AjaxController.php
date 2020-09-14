@@ -120,10 +120,10 @@ class AjaxController extends BaseController
 
     function actionLoadProductSelect()
     {
-        $ids = \Yii::$app->request->post('keys');
+        $id = \Yii::$app->request->post('keys');
         $contacts = ContactsModel::find()
             ->with('page')
-            ->where(['IN', 'contacts.id', $ids])->asArray()->all();
+            ->where(['contacts.id' => $id])->asArray()->all();
         $total = array_sum(ArrayHelper::getColumn($contacts, 'page.product.regular_price'));
         $product = ArrayHelper::getColumn($contacts, 'page.product');
         $selected = ArrayHelper::getColumn($contacts, 'option');
