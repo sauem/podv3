@@ -135,6 +135,7 @@ $(".handleData").click(function (e) {
         toastr.warning("Vui lòng chọn file dữ liệu!");
         return false;
     }
+
     if (EXCEL.total <= 0) {
         EXCEL.warning = {
             total: 0,
@@ -151,77 +152,81 @@ $(".handleData").click(function (e) {
             confirmButtonText: "Tiếp tục nhập"
         }).then(val => {
             if (val.value) {
-                processContact();
+                processContact($(this));
                 return true;
             }
+            alert("DDA");
             return false;
         });
+    }else{
+        processContact($(this));
     }
-    let processContact = () => {
-        let _importAction = $(this).data("action");
-        let _createAction = false;
-        let _url = config.pushContact;
-        if (_importAction === "product") {
-            _url = config.pushProduct;
-        }
-        if (_importAction === "order") {
-            _url = config.pushOrder;
-            let _form = $("form#formUpload").serializeArray();
-            if (typeof _form[1] !== "undefined" && _form[1].value === "on") {
-                _createAction = true;
-            }
-        }
-        if (_importAction === "zipcode") {
-            _url = config.pushZipcode;
-        }
-        if (_importAction === "logs") {
-            _url = config.pushLogs;
-        }
-        if (EXCEL.total > config.maxRowUpload) {
-            toastr.warning("File dữ liệu tối đa " + config.maxRowUpload + " dòng");
-            return false;
-        }
-        swal.fire({
-            title: "Đang nhập liệu",
-            icon: "info",
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-                $.ajax({
-                    url: _url,
-                    type: "POST",
-                    cache: false,
-                    data: {
-                        contacts: window.EXCEL.rows,
-                        fileName: window.EXCEL.fileName,
-                        createNew: _createAction ? "ok" : ""
-                    },
-                    success: function (res) {
 
-                        if (!res.success) {
-                            setTimeout(() => {
-                                Swal.hideLoading();
-                                swal.fire("Lỗi", res.msg, "error");
-                            }, 1000);
-                            return;
-                        }
-                        setTimeout(() => {
-                            Swal.hideLoading()
-                            swal.fire({
-                                title: "Thông báo!",
-                                html: "Đã nhập thành công " + res.totalInsert + " mẫu đơn <br> Số mẫu lỗi : " + res.totalErrors,
-                                icon: 'success'
-                            })
-                                .then(() => {
-                                    window.location.reload()
-                                })
-                        }, 1000)
-                    }
-                });
-            }
-        })
-    }
 })
+let processContact = (ele) => {
+    let _importAction = ele.data("action");
+    let _createAction = false;
+    let _url = config.pushContact;
+    if (_importAction === "product") {
+        _url = config.pushProduct;
+    }
+    if (_importAction === "order") {
+        _url = config.pushOrder;
+        let _form = $("form#formUpload").serializeArray();
+        if (typeof _form[1] !== "undefined" && _form[1].value === "on") {
+            _createAction = true;
+        }
+    }
+    if (_importAction === "zipcode") {
+        _url = config.pushZipcode;
+    }
+    if (_importAction === "logs") {
+        _url = config.pushLogs;
+    }
+    if (EXCEL.total > config.maxRowUpload) {
+        toastr.warning("File dữ liệu tối đa " + config.maxRowUpload + " dòng");
+        return false;
+    }
+    swal.fire({
+        title: "Đang nhập liệu",
+        icon: "info",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+            Swal.showLoading()
+            $.ajax({
+                url: _url,
+                type: "POST",
+                cache: false,
+                data: {
+                    contacts: window.EXCEL.rows,
+                    fileName: window.EXCEL.fileName,
+                    createNew: _createAction ? "ok" : ""
+                },
+                success: function (res) {
+
+                    if (!res.success) {
+                        setTimeout(() => {
+                            Swal.hideLoading();
+                            swal.fire("Lỗi", res.msg, "error");
+                        }, 1000);
+                        return;
+                    }
+                    setTimeout(() => {
+                        Swal.hideLoading()
+                        swal.fire({
+                            title: "Thông báo!",
+                            html: "Đã nhập thành công " + res.totalInsert + " dòng <br> Số dòng lỗi : " + res.totalErrors,
+                            icon: 'success'
+                        })
+                            .then(() => {
+                                window.location.reload()
+                            })
+                    }, 1000)
+                }
+            });
+        }
+    })
+}
 
 function renderViewTemplate(result = "result", template = "excel-template", data) {
     $("#" + result).html(compileTemplate(template, data));

@@ -142,6 +142,6 @@ class ZipcodeController extends BaseController
     public function actionImport(){
         $this->layout = "empty";
         $model = new UploadForm();
-        return $this->render('remote',['model' => $model]);
+        return $this->render('import',['model' => $model]);
     }
 }

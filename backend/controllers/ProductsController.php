@@ -148,6 +148,6 @@ class ProductsController extends BaseController
         $this->layout = "empty";
         $model = new UploadForm;
 
-        return $this->render("_remote",['model' => $model]);
+        return $this->render("import",['model' => $model]);
     }
 }

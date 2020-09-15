@@ -258,11 +258,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     ],
                     [
-                        'class' => 'yii\grid\ActionColumn',
+                        'class' => ActionColumn::className(),
+                        'width' => '150px',
+                        'header' => 'Hành động',
                         'template' => '{update}{block}{status}',
-                        'headerOptions' => [
-                            'width' => '10%',
-                        ],
                         'buttons' => [
                             'update' => function ($url, $model) {
                                 if ($model->hasLocked()) {
@@ -320,7 +319,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         Html::a("<i class='fe-shopping-cart'></i> Tạo đơn", "javascript:;", ['class' => 'mr-1 btn createOrder btn-outline-success btn-sm', 'data-pjax' => '0'])
                         . (Helper::isAdmin() ? Html::a('<i class="fe-trash"></i> Xóa lựa chọn', 'javascript:;',
                             [
-                                'class' => 'btn deleteAll btn-warning',
+                                'class' => 'btn deleteAll btn-outline-warning  btn-sm',
                                 'data-pjax' => '0',
                                 'data-model' => $dataProvider->query->modelClass
                             ]) : "")

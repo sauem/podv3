@@ -11,7 +11,7 @@ class Component
     static function delete($urk)
     {
 
-        return Html::a('<i class="fa fa-trash"></i> xóa'
+        return Html::a('<i class="fe-trash"></i> xóa'
             , $urk, [
                 'class' => 'btn btn-sm btn-warning',
                 'data-confirm' => 'Bạn chắc sẽ xóa dữ liệu này?',
@@ -22,12 +22,12 @@ class Component
 
     static function update($url)
     {
-        return Html::a('<i class="fa fa-edit"></i> sửa', $url, ['data-pjax' => '0','class' => 'btn mt-1 btn-sm bg-white']);
+        return Html::a('<i class="fe-edit"></i> sửa', $url, ['data-pjax' => '0','class' => 'btn mt-1 btn-sm bg-white']);
     }
 
     static function view($url)
     {
-        return Html::a('<i class="fa fa-eye"></i> xem', $url, ['data-pjax' => '0' ,'class' => 'btn btn-sm bg-white']);
+        return Html::a('<i class="fe-eye"></i> xem', $url, ['data-pjax' => '0' ,'class' => 'btn btn-sm bg-white']);
     }
     static function money($form,$model,$name){
         return $form->field($model, $name)->widget(MaskMoney::classname(), [
@@ -48,7 +48,7 @@ class Component
         if(\Yii::$app->request->get('phone')){
             $url = Url::toRoute([\Yii::$app->controller->getRoute(),'phone' => \Yii::$app->request->get('phone')]);
         }
-        return Html::a($name, $url, ['class' => 'btn btn-outline-warning']);
+        return Html::a("<i class='fe-refresh-ccw'></i> $name", $url, ['class' => 'btn btn-sm btn-outline-warning']);
     }
 
     static function renderLogs(){
