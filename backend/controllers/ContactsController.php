@@ -31,6 +31,7 @@ class ContactsController extends BaseController
         $phone = isset($user->processing) ? $user->processing->contact_phone : ContactsAssignment::prevAssignment();
         $pendingPhone = isset($user->pending) ? $user->pending->contact_phone : null;
 
+        // Lần gọi 1
         $searchModel = new ContactsSearchModel();
         $dataProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -81,7 +82,7 @@ class ContactsController extends BaseController
             ]
         ));
 
-
+        // Lần gọi 2
         $_dataProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -146,12 +147,14 @@ class ContactsController extends BaseController
         $user = UserModel::findOne(Yii::$app->user->getId());
         $order = new OrdersModel;
 
+        // Lịch sử đơn hàng
         $histories = new ActiveDataProvider([
             'query' => OrdersModel::find()->where(['user_id' => Yii::$app->user->getId()]),
             'pagination' => [
                 'pageSize' => 10
             ]
         ]);
+        //Lịch sử cuộc gọi
         $contactHistories = new ActiveDataProvider([
             'query' => ContactsLog::find()
                 ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
@@ -161,6 +164,7 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+        // Lịch sử cuộc gọi hiện tại
         $currentHistories = new ActiveDataProvider([
             'query' => ContactsLog::find()
                 ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
@@ -171,6 +175,7 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+        // Lịch sử cuộc gọi lần gọi 2
         $_currentHistories = new ActiveDataProvider([
             'query' => ContactsLog::find()
                 ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')

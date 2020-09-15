@@ -24,6 +24,7 @@ class Customers extends BaseModel
     /**
      * {@inheritdoc}
      */
+    public $code;
     public static function tableName()
     {
         return 'customers';
@@ -39,7 +40,7 @@ class Customers extends BaseModel
             [['phone'], 'string', 'max' => 15],
             [['email', 'district', 'country'], 'string', 'max' => 65],
             [['city'], 'string', 'max' => 100],
-            [['address','name'], 'string', 'max' => 255],
+            [['address','name','code'], 'string', 'max' => 255],
             [['zipcode'], 'string', 'max' => 50],
             [['phone'], 'unique'],
         ];
@@ -55,6 +56,7 @@ class Customers extends BaseModel
             'name' => 'Tên khách hàng',
             'phone' => 'Số điện thoại',
             'email' => 'Email',
+            'code' => 'Mã order',
             'city' => 'Thành phố',
             'address' => 'Địa chỉ',
             'district' => 'Quận/Huyện',

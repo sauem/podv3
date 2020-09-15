@@ -13,7 +13,6 @@ $user = Yii::$app->user;
 Pjax::begin([
     'id' => 'pjax-info'
 ]) ?>
-
     <div class="card-box">
         <ul class="nav nav-tabs tabs-line">
             <li class="nav-item">
@@ -46,11 +45,29 @@ Pjax::begin([
             </div>
         </div>
     </div>
-
-
+    <div class="card card-body">
+        <h4 class="card-title">Lịch sử đơn hàng</h4>
+        <?= $this->render('order_histories', [
+            'dataProvider' => $histories,
+            'id' => 'order'
+        ]) ?>
+    </div>
+    <div class="card card-body">
+        <h4 class="card-title">Lịch sử cuộc gọi</h4>
+        <?= $this->render('contact_histories', [
+            'dataProvider' => $contactHistories,
+            'id' => 'contacthistory'
+        ]) ?>
+    </div>
+    <div class="card card-body">
+        <h4 class="card-title">Lịch sử đơn hàng</h4>
+        <?= $this->render('order_histories', [
+            'dataProvider' => $histories,
+            'id' => 'order'
+        ]) ?>
+    </div>
 <?php Pjax::end() ?>
 <?php
-
 $js = <<<JS
    
     $("document").ready(function() {
@@ -85,7 +102,6 @@ $js = <<<JS
                     setTimeout(()=> swal.close(), 500)
                 });
               }
-             
            });
         });
         
@@ -98,5 +114,4 @@ $js = <<<JS
        });
     });
 JS;
-
 $this->registerJs($js);

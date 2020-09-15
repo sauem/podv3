@@ -135,9 +135,14 @@ class AjaxController extends BaseController
 
         $phone = ArrayHelper::getValue($contacts[0], 'phone');
         $customer = Customers::findOne(['phone' => $phone]);
+        if($customer){
+            $array = ArrayHelper::toArray($customer);
+            $customer =  array_merge($array,['code' => $contacts[0]['code']]);
+        }
         if (!$customer) {
             $customer = $contacts[0];
         }
+
         $ids = ArrayHelper::getColumn($contacts, 'id');
         $payment = Payment::find()->with('infos')->all();
         $countries = Yii::$app->params['country'];

@@ -9,7 +9,7 @@ use backend\models\ContactsModel;
 use kartik\grid\ActionColumn;
 
 ?>
-<div class="table-responsive">
+<div class="">
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

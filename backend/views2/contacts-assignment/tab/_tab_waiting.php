@@ -10,7 +10,7 @@ use kartik\export\ExportMenu;
 use common\helper\Helper;
 
 ?>
-    <div class="table-responsive">
+
         <?php $fullExport = ExportMenu::widget([
             'dataProvider' => $dataProvider,
             'asDropdown' => false,
@@ -150,7 +150,7 @@ use common\helper\Helper;
             'exportContainer' => ['class' => 'btn-group-sm ml-1']
 
         ]) ?>
-    </div>
+
 <?php
 
 $js = <<<JS

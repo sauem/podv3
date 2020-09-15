@@ -169,13 +169,20 @@ class Helper
         return Helper::userRole(UserModel::_SALE);
     }
 
+    static function getCur($code = 'VN')
+    {
+        $country = Yii::$app->params['country'];
+        $position = array_search($code, array_column($country,'code'), true);
+        return isset($country[$position]['cur']) ? $country[$position]['cur'] : 'đ';
+    }
+
     static function showMessage($msg, $type = "success")
     {
 
         if ($type === "success") {
-           return Yii::$app->getView()->registerJs("toastr.success('$msg')", 4, rand(0,10));
+            return Yii::$app->getView()->registerJs("toastr.success('$msg')", 4, rand(0, 10));
         } else {
-            return Yii::$app->getView()->registerJs("toastr.warning('$msg')", 4,  rand(0,10));
+            return Yii::$app->getView()->registerJs("toastr.warning('$msg')", 4, rand(0, 10));
         }
     }
 }

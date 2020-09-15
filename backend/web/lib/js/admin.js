@@ -635,8 +635,9 @@ async function loadProducts(keys) {
         data : {keys : keys},
         cache : false,
         success: function(res) {
+            console.log(res)
             const { zipcode , country } = res.customer.info;
-            console.log("Load product", res)
+
             detectLocalCity(zipcode, country)
                 .then(data => {
                     const {city , district } = data;
