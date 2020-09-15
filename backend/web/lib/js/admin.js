@@ -7,7 +7,8 @@ const toastr = {
             icon: 'warning',
             loaderBg: "#5ba035",
             position: "top-right",
-            stack: 1
+            showHideTransition: 'slide',
+           // stack: 1
         })
     },
     success: ( text = "content" , heading = "Thông báo!") => {
@@ -18,7 +19,8 @@ const toastr = {
             icon: 'success',
             loaderBg: "#5ba035",
             position: "top-right",
-            stack: 1
+            showHideTransition: 'slide',
+          //  stack: 1
         })
     },
     error: ( text = "content" , heading = "Lỗi!") => {
@@ -29,7 +31,8 @@ const toastr = {
             icon: 'danger',
             loaderBg: "#5ba035",
             position: "top-right",
-            stack: 1
+            showHideTransition: 'slide',
+           // stack: 1
         })
     },
     info: ( text = "content" , heading = "Chú ý!") => {
@@ -40,7 +43,8 @@ const toastr = {
             icon: 'info',
             loaderBg: "#5ba035",
             position: "top-right",
-            stack: 1
+            showHideTransition: 'slide',
+        //    stack: 1
         })
     }
 }
@@ -698,7 +702,8 @@ $("body").on("click", ".autoUpdateCity", function () {
 
 $("body").on("click", ".cancelButton", function () {
     let _key = $(this).data("key");
-    alert(_key);
+
 });
+
 
 

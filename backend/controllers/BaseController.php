@@ -4,6 +4,7 @@
 namespace backend\controllers;
 
 
+use backend\jobs\doScanContactByCountry;
 use backend\models\UserModel;
 use common\helper\Helper;
 use yii\helpers\Url;
@@ -35,7 +36,9 @@ class BaseController extends Controller
     public function init()
     {
         parent::init();
-
+        if(!\Yii::$app->user->isGuest && Helper::userRole(UserModel::_SALE)){
+            doScanContactByCountry::apply(\Yii::$app->user->identity);
+        }
     }
 
     static function success($msg){

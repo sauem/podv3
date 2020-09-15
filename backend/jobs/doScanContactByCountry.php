@@ -14,7 +14,7 @@ use yii\helpers\ArrayHelper;
 
 class doScanContactByCountry
 {
-    static function apply()
+    static function apply($current_user = null)
     {
         // Tiêu chí phân bổ
         // 1. Contacts được chỉ định trực tiếp
@@ -24,12 +24,20 @@ class doScanContactByCountry
         // 5. Contact mới số mới
 
         $phones = ContactsModel::find()->addSelect(['phone', 'country'])->groupBy(['phone', 'country'])->all();
+        if(!$phones){
+            Helper::showMessage("Không có số điện thoại nào được áp dụng!","error");
+        }
         $users = AuthAssignment::find()->with('user')
             ->where(['item_name' => UserModel::_SALE])
             ->all();
 
         foreach ($users as $k => $user) {
-            $currentUser = $user->user[0];
+            if($current_user){
+                $currentUser = $current_user;
+            }else{
+                $currentUser = $user->user[0];
+            }
+           // $currentUser = $user->user[0];
             // bỏ qua sale đủ số lượng SĐT trong ngày
             if (self::hasLimit($currentUser) || self::hasProcessing($currentUser->id)) {
                 // Kiểm tra số điện thoại gọi lại
@@ -60,6 +68,9 @@ class doScanContactByCountry
             }
             // reset processing pending && callback
             self::applyPending($currentUser->id);
+            if($current_user){
+                break;
+            }
         }
         return "success";
     }
@@ -178,7 +189,7 @@ class doScanContactByCountry
         if ($model) {
             if (self::hasNewContact($phone)) {
                 $model->status = ContactsAssignment::_PENDING;
-                echo "Có liện mới tại số điện thoại $phone";
+                echo "Có liện hệ mới tại số điện thoại $phone";
                 return $model->save();
             }
         }

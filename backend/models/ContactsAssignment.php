@@ -118,6 +118,7 @@ class ContactsAssignment extends BaseModel
             ->one();
         if ($assignment) {
             $assignment->status = ContactsAssignment::_PROCESSING;
+            Helper::showMessage('Số điện thoại mới được áp dụng!');
             Yii::$app->session->setFlash("success", "Số điện thoại mới được áp dụng!");
             return $assignment->save();
         }
@@ -129,6 +130,7 @@ class ContactsAssignment extends BaseModel
         if (!$insert) {
             if (!Yii::$app instanceof Yii\console\Application) {
                 if ($this->callback_time && !self::nextAssignment()) {
+                    Helper::showMessage("Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!",'error');
                     Yii::$app->session->setFlash("error", "Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!");
                 }
             }

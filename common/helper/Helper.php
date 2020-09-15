@@ -168,4 +168,14 @@ class Helper
     {
         return Helper::userRole(UserModel::_SALE);
     }
+
+    static function showMessage($msg, $type = "success")
+    {
+
+        if ($type === "success") {
+           return Yii::$app->getView()->registerJs("toastr.success('$msg')", 4, rand(0,10));
+        } else {
+            return Yii::$app->getView()->registerJs("toastr.warning('$msg')", 4,  rand(0,10));
+        }
+    }
 }

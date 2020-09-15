@@ -297,8 +297,10 @@ class ContactsModel extends BaseModel
         $processing = ContactsAssignment::findOne(['user_id' => Yii::$app->user->getId(), 'contact_phone' => $phone, 'status' => ContactsAssignment::_PROCESSING]);
         if ($processing && static::hasCompeleted($phone)) {
             if (!ContactsAssignment::nextAssignment()) {
+                Helper::showMessage("Hiện tại đã hết liên hệ, xin hãy chờ!","error");
                 Yii::$app->session->setFlash("error", "Hiện tại đã hết liên hệ, xin hãy chờ!");
             } else {
+                Helper::showMessage("Số điện thoại mới được áp dụng!");
                 Yii::$app->session->setFlash("success", "Số điện thoại mới được áp dụng");
             }
             $processing->status = ContactsAssignment::_COMPLETED;
