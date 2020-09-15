@@ -49,6 +49,11 @@ class doScanContactByCountry
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
+                // Emty new contact
+                if(self::emptyContact($phoneNumber)){
+                    //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
+                    continue;
+                }
                 // Bỏ qua SĐT nếu được phân bổ
                 if (self::exitsPhone($phoneNumber) || !self::limitByStep($currentUser->id)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
@@ -63,6 +68,7 @@ class doScanContactByCountry
                 }
                 // phân bổ số điện thoại cho user
                 if ($currentUser->country === $phoneCountry) {
+                    Helper::showMessage("Số điện thoại $phoneNumber được áp dụng!");
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
                 }
             }
@@ -74,7 +80,9 @@ class doScanContactByCountry
         }
         return "success";
     }
-
+    static function emptyContact($phone){
+       return ContactsModel::hasCompeleted($phone);
+    }
     static function limitByStep($user_id)
     {
         $limit = 1;

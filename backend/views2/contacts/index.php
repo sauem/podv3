@@ -13,8 +13,9 @@ $user = Yii::$app->user;
 Pjax::begin([
     'id' => 'pjax-info'
 ]) ?>
+
     <div class="card-box">
-        <ul class="nav nav-tabs tabs-line">
+        <ul class="nav nav-tabs nav-bordered tabs-line">
             <li class="nav-item">
                 <a class="nav-link active" href="#wating" data-toggle="tab">
                     <i class="ti-bar-chart"></i>
@@ -53,7 +54,7 @@ Pjax::begin([
         ]) ?>
     </div>
     <div class="card card-body">
-        <h4 class="card-title">Lịch liên hệ <span class="text-success" onclick="coppy(this)">0<?= $info->phone?></span></h4>
+        <h4 class="card-title">Lịch sử liên hệ: <?= isset($info->phone) ? '<span class="text-success" onclick="coppy(this)">'.$info->phone.'</span>' : 'Không có liên hệ mới!'?></h4>
         <?= $this->render('contact_histories', [
             'dataProvider' => $currentHistories,
             'id' => 'order'

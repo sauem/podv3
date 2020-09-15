@@ -46,6 +46,7 @@ use yii\helpers\Html;
                     ],
                     [
                         'attribute' => 'message',
+                        'format' => 'html',
                         'value' => function ($model) {
                             return unserialize($model->message);
                         }

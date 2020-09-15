@@ -774,6 +774,41 @@ $("body").on("click", ".duplicateButton", function () {
 
 });
 
+$("body").on("click", ".failedButton", function () {
+    let _phone = $(this).data("phone");
+    swal.fire({
+        title: "Cảnh báo!",
+        icon: "error",
+        text: "Thao tác này sẽ bỏ qua số điện thoại " + _phone + " vào danh sách loại bỏ?\n Toàn bộ yêu cầu sẽ bị hủy!",
+        showCancelButton: true,
+    }).then(val => {
+        if (val.value) {
+            swal.fire({
+                title: 'Đang xử lý',
+                icon: "info",
+                onBeforeOpen: () => {
+                    swal.showLoading();
+                    $.ajax({
+                        url: config.changeContactStatus,
+                        type: 'POST',
+                        cache: false,
+                        data: {phone: _phone, status : 'number_fail'},
+                        success: function (res) {
+                            if (res.success) {
+                                toastr.success(res.msg);
+                                __reloadData();
+                            } else {
+                                toastr.error(res.msg);
+                            }
+                            swal.close();
+                        }
+                    })
+                }
+            })
+        }
+    })
+});
+
 
 
 

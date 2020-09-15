@@ -1027,16 +1027,26 @@ class AjaxController extends BaseController
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post("key");
             $status = Yii::$app->request->post("status");
-            $note = Yii::$app->request->post("note");
             $model = ContactsModel::findOne($id);
+
+            $user = Yii::$app->user->getId();
+            $phone = Yii::$app->request->post("phone");
             $log = new ContactsLog;
+
+            //check button number fail action
+            if ($status === ContactsModel::_NUMBER_FAIL) {
+                return static::numberFailStatus($phone, $user);
+            }
+            // check contact exist
             if (!$model) {
                 return [
                     'success' => 0,
                     'msg' => 'Liên hệ không xác định!'
                 ];
             }
+
             $model->status = $status;
+
             if ($model->save()) {
                 ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$status}");
                 $log->user_id = Yii::$app->user->getId();
@@ -1054,6 +1064,42 @@ class AjaxController extends BaseController
                 'msg' => Helper::firstError($model)
             ];
         }
+    }
+
+    static function numberFailStatus($phone, $user)
+    {
+        $model = ContactsModel::findAll(['phone' => $phone]);
+        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+        if (!$assignment) {
+            return [
+                'success' => 0,
+                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
+            ];
+        }
+
+        if ($model) {
+            ContactsModel::updateAll(['status' => ContactsModel::_NUMBER_FAIL], ['phone' => $phone]);
+            $assignment->status = ContactsAssignment::_COMPLETED;
+            $assignment->save();
+
+            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái Sai số");
+            foreach ($model as $contact) {
+                $log = new ContactsLog;
+                $log->user_id = $user;
+                $log->contact_id = $contact->id;
+                $log->status = ContactsModel::_NUMBER_FAIL;
+                $log->save();
+            }
+            doScanContactByCountry::apply();
+            return [
+                'success' => 1,
+                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi không xác định'
+        ];
     }
 
 }
