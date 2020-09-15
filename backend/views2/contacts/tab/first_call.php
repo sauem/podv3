@@ -9,7 +9,7 @@ use yii\helpers\Url;
         <div>
             <h5 style="cursor: pointer" data-toggle="tooltip" title="Click 2 lần để coppy"
                 class="text-success card-title"><i
-                        class="fe-phone-call"></i> <?= $info ? "<span ondblclick=\"coppy(this)\">0$info->phone</span>" : "Chưa có liên hệ mới" ?>
+                        class="fe-phone-call"></i> <?= $info ? "<span ondblclick=\"coppy(this)\">0$info->phone</span> (coppy)" : "Chưa có liên hệ mới" ?>
             </h5>
             <div class="">
                 <button data-pjax="0" class="btn btn-sm btn-outline-danger"><i class="fe-phone-off"></i> Sai số</button>

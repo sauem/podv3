@@ -53,19 +53,20 @@ Pjax::begin([
         ]) ?>
     </div>
     <div class="card card-body">
+        <h4 class="card-title">Lịch liên hệ <span class="text-success" onclick="coppy(this)">0<?= $info->phone?></span></h4>
+        <?= $this->render('contact_histories', [
+            'dataProvider' => $currentHistories,
+            'id' => 'order'
+        ]) ?>
+    </div>
+    <div class="card card-body">
         <h4 class="card-title">Lịch sử cuộc gọi</h4>
         <?= $this->render('contact_histories', [
             'dataProvider' => $contactHistories,
             'id' => 'contacthistory'
         ]) ?>
     </div>
-    <div class="card card-body">
-        <h4 class="card-title">Lịch sử đơn hàng</h4>
-        <?= $this->render('order_histories', [
-            'dataProvider' => $histories,
-            'id' => 'order'
-        ]) ?>
-    </div>
+
 <?php Pjax::end() ?>
 <?php
 $js = <<<JS
