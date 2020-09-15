@@ -111,7 +111,7 @@ use yii\helpers\Url;
                             <a data-key="{{this.info.id}}"
                                data-pjax="0"
                                class="changeAddessDefault"
-                               href="javasript:;">
+                               href="javascript:;">
                                 <i class="fe-edit"></i> Đổi địa chỉ
                             </a>
                         </small>
@@ -133,7 +133,7 @@ use yii\helpers\Url;
                             <a data-key="{{this.info.id}}"
                                data-pjax="0"
                                class="autoUpdateCity"
-                               href="javasript:;">
+                               href="javascript:;">
                                 <i class="fe-edit"></i> cập nhập
                             </a>
                         </small>

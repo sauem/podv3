@@ -96,20 +96,32 @@ use kartik\grid\ActionColumn;
             'class' => ActionColumn::className(),
             'header' => 'Thao tác',
             'width' => '140px',
-            'template' => '{cancel} {createOrder}',
+            'template' => '{duplicate}{cancel}{createOrder}',
             'buttons' => [
-                'cancel' => function ($url, $model) {
-                    return Html::button("<i class='fe-phone-missed'></i> Hủy", [
-                        'class' => 'btn btn-sm cancelButton btn-outline-warning w-100',
+                'duplicate' => function ($url, $model) {
+                    if(!ContactsModel::hasDuplicate($model->hashkey)){
+                        return null;
+                    }
+                    return Html::button("<i class='fe-phone-call'></i> Trùng", [
+                        'class' => 'btn btn-sm duplicateButton btn-outline-danger w-100',
                         'data-toggle' => 'tooltip',
                         'data-key' => $model->id,
-                        'title' => 'Hủy contact/Trùng số',
+                        'title' => 'Trùng yêu cầu',
+                        'data-pjax' => '0'
+                    ]);
+                },
+                'cancel' => function ($url, $model) {
+                    return Html::button("<i class='fe-phone-missed'></i> Hủy", [
+                        'class' => 'btn btn-sm cancelButton mt-1 btn-outline-warning w-100',
+                        'data-toggle' => 'tooltip',
+                        'data-key' => $model->id,
+                        'title' => 'Khách hủy',
                         'data-pjax' => '0'
                     ]);
                 },
                 'createOrder' => function ($url, $model) {
                     return Html::button("<i class='fe-shopping-cart'></i> Tạo đơn", [
-                        'class' => 'createOrder btn btn-sm mt-2 btn-outline-success w-100',
+                        'class' => 'createOrder btn btn-sm mt-1 btn-outline-success w-100',
                         'data-key' => $model->id,
                         'data-toggle' => 'tooltip',
                         'title' => 'Tạo đơn hàng từ liên hệ này',

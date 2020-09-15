@@ -57,6 +57,7 @@ use yii\helpers\Url;
             findCity: "<?= Url::toRoute(['ajax/find-city'])?>",
             exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
             changeAddess: "<?= Url::toRoute(['ajax/change-address'])?>",
+            changeContactStatus: "<?= Url::toRoute(['ajax/change-contact-status'])?>",
         }
 
     </script>

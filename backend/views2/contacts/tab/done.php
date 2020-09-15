@@ -47,6 +47,9 @@ use kartik\grid\ActionColumn;
             [
                 'label' => 'Ngày gọi cuối',
                 'attribute' => 'created_at',
+                'value' => function($model){
+                    return date('d/m/Y H:i:s', $model->created_at);
+                }
             ],
             [
                 'label' => 'Trang đích',

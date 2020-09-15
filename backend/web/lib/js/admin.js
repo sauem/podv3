@@ -8,10 +8,10 @@ const toastr = {
             loaderBg: "#5ba035",
             position: "top-right",
             showHideTransition: 'slide',
-           // stack: 1
+            // stack: 1
         })
     },
-    success: ( text = "content" , heading = "Thông báo!") => {
+    success: (text = "content", heading = "Thông báo!") => {
         $.toast({
             heading: heading,
             text: text,
@@ -20,22 +20,22 @@ const toastr = {
             loaderBg: "#5ba035",
             position: "top-right",
             showHideTransition: 'slide',
-          //  stack: 1
+            //  stack: 1
         })
     },
-    error: ( text = "content" , heading = "Lỗi!") => {
+    error: (text = "content", heading = "Lỗi!") => {
         $.toast({
             heading: heading,
             text: text,
             hideAfter: 3000,
-            icon: 'danger',
-            loaderBg: "#5ba035",
+            icon: 'error',
+            loaderBg: "#f7b84b",
             position: "top-right",
             showHideTransition: 'slide',
-           // stack: 1
+            // stack: 1
         })
     },
-    info: ( text = "content" , heading = "Chú ý!") => {
+    info: (text = "content", heading = "Chú ý!") => {
         $.toast({
             heading: heading,
             text: text,
@@ -44,7 +44,7 @@ const toastr = {
             loaderBg: "#5ba035",
             position: "top-right",
             showHideTransition: 'slide',
-        //    stack: 1
+            //    stack: 1
         })
     }
 }
@@ -624,31 +624,30 @@ async function detectLocalCity(zipcode, country) {
         address: _address
     }
 }
+
 async function loadProducts(keys) {
-    if(!keys){
+    if (!keys) {
         toastr.error('Liên hệ không xác định!');
         return;
     }
-    await  $.ajax({
-        url : config.ajaxProductSelect,
-        type : "POST",
-        data : {keys : keys},
-        cache : false,
-        success: function(res) {
-            console.log(res)
-            const { zipcode , country } = res.customer.info;
-
+    await $.ajax({
+        url: config.ajaxProductSelect,
+        type: "POST",
+        data: {keys: keys},
+        cache: false,
+        success: function (res) {
+            const {zipcode, country} = res.customer.info;
             detectLocalCity(zipcode, country)
                 .then(data => {
-                    const {city , district } = data;
+                    const {city, district} = data;
                     res.customer.info.city = city;
                     res.customer.info.district = district;
                 }).then(() => {
-                let html =  compileTemplate("template-product",res.customer);
+                let html = compileTemplate("template-product", res.customer);
                 $("#resultInfo").html(html);
                 setORDER(res);
             }).catch(error => {
-                let html =  compileTemplate("template-product",res.customer);
+                let html = compileTemplate("template-product", res.customer);
                 $("#resultInfo").html(html);
                 setORDER(res);
             })
@@ -659,23 +658,25 @@ async function loadProducts(keys) {
 
 function loadSku() {
     $.ajax({
-        url : config.loadSkus,
-        data : {},
-        type : 'POST',
-        cache : false,
-        success : function(res) {
-            $("#resultProduct").html(compileTemplate('template-sku',res))
+        url: config.loadSkus,
+        data: {},
+        type: 'POST',
+        cache: false,
+        success: function (res) {
+            $("#resultProduct").html(compileTemplate('template-sku', res))
             initSelect2();
         }
     })
 }
+
 function setORDER(res) {
 
     let _products = res.product;
-    _products.map( item  => {
-        if(ORDER.skus.includes(item.sku)){
+    _products.map(item => {
+        if (ORDER.skus.includes(item.sku)) {
             return 0;
-        };
+        }
+        ;
 
         ORDER.option = item.selected;
         ORDER.cate = item.category_id;
@@ -703,8 +704,77 @@ $("body").on("click", ".autoUpdateCity", function () {
 
 $("body").on("click", ".cancelButton", function () {
     let _key = $(this).data("key");
+    Swal.fire({
+        icon: "warning",
+        title: "Chú ý!",
+        text: "Đánh dấu khách hàng hủy yêu cầu này?",
+        showCancelButton: true,
+    }).then(val => {
+        if (val.value) {
+            swal.fire({
+                title: 'Đang xử lý...',
+                icon: 'info',
+                onBeforeOpen: () => {
+                    swal.showLoading();
+                    $.ajax({
+                        url: config.changeContactStatus,
+                        type: 'POST',
+                        data: {key: _key, status: 'cancel'},
+                        cache: false,
+                        success: function (res) {
+                            if (res.success) {
+                                toastr.success(res.msg);
+                                __reloadData();
+                            } else {
+                                toastr.error(res.msg);
+                            }
+                            swal.close();
+                        }
+                    })
+                }
+            })
+        }
+    })
 
 });
+
+$("body").on("click", ".duplicateButton", function () {
+    let _key = $(this).data("key");
+    Swal.fire({
+        icon: "error",
+        title: "Chú ý!",
+        text: "Đánh dấu trùng yêu cầu đặt hàng từ khách hàng này?",
+        showCancelButton: true,
+    }).then(val => {
+        if (val.value) {
+            swal.fire({
+                title: 'Đang xử lý...',
+                icon: 'info',
+                onBeforeOpen: () => {
+                    swal.showLoading();
+                    $.ajax({
+                        url: config.changeContactStatus,
+                        type: 'POST',
+                        data: {key: _key, status: 'duplicate'},
+                        cache: false,
+                        success: function (res) {
+                            if (res.success) {
+                                toastr.success(res.msg);
+                                __reloadData();
+                            } else {
+                                toastr.error(res.msg);
+                            }
+                            swal.close();
+                        }
+                    })
+                }
+            })
+        }
+    })
+
+});
+
+
 
 
 

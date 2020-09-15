@@ -189,7 +189,8 @@ class doScanContactByCountry
         if ($model) {
             if (self::hasNewContact($phone)) {
                 $model->status = ContactsAssignment::_PENDING;
-                echo "Có liện hệ mới tại số điện thoại $phone";
+                Helper::showMessage("Có liện hệ mới tại số điện thoại $phone");
+               // echo "Có liện hệ mới tại số điện thoại $phone";
                 return $model->save();
             }
         }

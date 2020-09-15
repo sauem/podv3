@@ -322,4 +322,12 @@ class ContactsModel extends BaseModel
     public function getLatestContact () {
         return $this->hasOne(ContactsModel::className(),['phone' => 'phone'])->orderBy(['register_time' => SORT_DESC]);
     }
+
+    public static function hasDuplicate($hashkey){
+        $count = self::findAll(['hashkey' => $hashkey]);
+        if(sizeof($count) > 1){
+            return true;
+        }
+        return false;
+    }
 }

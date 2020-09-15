@@ -135,9 +135,9 @@ class AjaxController extends BaseController
 
         $phone = ArrayHelper::getValue($contacts[0], 'phone');
         $customer = Customers::findOne(['phone' => $phone]);
-        if($customer){
+        if ($customer) {
             $array = ArrayHelper::toArray($customer);
-            $customer =  array_merge($array,['code' => $contacts[0]['code']]);
+            $customer = array_merge($array, ['code' => $contacts[0]['code']]);
         }
         if (!$customer) {
             $customer = $contacts[0];
@@ -294,14 +294,14 @@ class AjaxController extends BaseController
         $errors = [];
         $count = 0;
         if (!empty($logs)) {
-            ActionLog::add("success",Yii::$app->user->identity->username . " Nhập liên hệ excel {$fileName}");
-            foreach ($logs as $k => $log ) {
+            ActionLog::add("success", Yii::$app->user->identity->username . " Nhập liên hệ excel {$fileName}");
+            foreach ($logs as $k => $log) {
                 $modelLog = new ContactsLog;
                 $id = ContactsModel::findOne(['code' => $log['code']]);
                 if (!$id) {
                     $errors[] = "Không tìm thấy contact code {$log['code']}";
                     LogsImport::saveRecord([
-                        'msg' =>"Không tìm thấy contact code {$log['code']}",
+                        'msg' => "Không tìm thấy contact code {$log['code']}",
                         'name' => $fileName,
                         'line' => $k + 2
                     ]);
@@ -1022,5 +1022,38 @@ class AjaxController extends BaseController
         }
     }
 
+    function actionChangeContactStatus()
+    {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post("key");
+            $status = Yii::$app->request->post("status");
+            $note = Yii::$app->request->post("note");
+            $model = ContactsModel::findOne($id);
+            $log = new ContactsLog;
+            if (!$model) {
+                return [
+                    'success' => 0,
+                    'msg' => 'Liên hệ không xác định!'
+                ];
+            }
+            $model->status = $status;
+            if ($model->save()) {
+                ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$status}");
+                $log->user_id = Yii::$app->user->getId();
+                $log->contact_id = $model->id;
+                $log->status = $status;
+                if ($log->save()) {
+                    return [
+                        'success' => 1,
+                        'msg' => 'Thay đổi trạng thái liên hệ thành công!'
+                    ];
+                }
+            }
+            return [
+                'success' => 0,
+                'msg' => Helper::firstError($model)
+            ];
+        }
+    }
 
 }
