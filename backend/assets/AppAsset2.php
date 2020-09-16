@@ -38,7 +38,7 @@ class AppAsset2 extends AssetBundle
         '/lib/js/handlebars-helper.js?v=1.3',
         '/lib/js/admin.js?v=1.5',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
-        '/js/site.js?v=1.8',
+        '/js/site.js?v=2.1',
         '/theme2/js/app.min.js'
 
 

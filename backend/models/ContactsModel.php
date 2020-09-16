@@ -149,15 +149,15 @@ class ContactsModel extends BaseModel
             $this->code = Helper::makeCodeIncrement($maxIDNumber, $this->country);
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
             $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
-            if (self::checkExists($this->hashkey)) {
+            if (self::checkExists($this->hashkey) && $this->status === null ) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;
             }
-            if (self::checkExistCapture($this->phone, $this->short_link)) {
+            if (self::checkExistCapture($this->phone, $this->short_link) && $this->status === null) {
                 $this->addError("type", "Liên hệ đã tồn tại với phân loại capture form!");
                 return false;
             }
-            if (!$this->country) {
+            if (!$this->country && $this->status === null) {
                 $this->addError("country", "Quốc gia rỗng!");
                 return false;
             }

@@ -74,9 +74,11 @@ use yii\widgets\ActiveForm;
                         </div>
                     </td>
                     <td>
+                        {{code}}<br>
                         {{name}}<br>
                         SĐT : {{phone}} <br>
-                        Đăng kí : {{date register_time}}
+                        Đăng kí : {{date register_time}}<br>
+                        Status: {{span status}}
                     </td>
                     <td>
                         Đ/C : {{address}}<br>

@@ -423,6 +423,7 @@ class AjaxController extends BaseController
                     'utm_content' => $contact['utm_content'],
                     //'country' => $contact['country'],
                     'type' => $contact['type'],
+                    'status' => isset($contact['status']) ? $contact['status'] : null,
                     'register_time' => (int)$contact['register_time'],
                     'created_at' => time(),
                     'updated_at' => time(),
@@ -440,6 +441,15 @@ class AjaxController extends BaseController
                     ];
                     $logs->load($data, "");
                     $logs->save();
+                }else{
+                    if( $model->status !== ContactsModel::_NEW && isset($contact['code']) && isset($contacts['status'])){
+                        $log = new ContactsLog;
+                        $log->status = $contact['status'];
+                        $log->contact_id = $model->id;
+                        $log->contact_code = $contact['code'];
+                        $log->phone = $model->phone;
+                        $log->save();
+                    }
                 }
             }
             $count = sizeof($contacts) - sizeof($errors);

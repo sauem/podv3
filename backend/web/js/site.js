@@ -61,7 +61,7 @@ function doProcessWorkbook(workbook, file) {
     let sheet = workbook.Sheets[firstSheet];
     let rows = [];
     let rowsIndex = 2;
-    let maxColumn = 15;
+    let maxColumn = 17;
     let warning = [];
     if (firstSheet === "product") {
         maxColumn = 7;
@@ -319,7 +319,8 @@ function switchItem(sheet, row) {
             item.utm_content = row[12] ? row[12].v : "";
             item.ip = row[13] ? row[13].v : "";
             item.type = row[14] ? row[14].v : "";
-            //  item.country = row[15] ? row[15].v : "";
+            item.status = row[15] ? row[15].v : "";
+            item.code = row[16] ? row[16].v : "";
             item.host = window.location.hostname;
 
             if (item.link === ""
@@ -368,7 +369,9 @@ function contactModel() {
         created_at: Date.now() / 1000,
         updated_at: Date.now() / 1000,
         host: window.location.hostname,
-        warning: {}
+        warning: {},
+        status : null,
+        code : null
         //country: null
     }
 }
