@@ -298,24 +298,30 @@ class AjaxController extends BaseController
             foreach ($logs as $k => $log) {
                 $modelLog = new ContactsLog;
                 $id = ContactsModel::findOne(['code' => $log['code']]);
-                if (!$id) {
-                    $errors[] = "Không tìm thấy contact code {$log['code']}";
-                    LogsImport::saveRecord([
-                        'msg' => "Không tìm thấy contact code {$log['code']}",
-                        'name' => $fileName,
-                        'line' => $k + 2
-                    ]);
-                    continue;
-                }
                 $userAssignment = ContactsAssignment::findOne(['contact_phone' => $log['phone']]);
+
+//                if (!$id) {
+//                    $errors[] = "Không tìm thấy contact code {$log['code']}";
+//                    LogsImport::saveRecord([
+//                        'msg' => "Không tìm thấy contact code {$log['code']}",
+//                        'name' => $fileName,
+//                        'line' => $k + 2
+//                    ]);
+//                    continue;
+//                }
+                $time_call = $log['time_call'];
+
                 if ($userAssignment) {
                     $modelLog->user_id = $userAssignment->user_id;
                 }
-                $time_call = $log['time_call'];
-                $modelLog->contact_id = $id->id;
+                if($id){
+                    $modelLog->contact_id = $id->id;
+                }
                 $modelLog->status = $log['status'];
                 $modelLog->note = $log['note'];
                 $modelLog->customer_note = $log['note'];
+                $modelLog->contact_code = $log['code'];
+
                 $modelLog->created_at = $time_call;
                 if (!$modelLog->save()) {
                     $errors[] = Helper::firstError($modelLog);

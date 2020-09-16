@@ -9,13 +9,14 @@ use Yii;
  * This is the model class for table "contacts_log".
  *
  * @property int $id
- * @property int $user_id
- * @property int $contact_id
+ * @property int|null $user_id
+ * @property int|null $contact_id
  * @property string|null $status
  * @property string $note
  * @property string $customer_note
  * @property int $created_at
  * @property int $updated_at
+ * @property string|null $contact_code
  *
  * @property Contacts $contact
  * @property User $user
@@ -42,7 +43,7 @@ class ContactsLog extends BaseModel
             [['status', 'contact_id'], 'required'],
             [['user_id', 'contact_id', 'created_at', 'callback_time', 'updated_at'], 'integer'],
             [['status', 'phone'], 'string', 'max' => 50],
-            [['note','customer_note'], 'string', 'max' => 255],
+            [['note','customer_note','contact_code'], 'string', 'max' => 255],
             [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContactsModel::className(), 'targetAttribute' => ['contact_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -62,6 +63,7 @@ class ContactsLog extends BaseModel
             'customer_note' => 'Ghi chú nhà vận chuyển',
             'created_at' => 'Ngày liên hệ',
             'updated_at' => 'Updated At',
+            'contact_code' => 'Mã liên hệ',
         ];
     }
 
