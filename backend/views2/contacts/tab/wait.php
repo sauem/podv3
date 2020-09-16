@@ -115,6 +115,7 @@ use kartik\grid\ActionColumn;
                         'class' => 'btn btn-sm cancelButton mt-1 btn-outline-warning w-100',
                         'data-toggle' => 'tooltip',
                         'data-key' => $model->id,
+                        'data-phone' => $model->phone,
                         'title' => 'Khách hủy',
                         'data-pjax' => '0'
                     ]);

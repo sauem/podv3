@@ -704,6 +704,7 @@ $("body").on("click", ".autoUpdateCity", function () {
 
 $("body").on("click", ".cancelButton", function () {
     let _key = $(this).data("key");
+    let _phone = $(this).data("phone");
     Swal.fire({
         icon: "warning",
         title: "Chú ý!",
@@ -719,7 +720,7 @@ $("body").on("click", ".cancelButton", function () {
                     $.ajax({
                         url: config.changeContactStatus,
                         type: 'POST',
-                        data: {key: _key, status: 'cancel'},
+                        data: {key: _key, status: 'cancel', phone: _phone},
                         cache: false,
                         success: function (res) {
                             if (res.success) {
@@ -740,6 +741,7 @@ $("body").on("click", ".cancelButton", function () {
 
 $("body").on("click", ".duplicateButton", function () {
     let _key = $(this).data("key");
+    let _phone = $(this).data("phone");
     Swal.fire({
         icon: "error",
         title: "Chú ý!",
@@ -755,7 +757,7 @@ $("body").on("click", ".duplicateButton", function () {
                     $.ajax({
                         url: config.changeContactStatus,
                         type: 'POST',
-                        data: {key: _key, status: 'duplicate'},
+                        data: {key: _key, status: 'duplicate', phone: _phone},
                         cache: false,
                         success: function (res) {
                             if (res.success) {
@@ -792,7 +794,7 @@ $("body").on("click", ".failedButton", function () {
                         url: config.changeContactStatus,
                         type: 'POST',
                         cache: false,
-                        data: {phone: _phone, status : 'number_fail'},
+                        data: {phone: _phone, status: 'number_fail'},
                         success: function (res) {
                             if (res.success) {
                                 toastr.success(res.msg);
@@ -827,7 +829,7 @@ $("body").on("click", ".pendingButton", function () {
                         url: config.changeContactStatus,
                         type: 'POST',
                         cache: false,
-                        data: {phone: _phone, status : 'pending'},
+                        data: {phone: _phone, status: 'pending'},
                         success: function (res) {
                             if (res.success) {
                                 toastr.success(res.msg);
@@ -862,7 +864,7 @@ $("body").on("click", ".callbackButton", function () {
                         url: config.changeContactStatus,
                         type: 'POST',
                         cache: false,
-                        data: {phone: _phone, status : 'callback'},
+                        data: {phone: _phone, status: 'callback'},
                         success: function (res) {
                             console.log(res)
                             if (res.success) {

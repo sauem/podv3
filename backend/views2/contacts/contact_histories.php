@@ -27,6 +27,9 @@ use common\helper\Helper;
             'attribute' => 'created_at',
             'format' => 'html',
             'value' => function ($model) {
+                if (!$model->contact) {
+                    return null;
+                }
                 return $model->contact->phone . "<span class='badge badge-info'>{$model->contact->code}</span>";
             }
         ],
@@ -36,8 +39,9 @@ use common\helper\Helper;
             'headerOptions' => ['width' => '15%'],
             'format' => 'raw',
             'value' => function ($model) {
+
                 $html = "Lần xử lý cuối :<br>" . $model->created_at;
-                if ($model->contact->callback_time) {
+                if ($model->contact) {
                     $html .= "</br>Giờ gọi lại: <br>" . "<strong class='text-danger'>{$model->created_at}</strong>";
                 }
                 return $html;
@@ -49,7 +53,7 @@ use common\helper\Helper;
             'headerOptions' => ['width' => '30%'],
             'format' => 'raw',
             'value' => function ($model) {
-                if (!$model->contact->page || !$model->contact->page->product) {
+                if (!$model->contact || !$model->contact->page->product) {
                     return null;
                 }
                 $page = $model->contact->page;
@@ -64,7 +68,7 @@ use common\helper\Helper;
             'format' => 'html',
             'headerOptions' => ['width' => '30%'],
             'value' => function ($model) {
-                if (!$model->contact->page) {
+                if (!$model->contact) {
                     return null;
                 }
                 return Html::tag("p",
@@ -81,6 +85,9 @@ use common\helper\Helper;
                 'width' => '15%'
             ],
             'value' => function ($model) {
+                if (!$model->contact) {
+                    return null;
+                }
                 return $model->contact->option;
             }
         ],

@@ -10,6 +10,7 @@ use backend\models\Backups;
 use backend\models\CategoriesModel;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsLog;
+use backend\models\ContactsLogImport;
 use backend\models\ContactsModel;
 use backend\models\Customers;
 use backend\models\FormInfo;
@@ -296,7 +297,7 @@ class AjaxController extends BaseController
         if (!empty($logs)) {
             ActionLog::add("success", Yii::$app->user->identity->username . " Nhập lịch sử liên hệ excel {$fileName}");
             foreach ($logs as $k => $log) {
-                $modelLog = new ContactsLog;
+                $modelLog = new ContactsLogImport;
                 $id = ContactsModel::findOne(['code' => $log['code']]);
                 $userAssignment = ContactsAssignment::findOne(['contact_phone' => $log['phone']]);
 
@@ -314,13 +315,19 @@ class AjaxController extends BaseController
                 if ($userAssignment) {
                     $modelLog->user_id = $userAssignment->user_id;
                 }
-                if($id){
+                if ($id) {
                     $modelLog->contact_id = $id->id;
                 }
+                $modelLog->code = $log['code'];
+                $modelLog->phone = $log['phone'];
+                $modelLog->zipcode = $log['zipcode'];
+                $modelLog->option = $log['option'];
+                $modelLog->category = $log['category'];
+                $modelLog->address = $log['address'];
                 $modelLog->status = $log['status'];
                 $modelLog->note = $log['note'];
-                $modelLog->customer_note = $log['note'];
-                $modelLog->contact_code = $log['code'];
+                $modelLog->customer_note = $log['customer_note'];
+
 
                 $modelLog->created_at = $time_call;
                 if (!$modelLog->save()) {
@@ -1063,6 +1070,8 @@ class AjaxController extends BaseController
                 ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$status}");
                 $log->user_id = Yii::$app->user->getId();
                 $log->contact_id = $model->id;
+                $log->phone = $model->phone;
+                $log->contact_code = $model->code;
                 $log->status = $status;
                 if ($log->save()) {
                     return [
@@ -1099,6 +1108,8 @@ class AjaxController extends BaseController
                 $log = new ContactsLog;
                 $log->user_id = $user;
                 $log->contact_id = $contact->id;
+                $log->contact_code = $contact->code;
+                $log->phone = $contact->phone;
                 $log->status = ContactsModel::_NUMBER_FAIL;
                 $log->save();
 
@@ -1135,6 +1146,8 @@ class AjaxController extends BaseController
                 $log = new ContactsLog;
                 $log->user_id = $user;
                 $log->contact_id = $contact->id;
+                $log->contact_code = $contact->code;
+                $log->phone = $contact->phone;
                 $log->status = ContactsModel::_PENDING;
                 $log->save();
 
@@ -1176,6 +1189,8 @@ class AjaxController extends BaseController
                 $log = new ContactsLog;
                 $log->user_id = $user;
                 $log->contact_id = $contact->id;
+                $log->contact_code = $contact->code;
+                $log->phone = $contact->phone;
                 $log->status = ContactsModel::_CALLBACK;
                 $log->save();
 

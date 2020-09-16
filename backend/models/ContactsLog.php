@@ -12,6 +12,7 @@ use Yii;
  * @property int|null $user_id
  * @property int|null $contact_id
  * @property string|null $status
+ * @property string|null $phone
  * @property string $note
  * @property string $customer_note
  * @property int $created_at
@@ -27,8 +28,6 @@ class ContactsLog extends BaseModel
      * {@inheritdoc}
      */
     public $callback_time;
-    public $phone;
-
     public static function tableName()
     {
         return 'contacts_log';
@@ -42,7 +41,8 @@ class ContactsLog extends BaseModel
         return [
             [['status'], 'required'],
             [['user_id', 'contact_id', 'created_at', 'callback_time', 'updated_at'], 'integer'],
-            [['status', 'phone'], 'string', 'max' => 50],
+            [['status'], 'string', 'max' => 50],
+            [['phone'], 'string'],
             [['note','customer_note','contact_code'], 'string', 'max' => 255],
             [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContactsModel::className(), 'targetAttribute' => ['contact_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -74,13 +74,14 @@ class ContactsLog extends BaseModel
      */
     public function getContact()
     {
-        return $this->hasOne(ContactsModel::className(), ['id' => 'contact_id']);
+        return $this->hasOne(ContactsModel::className(),['code' => 'contact_code'])->with('logImport');
     }
 
     public function beforeSave($insert)
     {
         if ($insert) {
-            $limit = self::find()->where(['contact_id' => $this->contact_id])->count();
+            $limit = self::find()->where(['contact_code' => $this->contact_code])->count();
+
             if ($limit >= 5) {
                 $this->addError("contact_id", "Liên hệ quá số lần liên lạc!");
                 return false;

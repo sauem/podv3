@@ -224,9 +224,11 @@ class ContactsModel extends BaseModel
      */
     public function getContactsLogs()
     {
-        return $this->hasMany(ContactsLog::className(), ['contact_id' => 'id']);
+        return $this->hasMany(ContactsLog::className(), ['contact_code' => 'code']);
     }
-
+    public function getLogImport(){
+        return $this->hasMany(ContactsLogImport::className(),['phone' => 'phone']);
+    }
 
     function getPage()
     {

@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsAssignment;
 use backend\models\ContactsLog;
+use backend\models\ContactsLogImport;
 use backend\models\OrdersModel;
 use backend\models\UserModel;
 use common\helper\Helper;
@@ -95,7 +96,7 @@ class ContactsController extends BaseController
                     ]
                 ]
             ]
-        ),false,true);
+        ), false, true);
 
         $_failureProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -110,7 +111,7 @@ class ContactsController extends BaseController
                     ]
                 ]
             ]
-        ),false,true);
+        ), false, true);
         $_successProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -119,7 +120,7 @@ class ContactsController extends BaseController
                     'status' => ContactsModel::_OK
                 ]
             ]
-        ),false,true);
+        ), false, true);
         $_callbackTime = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -131,7 +132,7 @@ class ContactsController extends BaseController
                     ]
                 ]
             ]
-        ),false,true);
+        ), false, true);
 
 
         $modelNote = new ContactsLog;
@@ -155,27 +156,31 @@ class ContactsController extends BaseController
                 'pageSize' => 10
             ]
         ]);
+
         //Lịch sử cuộc gọi
         $contactHistories = new ActiveDataProvider([
             'query' => ContactsLog::find()
-                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
+                ->rightJoin('contacts',
+                    '(contacts.id=contacts_log.contact_id OR contacts.code=contacts_log.contact_code)')
                 ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
                 ->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => 10
             ]
         ]);
+        // Helper::prinf($contactHistories->query->one()->getContact()->createCommand()->rawSql);
         // Lịch sử cuộc gọi hiện tại
         $currentHistories = new ActiveDataProvider([
-            'query' => ContactsLog::find()
-                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
-                ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
-                ->andWhere(['contacts.phone' => $phone])
+            'query' => ContactsLogImport::find()
+                ->with('contact')
+                ->with('log')
+                ->where(['phone' => $phone])
                 ->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => 10
             ]
         ]);
+        //Helper::prinf($currentHistories->query->createCommand()->rawSql);
         // Lịch sử cuộc gọi lần gọi 2
         $_currentHistories = new ActiveDataProvider([
             'query' => ContactsLog::find()
