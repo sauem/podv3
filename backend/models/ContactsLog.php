@@ -40,7 +40,7 @@ class ContactsLog extends BaseModel
     public function rules()
     {
         return [
-            [['status', 'contact_id'], 'required'],
+            [['status'], 'required'],
             [['user_id', 'contact_id', 'created_at', 'callback_time', 'updated_at'], 'integer'],
             [['status', 'phone'], 'string', 'max' => 50],
             [['note','customer_note','contact_code'], 'string', 'max' => 255],
@@ -89,27 +89,30 @@ class ContactsLog extends BaseModel
 
             $this->status = isset($this->status) ? $this->status : null;
             $contact = ContactsModel::findOne($this->contact_id);
-            $assignment = ContactsAssignment::findOne(['contact_phone' => $contact->phone]);
-            $contact->status = $this->status;
-            $contact->callback_time = null;
-            if ($this->callback_time && $this->callback_time !== null && (
-                    $this->status == ContactsModel::_CALLBACK ||
-                    $this->status == ContactsModel::_PENDING)) {
-                $contact->callback_time = $this->callback_time;
-                if($assignment){
-                    $assignment->callback_time = $this->callback_time;
-                    $assignment->status = ContactsAssignment::_PENDING;
+            if($contact){
+                $assignment = ContactsAssignment::findOne(['contact_phone' => $contact->phone]);
+                $contact->status = $this->status;
+                $contact->callback_time = null;
+                if ($this->callback_time && $this->callback_time !== null && (
+                        $this->status == ContactsModel::_CALLBACK ||
+                        $this->status == ContactsModel::_PENDING)) {
+                    $contact->callback_time = $this->callback_time;
+                    if($assignment){
+                        $assignment->callback_time = $this->callback_time;
+                        $assignment->status = ContactsAssignment::_PENDING;
+                    }
+                } else {
+                    if ($assignment) {
+                        $assignment->callback_time = null;
+                        $assignment->status = ContactsAssignment::_PROCESSING;
+                    }
                 }
-            } else {
                 if ($assignment) {
-                    $assignment->callback_time = null;
-                    $assignment->status = ContactsAssignment::_PROCESSING;
+                    $assignment->save();
                 }
+                $contact->save();
             }
-            if ($assignment) {
-                $assignment->save();
-            }
-            $contact->save();
+
         } else {
             if ($this->status == "") {
                 $this->status = null;

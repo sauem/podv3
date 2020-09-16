@@ -294,7 +294,7 @@ class AjaxController extends BaseController
         $errors = [];
         $count = 0;
         if (!empty($logs)) {
-            ActionLog::add("success", Yii::$app->user->identity->username . " Nhập liên hệ excel {$fileName}");
+            ActionLog::add("success", Yii::$app->user->identity->username . " Nhập lịch sử liên hệ excel {$fileName}");
             foreach ($logs as $k => $log) {
                 $modelLog = new ContactsLog;
                 $id = ContactsModel::findOne(['code' => $log['code']]);
