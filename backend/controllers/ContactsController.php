@@ -96,6 +96,7 @@ class ContactsController extends BaseController
                 ]
             ]
         ),false,true);
+
         $_failureProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [

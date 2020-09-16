@@ -160,16 +160,18 @@ class ContactsAssignment extends BaseModel
 
     static function lastStatusAssignment($isPending)
     {
+
         $status = ContactsAssignment::_PROCESSING;
         if($isPending){
             $status = ContactsAssignment::_PENDING;
         }
+
         $phone = self::find()->where([
             'user_id' => Yii::$app->user->getId(),
         ])->andWhere(['IN', 'status' , [$status]])
             ->orderBy(['updated_at' => SORT_DESC])->one();
         if (!$phone) {
-            return ContactsAssignment::_PROCESSING;
+            return ContactsAssignment::_COMPLETED;
         }
         return $phone->getAttribute("status");
     }

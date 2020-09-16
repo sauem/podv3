@@ -37,12 +37,24 @@ Pjax::begin([
                         'callbackProvider' => $callbackProvider,
                         'failureProvider' => $failureProvider,
                         'successProvider' => $successProvider,
+                        'currentHistories' => $currentHistories,
                         'user' => $user,
                         'info' => $info
                     ]) ?>
+
             </div>
             <div class="tab-pane fade" id="callback">
-                <h3>Lần gọi 2</h3>
+                <?= $this->render("tab/second_call",
+                    [
+                        'dataProvider' => $_dataProvider,
+                        'callbackProvider' => $_callbackProvider,
+                        'failureProvider' => $_failureProvider,
+                        'successProvider' => $_successProvider,
+                        'currentHistories' => $_currentHistories,
+                        'user' => $user,
+                        'info' => $_info
+                    ]) ?>
+
             </div>
         </div>
     </div>
@@ -53,13 +65,7 @@ Pjax::begin([
             'id' => 'order'
         ]) ?>
     </div>
-    <div class="card card-body">
-        <h4 class="card-title">Lịch sử liên hệ: <?= isset($info->phone) ? '<span class="text-success" onclick="coppy(this)">'.$info->phone.'</span>' : 'Không có liên hệ mới!'?></h4>
-        <?= $this->render('contact_histories', [
-            'dataProvider' => $currentHistories,
-            'id' => 'order'
-        ]) ?>
-    </div>
+
     <div class="card card-body">
         <h4 class="card-title">Lịch sử cuộc gọi</h4>
         <?= $this->render('contact_histories', [

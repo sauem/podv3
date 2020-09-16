@@ -8,8 +8,8 @@ use yii\helpers\Url;
     <div class="d-flex justify-content-between">
         <div>
             <h5 style="cursor: pointer" data-toggle="tooltip" title="Click 2 lần để coppy"
-                class="text-success card-title"><i
-                        class="fe-phone-call"></i> <?= isset($info->phone) ? "<span ondblclick=\"coppy(this)\">0$info->phone</span> (coppy)" : "Chưa có liên hệ mới" ?>
+                class="text-warning card-title"><i
+                    class="fe-phone-call"></i> <?= isset($info->phone) ? "<span ondblclick=\"coppy(this)\">0$info->phone</span> (coppy)" : "Chưa có liên hệ mới" ?>
             </h5>
             <div class="">
                 <button data-pjax="0" data-phone="<?= isset($info->phone) ? $info->phone : null?>"
@@ -28,7 +28,7 @@ use yii\helpers\Url;
         </div>
         <div class="d-flex">
             <h5>Sale: <a
-                        href="<?= Url::toRoute(['user/view', 'id' => $user->getId()]) ?>"> <?= $user->identity->username ?></a>
+                    href="<?= Url::toRoute(['user/view', 'id' => $user->getId()]) ?>"> <?= $user->identity->username ?></a>
             </h5>
             <h5 class="ml-3">Số điện thoại đã hoàn
                 thành/ngày: <?= UserModel::completed() . "/" . $user->identity->phone_of_day ?></h5>
@@ -85,6 +85,6 @@ use yii\helpers\Url;
     <h4 class="card-title">Lịch sử liên hệ: <?= isset($info->phone) ? '<span class="text-success" onclick="coppy(this)">'.$info->phone.'</span>' : 'Không có liên hệ mới!'?></h4>
     <?= $this->render('../contact_histories', [
         'dataProvider' => $currentHistories,
-        'id' => 'histories_1'
+        'id' => 'histories_2'
     ]) ?>
 </div>
