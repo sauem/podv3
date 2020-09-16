@@ -34,7 +34,9 @@ use yii\helpers\Url;
                 'format' => 'html',
                 'value' => function ($model) {
                     $html = Html::a($model->code, Url::toRoute(['orders/view', 'id' => $model->id])) . "<br>";
-                    $html .= $model->contact->contact->phone;
+                    if($model->contact){
+                        $html .= $model->contact->contact->phone;
+                    }
                     return $html;
                 }
             ],
@@ -56,7 +58,7 @@ use yii\helpers\Url;
             [
                 'label' => 'Loại sản phẩm',
                 'value' => function ($model) {
-                    if (!$model->contact->contact->page) {
+                    if (!$model->contact) {
                         return null;
                     }
                     return $model->contact->contact->page->category->name;
@@ -65,12 +67,18 @@ use yii\helpers\Url;
             [
                 'label' => 'Yêu cầu',
                 'value' => function ($model) {
+                    if(!$model->contact){
+                        return null;
+                    }
                     return $model->contact->contact->option;
                 }
             ],
             [
                 'label' => 'Ghi chú khách',
                 'value' => function ($model) {
+                    if(!$model->contact){
+                        return null;
+                    }
                     return $model->contact->contact->note;
                 }
             ],

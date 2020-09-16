@@ -12,11 +12,17 @@ use yii\helpers\Url;
                         class="fe-phone-call"></i> <?= isset($info->phone) ? "<span ondblclick=\"coppy(this)\">0$info->phone</span> (coppy)" : "Chưa có liên hệ mới" ?>
             </h5>
             <div class="">
-                <button data-pjax="0" data-phone="<?= isset($info->phone) ? $info->phone : null?>" class="btn btn-sm btn-outline-danger failedButton"><i class="fe-phone-off"></i> Sai số</button>
-                <button data-pjax="0" class="btn btn-sm btn-outline-warning"><i class="fe-phone-forwarded"></i> Hẹn gọi
-                    lại
+                <button data-pjax="0" data-phone="<?= isset($info->phone) ? $info->phone : null?>"
+                        class="btn btn-sm btn-outline-danger failedButton"><i class="fe-phone-off"></i> Sai số</button>
+                <button data-pjax="0"
+                        data-phone="<?= isset($info->phone) ? $info->phone : null?>"
+                        class="btn btn-sm btn-outline-warning callbackButton">
+                    <i class="fe-phone-forwarded"></i> Hẹn gọi lại
                 </button>
-                <button data-pjax="0" class="btn btn-sm btn-outline-info"><i class="fe-phone-missed"></i> Thuê bao
+                <button data-pjax="0"
+                        data-phone="<?= isset($info->phone) ? $info->phone : null?>"
+                        class="btn btn-sm btn-outline-info pendingButton">
+                    <i class="fe-phone-missed"></i> Thuê bao
                 </button>
             </div>
         </div>

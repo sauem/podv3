@@ -16,6 +16,7 @@ use Yii;
  * @property int|null $callback_time
  * @property int $created_at
  * @property int $updated_at
+ * @property int $callback_time
  *
  * @property User $user
  */

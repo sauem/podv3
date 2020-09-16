@@ -809,6 +809,77 @@ $("body").on("click", ".failedButton", function () {
     })
 });
 
+$("body").on("click", ".pendingButton", function () {
+    let _phone = $(this).data("phone");
+    swal.fire({
+        title: "Cảnh báo!",
+        icon: "error",
+        text: "Thao tác này sẽ bỏ qua số điện thoại " + _phone + " vào danh sách chờ?\n số điện thoại mới sẽ được áp dụng!",
+        showCancelButton: true,
+    }).then(val => {
+        if (val.value) {
+            swal.fire({
+                title: 'Đang xử lý',
+                icon: "info",
+                onBeforeOpen: () => {
+                    swal.showLoading();
+                    $.ajax({
+                        url: config.changeContactStatus,
+                        type: 'POST',
+                        cache: false,
+                        data: {phone: _phone, status : 'pending'},
+                        success: function (res) {
+                            if (res.success) {
+                                toastr.success(res.msg);
+                                __reloadData();
+                            } else {
+                                toastr.error(res.msg);
+                            }
+                            swal.close();
+                        }
+                    })
+                }
+            })
+        }
+    })
+});
+
+$("body").on("click", ".callbackButton", function () {
+    let _phone = $(this).data("phone");
+    swal.fire({
+        title: "Cảnh báo!",
+        icon: "error",
+        text: "Thao tác này sẽ bỏ qua số điện thoại " + _phone + " vào danh sách chờ?\n số điện thoại mới sẽ được áp dụng!",
+        showCancelButton: true,
+    }).then(val => {
+        if (val.value) {
+            swal.fire({
+                title: 'Đang xử lý',
+                icon: "info",
+                onBeforeOpen: () => {
+                    swal.showLoading();
+                    $.ajax({
+                        url: config.changeContactStatus,
+                        type: 'POST',
+                        cache: false,
+                        data: {phone: _phone, status : 'callback'},
+                        success: function (res) {
+                            console.log(res)
+                            if (res.success) {
+                                toastr.success(res.msg);
+                                __reloadData();
+                            } else {
+                                toastr.error(res.msg);
+                            }
+                            swal.close();
+                        }
+                    })
+                }
+            })
+        }
+    })
+});
+
 
 
 

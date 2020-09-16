@@ -1037,6 +1037,12 @@ class AjaxController extends BaseController
             if ($status === ContactsModel::_NUMBER_FAIL) {
                 return static::numberFailStatus($phone, $user);
             }
+            if ($status === ContactsModel::_CALLBACK) {
+                return self::numberCallbackStatus($phone, $user);
+            }
+            if ($status === ContactsModel::_PENDING) {
+                return self::numberPendingStatus($phone, $user);
+            }
             // check contact exist
             if (!$model) {
                 return [
@@ -1078,7 +1084,7 @@ class AjaxController extends BaseController
         }
 
         if ($model) {
-            ContactsModel::updateAll(['status' => ContactsModel::_NUMBER_FAIL], ['phone' => $phone]);
+
             $assignment->status = ContactsAssignment::_COMPLETED;
             $assignment->save();
 
@@ -1089,6 +1095,10 @@ class AjaxController extends BaseController
                 $log->contact_id = $contact->id;
                 $log->status = ContactsModel::_NUMBER_FAIL;
                 $log->save();
+
+                $contact->status = ContactsModel::_NUMBER_FAIL;
+                $contact->save();
+
             }
             doScanContactByCountry::apply();
             return [
@@ -1102,4 +1112,84 @@ class AjaxController extends BaseController
         ];
     }
 
+    static function numberPendingStatus($phone, $user)
+    {
+        $model = ContactsModel::findAll(['phone' => $phone]);
+        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+        if (!$assignment) {
+            return [
+                'success' => 0,
+                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
+            ];
+        }
+
+        if ($model) {
+            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái thuê bao");
+            foreach ($model as $contact) {
+                $log = new ContactsLog;
+                $log->user_id = $user;
+                $log->contact_id = $contact->id;
+                $log->status = ContactsModel::_PENDING;
+                $log->save();
+
+                $contact->status = ContactsModel::_PENDING;
+                $contact->callback_time = 1;
+                $contact->save();
+            }
+
+            $assignment->status = ContactsAssignment::_PENDING;
+            $assignment->callback_time = 1;
+            $assignment->save();
+
+            doScanContactByCountry::apply();
+            return [
+                'success' => 1,
+                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi không xác định'
+        ];
+    }
+
+    static function numberCallbackStatus($phone, $user)
+    {
+        $model = ContactsModel::findAll(['phone' => $phone]);
+        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+        if (!$assignment) {
+            return [
+                'success' => 0,
+                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
+            ];
+        }
+
+        if ($model) {
+            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái gọi lại");
+            foreach ($model as $contact) {
+                $log = new ContactsLog;
+                $log->user_id = $user;
+                $log->contact_id = $contact->id;
+                $log->status = ContactsModel::_CALLBACK;
+                $log->save();
+
+                $contact->status = ContactsModel::_CALLBACK;
+                $contact->callback_time = 1;
+                $contact->save();
+            }
+            $assignment->status = ContactsAssignment::_PENDING;
+            $assignment->callback_time = 1;
+            $assignment->save();
+
+            doScanContactByCountry::apply();
+            return [
+                'success' => 1,
+                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi không xác định'
+        ];
+    }
 }
