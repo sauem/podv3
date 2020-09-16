@@ -29,7 +29,8 @@ AppAsset2::register($this);
             pushOrder: "<?=Url::toRoute(['ajax/push-order'])?>",
             pushZipcode: "<?=Url::toRoute(['ajax/push-zipcode'])?>",
             pushLogs: "<?=Url::toRoute(['ajax/push-logs'])?>",
-            maxSize: 10485760
+            maxSize: 52428800,
+            maxRowUpload: 500000,
         }
 
     </script>
