@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
             "<br></small>
         <small class="text-center text-danger"><i class="fa fa-sticky-note"></i> Nhập file excel có định dạng xlsx,
             csv<br></small>
-        <small class="text-center text-danger"><i class="fa fa-sticky-note"></i> Số dòng tối đa 5.000 dòng</small>
+        <small class="text-center text-danger"><i class="fa fa-sticky-note"></i> Số dòng tối đa 50.000 dòng</small>
         <?php ActiveForm::end() ?>
     </div>
     <script id="excel-template" type="text/x-handlebars-template">
