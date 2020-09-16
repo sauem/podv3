@@ -312,12 +312,12 @@ class AjaxController extends BaseController
 //                }
                 $time_call = $log['time_call'];
 
-                if ($userAssignment) {
-                    $modelLog->user_id = $userAssignment->user_id;
-                }
-                if ($id) {
-                    $modelLog->contact_id = $id->id;
-                }
+//                if ($userAssignment) {
+//                    $modelLog->user_id = $userAssignment->user_id;
+//                }
+//                if ($id) {
+//                    $modelLog->contact_id = $id->id;
+//                }
                 $modelLog->code = $log['code'];
                 $modelLog->phone = $log['phone'];
                 $modelLog->zipcode = $log['zipcode'];
