@@ -71,7 +71,10 @@ function doProcessWorkbook(workbook, file) {
         maxColumn = 10;
     } else if (firstSheet === "zipcode") {
         maxColumn = 6;
+    } else if (firstSheet === "categories") {
+        maxColumn = 3;
     }
+
     let row = getRow(sheet, rowsIndex, maxColumn);
     while (row !== null) {
         let item = switchItem(firstSheet, row);
@@ -122,6 +125,9 @@ function doProcessWorkbook(workbook, file) {
         case "zipcode":
             renderViewTemplate("result", "zipcode-template", data)
             break;
+        case "categories":
+            renderViewTemplate("result", "categories-template", data)
+            break;
         default:
             renderViewTemplate("result", "excel-template", data)
             break;
@@ -158,7 +164,7 @@ $(".handleData").click(function (e) {
             alert("DDA");
             return false;
         });
-    }else{
+    } else {
         processContact($(this));
     }
 
@@ -169,6 +175,9 @@ let processContact = (ele) => {
     let _url = config.pushContact;
     if (_importAction === "product") {
         _url = config.pushProduct;
+    }
+    if (_importAction === "category") {
+        _url = config.pushCategories;
     }
     if (_importAction === "order") {
         _url = config.pushOrder;
@@ -243,6 +252,11 @@ function switchItem(sheet, row) {
             item.category = row[2] ? row[2].v : "";
             item.regular_price = row[3] ? row[3].v : "";
             item.option = row[4] ? row[4].v : "";
+            break;
+        case "categories":
+            item = new categoriesModel();
+            item.name = row[0] ? row[0].v : "";
+            item.description = row[1] ? row[1].v : "";
             break;
         case "order":
             item = new formInfoModel();
@@ -356,6 +370,13 @@ function contactModel() {
         host: window.location.hostname,
         warning: {}
         //country: null
+    }
+}
+
+function categoriesModel() {
+    return {
+        name: "",
+        description: ""
     }
 }
 

@@ -345,6 +345,27 @@ class AjaxController extends BaseController
         return self::resultImport($count, $errors, 0);
     }
 
+    function actionPushCategories()
+    {
+        $categories = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $errors = [];
+        $count = 0;
+        if (!empty($categories)) {
+            foreach ($categories as $k => $category) {
+                $model = new CategoriesModel;
+                $model->name = $category['name'];
+                $model->description = $category['description'];
+                if(!$model->save()){
+                    $errors[] = Helper::firstError($model);
+                }
+            }
+            $count = sizeof($categories) - sizeof($errors);
+            return self::resultImport($count, $errors, 1);
+        }
+        return self::resultImport($count, $errors, 0);
+    }
+
     function actionPushZipcode()
     {
         $contacts = Yii::$app->request->post("contacts");

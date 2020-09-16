@@ -15,8 +15,16 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between">
                 <h4 class="card-title">Loại sản phẩm</h4>
+                <div class="card-tools">
+                    <button class="btn btn-success btn-sm" data-toggle="modal"
+                            data-remote="<?= Url::toRoute(['categories/import']) ?>"
+                            data-target="#categroy-import">
+                        <i class="fa fa-file-excel-o"></i>
+                        Nhập danh mục
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <?= GridView::widget([
@@ -78,3 +86,34 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
+
+<div class="modal fade" tabindex="-1" id="categroy-import" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nhập loại sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <a class="text-warning" href="<?= Url::toRoute(['/file/category_example.xlsx']) ?>"><i
+                            class="fa fa-download"></i> File dữ liệu mẫu</a>
+                <div>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" data-action="category" class="handleData btn-sm btn btn-primary">Nhập sản phẩm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+
+$js = <<<JS
+    initRemote("categroy-import");
+JS;
+$this->registerJs($js);

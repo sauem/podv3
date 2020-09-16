@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\UploadForm;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use Yii;
@@ -143,5 +144,13 @@ class CategoriesController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionImport(){
+        $this->layout = "empty";
+        $model = new UploadForm;
+        return $this->render("import",[
+            'model' => $model
+        ]);
     }
 }

@@ -58,6 +58,7 @@ use yii\helpers\Url;
             exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
             changeAddess: "<?= Url::toRoute(['ajax/change-address'])?>",
             changeContactStatus: "<?= Url::toRoute(['ajax/change-contact-status'])?>",
+            pushCategories: "<?= Url::toRoute(['ajax/push-categories'])?>",
         }
 
     </script>
