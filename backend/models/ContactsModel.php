@@ -146,14 +146,15 @@ class ContactsModel extends BaseModel
             $this->short_link = Helper::getHost($this->link);
             $this->hashkey = md5($this->phone . $this->short_link . $this->option);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-            $this->code = Helper::makeCodeIncrement($maxIDNumber, $this->country);
+            $this->code = !$this->code ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
+
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
             $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
-            if (self::checkExists($this->hashkey) && $this->status === null ) {
+            if (self::checkExists($this->hashkey)) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;
             }
-            if (self::checkExistCapture($this->phone, $this->short_link) && $this->status === null) {
+            if (self::checkExistCapture($this->phone, $this->short_link)) {
                 $this->addError("type", "Liên hệ đã tồn tại với phân loại capture form!");
                 return false;
             }
@@ -226,8 +227,10 @@ class ContactsModel extends BaseModel
     {
         return $this->hasMany(ContactsLog::className(), ['contact_code' => 'code']);
     }
-    public function getLogImport(){
-        return $this->hasMany(ContactsLogImport::className(),['phone' => 'phone']);
+
+    public function getLogImport()
+    {
+        return $this->hasMany(ContactsLogImport::className(), ['phone' => 'phone']);
     }
 
     function getPage()
@@ -299,7 +302,7 @@ class ContactsModel extends BaseModel
         $processing = ContactsAssignment::findOne(['user_id' => Yii::$app->user->getId(), 'contact_phone' => $phone, 'status' => ContactsAssignment::_PROCESSING]);
         if ($processing && static::hasCompeleted($phone)) {
             if (!ContactsAssignment::nextAssignment()) {
-                Helper::showMessage("Hiện tại đã hết liên hệ, xin hãy chờ!","error");
+                Helper::showMessage("Hiện tại đã hết liên hệ, xin hãy chờ!", "error");
                 Yii::$app->session->setFlash("error", "Hiện tại đã hết liên hệ, xin hãy chờ!");
             } else {
                 Helper::showMessage("Số điện thoại mới được áp dụng!");
@@ -321,13 +324,16 @@ class ContactsModel extends BaseModel
     {
         return $this->hasOne(OrdersModel::className(), ['code' => 'code']);
     }
-    public function getLatestContact () {
-        return $this->hasOne(ContactsModel::className(),['phone' => 'phone'])->orderBy(['register_time' => SORT_DESC]);
+
+    public function getLatestContact()
+    {
+        return $this->hasOne(ContactsModel::className(), ['phone' => 'phone'])->orderBy(['register_time' => SORT_DESC]);
     }
 
-    public static function hasDuplicate($hashkey){
+    public static function hasDuplicate($hashkey)
+    {
         $count = self::findAll(['hashkey' => $hashkey]);
-        if(sizeof($count) > 1){
+        if (sizeof($count) > 1) {
             return true;
         }
         return false;

@@ -171,10 +171,10 @@ class ContactsController extends BaseController
         // Helper::prinf($contactHistories->query->one()->getContact()->createCommand()->rawSql);
         // Lịch sử cuộc gọi hiện tại
         $currentHistories = new ActiveDataProvider([
-            'query' => ContactsLogImport::find()
-                ->with('contact')
-                ->with('log')
-                ->where(['phone' => $phone])
+            'query' => ContactsLog::find()
+                ->rightJoin('contacts', 'contacts.id=contacts_log.contact_id')
+                ->andWhere(['contacts_log.user_id' => Yii::$app->user->getId(),])
+                ->andWhere(['contacts.phone' => $phone])
                 ->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => 10

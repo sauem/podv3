@@ -61,7 +61,7 @@ function doProcessWorkbook(workbook, file) {
     let sheet = workbook.Sheets[firstSheet];
     let rows = [];
     let rowsIndex = 2;
-    let maxColumn = 17;
+    let maxColumn = 15;
     let warning = [];
     if (firstSheet === "product") {
         maxColumn = 7;
@@ -76,8 +76,11 @@ function doProcessWorkbook(workbook, file) {
     }
 
     let row = getRow(sheet, rowsIndex, maxColumn);
+
     while (row !== null) {
+
         let item = switchItem(firstSheet, row);
+
         if (typeof item.status === "boolean" && item.status === false) {
             toastr.error(`Dòng thứ ${(rowsIndex + 2)}, không được để trống ${item.column}`);
             rows = [];
@@ -104,6 +107,7 @@ function doProcessWorkbook(workbook, file) {
         rows: rows,
         fileName: file.name,
         size: file.size,
+        step: 10,
         total: rows.length,
         warning: {
             total: warning.length,
@@ -148,6 +152,7 @@ $(".handleData").click(function (e) {
             warning: []
         }
     }
+
     if (EXCEL.warning.total > 0) {
         swal.fire({
             title: "Cảnh báo!",
@@ -161,7 +166,6 @@ $(".handleData").click(function (e) {
                 processContact($(this));
                 return true;
             }
-            alert("DDA");
             return false;
         });
     } else {
@@ -170,6 +174,7 @@ $(".handleData").click(function (e) {
 
 })
 let processContact = (ele) => {
+
     let _importAction = ele.data("action");
     let _createAction = false;
     let _url = config.pushContact;
@@ -196,45 +201,74 @@ let processContact = (ele) => {
         toastr.warning("File dữ liệu tối đa " + config.maxRowUpload + " dòng");
         return false;
     }
+    const excelData = EXCEL.rows;
     swal.fire({
         title: "Đang nhập liệu",
+        html: "<b>0%</b>",
         icon: "info",
         allowOutsideClick: false,
         onBeforeOpen: () => {
             Swal.showLoading()
-            $.ajax({
-                url: _url,
-                type: "POST",
-                cache: false,
-                data: {
-                    contacts: window.EXCEL.rows,
-                    fileName: window.EXCEL.fileName,
-                    createNew: _createAction ? "ok" : ""
-                },
-                success: function (res) {
-
-                    if (!res.success) {
-                        setTimeout(() => {
-                            Swal.hideLoading();
-                            swal.fire("Lỗi", res.msg, "error");
-                        }, 1000);
-                        return;
-                    }
-                    setTimeout(() => {
-                        Swal.hideLoading()
-                        swal.fire({
-                            title: "Thông báo!",
-                            html: "Đã nhập thành công " + res.totalInsert + " dòng <br> Số dòng lỗi : " + res.totalErrors,
-                            icon: 'success'
-                        })
-                            .then(() => {
-                                window.location.reload()
-                            })
-                    }, 1000)
-                }
-            });
+            executeRequest(_url, excelData, _createAction)
+                .then(res => {
+                    console.log("Click:", res)
+                })
+                .catch(error => console.log(error))
         }
     })
+}
+
+async function executeRequest(_url, data, createAction = null, startSlice = 0, endSlice = 100, step = 100) {
+
+    let excelData = data.slice(startSlice, endSlice);
+    try {
+        await $.ajax({
+            url: _url,
+            type: "POST",
+            cache: false,
+            data: {
+                step: step,
+                end: endSlice,
+                contacts: excelData,
+                fileName: window.EXCEL.fileName,
+                createNew: createAction ? "ok" : ""
+            },
+            success: res => {
+                const {end, next, success} = res;
+
+                if (success) {
+                    startSlice = parseInt(next);
+                    endSlice = parseInt(end);
+
+                    const content = Swal.getContent();
+                    if (content) {
+                        let percent = startSlice / data.length * 100;
+                        const b = content.querySelector('b')
+                        if (b) {
+                            b.textContent = Math.round(percent) + "%";
+                        }
+                    }
+                    if (startSlice < data.length) {
+                        executeRequest(_url, data, createAction, startSlice, endSlice);
+                    } else {
+                        swal.fire({
+                            title: "Đã nhập liệu xong",
+                            icon: "success",
+                        }).then(() => window.location.reload());
+                        return false;
+                    }
+                } else {
+                    swal.fire({
+                        title: "Lỗi",
+                        icon: "error",
+                    }).then(() => window.location.reload());
+                }
+            }
+        });
+    }catch (e) {
+        
+    }
+
 }
 
 function renderViewTemplate(result = "result", template = "excel-template", data) {
@@ -275,7 +309,7 @@ function switchItem(sheet, row) {
             item.skus[4].qty = row[12] ? row[12].v : "";
             break;
         case "logs":
-            let time = (row[1] && (typeof row[1].v.getTime === "function")) ? row[1].v.getTime() / 1000 : row[1].v;
+            let time = (row[1] && (typeof row[1].v.getTime === "function")) ? Math.round(row[1].v.getTime() / 1000) : row[1].v;
 
             item = new logModel();
             item.code = row[0] ? row[0].v : "";
@@ -300,7 +334,7 @@ function switchItem(sheet, row) {
             item.address = row[5] ? row[5].v : "";
             break;
         default:
-            let time_register = (row[0] && (typeof row[0].v.getTime === "function")) ? row[0].v.getTime() / 1000 : row[0].v;
+            let time_register = (row[0] && (typeof row[0].v.getTime === "function")) ? Math.round(row[0].v.getTime() / 1000) : row[0].v;
             item = new contactModel();
 
             // check empty phone or link contacts
@@ -319,9 +353,10 @@ function switchItem(sheet, row) {
             item.utm_content = row[12] ? row[12].v : "";
             item.ip = row[13] ? row[13].v : "";
             item.type = row[14] ? row[14].v : "";
-            item.status = row[15] ? row[15].v : "";
-            item.code = row[16] ? row[16].v : "";
             item.host = window.location.hostname;
+
+            // item.status = row[15] ? row[15].v : "";
+            // item.code = row[16] ? row[16].v : "";
 
             if (item.link === ""
                 || item.link === null
@@ -370,8 +405,8 @@ function contactModel() {
         updated_at: Date.now() / 1000,
         host: window.location.hostname,
         warning: {},
-        status : null,
-        code : null
+        //status: null,
+       // code: null
         //country: null
     }
 }

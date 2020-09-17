@@ -15,6 +15,7 @@ use backend\models\ContactsModel;
 use backend\models\Customers;
 use backend\models\FormInfo;
 use backend\models\FormInfoSku;
+use backend\models\LandingPages;
 use backend\models\LogsImport;
 use backend\models\OrdersBilling;
 use backend\models\OrdersModel;
@@ -258,350 +259,6 @@ class AjaxController extends BaseController
         return $label;
     }
 
-
-    public function actionReportSearch()
-    {
-        $sort = \Yii::$app->request->post();
-        $accounts = Yii::$app->request->post("account");
-        $time = ArrayHelper::getValue($sort, "created_at");
-
-        $query = OrdersModel::find()
-            ->with('user')
-            ->with('items')
-            ->with('contacts')
-            ->orderBy(['created_at' => SORT_DESC]);
-        $query->andFilterWhere(['IN', 'user_id', $accounts]);
-        if ($time && !empty($time)) {
-            $time = explode(" - ", $time);
-            $start = strtotime($time[0]);
-            $end = strtotime($time[1]);
-
-            if ($start && $end) {
-                $query->andFilterWhere(['between', 'created_at', $start, $end]);
-            }
-        }
-
-        $result = $query->asArray()->all();
-        return [
-            'success' => 1,
-            'data' => $result
-        ];
-    }
-
-    function actionPushLogs()
-    {
-        $logs = Yii::$app->request->post("contacts");
-        $fileName = Yii::$app->request->post("fileName");
-        $errors = [];
-        $count = 0;
-        if (!empty($logs)) {
-            ActionLog::add("success", Yii::$app->user->identity->username . " Nhập lịch sử liên hệ excel {$fileName}");
-            foreach ($logs as $k => $log) {
-                $modelLog = new ContactsLogImport;
-                $id = ContactsModel::findOne(['code' => $log['code']]);
-                $userAssignment = ContactsAssignment::findOne(['contact_phone' => $log['phone']]);
-
-//                if (!$id) {
-//                    $errors[] = "Không tìm thấy contact code {$log['code']}";
-//                    LogsImport::saveRecord([
-//                        'msg' => "Không tìm thấy contact code {$log['code']}",
-//                        'name' => $fileName,
-//                        'line' => $k + 2
-//                    ]);
-//                    continue;
-//                }
-                $time_call = $log['time_call'];
-
-//                if ($userAssignment) {
-//                    $modelLog->user_id = $userAssignment->user_id;
-//                }
-//                if ($id) {
-//                    $modelLog->contact_id = $id->id;
-//                }
-                $modelLog->code = $log['code'];
-                $modelLog->phone = $log['phone'];
-                $modelLog->zipcode = $log['zipcode'];
-                $modelLog->option = $log['option'];
-                $modelLog->category = $log['category'];
-                $modelLog->address = $log['address'];
-                $modelLog->status = $log['status'];
-                $modelLog->note = $log['note'];
-                $modelLog->customer_note = $log['customer_note'];
-
-
-                $modelLog->created_at = $time_call;
-                if (!$modelLog->save()) {
-                    $errors[] = Helper::firstError($modelLog);
-                    LogsImport::saveRecord([
-                        'msg' => Helper::firstError($modelLog),
-                        'name' => $fileName,
-                        'line' => $k + 2
-                    ]);
-                }
-            }
-            $count = sizeof($logs) - sizeof($errors);
-            return self::resultImport($count, $errors, 1);
-        }
-        return self::resultImport($count, $errors, 0);
-    }
-
-    function actionPushCategories()
-    {
-        $categories = Yii::$app->request->post("contacts");
-        $fileName = Yii::$app->request->post("fileName");
-        $errors = [];
-        $count = 0;
-        if (!empty($categories)) {
-            foreach ($categories as $k => $category) {
-                $model = new CategoriesModel;
-                $model->name = $category['name'];
-                $model->description = $category['description'];
-                if(!$model->save()){
-                    $errors[] = Helper::firstError($model);
-                }
-            }
-            $count = sizeof($categories) - sizeof($errors);
-            return self::resultImport($count, $errors, 1);
-        }
-        return self::resultImport($count, $errors, 0);
-    }
-
-    function actionPushZipcode()
-    {
-        $contacts = Yii::$app->request->post("contacts");
-        $fileName = Yii::$app->request->post("fileName");
-        $errors = [];
-        $count = 0;
-        if (!empty($contacts)) {
-            foreach ($contacts as $k => $zipcode) {
-                $model = new ZipcodeCountry;
-                $data = [
-                    'country_name' => $zipcode['country_name'],
-                    'country_code' => $zipcode['country_code'],
-                    'zipcode' => $zipcode['zipcode'],
-                    'city' => $zipcode['city'],
-                    'district' => $zipcode['district'],
-                    'address' => $zipcode['address'],
-                ];
-
-                if (!$model->load($data, "") || !$model->save()) {
-                    $errors[$k] = Helper::firstError($model);
-                    ActionLog::add("error", Helper::firstError($model));
-                };
-            }
-            $count = sizeof($contacts) - sizeof($errors);
-
-            return self::resultImport($count, $errors, 1);
-        }
-        return self::resultImport($count, $errors, 0);
-    }
-
-    function actionPushContact()
-    {
-        $contacts = Yii::$app->request->post("contacts");
-        $fileName = Yii::$app->request->post("fileName");
-
-        $errors = [];
-        if (!empty($contacts)) {
-
-            foreach ($contacts as $k => $contact) {
-                $model = new ContactsModel;
-
-                $data = [
-                    'phone' => $contact['phone'],
-                    'name' => $contact['name'],
-                    'address' => $contact['address'],
-                    'option' => $contact['option'],
-                    'zipcode' => (int)$contact['zipcode'],
-                    'note' => $contact['note'],
-                    'link' => $contact['link'],
-                    'ip' => $contact['ip'],
-                    'utm_source' => $contact['utm_source'],
-                    'utm_campaign' => $contact['utm_campaign'],
-                    'utm_medium' => $contact['utm_medium'],
-                    'utm_term' => $contact['utm_term'],
-                    'utm_content' => $contact['utm_content'],
-                    //'country' => $contact['country'],
-                    'type' => $contact['type'],
-                    'status' => isset($contact['status']) ? $contact['status'] : null,
-                    'register_time' => (int)$contact['register_time'],
-                    'created_at' => time(),
-                    'updated_at' => time(),
-                    'host' => $contact['host'],
-                ];
-
-                if (!$model->load($data, '') || !$model->save()) {
-                    $errors[$k] = Helper::firstError($model);
-                    $logs = new LogsImport;
-                    $data = [
-                        'line' => (string)($k + 2),
-                        'message' => Helper::firstError($model),
-                        'name' => $fileName,
-                        'user_id' => Yii::$app->user->getId()
-                    ];
-                    $logs->load($data, "");
-                    $logs->save();
-                }else{
-                    if( $model->status !== ContactsModel::_NEW && isset($contact['code']) && isset($contacts['status'])){
-                        $log = new ContactsLog;
-                        $log->status = $contact['status'];
-                        $log->contact_id = $model->id;
-                        $log->contact_code = $contact['code'];
-                        $log->phone = $model->phone;
-                        $log->save();
-                    }
-                }
-            }
-            $count = sizeof($contacts) - sizeof($errors);
-            if ($count > 0) {
-                ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
-                return [
-                    'success' => 1,
-                    'error' => $errors,
-                    'totalInsert' => $count,
-                    'totalErrors' => sizeof($errors)
-                ];
-            }
-            return [
-                'success' => 0,
-                'error' => $errors,
-                'totalInsert' => $count,
-                'totalErrors' => sizeof($errors)
-            ];
-        }
-    }
-
-    function actionPushProduct()
-    {
-        $products = Yii::$app->request->post("contacts");
-        $fileName = Yii::$app->request->post("fileName");
-        $errors = [];
-        if (!empty($products)) {
-            foreach ($products as $k => $product) {
-                $model = new ProductsModel;
-                $category = CategoriesModel::findOne(['name' => $product['category']]);
-                if (!$category) {
-                    $category = new CategoriesModel;
-                    $category->name = $product['category'];
-                    $category->save();
-                }
-                $data = [
-                    'name' => $product['name'],
-                    'sku' => $product['sku'],
-                    'category_id' => $category->id,
-                    'regular_price' => str_replace(",", "", $product['regular_price']),
-                    'option' => $product['option']
-                ];
-
-                if (!$model->load($data, "") || !$model->save()) {
-                    $errors[$k] = Helper::firstError($model);
-                    $logs = new LogsImport;
-                    $data = [
-                        'line' => (string)($k + 2),
-                        'message' => Helper::firstError($model),
-                        'name' => $fileName,
-                        'user_id' => Yii::$app->user->getId()
-                    ];
-                    $logs->load($data, "");
-                    $logs->save();
-                }
-            }
-            $count = sizeof($products) - sizeof($errors);
-
-            if ($count > 0) {
-                ActionLog::add("success", "Nhập file sản phẩm - $fileName số lượng $count");
-                return static::resultImport($count, $errors, 1);
-            }
-            return static::resultImport($count, $errors, 0);
-        }
-
-    }
-
-    public function actionPushOrder()
-    {
-        $orders = Yii::$app->request->post("contacts");
-        $createNew = Yii::$app->request->post('createNew');
-        $fileName = Yii::$app->request->post("fileName");
-        $transaction = Yii::$app->db->beginTransaction();
-        $createNew = $createNew == "ok";
-        $errors = [];
-        try {
-            foreach ($orders as $k => $data) {
-                $model = new FormInfo;
-                $category = CategoriesModel::findOne(['name' => $data['category']]);
-                if (!$category) {
-                    if (!$createNew) {
-
-                        $errors[$k] = "không tồn tại loại sản phẩm";
-                        continue;
-                    }
-                    $category = new CategoriesModel;
-                    $category->name = $data['category'];
-                    $category->save();
-                }
-                $info = [
-                    'category_id' => $category->id,
-                    'content' => $data['content'],
-                    'revenue' => $data['revenue']
-                ];
-                if ($model->load($info, "") && $model->save()) {
-                    $skus = ArrayHelper::getValue($data, 'skus');
-
-                    foreach ($skus as $sku) {
-
-                        $product = ProductsModel::findOne(['sku' => $sku['sku']]);
-                        if (!$product) {
-                            if (!$createNew) {
-                                $errors[$k] = "không tồn tại mã sản phẩm";
-                                continue;
-                            }
-                            $product = new ProductsModel;
-                            $product->name = $sku['sku'];
-                            $product->category_id = $category->id;
-                            $product->sku = $sku['sku'];
-                            $product->save();
-                        }
-
-                        if ($product->sku && $sku['qty']) {
-                            $item = new FormInfoSku;
-                            $item->info_id = $model->id;
-                            $item->sku = $product->sku;
-                            $item->qty = $sku['qty'];
-                            $item->save();
-                        } else {
-                            $errors[$k] = "Mỗi order cần tối thiểu 1 SKU và số lượng là 1";
-                        }
-                    }
-                } else {
-                    return [
-                        'success' => 0,
-                        'msg' => Helper::firstError($model)
-                    ];
-                }
-            }
-
-            $transaction->commit();
-            $count = sizeof($orders);
-            ActionLog::add("success", "Nhập file mẫu đơn - $fileName số lượng $count");
-            return static::resultImport($count, $errors, 1);
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-            return [
-                'success' => 0,
-                'msg' => $e->getMessage()
-            ];
-        }
-    }
-
-    static function resultImport($count = 0, $errors, $status = 1)
-    {
-        return [
-            'success' => $status,
-            'error' => $errors,
-            'totalErrors' => sizeof($errors),
-            'totalInsert' => $count
-        ];
-    }
 
     function actionRemoveImage()
     {
@@ -1244,4 +901,358 @@ class AjaxController extends BaseController
             'msg' => 'Lỗi không xác định'
         ];
     }
+
+
+    public function actionReportSearch()
+    {
+        $sort = \Yii::$app->request->post();
+        $accounts = Yii::$app->request->post("account");
+        $time = ArrayHelper::getValue($sort, "created_at");
+
+        $query = OrdersModel::find()
+            ->with('user')
+            ->with('items')
+            ->with('contacts')
+            ->orderBy(['created_at' => SORT_DESC]);
+        $query->andFilterWhere(['IN', 'user_id', $accounts]);
+        if ($time && !empty($time)) {
+            $time = explode(" - ", $time);
+            $start = strtotime($time[0]);
+            $end = strtotime($time[1]);
+
+            if ($start && $end) {
+                $query->andFilterWhere(['between', 'created_at', $start, $end]);
+            }
+        }
+
+        $result = $query->asArray()->all();
+        return [
+            'success' => 1,
+            'data' => $result
+        ];
+    }
+
+    //import function
+    function actionPushLogs()
+    {
+        $logs = Yii::$app->request->post("contacts");
+        $step = Yii::$app->request->post("step");
+        $end = Yii::$app->request->post("end");
+        $fileName = Yii::$app->request->post("fileName");
+        $errors = [];
+        $count = 0;
+        if (!empty($logs)) {
+            ActionLog::add("success", Yii::$app->user->identity->username . " Nhập lịch sử liên hệ excel {$fileName}");
+            foreach ($logs as $k => $log) {
+                $modelLog = new ContactsLog;
+                $contact = ContactsModel::findOne(['code' => $log['code']]);
+                $time_call = $log['time_call'];
+
+                if (!$contact) {
+                    $contact = new ContactsModel;
+                    $country = ZipcodeCountry::findOne(['zipcode'  => $log['code']]);
+                    $coutry_code = null;
+                    if($country){
+                        $coutry_code = $country->country_code;
+                    }
+                    $data_contact = [
+                        'code' => $log['code'],
+                        'phone' => $log['phone'],
+                        'register_time' => $time_call,
+                        'address' => $log['address'],
+                        'zipcode' => $log['zipcode'],
+                        'option' => $log['option'],
+                        'status' => $log['status'],
+                        'country' => $coutry_code,
+                        'note' => $log['customer_note']
+                    ];
+                    if($contact->load($data_contact, "")){
+                        if(!$contact->save()){
+                            continue;
+                        }
+                    }
+
+                }
+
+                $modelLog->contact_code = $contact->code;
+                $modelLog->phone = $contact->phone;
+                $modelLog->contact_id = $contact->id;
+                $modelLog->status = $log['status'];
+                $modelLog->note = $log['note'];
+                $modelLog->customer_note = $log['customer_note'];
+                $modelLog->created_at = $time_call;
+
+                if (!$modelLog->save()) {
+                    $errors[] = Helper::firstError($modelLog);
+                    LogsImport::saveRecord([
+                        'msg' => Helper::firstError($modelLog),
+                        'name' => $fileName,
+                        'line' => $k + 2
+                    ]);
+                }
+            }
+            $count = sizeof($logs) - sizeof($errors);
+            return self::resultImport($errors, $count, 1, $step, $end);
+        }
+        return self::resultImport($errors, $count, 0);
+    }
+
+    function actionPushCategories()
+    {
+        $categories = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $step = Yii::$app->request->post("step");
+        $end = Yii::$app->request->post("end");
+        $errors = [];
+        $count = 0;
+        if (!empty($categories)) {
+            foreach ($categories as $k => $category) {
+                $model = new CategoriesModel;
+                $model->name = $category['name'];
+                $model->description = $category['description'];
+                if (!$model->save()) {
+                    $errors[] = Helper::firstError($model);
+                }
+            }
+            $count = sizeof($categories) - sizeof($errors);
+            return self::resultImport($errors, $count, 1, $step, $end);
+        }
+        return self::resultImport($errors, $count, 0);
+    }
+
+    function actionPushZipcode()
+    {
+        $contacts = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $step = Yii::$app->request->post("step");
+        $end = Yii::$app->request->post("end");
+        $errors = [];
+        $count = 0;
+        if (!empty($contacts)) {
+            foreach ($contacts as $k => $zipcode) {
+                $model = new ZipcodeCountry;
+                $data = [
+                    'country_name' => $zipcode['country_name'],
+                    'country_code' => $zipcode['country_code'],
+                    'zipcode' => $zipcode['zipcode'],
+                    'city' => $zipcode['city'],
+                    'district' => $zipcode['district'],
+                    'address' => $zipcode['address'],
+                ];
+
+                if (!$model->load($data, "") || !$model->save()) {
+                    $errors[$k] = Helper::firstError($model);
+                    ActionLog::add("error", Helper::firstError($model));
+                };
+            }
+            $count = sizeof($contacts) - sizeof($errors);
+
+            return self::resultImport($errors, $count, 1, $step, $end);
+        }
+        return self::resultImport($errors, $count, 0);
+    }
+
+
+    function actionPushProduct()
+    {
+        $products = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $step = Yii::$app->request->post("step");
+        $end = Yii::$app->request->post("end");
+        $errors = [];
+        if (!empty($products)) {
+            foreach ($products as $k => $product) {
+                $model = new ProductsModel;
+                $category = CategoriesModel::findOne(['name' => $product['category']]);
+                if (!$category) {
+                    $category = new CategoriesModel;
+                    $category->name = $product['category'];
+                    $category->save();
+                }
+                $data = [
+                    'name' => $product['name'],
+                    'sku' => $product['sku'],
+                    'category_id' => $category->id,
+                    'regular_price' => str_replace(",", "", $product['regular_price']),
+                    'option' => $product['option']
+                ];
+
+                if (!$model->load($data, "") || !$model->save()) {
+                    $errors[$k] = Helper::firstError($model);
+                    $logs = new LogsImport;
+                    $data = [
+                        'line' => (string)($k + 2),
+                        'message' => Helper::firstError($model),
+                        'name' => $fileName,
+                        'user_id' => Yii::$app->user->getId()
+                    ];
+                    $logs->load($data, "");
+                    $logs->save();
+                }
+            }
+            $count = sizeof($products) - sizeof($errors);
+
+            if ($count > 0) {
+                ActionLog::add("success", "Nhập file sản phẩm - $fileName số lượng $count");
+                return static::resultImport($count, $errors, 1, $step, $end);
+            }
+            return static::resultImport($count, $errors, 0);
+        }
+
+    }
+
+    public function actionPushOrder()
+    {
+        $orders = Yii::$app->request->post("contacts");
+        $createNew = Yii::$app->request->post('createNew');
+        $fileName = Yii::$app->request->post("fileName");
+        $step = Yii::$app->request->post("step");
+        $end = Yii::$app->request->post("end");
+        $transaction = Yii::$app->db->beginTransaction();
+        $createNew = $createNew == "ok";
+        $errors = [];
+        try {
+            foreach ($orders as $k => $data) {
+                $model = new FormInfo;
+                $category = CategoriesModel::findOne(['name' => $data['category']]);
+                if (!$category) {
+                    if (!$createNew) {
+
+                        $errors[$k] = "không tồn tại loại sản phẩm";
+                        continue;
+                    }
+                    $category = new CategoriesModel;
+                    $category->name = $data['category'];
+                    $category->save();
+                }
+                $info = [
+                    'category_id' => $category->id,
+                    'content' => $data['content'],
+                    'revenue' => $data['revenue']
+                ];
+                if ($model->load($info, "") && $model->save()) {
+                    $skus = ArrayHelper::getValue($data, 'skus');
+
+                    foreach ($skus as $sku) {
+
+                        $product = ProductsModel::findOne(['sku' => $sku['sku']]);
+                        if (!$product) {
+                            if (!$createNew) {
+                                $errors[$k] = "không tồn tại mã sản phẩm";
+                                continue;
+                            }
+                            $product = new ProductsModel;
+                            $product->name = $sku['sku'];
+                            $product->category_id = $category->id;
+                            $product->sku = $sku['sku'];
+                            $product->save();
+                        }
+
+                        if ($product->sku && $sku['qty']) {
+                            $item = new FormInfoSku;
+                            $item->info_id = $model->id;
+                            $item->sku = $product->sku;
+                            $item->qty = $sku['qty'];
+                            $item->save();
+                        } else {
+                            $errors[$k] = "Mỗi order cần tối thiểu 1 SKU và số lượng là 1";
+                        }
+                    }
+                } else {
+                    return [
+                        'success' => 0,
+                        'msg' => Helper::firstError($model)
+                    ];
+                }
+            }
+
+            $transaction->commit();
+            $count = sizeof($orders);
+            ActionLog::add("success", "Nhập file mẫu đơn - $fileName số lượng $count");
+            return static::resultImport($count, $errors, 1, $step, $end);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return [
+                'success' => 0,
+                'msg' => $e->getMessage()
+            ];
+        }
+    }
+
+    function actionPushContact()
+    {
+        $contacts = Yii::$app->request->post("contacts");
+        $fileName = Yii::$app->request->post("fileName");
+        $step = Yii::$app->request->post("step");
+        $end = Yii::$app->request->post("end");
+        $count = 0;
+        $errors = [];
+        if (!empty($contacts)) {
+
+            foreach ($contacts as $k => $contact) {
+                $model = new ContactsModel;
+                $data = [
+                    'phone' => $contact['phone'],
+                    'name' => $contact['name'],
+                    'address' => $contact['address'],
+                    'option' => $contact['option'],
+                    'zipcode' => (int)$contact['zipcode'],
+                    'note' => $contact['note'],
+                    'link' => $contact['link'],
+                    'ip' => $contact['ip'],
+                    'utm_source' => $contact['utm_source'],
+                    'utm_campaign' => $contact['utm_campaign'],
+                    'utm_medium' => $contact['utm_medium'],
+                    'utm_term' => $contact['utm_term'],
+                    'utm_content' => $contact['utm_content'],
+                    'type' => $contact['type'],
+                    'register_time' => (int)$contact['register_time'],
+                    'created_at' => time(),
+                    'updated_at' => time(),
+                    'host' => $contact['host'],
+                    //'code' => $contact['code'],
+                    //'country' => $contact['country'],
+                    // 'status' => isset($contact['status']) ? $contact['status'] : null,
+                ];
+
+                if (!$model->load($data, '') || !$model->save()) {
+                    $errors[$k] = Helper::firstError($model);
+                    $logs = new LogsImport;
+                    $data = [
+                        'line' => (string)($k + 2),
+                        'message' => Helper::firstError($model),
+                        'name' => $fileName,
+                        'user_id' => Yii::$app->user->getId()
+                    ];
+                    $logs->load($data, "");
+                    $logs->save();
+                }
+            }
+            $count = sizeof($contacts) - sizeof($errors);
+            if ($count > 0) {
+                ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
+                return self::resultImport($errors, $count, 1, $step, $end);
+            }
+        }
+        return [
+            'success' => 0,
+            'error' => $errors,
+            'totalInsert' => $count,
+            'size' => $contacts,
+            'totalErrors' => sizeof($errors)
+        ];
+    }
+
+    static function resultImport($errors, $count = 0, $status = 1, $step = 0, $end = 0)
+    {
+        return [
+            'next' => $end,
+            'end' => $end + $step,
+            'success' => $status,
+            'error' => $errors,
+            'totalErrors' => sizeof($errors),
+            'totalInsert' => $count
+        ];
+    }
+
 }

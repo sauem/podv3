@@ -26,6 +26,7 @@ class ContactsAssignmentController extends Controller
 
     public function actionIndex()
     {
+
         $searchModel = new ContactsSearchModel();
         $completeProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
