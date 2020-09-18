@@ -53,16 +53,9 @@ class doScanContactByCountry
                 $phoneCountry = $phone->country;
                 //check số đt k có contacts
 
-
-                // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
-                $status = ContactsAssignment::_PROCESSING;
-                if (self::hasProcessing($currentUser)) {
-                    $status = ContactsAssignment::_PENDING;
-                }
-                // phân bổ số điện thoại cho user
-                if ($currentUser->country === $phoneCountry) {
-                    Helper::showMessage("Số điện thoại $phoneNumber được áp dụng!");
-                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
+                if (!self::hasProcessing($currentUser->id)) {
+                    Helper::showMessage("Chưa có liên hệ xử lý");
+                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
                 }
                 // Emty new contact
                 if (self::emptyContact($phoneNumber)) {
@@ -78,7 +71,16 @@ class doScanContactByCountry
 
                     continue;
                 }
-
+                // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
+                $status = ContactsAssignment::_PROCESSING;
+                if (self::hasProcessing($currentUser)) {
+                    $status = ContactsAssignment::_PENDING;
+                }
+                // phân bổ số điện thoại cho user
+                if ($currentUser->country === $phoneCountry) {
+                    Helper::showMessage("Số điện thoại $phoneNumber được áp dụng!");
+                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
+                }
             }
             // reset processing pending && callback
             self::applyPending($currentUser->id);
