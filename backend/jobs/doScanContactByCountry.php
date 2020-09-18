@@ -59,6 +59,7 @@ class doScanContactByCountry
                     continue;
                 }
                 if(!self::hasProcessing($user)){
+                    Helper::showMessage("Chưa có liên hệ xử lý");
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
                 }
                 // Bỏ qua SĐT nếu đã được phân bổ
