@@ -506,7 +506,11 @@ $("body").on("click", ".deleteAll", function () {
                 success: function (res) {
                     if (res.success) {
                         toastr.success(res.msg);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
                         __reloadData();
+
                         return false;
                     }
                     toastr.warning(res.msg);

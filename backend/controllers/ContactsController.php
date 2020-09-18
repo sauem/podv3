@@ -270,6 +270,31 @@ class ContactsController extends BaseController
         ]);
     }
 
+    public function actionApprovePending($id)
+    {
+        $this->layout = "empty";
+        $model = ContactsLogImport::findOne($id);
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                $contact = new ContactsModel;
+                if ($contact->load(Yii::$app->request->post(), "ContactsLogImport")) {
+                    if ($contact->save()) {
+                        $model->delete();
+                        Helper::showMessage("Áp dụng thành công liên hệ chính!");
+                    } else {
+                        Helper::showMessage(Helper::firstError($contact));
+                    }
+                }
+                return $this->redirect(Url::toRoute(['/contacts-assignment/pending']));
+            }
+            Helper::showMessage(Helper::firstError($model));
+            return $this->redirect(Url::toRoute(['/contacts-assignment/pending']));
+        }
+        return $this->render("modal\approve_pending", [
+            'model' => $model
+        ]);
+    }
+
     /**
      * Deletes an existing ContactsModel model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

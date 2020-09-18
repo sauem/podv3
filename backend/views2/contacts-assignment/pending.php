@@ -1,9 +1,12 @@
 <?php
 
+use common\helper\Helper;
+use kartik\grid\CheckboxColumn;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use backend\models\ContactsModel;
 use kartik\grid\ActionColumn;
+use yii\helpers\Url;
 
 ?>
 
@@ -27,7 +30,25 @@ use kartik\grid\ActionColumn;
             'headerRowOptions' => [
                 'class' => 'thead-light'
             ],
+            'panelTemplate' => '{panelHeading}{items}{panelFooter}',
+            'panel' => [
+                'type' => 'default',
+                'heading' => '<div class="d-flex">'.(Helper::isAdmin() ? Html::a('<i class="fa fa-trash"></i> Xóa lựa chọn', 'javascript:;',
+                        [
+                            'class' => 'btn btn-xs deleteAll btn-warning',
+                            'data-pjax' => '0',
+                            'data-model' => $dataProvider->query->modelClass
+                        ]) : "") .'</div>' ,
+            ],
             'columns' => [
+                [
+                    'class' => CheckboxColumn::class,
+                    'checkboxOptions' => function ($model) {
+                        $cog['data-phone'] = $model->phone;
+                        $cog['data-country'] = $model->country;
+                        return $cog;
+                    }
+                ],
                 [
                     'label' => 'Code',
                     'format' => 'html',
@@ -87,15 +108,16 @@ use kartik\grid\ActionColumn;
                         return date("d/m/Y H:i:s", $model->register_time);
                     }
                 ],
+
                 [
                     'class' => ActionColumn::class,
                     'template' => '{view}',
                     'width' => '10%',
                     'buttons' => [
                         'view' => function ($url, $model) {
-                            return Html::a("<i class='fe-eye'></i> chi tiết", '#viewNote', [
-                                'data-remote' => \yii\helpers\Url::toRoute(['contacts/view', 'id' => $model->id]),
-                                'data-target' => "#viewNote",
+                            return Html::button("<i class='fe-edit'></i> Cập nhật", [
+                                'data-remote' => Url::toRoute(['contacts/approve-pending', 'id' => $model->id]),
+                                'data-target' => "#editModal",
                                 'data-toggle' => 'modal',
                                 'class' => 'btn btn-xs btn-outline-info'
                             ]);
@@ -107,4 +129,25 @@ use kartik\grid\ActionColumn;
     </div>
 </div>
 
-
+<div class="modal fade in" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Sửa thông tin liên hệ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="resultRowPending"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="editPendingContact" class="saveRowPending btn btn-primary">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+$js =<<<JS
+    initRemote("editModal");
+JS;
+$this->registerJs($js);

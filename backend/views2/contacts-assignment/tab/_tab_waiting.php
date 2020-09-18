@@ -55,7 +55,7 @@ use common\helper\Helper;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => 'pjax-waiting'
+                    'id' => 'pjax-manager'
                 ],
                 'enablePushState' => false
             ],

@@ -27,6 +27,7 @@ class ContactsLogImport extends ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public $email;
     public static function tableName()
     {
         return 'contacts_log_import';
@@ -44,7 +45,7 @@ class ContactsLogImport extends ActiveRecord
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
             [['name', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
-            //[['email'], 'string', 'max' => 100],
+            [['email'], 'string', 'max' => 100],
             //[['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
             [['ip', 'status'], 'string', 'max' => 50],
         ];
@@ -83,6 +84,15 @@ class ContactsLogImport extends ActiveRecord
                     $this->addError("country", "Quốc gia rỗng!");
                     return false;
                 }
+            }
+        }else{
+            if(!$this->option){
+                $this->addError("type", "Không để trống yêu cầu đặt hàng!");
+                return false;
+            }
+            if(!$this->link){
+                $this->addError("type", "Không để trống trang đích!");
+                return false;
             }
         }
         $this->updated_at = time();
