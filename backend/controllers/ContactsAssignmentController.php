@@ -67,12 +67,18 @@ class ContactsAssignmentController extends Controller
             ]
         ));
 
-
+        $allProvider = new ActiveDataProvider([
+            'query' => ContactsModel::find(),
+            'pagination' => [
+                'pageSize' => 20
+            ]
+        ]);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
             'callbackProvider' => $callProvider,
             'pendingProvider' => $pendingProvider,
+            'allProvider' => $allProvider
         ]);
     }
 

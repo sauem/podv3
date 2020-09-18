@@ -5,39 +5,60 @@ use common\helper\Helper;
 use yii\helpers\Url;
 
 ?>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h4 class="card-title">Khách hàng chờ xử lý</h4>
-                    <div class="toolbar">
-                        <div class="btn-group">
-                            <?php if (Helper::isAdmin()) { ?>
-                                <button type="button" class="btn btn-xs btn-info approvePhone"><i
-                                            class="fe-bar-chart"></i> Phân bổ
-                                </button>
-                                <button data-backdrop="static"
-                                        data-keyboard="false"
-                                        data-remote="<?= Url::toRoute(['contacts-assignment/import']) ?>"
-                                        data-toggle="modal"
-                                        data-target="#remote-import"
-                                        type="button" class="btn btn-xs btn-warning">
-                                    <i class="fe-download-cloud"></i> Nhập liên hệ
-                                </button>
-                                <button data-backdrop="static" data-keyboard="false"
-                                        data-remote="<?= Url::toRoute(['contacts-log/import']) ?>"
-                                        data-toggle="modal"
-                                        data-target="#logs-import"
-                                        type="button" class="btn btn-xs btn-success"><i class="fe-download-cloud"></i>
-                                    Nhập lịch sử
-                                </button>
-                            <?php } ?>
+                <ul class="nav nav-tabs nav-bordered tabs-line">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#assign" data-toggle="tab">
+                            <i class="ti-bar-chart"></i>
+                            Chờ xử lý
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#all" data-toggle="tab">
+                            <i class="ti-time"></i> Tất cả liên hệ
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="assign">
+                        <div class="card-header d-flex justify-content-between">
+                            <h4 class="card-title">Khách hàng chờ xử lý</h4>
+                            <div class="toolbar">
+                                <div class="btn-group">
+                                    <?php if (Helper::isAdmin()) { ?>
+                                        <button type="button" class="btn btn-xs btn-info approvePhone"><i
+                                                    class="fe-bar-chart"></i> Phân bổ
+                                        </button>
+                                        <button data-backdrop="static"
+                                                data-keyboard="false"
+                                                data-remote="<?= Url::toRoute(['contacts-assignment/import']) ?>"
+                                                data-toggle="modal"
+                                                data-target="#remote-import"
+                                                type="button" class="btn btn-xs btn-warning">
+                                            <i class="fe-download-cloud"></i> Nhập liên hệ
+                                        </button>
+                                        <button data-backdrop="static" data-keyboard="false"
+                                                data-remote="<?= Url::toRoute(['contacts-log/import']) ?>"
+                                                data-toggle="modal"
+                                                data-target="#logs-import"
+                                                type="button" class="btn btn-xs btn-success"><i class="fe-download-cloud"></i>
+                                            Nhập lịch sử
+                                        </button>
+                                    <?php } ?>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <?= $this->render('tab/_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <?= $this->render('tab/_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
+                    <div class="tab-pane fade" id="all">
+                        <?= $this->render('tab/_tab_all', ['dataProvider' => $allProvider, 'searchModel' => $searchModel]) ?>
+                    </div>
                 </div>
             </div>
         </div>
