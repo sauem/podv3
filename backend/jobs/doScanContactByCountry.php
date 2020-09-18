@@ -53,23 +53,7 @@ class doScanContactByCountry
                 $phoneCountry = $phone->country;
                 //check số đt k có contacts
 
-                // Emty new contact
-                if (self::emptyContact($phoneNumber)) {
-                    //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
-                    continue;
-                }
-                if (!self::hasProcessing($currentUser->id)) {
-                    Helper::showMessage("Chưa có liên hệ xử lý");
-                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
-                }
-                // Bỏ qua SĐT nếu đã được phân bổ
-                if ((self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) && self::hasProcessing($user)) {
-                    self::checkCompleted($phoneNumber, $currentUser->id);
-                    self::applyPending($currentUser->id);
-                    self::rollbackCallback($currentUser);
 
-                    continue;
-                }
                 // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
                 $status = ContactsAssignment::_PROCESSING;
                 if (self::hasProcessing($currentUser)) {
@@ -80,6 +64,21 @@ class doScanContactByCountry
                     Helper::showMessage("Số điện thoại $phoneNumber được áp dụng!");
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
                 }
+                // Emty new contact
+                if (self::emptyContact($phoneNumber)) {
+                    //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
+                    continue;
+                }
+
+                // Bỏ qua SĐT nếu đã được phân bổ
+                if ((self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) && self::hasProcessing($user)) {
+                    self::checkCompleted($phoneNumber, $currentUser->id);
+                    self::applyPending($currentUser->id);
+                    self::rollbackCallback($currentUser);
+
+                    continue;
+                }
+
             }
             // reset processing pending && callback
             self::applyPending($currentUser->id);
