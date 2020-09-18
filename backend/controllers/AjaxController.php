@@ -733,54 +733,49 @@ class AjaxController extends BaseController
             $user = Yii::$app->user->getId();
             $phone = Yii::$app->request->post("phone");
             $log = new ContactsLog;
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-//check button number fail action
-                if ($status === ContactsModel::_NUMBER_FAIL) {
-                    return static::numberFailStatus($phone, $user);
-                }
-                if ($status === ContactsModel::_CALLBACK) {
-                    return self::numberCallbackStatus($phone, $user);
-                }
-                if ($status === ContactsModel::_PENDING) {
-                    return self::numberPendingStatus($phone, $user);
-                }
-                // check contact exist
-                if (!$model) {
+
+
+            if ($status === ContactsModel::_NUMBER_FAIL) {
+                return static::numberFailStatus($phone, $user);
+            }
+            if ($status === ContactsModel::_CALLBACK) {
+                return self::numberCallbackStatus($phone, $user);
+            }
+            if ($status === ContactsModel::_PENDING) {
+                return self::numberPendingStatus($phone, $user);
+            }
+            // check contact exist
+            if (!$model) {
+                return [
+                    'success' => 0,
+                    'msg' => 'Liên hệ không xác định!'
+                ];
+            }
+
+            $model->status = $status;
+
+            if ($model->save()) {
+                ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$status}");
+                $log->user_id = Yii::$app->user->getId();
+                $log->contact_id = $model->id;
+                $log->phone = $model->phone;
+                $log->contact_code = $model->code;
+                $log->status = $status;
+                if (!$log->save()) {
                     return [
                         'success' => 0,
-                        'msg' => 'Liên hệ không xác định!'
-                    ];
-                }
-
-                $model->status = $status;
-
-                if ($model->save()) {
-                    ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$status}");
-                    $log->user_id = Yii::$app->user->getId();
-                    $log->contact_id = $model->id;
-                    $log->phone = $model->phone;
-                    $log->contact_code = $model->code;
-                    $log->status = $status;
-                    if (!$log->save()) {
-                        return [
-                            'success' => 0,
-                            'msg' => Helper::firstError($log)
-                        ];
-                    }
-                    $transaction->commit();
-                    return [
-                        'success' => 1,
-                        'msg' => 'Thay đổi trạng thái liên hệ thành công!'
+                        'msg' => Helper::firstError($log)
                     ];
                 }
                 return [
-                    'success' => 0,
-                    'msg' => Helper::firstError($model)
+                    'success' => 1,
+                    'msg' => 'Thay đổi trạng thái liên hệ thành công!'
                 ];
-            } catch (\Exception $e) {
-                $transaction->rollBack();
             }
+            return [
+                'success' => 0,
+                'msg' => Helper::firstError($model)
+            ];
 
         }
     }
