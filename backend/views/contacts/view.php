@@ -19,6 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'register_time:datetime',
                 'name',
                 'phone',
+                'status',
+                'code',
                 'email:email',
                 'address:ntext',
                 'zipcode',
