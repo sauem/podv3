@@ -25,7 +25,7 @@ class doScanContactByCountry
 
         $phones = ContactsModel::find()->addSelect(['phone', 'country'])->groupBy(['phone', 'country'])->all();
         if (!$phones) {
-            Helper::showMessage("Không có số điện thoại nào được áp dụng!", "error");
+            return "Không số điện thoại nào được áp dụng";
         }
         $users = AuthAssignment::find()->with('user')
             ->where(['item_name' => UserModel::_SALE])
@@ -43,26 +43,22 @@ class doScanContactByCountry
                 // Kiểm tra số điện thoại gọi lại
                 self::applyPending($currentUser->id);
                 self::rollbackCallback($currentUser);
-                Helper::showMessage("Đủ số lượng trong ngày");
                 continue;
             }
             //chưa có liên hệ nào được phân bổ
-
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
                 //check số đt k có contacts
 
-                if (!self::hasProcessing($currentUser->id)) {
-                    Helper::showMessage("Chưa có liên hệ xử lý");
-                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
-                }
                 // Emty new contact
                 if (self::emptyContact($phoneNumber)) {
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
                     continue;
                 }
-
+                if (!self::hasProcessing($user->id)) {
+                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
+                }
                 // Bỏ qua SĐT nếu đã được phân bổ
                 if ((self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) && self::hasProcessing($user)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
@@ -78,7 +74,6 @@ class doScanContactByCountry
                 }
                 // phân bổ số điện thoại cho user
                 if ($currentUser->country === $phoneCountry) {
-                    Helper::showMessage("Số điện thoại $phoneNumber được áp dụng!");
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
                 }
             }
