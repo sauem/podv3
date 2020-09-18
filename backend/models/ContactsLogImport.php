@@ -44,8 +44,8 @@ class ContactsLogImport extends ActiveRecord
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
             [['name', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
-           // [['email'], 'string', 'max' => 100],
-            // [['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
+            //[['email'], 'string', 'max' => 100],
+            //[['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
             [['ip', 'status'], 'string', 'max' => 50],
         ];
     }
@@ -83,11 +83,6 @@ class ContactsLogImport extends ActiveRecord
                     $this->addError("country", "Quốc gia rỗng!");
                     return false;
                 }
-            }
-            $limit = self::find()->where(['code' => $this->code])->count();
-            if ($limit >= 5) {
-                $this->addError("code", "Liên hệ quá số lần liên lạc!");
-                return false;
             }
         }
         $this->updated_at = time();
@@ -138,5 +133,8 @@ class ContactsLogImport extends ActiveRecord
     public function getLog()
     {
         return $this->hasOne(ContactsLog::className(), ['phone' => 'phone', 'contact_code' => 'code']);
+    }
+    public function getPage(){
+        return $this->hasOne(LandingPages::className(),['link' => 'short_link']);
     }
 }

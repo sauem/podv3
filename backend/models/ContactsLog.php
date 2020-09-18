@@ -82,7 +82,7 @@ class ContactsLog extends BaseModel
         if ($insert) {
             $limit = self::find()->where(['contact_code' => $this->contact_code])->count();
 
-            if ($limit >= 5) {
+            if ($limit >= Helper::setting("limit_call")) {
                 $this->addError("contact_id", "Liên hệ quá số lần liên lạc!");
                 return false;
             }

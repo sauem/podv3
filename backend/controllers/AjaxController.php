@@ -941,58 +941,65 @@ class AjaxController extends BaseController
         $fileName = Yii::$app->request->post("fileName");
         $errors = [];
         $count = 0;
-        if (!empty($logs)) {
-            ActionLog::add("success", Yii::$app->user->identity->username . " Nhập lịch sử liên hệ excel {$fileName}");
-            foreach ($logs as $k => $log) {
-                $modelLog = new ContactsLog;
-                $contact = ContactsModel::findOne(['code' => $log['code']]);
-                $time_call = $log['time_call'];
+        $transaction = Yii::$app->db->beginTransaction();
+        try{
+            if (!empty($logs)) {
+                ActionLog::add("success", Yii::$app->user->identity->username . " Nhập lịch sử liên hệ excel {$fileName}");
+                foreach ($logs as $k => $log) {
+                    $modelLog = new ContactsLog;
+                    $contact = ContactsModel::findOne(['code' => $log['code']]);
+                    $time_call = $log['time_call'];
 
-                if (!$contact) {
-                    $contact = new ContactsModel;
+                    if (!$contact) {
+                        $contact = new ContactsModel;
 
-                    $coutry_code = isset($log['country']) ? $log['country'] : null;
+                        $coutry_code = isset($log['country']) ? $log['country'] : null;
 
-                    $data_contact = [
-                        'code' => $log['code'],
-                        'phone' => $log['phone'],
-                        'register_time' => $time_call,
-                        'address' => $log['address'],
-                        'zipcode' => $log['zipcode'],
-                        'option' => $log['option'],
-                        'link' => $log['link'],
-                        'status' => $log['status'],
-                        'country' => $coutry_code,
-                        'note' => $log['customer_note']
-                    ];
-                    if ($contact->load($data_contact, "")) {
-                        if (!$contact->save()) {
-                            continue;
+                        $data_contact = [
+                            'code' => $log['code'],
+                            'phone' => $log['phone'],
+                            'register_time' => $time_call,
+                            'address' => $log['address'],
+                            'zipcode' => $log['zipcode'],
+                            'option' => $log['option'],
+                            'link' => $log['link'],
+                            'status' => $log['status'],
+                            'country' => $coutry_code,
+                            'note' => $log['customer_note']
+                        ];
+                        if ($contact->load($data_contact, "")) {
+                            if (!$contact->save()) {
+                                continue;
+                            }
                         }
+
                     }
 
-                }
+                    $modelLog->contact_code = $contact->code;
+                    $modelLog->phone = $contact->phone;
+                    $modelLog->contact_id = $contact->id;
+                    $modelLog->status = $log['status'];
+                    $modelLog->note = $log['note'];
+                    $modelLog->customer_note = $log['customer_note'];
+                    $modelLog->created_at = $time_call;
 
-                $modelLog->contact_code = $contact->code;
-                $modelLog->phone = $contact->phone;
-                $modelLog->contact_id = $contact->id;
-                $modelLog->status = $log['status'];
-                $modelLog->note = $log['note'];
-                $modelLog->customer_note = $log['customer_note'];
-                $modelLog->created_at = $time_call;
-
-                if (!$modelLog->save()) {
-                    $errors[] = Helper::firstError($modelLog);
-                    LogsImport::saveRecord([
-                        'msg' => Helper::firstError($modelLog),
-                        'name' => $fileName,
-                        'line' => $k + 2
-                    ]);
+                    if (!$modelLog->save()) {
+                        $errors[] = Helper::firstError($modelLog);
+                        LogsImport::saveRecord([
+                            'msg' => Helper::firstError($modelLog),
+                            'name' => $fileName,
+                            'line' => $k + 2
+                        ]);
+                    }
                 }
+                $transaction->commit();
+                $count = sizeof($logs) - sizeof($errors);
+                return self::resultImport($errors, $count, 1, $step, $end);
             }
-            $count = sizeof($logs) - sizeof($errors);
-            return self::resultImport($errors, $count, 1, $step, $end);
+        }catch (\Exception $exception){
+            $transaction->rollBack();
         }
+
         return self::resultImport($errors, $count, 0);
     }
 
@@ -1186,68 +1193,74 @@ class AjaxController extends BaseController
         $end = Yii::$app->request->post("end");
         $count = 0;
         $errors = [];
-        if (!empty($contacts)) {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (!empty($contacts)) {
 
-            foreach ($contacts as $k => $contact) {
-                $model = new ContactsModel;
-                $data = [
-                    'phone' => $contact['phone'],
-                    'name' => $contact['name'],
-                    'address' => $contact['address'],
-                    'option' => $contact['option'],
-                    'zipcode' => (int)$contact['zipcode'],
-                    'note' => $contact['note'],
-                    'link' => $contact['link'],
-                    'ip' => $contact['ip'],
-                    'utm_source' => $contact['utm_source'],
-                    'utm_campaign' => $contact['utm_campaign'],
-                    'utm_medium' => $contact['utm_medium'],
-                    'utm_term' => $contact['utm_term'],
-                    'utm_content' => $contact['utm_content'],
-                    'type' => $contact['type'],
-                    'register_time' => (int)$contact['register_time'],
-                    'created_at' => time(),
-                    'updated_at' => time(),
-                    'host' => $contact['host'],
-                    'code' => isset($contact['code']) ? $contact['code'] : null,
-                    //'country' => $contact['country'],
-                    // 'status' => isset($contact['status']) ? $contact['status'] : null,
-                ];
-
-                $waitContact = new ContactsLogImport;
-                $optionExitst = FormInfo::findOne(['content' => trim($contact['option'])]);
-                $link = Helper::getHost($contact['link']);
-
-
-                // Không có yêu cầu contact code => chờ
-                // không có yêu cầu contact code loại là capture form của landing page đó => chờ
-                // Có yêu cầu
-                if (!$optionExitst || !$link) {
-                    $errors[$k] = "Không tồn tại option với landing page tương ứng!";
-                    if (!$waitContact->load($data, "") || !$waitContact->save()) {
-                        $errors[$k] = Helper::firstError($waitContact);
-                    }
-                    continue;
-                }
-
-                if (!$model->load($data, '') || !$model->save()) {
-                    $errors[$k] = Helper::firstError($model);
-                    $logs = new LogsImport;
+                foreach ($contacts as $k => $contact) {
+                    $model = new ContactsModel;
                     $data = [
-                        'line' => (string)($k + 2),
-                        'message' => Helper::firstError($model),
-                        'name' => $fileName,
-                        'user_id' => Yii::$app->user->getId()
+                        'phone' => $contact['phone'],
+                        'name' => $contact['name'],
+                        'address' => $contact['address'],
+                        'option' => $contact['option'],
+                        'zipcode' => (int)$contact['zipcode'],
+                        'note' => $contact['note'],
+                        'link' => $contact['link'],
+                        'ip' => $contact['ip'],
+                        'utm_source' => $contact['utm_source'],
+                        'utm_campaign' => $contact['utm_campaign'],
+                        'utm_medium' => $contact['utm_medium'],
+                        'utm_term' => $contact['utm_term'],
+                        'utm_content' => $contact['utm_content'],
+                        'type' => $contact['type'],
+                        'register_time' => (int)$contact['register_time'],
+                        'created_at' => time(),
+                        'updated_at' => time(),
+                        'host' => $contact['host'],
+                        'code' => isset($contact['code']) ? $contact['code'] : null,
+                        //'country' => $contact['country'],
+                        // 'status' => isset($contact['status']) ? $contact['status'] : null,
                     ];
-                    $logs->load($data, "");
-                    $logs->save();
+
+                    $waitContact = new ContactsLogImport;
+                    $optionExitst = FormInfo::findOne(['content' => trim($contact['option'])]);
+                    $link = Helper::getHost($contact['link']);
+
+
+                    // Không có yêu cầu contact code => chờ
+                    // không có yêu cầu contact code loại là capture form của landing page đó => chờ
+                    // Có yêu cầu
+                    if (!$optionExitst || !$link) {
+                        $errors[$k] = "Không tồn tại option với landing page tương ứng!";
+                        if (!$waitContact->load($data, "") || !$waitContact->save()) {
+                            $errors[$k] = Helper::firstError($waitContact);
+                        }
+                        continue;
+                    }
+
+                    if (!$model->load($data, '') || !$model->save()) {
+                        $errors[$k] = Helper::firstError($model);
+                        $logs = new LogsImport;
+                        $data = [
+                            'line' => (string)($k + 2),
+                            'message' => Helper::firstError($model),
+                            'name' => $fileName,
+                            'user_id' => Yii::$app->user->getId()
+                        ];
+                        $logs->load($data, "");
+                        $logs->save();
+                    }
+                }
+                $transaction->commit();
+                $count = sizeof($contacts) - sizeof($errors);
+                if ($count > 0) {
+                    ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
+                    return self::resultImport($errors, $count, 1, $step, $end);
                 }
             }
-            $count = sizeof($contacts) - sizeof($errors);
-            if ($count > 0) {
-                ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
-                return self::resultImport($errors, $count, 1, $step, $end);
-            }
+        }catch (\Exception $e){
+            $transaction->rollBack();
         }
         return [
             'success' => 0,

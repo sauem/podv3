@@ -23,12 +23,19 @@ use backend\models\ContactsModel;
             'class' => 'thead-light'
         ],
         'columns' => [
-            'code',
+            [
+                'label' => 'Code',
+                'attribute' => 'code',
+                'format' => 'html',
+                'value' => function ($model) {
+                    $html = $model->code . "<br>";
+                    $html .= ContactsModel::label($model->status);
+                    return $html;
+                }
+            ],
             [
                 'label' => 'Trang đích',
-                'headerOptions' => [
-                    'width' => '35%'
-                ],
+                'width' => '20%',
                 'format' => 'raw',
                 'value' => function ($model) {
                     if (!$model->page) {
@@ -56,11 +63,11 @@ use backend\models\ContactsModel;
                 }
             ],
             [
-                'label' => 'Trạng thái',
+                'label' => 'Yêu cầu',
                 'attribute' => 'status',
                 'format' => 'html',
                 'value' => function ($model) {
-                    return ContactsModel::label($model->status);
+                    return $model->option;
                 }
             ],
             [

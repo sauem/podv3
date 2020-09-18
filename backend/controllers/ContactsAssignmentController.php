@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ContactsLog;
+use backend\models\ContactsLogImport;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
 use backend\models\LogsImport;
@@ -65,7 +66,6 @@ class ContactsAssignmentController extends Controller
         ));
 
 
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'completeProvider' => $completeProvider,
@@ -83,7 +83,7 @@ class ContactsAssignmentController extends Controller
     public function actionView($phone)
     {
         $model = ContactsModel::findOne(['phone' => $phone]);
-        if(!$model){
+        if (!$model) {
             throw new NotFoundHttpException("Không tồn tại số điện thoại này!");
         }
         $info = ContactsModel::find()->where(['phone' => $phone])
@@ -102,7 +102,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ),false);
+        ), false);
 
         $callbackTime = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -115,7 +115,7 @@ class ContactsAssignmentController extends Controller
                     ]
                 ]
             ]
-        ),false);
+        ), false);
 
         $successProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
@@ -125,7 +125,7 @@ class ContactsAssignmentController extends Controller
                     'status' => ContactsModel::_OK
                 ]
             ]
-        ),false);
+        ), false);
         $failureProvider = $searchModel->search(array_merge(
             Yii::$app->request->queryParams,
             [
@@ -139,7 +139,7 @@ class ContactsAssignmentController extends Controller
                     ],
                 ]
             ]
-        ),false);
+        ), false);
 
         $histories = new ActiveDataProvider([
             'query' => ContactsLog::find()
@@ -158,7 +158,7 @@ class ContactsAssignmentController extends Controller
             'dataProvider' => $dataProvider,
             'callbackProvider' => $callbackTime,
             'successProvider' => $successProvider,
-            'failureProvider' =>$failureProvider,
+            'failureProvider' => $failureProvider,
             'info' => $info,
             'histories' => $histories,
             'assignment' => $assigment,
@@ -233,11 +233,25 @@ class ContactsAssignmentController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    function actionImport(){
+    function actionImport()
+    {
         $this->layout = "empty";
         $model = new UploadForm;
-       return $this->render("modal/_contact_import",[
-           'model' => $model
-       ]);
+        return $this->render("modal/_contact_import", [
+            'model' => $model
+        ]);
+    }
+
+    function actionPending()
+    {
+        $dataProvider = new ActiveDataProvider([
+            'query' => ContactsLogImport::find(),
+            'pagination' => [
+                'pageSize' => 10
+            ]
+        ]);
+        return $this->render("pending", [
+            'dataProvider' => $dataProvider
+        ]);
     }
 }

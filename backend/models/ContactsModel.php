@@ -159,10 +159,10 @@ class ContactsModel extends BaseModel
                 $this->addError("type", "Liên hệ đã tồn tại với phân loại capture form!");
                 return false;
             }
-            if (!$this->country && $this->status === null) {
-                $this->addError("country", "Quốc gia rỗng!");
-                return false;
-            }
+//            if (!$this->country ) {
+//                $this->addError("country", "Quốc gia rỗng!");
+//                return false;
+//            }
         } else {
             if ($this->status == "") {
                 $this->status = null;
