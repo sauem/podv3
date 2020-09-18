@@ -68,7 +68,7 @@ function doProcessWorkbook(workbook, file) {
     } else if (firstSheet === "order") {
         maxColumn = 13;
     } else if (firstSheet === "logs") {
-        maxColumn = 12;
+        maxColumn = 13;
     } else if (firstSheet === "zipcode") {
         maxColumn = 6;
     } else if (firstSheet === "categories") {
@@ -325,6 +325,7 @@ function switchItem(sheet, row) {
             item.note = row[9] ? row[9].v : "";
             item.country = row[10] ? row[10].v : "";
             item.link = row[11] ? row[11].v : "";
+            item.name = row[12] ? row[12].v : "";
             break;
         case "zipcode":
 
@@ -443,6 +444,7 @@ function logModel() {
         status: "",
         note: "",
         country: null,
+        name: null,
         link: null
     }
 }

@@ -123,11 +123,6 @@ class ContactsAssignment extends BaseModel
             ->andWhere(['<>', 'contact_phone', $phone])
             ->orWhere(['status' => ContactsAssignment::_PROCESSING])
             ->one();
-        $contacts = ContactsModel::findAll(['phone' => $phone]);
-        if ($assignment && !$contacts) {
-            Yii::$app->queue->push(new scanNewContact());
-            return $assignment->delete();
-        }
         if ($assignment) {
             $assignment->status = ContactsAssignment::_PROCESSING;
             Helper::showMessage('Số điện thoại mới được áp dụng!');

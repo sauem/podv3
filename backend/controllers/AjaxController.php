@@ -965,7 +965,8 @@ class AjaxController extends BaseController
                             'link' => $log['link'],
                             'status' => $log['status'],
                             'country' => $coutry_code,
-                            'note' => $log['customer_note']
+                            'note' => $log['customer_note'],
+                            'name' => $log['name'],
                         ];
                         if ($contact->load($data_contact, "")) {
                             if (!$contact->save()) {
