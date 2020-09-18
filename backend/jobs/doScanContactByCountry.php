@@ -58,7 +58,7 @@ class doScanContactByCountry
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
                     continue;
                 }
-                if(!self::hasProcessing($user)){
+                if (!self::hasProcessing($user->id)) {
                     Helper::showMessage("Chưa có liên hệ xử lý");
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
                 }
