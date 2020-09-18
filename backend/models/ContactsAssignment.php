@@ -135,7 +135,7 @@ class ContactsAssignment extends BaseModel
     {
         if (!$insert) {
             if (!Yii::$app instanceof Yii\console\Application) {
-                if ($this->callback_time && !self::nextAssignment()) {
+                if ($this->callback_time && !self::nextAssignment($this->phone)) {
                     Helper::showMessage("Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!", 'error');
                     Yii::$app->session->setFlash("error", "Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!");
                 }
