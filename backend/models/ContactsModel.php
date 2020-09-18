@@ -278,7 +278,9 @@ class ContactsModel extends BaseModel
     static function hasCompeleted($phone)
     {
         $count = ContactsModel::find()
-            ->where(['phone' => $phone, "status" => ContactsModel::_NEW])->count();
+            ->where(['phone' => $phone])
+            ->andWhere(['IN', 'status', [ContactsModel::_NEW, ContactsModel::_PENDING, ContactsModel::_CALLBACK]])
+            ->count();
         if ($count < 1) {
             return true;
         }

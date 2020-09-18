@@ -56,20 +56,17 @@ class doScanContactByCountry
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
                     continue;
                 }
-                if (!self::hasProcessing($currentUser->id)) {
-                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
-                }
+
                 // Bỏ qua SĐT nếu đã được phân bổ
-                if ((self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) && self::hasProcessing($user)) {
+                if (self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
                     self::applyPending($currentUser->id);
                     self::rollbackCallback($currentUser);
-
                     continue;
                 }
                 // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
                 $status = ContactsAssignment::_PROCESSING;
-                if (self::hasProcessing($currentUser)) {
+                if (self::hasProcessing($currentUser->id)) {
                     $status = ContactsAssignment::_PENDING;
                 }
                 // phân bổ số điện thoại cho user
@@ -108,7 +105,7 @@ class doScanContactByCountry
         $model = ContactsAssignment::find()->where(['user_id' => $user_id])
             ->andWhere(['status' => [ContactsAssignment::_PENDING, ContactsAssignment::_PROCESSING]])
             ->andWhere(['is', 'callback_time', new \yii\db\Expression('null')])
-            ->orWhere(['callback_time' => ""])
+            //->andWhere(['<>', 'callback_time', ""])
             ->count();
         if ($model < $limit) {
             return false;
