@@ -9,7 +9,7 @@ use kartik\grid\ActionColumn;
 
 ?>
 
-<div class="card-header d-flex justify-content-between">
+<div class="box-header d-flex justify-content-between">
     <h4 class="card-title">Tất cả liên hệ</h4>
     <div class="toolbar">
         <div class="btn-group">
@@ -23,7 +23,7 @@ use kartik\grid\ActionColumn;
         </div>
     </div>
 </div>
-<div class="card-body">
+<div class="box-body">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'responsive' => true,

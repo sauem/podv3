@@ -8,7 +8,7 @@ use yii\helpers\Url;
 
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card-box">
                 <ul class="nav nav-tabs nav-bordered tabs-line">
                     <li class="nav-item">
                         <a class="nav-link active" href="#assign" data-toggle="tab">
@@ -24,7 +24,7 @@ use yii\helpers\Url;
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="assign">
-                        <div class="card-header d-flex justify-content-between">
+                        <div class="box-header d-flex justify-content-between">
                             <h4 class="card-title">Khách hàng chờ xử lý</h4>
                             <div class="toolbar">
                                 <div class="btn-group">
@@ -52,7 +52,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="box-body">
                             <?= $this->render('tab/_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
                         </div>
                     </div>

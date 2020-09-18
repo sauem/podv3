@@ -1205,11 +1205,13 @@ class AjaxController extends BaseController
 
                 foreach ($contacts as $k => $contact) {
                     $model = new ContactsModel;
+                    $contactType = strtolower($contact['type']);
+                    $contactOption = trim($contact['option']);
                     $data = [
                         'phone' => $contact['phone'],
                         'name' => $contact['name'],
                         'address' => $contact['address'],
-                        'option' => $contact['option'],
+                        'option' => $contactOption,
                         'zipcode' => (int)$contact['zipcode'],
                         'note' => $contact['note'],
                         'link' => $contact['link'],
@@ -1219,31 +1221,42 @@ class AjaxController extends BaseController
                         'utm_medium' => $contact['utm_medium'],
                         'utm_term' => $contact['utm_term'],
                         'utm_content' => $contact['utm_content'],
-                        'type' => $contact['type'],
+                        'type' => $contactType,
                         'register_time' => (int)$contact['register_time'],
                         'created_at' => time(),
                         'updated_at' => time(),
                         'host' => $contact['host'],
                         'code' => isset($contact['code']) ? $contact['code'] : null,
-                        //'country' => $contact['country'],
+                        'country' => isset($contact['country']) ? $contact['country'] : null
                         // 'status' => isset($contact['status']) ? $contact['status'] : null,
                     ];
 
                     $waitContact = new ContactsLogImport;
-                    $optionExitst = FormInfo::findOne(['content' => trim($contact['option'])]);
+                    $optionExitst = FormInfo::findOne(['content' => $contactOption]);
+
                     $link = Helper::getHost($contact['link']);
+                    $pageExit = LandingPages::findOne(['link' => $link]);
 
+                    // Không tồn tại landing page
 
-                    // Không có yêu cầu contact code => chờ
-                    // không có yêu cầu contact code loại là capture form của landing page đó => chờ
-                    // Có yêu cầu
-                    if (!$optionExitst || !$link) {
-                        $errors[$k] = "Không tồn tại option với landing page tương ứng!";
+                    if (!$pageExit) {
+                        $errors[$k] = "Không tồn tại page $link hệ thống";
                         if (!$waitContact->load($data, "") || !$waitContact->save()) {
                             $errors[$k] = Helper::firstError($waitContact);
                         }
                         continue;
                     }
+                    // Trường hợp tồn tại landing page và không tồn tại yêu cầu trong mẫu order
+                    // hoặc tồn tại landing page và là contact capture form và không tồn tại yêu cầu trong mẫu order
+                    if($pageExit && !$optionExitst || $pageExit && $contactType === ContactsModel::_CAPTURE && !$optionExitst){
+                        $errors[$k] = "Không tồn tại  $contactOption hệ thống";
+                        if (!$waitContact->load($data, "") || !$waitContact->save()) {
+                            $errors[$k] = Helper::firstError($waitContact);
+                        }
+                        continue;
+                    }
+
+                    //
 
                     if (!$model->load($data, '') || !$model->save()) {
                         $errors[$k] = Helper::firstError($model);

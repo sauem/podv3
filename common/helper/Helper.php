@@ -96,11 +96,11 @@ class Helper
     {
         $country = ZipcodeCountry::findOne(['zipcode' => $code]);
         $land = LandingPages::findOne(['link' => $link]);
-        if ($country) {
-            return $country->country_code;
-        }
         if ($land) {
             return $land->country;
+        }
+        if ($country) {
+            return $country->country_code;
         }
         return false;
     }
