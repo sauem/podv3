@@ -58,7 +58,7 @@ use yii\helpers\Url;
             [
                 'label' => 'Loại sản phẩm',
                 'value' => function ($model) {
-                    if (!$model->contact || !$model->contact->contact->page) {
+                    if (!$model->contact || !$model->contact->contact->page || !$model->contact->contact->page->category) {
                         return null;
                     }
                     return $model->contact->contact->page->category->name;
