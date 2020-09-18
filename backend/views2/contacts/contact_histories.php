@@ -68,7 +68,7 @@ use common\helper\Helper;
             'format' => 'html',
             'headerOptions' => ['width' => '30%'],
             'value' => function ($model) {
-                if (!$model->contact) {
+                if (!$model->contact || !$model->contact->page) {
                     return null;
                 }
                 return Html::tag("p",
