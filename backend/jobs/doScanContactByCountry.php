@@ -49,23 +49,20 @@ class doScanContactByCountry
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
+                //check số đt k có contacts
+
                 // Emty new contact
                 if (self::emptyContact($phoneNumber)) {
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
-                    // Xóa liên hệ
-                    self::removeAssignmentPhone($phoneNumber, $currentUser->id);
                     continue;
                 }
-                //Nếu chưa tồn tại processing
-                if(!self::hasProcessing($currentUser)){
-                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
-                    continue;
-                }
-                // Bỏ qua SĐT nếu được phân bổ
-                if (self::exitsPhone($phoneNumber) || !self::limitByStep($currentUser->id)) {
+
+                // Bỏ qua SĐT nếu đã được phân bổ
+                if ((self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) && self::hasProcessing($user)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
                     self::applyPending($currentUser->id);
                     self::rollbackCallback($currentUser);
+
                     continue;
                 }
                 // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
@@ -104,7 +101,7 @@ class doScanContactByCountry
         return ContactsModel::hasCompeleted($phone);
     }
 
-    static function limitByStep($user_id)
+    static function isLitmitStep($user_id)
     {
         $limit = 1;
         $model = ContactsAssignment::find()->where(['user_id' => $user_id])
@@ -113,9 +110,9 @@ class doScanContactByCountry
             ->orWhere(['callback_time' => ""])
             ->count();
         if ($model < $limit) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     static function hasProcessing($user)
