@@ -34,7 +34,7 @@ use yii\helpers\Url;
                 'format' => 'html',
                 'value' => function ($model) {
                     $html = Html::a($model->code, Url::toRoute(['orders/view', 'id' => $model->id])) . "<br>";
-                    if($model->contact){
+                    if ($model->contact) {
                         $html .= $model->contact->contact->phone;
                     }
                     return $html;
@@ -58,7 +58,7 @@ use yii\helpers\Url;
             [
                 'label' => 'Loại sản phẩm',
                 'value' => function ($model) {
-                    if (!$model->contact) {
+                    if (!$model->contact || !$model->contact->page) {
                         return null;
                     }
                     return $model->contact->contact->page->category->name;
@@ -67,7 +67,7 @@ use yii\helpers\Url;
             [
                 'label' => 'Yêu cầu',
                 'value' => function ($model) {
-                    if(!$model->contact){
+                    if (!$model->contact) {
                         return null;
                     }
                     return $model->contact->contact->option;
@@ -76,7 +76,7 @@ use yii\helpers\Url;
             [
                 'label' => 'Ghi chú khách',
                 'value' => function ($model) {
-                    if(!$model->contact){
+                    if (!$model->contact) {
                         return null;
                     }
                     return $model->contact->contact->note;
@@ -102,8 +102,8 @@ use yii\helpers\Url;
             [
                 'label' => 'Doanh thu',
                 'attribute' => 'total',
-                'value' => function($model){
-                    return "$model->total ". Helper::getCur($model->country);
+                'value' => function ($model) {
+                    return "$model->total " . Helper::getCur($model->country);
                 }
             ],
             [
