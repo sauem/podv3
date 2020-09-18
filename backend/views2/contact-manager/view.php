@@ -108,6 +108,9 @@ use common\helper\Helper;
                             'attribute' => 'created_at',
                             'format' => 'html',
                             'value' => function ($model) {
+                                if(!$model->contact){
+                                    return null;
+                                }
                                 return $model->contact->phone . "<span class='badge badge-info'>{$model->contact->code}</span>";
                             }
                         ],
