@@ -24,20 +24,20 @@ class doScanContactByCountry
         // 5. Contact mới số mới
 
         $phones = ContactsModel::find()->addSelect(['phone', 'country'])->groupBy(['phone', 'country'])->all();
-        if(!$phones){
-            Helper::showMessage("Không có số điện thoại nào được áp dụng!","error");
+        if (!$phones) {
+            Helper::showMessage("Không có số điện thoại nào được áp dụng!", "error");
         }
         $users = AuthAssignment::find()->with('user')
             ->where(['item_name' => UserModel::_SALE])
             ->all();
 
         foreach ($users as $k => $user) {
-            if($current_user){
+            if ($current_user) {
                 $currentUser = $current_user;
-            }else{
+            } else {
                 $currentUser = $user->user[0];
             }
-           // $currentUser = $user->user[0];
+            // $currentUser = $user->user[0];
             // bỏ qua sale đủ số lượng SĐT trong ngày
             if (self::hasLimit($currentUser) || self::hasProcessing($currentUser->id)) {
                 // Kiểm tra số điện thoại gọi lại
@@ -50,8 +50,15 @@ class doScanContactByCountry
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
                 // Emty new contact
-                if(self::emptyContact($phoneNumber)){
+                if (self::emptyContact($phoneNumber)) {
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
+                    // Xóa liên hệ
+                    self::removeAssignmentPhone($phoneNumber, $currentUser->id);
+                    continue;
+                }
+                //Nếu chưa tồn tại processing
+                if(!self::hasProcessing($currentUser)){
+                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
                     continue;
                 }
                 // Bỏ qua SĐT nếu được phân bổ
@@ -74,21 +81,36 @@ class doScanContactByCountry
             }
             // reset processing pending && callback
             self::applyPending($currentUser->id);
-            if($current_user){
+            if ($current_user) {
                 break;
             }
         }
         return "success";
     }
-    static function emptyContact($phone){
-       return ContactsModel::hasCompeleted($phone);
+
+    static function removeAssignmentPhone($phone, $user)
+    {
+        $count = ContactsModel::findAll(['phone' => $phone]);
+        if (!$count) {
+            $ass = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+            if ($ass) {
+                $ass->delete();
+            }
+        }
     }
+
+    static function emptyContact($phone)
+    {
+        return ContactsModel::hasCompeleted($phone);
+    }
+
     static function limitByStep($user_id)
     {
         $limit = 1;
         $model = ContactsAssignment::find()->where(['user_id' => $user_id])
             ->andWhere(['status' => [ContactsAssignment::_PENDING, ContactsAssignment::_PROCESSING]])
             ->andWhere(['is', 'callback_time', new \yii\db\Expression('null')])
+            ->orWhere(['callback_time' => ""])
             ->count();
         if ($model < $limit) {
             return true;
@@ -198,7 +220,7 @@ class doScanContactByCountry
             if (self::hasNewContact($phone)) {
                 $model->status = ContactsAssignment::_PENDING;
                 Helper::showMessage("Có liện hệ mới tại số điện thoại $phone");
-               // echo "Có liện hệ mới tại số điện thoại $phone";
+                // echo "Có liện hệ mới tại số điện thoại $phone";
                 return $model->save();
             }
         }
