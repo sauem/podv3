@@ -53,7 +53,7 @@ use common\helper\Helper;
             'headerOptions' => ['width' => '30%'],
             'format' => 'raw',
             'value' => function ($model) {
-                if (!$model->contact || !$model->contact->page->product) {
+                if (!$model->contact || !$model->contact->page) {
                     return null;
                 }
                 $page = $model->contact->page;
