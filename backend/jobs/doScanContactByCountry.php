@@ -43,9 +43,11 @@ class doScanContactByCountry
                 // Kiểm tra số điện thoại gọi lại
                 self::applyPending($currentUser->id);
                 self::rollbackCallback($currentUser);
+                Helper::showMessage("Đủ số lượng trong ngày");
                 continue;
             }
             //chưa có liên hệ nào được phân bổ
+            Helper::showMessage("Thực hiện phân bổ");
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
