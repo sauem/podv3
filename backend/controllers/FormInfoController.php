@@ -51,6 +51,7 @@ class FormInfoController extends BaseController
         $searchModel = new FormInfoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = new FormInfo;
+
         if ($id) {
             $model = FormInfo::findOne($id);
         }

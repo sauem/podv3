@@ -64,7 +64,7 @@ class FormInfo extends BaseModel
      */
     public function getCategory()
     {
-        return $this->hasOne(CategoriesModel::className(), ['id' => 'category_id']);
+        return $this->hasOne(CategoriesModel::className(), ['id' => 'category_id'])->with('pages');
     }
 
     /**

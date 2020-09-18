@@ -68,7 +68,7 @@ function doProcessWorkbook(workbook, file) {
     } else if (firstSheet === "order") {
         maxColumn = 13;
     } else if (firstSheet === "logs") {
-        maxColumn = 10;
+        maxColumn = 12;
     } else if (firstSheet === "zipcode") {
         maxColumn = 6;
     } else if (firstSheet === "categories") {
@@ -265,8 +265,8 @@ async function executeRequest(_url, data, createAction = null, startSlice = 0, e
                 }
             }
         });
-    }catch (e) {
-        
+    } catch (e) {
+
     }
 
 }
@@ -322,6 +322,8 @@ function switchItem(sheet, row) {
             item.customer_note = row[7] ? row[7].v : "";
             item.status = row[8] ? row[8].v : "";
             item.note = row[9] ? row[9].v : "";
+            item.country = row[10] ? row[10].v : "";
+            item.link = row[11] ? row[11].v : "";
             break;
         case "zipcode":
 
@@ -356,7 +358,7 @@ function switchItem(sheet, row) {
             item.host = window.location.hostname;
 
             // item.status = row[15] ? row[15].v : "";
-            // item.code = row[16] ? row[16].v : "";
+            item.code = row[16] ? row[16].v : "";
 
             if (item.link === ""
                 || item.link === null
@@ -405,9 +407,7 @@ function contactModel() {
         updated_at: Date.now() / 1000,
         host: window.location.hostname,
         warning: {},
-        //status: null,
-       // code: null
-        //country: null
+        code: null
     }
 }
 
@@ -439,7 +439,9 @@ function logModel() {
         option: "",
         customer_note: "",
         status: "",
-        note: ""
+        note: "",
+        country: null,
+        link : null
     }
 }
 

@@ -149,7 +149,8 @@ class ContactsModel extends BaseModel
             $this->code = !$this->code ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
 
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
-            $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
+            $this->country = !empty($this->country) ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
+
             if (self::checkExists($this->hashkey)) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
                 return false;

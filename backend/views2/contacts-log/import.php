@@ -50,9 +50,12 @@ use kartik\form\ActiveForm;
                 <td>{{code}} <br>{{phone}}</td>
                 <td>{{date time_call}}</td>
                 <td>{{address}}</td>
-                <td>{{zipcode}}</td>
+                <td>{{country}}|{{zipcode}}</td>
                 <td>{{category}}</td>
-                <td>{{option}}</td>
+                <td>
+                    {{link}}<br>
+                    {{option}}
+                </td>
                 <td>{{customer_note}}</td>
                 <td>{{span this.status}}
                     {{#if this.note}}

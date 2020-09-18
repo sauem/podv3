@@ -950,11 +950,9 @@ class AjaxController extends BaseController
 
                 if (!$contact) {
                     $contact = new ContactsModel;
-                    $country = ZipcodeCountry::findOne(['zipcode'  => $log['code']]);
-                    $coutry_code = null;
-                    if($country){
-                        $coutry_code = $country->country_code;
-                    }
+
+                    $coutry_code = isset($log['country']) ? $log['country'] : null;
+
                     $data_contact = [
                         'code' => $log['code'],
                         'phone' => $log['phone'],
@@ -962,12 +960,13 @@ class AjaxController extends BaseController
                         'address' => $log['address'],
                         'zipcode' => $log['zipcode'],
                         'option' => $log['option'],
+                        'link' => $log['link'],
                         'status' => $log['status'],
                         'country' => $coutry_code,
                         'note' => $log['customer_note']
                     ];
-                    if($contact->load($data_contact, "")){
-                        if(!$contact->save()){
+                    if ($contact->load($data_contact, "")) {
+                        if (!$contact->save()) {
                             continue;
                         }
                     }
@@ -1210,10 +1209,26 @@ class AjaxController extends BaseController
                     'created_at' => time(),
                     'updated_at' => time(),
                     'host' => $contact['host'],
-                    //'code' => $contact['code'],
+                    'code' => isset($contact['code']) ? $contact['code'] : null,
                     //'country' => $contact['country'],
                     // 'status' => isset($contact['status']) ? $contact['status'] : null,
                 ];
+
+                $waitContact = new ContactsLogImport;
+                $optionExitst = FormInfo::findOne(['content' => trim($contact['option'])]);
+                $link = Helper::getHost($contact['link']);
+
+
+                // Không có yêu cầu contact code => chờ
+                // không có yêu cầu contact code loại là capture form của landing page đó => chờ
+                // Có yêu cầu
+                if (!$optionExitst || !$link) {
+                    $errors[$k] = "Không tồn tại option với landing page tương ứng!";
+                    if (!$waitContact->load($data, "") || !$waitContact->save()) {
+                        $errors[$k] = Helper::firstError($waitContact);
+                    }
+                    continue;
+                }
 
                 if (!$model->load($data, '') || !$model->save()) {
                     $errors[$k] = Helper::firstError($model);
