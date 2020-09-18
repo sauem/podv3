@@ -56,7 +56,9 @@ class doScanContactByCountry
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
                     continue;
                 }
-
+                if(!self::hasProcessing($user)){
+                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
+                }
                 // Bỏ qua SĐT nếu đã được phân bổ
                 if ((self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) && self::hasProcessing($user)) {
                     self::checkCompleted($phoneNumber, $currentUser->id);
