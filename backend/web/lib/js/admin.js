@@ -477,7 +477,11 @@ $("body").on("click", ".removeImage", function () {
 });
 
 function getHostName(url) {
-    return (new URL(url).hostname);
+
+    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+        return (new URL(url).hostname);
+    }
+    return url;
 }
 
 $("body").on("click", ".deleteAll", function () {
