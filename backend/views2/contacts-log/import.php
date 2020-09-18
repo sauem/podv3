@@ -47,7 +47,7 @@ use kartik\form\ActiveForm;
             <tbody>
             {{#each this.rows}}
             <tr>
-                <td>{{code}} <br>{{phone}}</td>
+                <td>{{code}} <br>{{name}} <br>{{phone}}</td>
                 <td>{{date time_call}}</td>
                 <td>{{address}}</td>
                 <td>{{country}}|{{zipcode}}</td>
