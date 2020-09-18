@@ -1198,11 +1198,11 @@ class AjaxController extends BaseController
         $step = Yii::$app->request->post("step");
         $end = Yii::$app->request->post("end");
         $count = 0;
+        $msg = null;
         $errors = [];
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if (!empty($contacts)) {
-
+            if($contacts > 0){
                 foreach ($contacts as $k => $contact) {
                     $model = new ContactsModel;
                     $contactType = strtolower($contact['type']);
@@ -1240,7 +1240,10 @@ class AjaxController extends BaseController
                     // Không tồn tại landing page
 
                     if (!$pageExit) {
-                        $errors[$k] = "Không tồn tại page $link hệ thống";
+                        $errors[$k] = "Chưa xác định trang đích $link hihih";
+                        $data = array_merge($data, [
+                            'reason' => "Chưa xác định trang đích $link"
+                        ]);
                         if (!$waitContact->load($data, "") || !$waitContact->save()) {
                             $errors[$k] = Helper::firstError($waitContact);
                         }
@@ -1248,8 +1251,12 @@ class AjaxController extends BaseController
                     }
                     // Trường hợp tồn tại landing page và không tồn tại yêu cầu trong mẫu order
                     // hoặc tồn tại landing page và là contact capture form và không tồn tại yêu cầu trong mẫu order
-                    if($pageExit && !$optionExitst || $pageExit && $contactType === ContactsModel::_CAPTURE && !$optionExitst){
+                    if ($pageExit && !$optionExitst || $pageExit && $contactType === ContactsModel::_CAPTURE && !$optionExitst) {
                         $errors[$k] = "Không tồn tại  $contactOption hệ thống";
+
+                        $data = array_merge($data, [
+                            'reason' => "Chưa xác định yêu cầu mẫu đơn với trang đích $link"
+                        ]);
                         if (!$waitContact->load($data, "") || !$waitContact->save()) {
                             $errors[$k] = Helper::firstError($waitContact);
                         }
@@ -1271,23 +1278,27 @@ class AjaxController extends BaseController
                         $logs->save();
                     }
                 }
+
                 $transaction->commit();
                 $count = sizeof($contacts) - sizeof($errors);
-                if ($count > 0) {
-                    ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
-                    return self::resultImport($errors, $count, 1, $step, $end);
-                }
+                ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
+                return self::resultImport($errors, $count, 1, $step, $end);
             }
-        } catch (\Exception $e) {
+        }catch (\Exception $e){
+            $msg = $e->getMessage();
             $transaction->rollBack();
         }
         return [
             'success' => 0,
-            'error' => $errors,
-            'totalInsert' => $count,
-            'size' => $contacts,
-            'totalErrors' => sizeof($errors)
+            'msg' => $msg
         ];
+//        return [
+//            'success' => 0,
+//            'error' => $errors,
+//            'totalInsert' => $count,
+//            'size' => $contacts,
+//            'totalErrors' => sizeof($errors)
+//        ];
     }
 
     static function resultImport($errors, $count = 0, $status = 1, $step = 0, $end = 0)

@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $phone
  * @property int $code
  * @property string|null $address
+ * @property string|null $reason
  * @property string|null $zipcode
  * @property string|null $category
  * @property string|null $option
@@ -43,7 +44,7 @@ class ContactsLogImport extends ActiveRecord
             [['address', 'option', 'link', 'short_link', 'code', 'note', 'country', 'type'], 'string'],
             [['register_time'], 'safe'],
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
-            [['name', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
+            [['name', 'reason','utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 100],
             //[['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],

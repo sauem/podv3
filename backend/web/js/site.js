@@ -261,13 +261,14 @@ async function executeRequest(_url, data, createAction = null, startSlice = 0, e
                 } else {
                     swal.fire({
                         title: "Lỗi",
+                        text: res.msg,
                         icon: "error",
                     }).then(() => window.location.reload());
                 }
             }
         });
     } catch (e) {
-
+        console.log(e)
     }
 
 }
