@@ -120,6 +120,9 @@ use common\helper\Helper;
                             'headerOptions' => ['width' => '15%'],
                             'format' => 'raw',
                             'value' => function ($model) {
+                                if(!$model->contact){
+                                    return null;
+                                }
                                 $html = "Lần xử lý cuối :<br>" . $model->created_at;
                                 if ($model->contact->callback_time) {
                                     $html .= "</br>Giờ gọi lại: <br>" . "<strong class='text-danger'>{$model->created_at}</strong>";
@@ -133,6 +136,9 @@ use common\helper\Helper;
                             'headerOptions' => ['width' => '30%'],
                             'format' => 'raw',
                             'value' => function ($model) {
+                                if(!$model->contact){
+                                    return null;
+                                }
                                 if (!$model->contact->page || !$model->contact->page->product) {
                                     return null;
                                 }
@@ -148,6 +154,9 @@ use common\helper\Helper;
                             'format' => 'html',
                             'headerOptions' => ['width' => '30%'],
                             'value' => function ($model) {
+                                if(!$model->contact){
+                                    return null;
+                                }
                                 if (!$model->contact->page) {
                                     return null;
                                 }
@@ -165,6 +174,9 @@ use common\helper\Helper;
                                 'width' => '15%'
                             ],
                             'value' => function ($model) {
+                                if(!$model->contact){
+                                    return null;
+                                }
                                 return $model->contact->option;
                             }
                         ],
