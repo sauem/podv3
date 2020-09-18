@@ -81,6 +81,7 @@ function doProcessWorkbook(workbook, file) {
 
         let item = switchItem(firstSheet, row);
 
+
         if (typeof item.status === "boolean" && item.status === false) {
             toastr.error(`Dòng thứ ${(rowsIndex + 2)}, không được để trống ${item.column}`);
             rows = [];

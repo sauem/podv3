@@ -2,6 +2,9 @@
 
 namespace backend\models;
 
+use backend\jobs\doScanContact;
+use backend\jobs\doScanContactByCountry;
+use backend\jobs\scanNewContact;
 use common\helper\Helper;
 use Yii;
 
@@ -22,6 +25,7 @@ use Yii;
  */
 
 use common\models\User;
+use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -39,6 +43,7 @@ class ContactsAssignment extends BaseModel
         self::_COMPLETED => 'Hoàn thành',
         self::_PROCESSING => 'Đang xử lý'
     ];
+
     /**
      * @var mixed|null
      */
@@ -71,10 +76,10 @@ class ContactsAssignment extends BaseModel
     public function rules()
     {
         return [
-            [['user_id', 'contact_phone','country'], 'required'],
+            [['user_id', 'contact_phone', 'country'], 'required'],
             [['user_id', 'callback_time', 'created_at', 'updated_at'], 'integer'],
             [['contact_phone'], 'string', 'max' => 15],
-            [['status','country'], 'string', 'max' => 50],
+            [['status', 'country'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -111,16 +116,21 @@ class ContactsAssignment extends BaseModel
         return $this->hasMany(ContactsModel::className(), ['phone' => 'contact_phone'])->with('contactsLogs');
     }
 
-    public static function nextAssignment()
+    public static function nextAssignment($phone)
     {
         $assignment = ContactsAssignment::find()->where(['user_id' => Yii::$app->user->getId()])
             ->andWhere(['status' => ContactsAssignment::_PENDING, 'callback_time' => null])
+            ->andWhere(['<>', 'contact_phone', $phone])
             ->orWhere(['status' => ContactsAssignment::_PROCESSING])
             ->one();
+        $contacts = ContactsModel::findAll(['phone' => $phone]);
+        if ($assignment && !$contacts) {
+            Yii::$app->queue->push(new scanNewContact());
+            return $assignment->delete();
+        }
         if ($assignment) {
             $assignment->status = ContactsAssignment::_PROCESSING;
             Helper::showMessage('Số điện thoại mới được áp dụng!');
-            Yii::$app->session->setFlash("success", "Số điện thoại mới được áp dụng!");
             return $assignment->save();
         }
         return false;
@@ -131,7 +141,7 @@ class ContactsAssignment extends BaseModel
         if (!$insert) {
             if (!Yii::$app instanceof Yii\console\Application) {
                 if ($this->callback_time && !self::nextAssignment()) {
-                    Helper::showMessage("Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!",'error');
+                    Helper::showMessage("Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!", 'error');
                     Yii::$app->session->setFlash("error", "Hiện tại đã hết liên hệ,\n xin hãy chờ gọi lại số điện thoại này sau {$this->callback_time} giờ nữa!");
                 }
             }
@@ -162,13 +172,13 @@ class ContactsAssignment extends BaseModel
     {
 
         $status = ContactsAssignment::_PROCESSING;
-        if($isPending){
+        if ($isPending) {
             $status = ContactsAssignment::_PENDING;
         }
 
         $phone = self::find()->where([
             'user_id' => Yii::$app->user->getId(),
-        ])->andWhere(['IN', 'status' , [$status]])
+        ])->andWhere(['IN', 'status', [$status]])
             ->orderBy(['updated_at' => SORT_DESC])->one();
         if (!$phone) {
             return ContactsAssignment::_COMPLETED;

@@ -1,8 +1,10 @@
 <?php
+
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use backend\models\ContactsModel;
 use kartik\grid\ActionColumn;
+
 ?>
 
 <div class="card">
@@ -26,7 +28,16 @@ use kartik\grid\ActionColumn;
                 'class' => 'thead-light'
             ],
             'columns' => [
-                'code',
+                [
+                    'label' => 'Code',
+                    'format' => 'html',
+                    'value' => function ($model) {
+                        $html = $model->code . "<br>";
+                        $html .= $model->phone;
+                        return $html;
+                    }
+                ],
+                'option',
                 [
                     'label' => 'Trang đích',
                     'headerOptions' => [
