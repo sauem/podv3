@@ -49,6 +49,9 @@ use backend\models\ContactsAssignment;
                             'attribute' => 'phone',
                             'format' => 'raw',
                             'value' => function ($model) {
+                                if(!isset($model->contacts[0])){
+                                    return null;
+                                }
                                 return $model->contacts[0]->name;
                             }
                         ],
