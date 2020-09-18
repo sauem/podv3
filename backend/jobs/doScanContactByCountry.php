@@ -47,7 +47,7 @@ class doScanContactByCountry
                 continue;
             }
             //chưa có liên hệ nào được phân bổ
-            Helper::showMessage("Thực hiện phân bổ");
+
             foreach ($phones as $p => $phone) {
                 $phoneNumber = $phone->phone;
                 $phoneCountry = $phone->country;
@@ -58,7 +58,7 @@ class doScanContactByCountry
                     //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
                     continue;
                 }
-                if (!self::hasProcessing($user->id)) {
+                if (!self::hasProcessing($currentUser->id)) {
                     Helper::showMessage("Chưa có liên hệ xử lý");
                     self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, ContactsAssignment::_PROCESSING);
                 }
