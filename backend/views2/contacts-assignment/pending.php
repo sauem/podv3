@@ -14,7 +14,7 @@ use yii\helpers\Url;
         <div class="card-header d-flex justify-content-between">
             <h4 class="card-title">Danh sách liên hệ chờ</h4>
             <div class="card-tools">
-                <button class="btn btn-sm btn-outline-warning"><i class="fe-cloud-off"></i> Kích hoạt liên hệ</button>
+                <button class="btn btn-sm btn-outline-warning"><i class="fe-cloud-off"></i> Tìm kiếm</button>
             </div>
         </div>
         <div class="card-body">
@@ -100,20 +100,12 @@ use yii\helpers\Url;
                         'value' => 'country'
                     ],
                     [
-                        'label' => 'sản phẩm',
-                        'attribute' => 'category_id',
-                        'format' => 'html',
-                        'value' => function ($model) {
-                            if (!$model->page || !$model->page->product) {
-                                return null;
-                            }
-                            return Html::tag("p",
-                                $model->page->product->name . "<br><small>{$model->page->product->sku} | {$model->page->category->name}</small><br>");
-                        }
+                        'label' => 'Lý do',
+                        'attribute' => 'reason_msg',
                     ],
                     [
-                        'label' => 'Lý do',
-                        'attribute' => 'status',
+                        'label' => 'Nội dung',
+                        'attribute' => 'reason',
                         'format' => 'html',
                         'value' => function ($model) {
                             return $model->reason;
@@ -123,10 +115,29 @@ use yii\helpers\Url;
 
                     [
                         'class' => ActionColumn::class,
-                        'template' => '{define_landing}',
-                        'width' => '15%',
+                        'template' => '{link}{option}',
+                        'width' => '14%',
                         'buttons' => [
-                            'define_landing' => function ($url, $model) {
+                            'option' => function ($url, $model) {
+                                if($model->reason !== "option"){
+                                    return null;
+                                }
+                                return Html::button("Xác định option", [
+                                    'data-pjax' => 0,
+                                    'data-toggle' => 'modal',
+                                    'data-target' => '#landingModal',
+                                    'data-remote' => Url::toRoute([
+                                        'landing-pages/remote',
+                                        'link' => $model->link,
+                                        'country' => $model->country
+                                    ]),
+                                    'class' => 'btn btn-xs w-100 btn-outline-warning mb-1'
+                                ]);
+                            },
+                            'link' => function ($url, $model) {
+                                if(!$model->reason !== "link"){
+                                    return null;
+                                }
                                 return Html::button("Xác định trang", [
                                     'data-pjax' => 0,
                                     'data-toggle' => 'modal',
@@ -135,18 +146,10 @@ use yii\helpers\Url;
                                         'landing-pages/remote',
                                         'link' => $model->link,
                                         'country' => $model->country
-                                        ]),
-                                    'class' => 'btn btn-xs btn-outline-warning mb-1'
+                                    ]),
+                                    'class' => 'btn w-100 btn-xs btn-outline-warning mb-1'
                                 ]);
                             },
-                            'view' => function ($url, $model) {
-                                return Html::button("<i class='fe-edit'></i> Cập nhật", [
-                                    'data-remote' => Url::toRoute(['contacts/approve-pending', 'id' => $model->id]),
-                                    'data-target' => "#editModal",
-                                    'data-toggle' => 'modal',
-                                    'class' => 'btn btn-xs btn-outline-info'
-                                ]);
-                            }
                         ]
                     ],
                 ],
