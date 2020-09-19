@@ -6,6 +6,7 @@ use backend\models\ContactsLog;
 use backend\models\ContactsLogImport;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use backend\models\LandingPages;
 use backend\models\LogsImport;
 use backend\models\UploadForm;
 use backend\models\UserModel;
@@ -15,6 +16,8 @@ use Yii;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsAssignmentSearch;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,7 +25,7 @@ use yii\filters\VerbFilter;
 /**
  * ContactsAssignmentController implements the CRUD actions for ContactsAssignment model.
  */
-class ContactsAssignmentController extends Controller
+class ContactsAssignmentController extends BaseController
 {
 
     public function actionIndex()
@@ -258,8 +261,40 @@ class ContactsAssignmentController extends Controller
                 'pageSize' => 10
             ]
         ]);
+        $model = new LandingPages;
+
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                self::updateContactPending($model->link);
+                self::success("Tạo trang đích thành công!");
+            } else {
+                self::error("Tạo trang đích thành công!");
+            }
+            return $this->redirect(Url::toRoute(['pending']));
+        }
         return $this->render("pending", [
             'dataProvider' => $dataProvider
         ]);
+    }
+
+    static function updateContactPending($link)
+    {
+        $importLogs = ContactsLogImport::findAll(['link' => $link]);
+
+        if ($importLogs) {
+
+            foreach ($importLogs as $k => $log) {
+                $contact = new ContactsModel;
+                $log->link = $link;
+                $data = ArrayHelper::toArray($log);
+                unset($data["id"]);
+                $log->delete();
+                if (!$contact->load($data, '') || $contact->save()) {
+                    Helper::showMessage(Helper::firstError($contact));
+                }
+            }
+
+            Helper::showMessage("Có " .sizeof($importLogs) . " liên hệ chờ   được duyệt!");
+        }
     }
 }

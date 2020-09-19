@@ -187,7 +187,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="editPendingContact" class="saveRowPending btn btn-primary">Lưu</button>
+                    <button type="submit" form="LandingForm" class="saveRowPending btn btn-primary">Lưu</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                 </div>
             </div>
