@@ -41,25 +41,25 @@ class LandingPagesController extends BaseController
     {
         $searchModel = new LandingPagesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            if(Helper::userRole(UserModel::_MARKETING)){
-                $dataProvider = $searchModel->search(array_merge(
-                    Yii::$app->request->queryParams,
-                    [
-                       'LandingPagesSearch' => [
-                           'user_id' => Yii::$app->user->getId()
-                       ]
+        if (Helper::userRole(UserModel::_MARKETING)) {
+            $dataProvider = $searchModel->search(array_merge(
+                Yii::$app->request->queryParams,
+                [
+                    'LandingPagesSearch' => [
+                        'user_id' => Yii::$app->user->getId()
                     ]
-                ));
-            }
+                ]
+            ));
+        }
         $model = new LandingPages;
-        if($id){
+        if ($id) {
             $model = $this->findModel($id);
         }
-        if(Yii::$app->request->isPost && $model->load(Yii::$app->request->post())){
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
 
-            if($model->save()){
+            if ($model->save()) {
                 self::success("Tạo sản phẩm thành công!");
-            }else{
+            } else {
                 self::error(Helper::firstError($model));
             }
             return $this->redirect(['index']);
@@ -150,5 +150,17 @@ class LandingPagesController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionRemote($link, $country = null)
+    {
+        $this->layout = "empty";
+        $model = new LandingPages;
+        $model->link = $link;
+        $model->country = $country;
+
+        return $this->render("remote", [
+            'model' => $model
+        ]);
     }
 }
