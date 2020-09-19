@@ -55,16 +55,16 @@ class FormInfoController extends BaseController
         if ($id) {
             $model = FormInfo::findOne($id);
         }
-        if(Yii::$app->request->get('content')){
+        if (Yii::$app->request->get('content')) {
             $content = Yii::$app->request->get("content");
-            $model->load(['content' => $content],"");
+            $model->load(['content' => $content], "");
         }
 
         $optionProvider = new ActiveDataProvider([
             'query' => ContactsModel::find()
                 ->with('page')
                 ->with('formInfo')
-                ->where(['<>','option', ''])
+                ->where(['<>', 'option', ''])
                 ->groupBy('option'),
             'pagination' => [
                 'pageSize' => 10
@@ -159,5 +159,17 @@ class FormInfoController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionRemote($option)
+    {
+        $this->layout = "empty";
+
+        $model = new FormInfo;
+        $model->content = $option;
+
+        return $this->render("remote", [
+            'model' => $model
+        ]);
     }
 }

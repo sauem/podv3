@@ -13,7 +13,7 @@ use kartik\grid\ActionColumn;
         <h4 class="card-title">Tất cả liên hệ</h4>
         <div class="toolbar">
             <div class="btn-group">
-                <button type="button" class="btn mr-1 btn-xs btn-outline-success"><i
+                <button type="button" data-toggle="collapse" data-target="#all-search" class="btn mr-1 btn-xs btn-outline-success"><i
                             class="fe-search"></i> Tìm kiếm
                 </button>
 
@@ -29,7 +29,9 @@ use kartik\grid\ActionColumn;
         </div>
     </div>
     <div class="box-body">
-
+        <div class="mb-4">
+            <?= $this->render("../search/all")?>
+        </div>
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'responsive' => true,

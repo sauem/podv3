@@ -14,10 +14,16 @@ use yii\helpers\Url;
         <div class="card-header d-flex justify-content-between">
             <h4 class="card-title">Danh sách liên hệ chờ</h4>
             <div class="card-tools">
-                <button class="btn btn-sm btn-outline-warning"><i class="fe-cloud-off"></i> Tìm kiếm</button>
+                <button data-toggle="collapse"
+                        data-target="#pending-search"
+                        class="btn btn-sm btn-outline-warning">
+                    <i class="fe-cloud-off"></i> Tìm kiếm
+                </button>
             </div>
         </div>
         <div class="card-body">
+            <?= $this->render("search/pending")?>
+
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'responsive' => true,
@@ -119,23 +125,23 @@ use yii\helpers\Url;
                         'width' => '14%',
                         'buttons' => [
                             'option' => function ($url, $model) {
-                                if($model->reason !== "option"){
+                                if ($model->reason !== "option") {
                                     return null;
                                 }
                                 return Html::button("Xác định option", [
                                     'data-pjax' => 0,
                                     'data-toggle' => 'modal',
-                                    'data-target' => '#landingModal',
+                                    'data-target' => '#optionModal',
                                     'data-remote' => Url::toRoute([
-                                        'landing-pages/remote',
-                                        'link' => $model->link,
+                                        'form-info/remote',
+                                        'option' => $model->option,
                                         'country' => $model->country
                                     ]),
                                     'class' => 'btn btn-xs w-100 btn-outline-warning mb-1'
                                 ]);
                             },
                             'link' => function ($url, $model) {
-                                if(!$model->reason !== "link"){
+                                if (!$model->reason !== "link") {
                                     return null;
                                 }
                                 return Html::button("Xác định trang", [
@@ -196,9 +202,30 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+    <div class="modal fade in" id="optionModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Xác định yêu cầu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="spinner-border text-success m-2" role="status"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="infoForm" class="saveRowPending btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $js = <<<JS
-    initRemote("editModal");
+
     initRemote("landingModal");
+    initRemote("optionModal");
 JS;
 $this->registerJs($js);

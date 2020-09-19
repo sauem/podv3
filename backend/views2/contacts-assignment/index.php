@@ -28,6 +28,11 @@ use yii\helpers\Url;
                             <h4 class="card-title">Khách hàng chờ xử lý</h4>
                             <div class="toolbar">
                                 <div class="btn-group">
+                                    <button data-toggle="collapse"
+                                            data-target="#wait-search"
+                                            type="button" class="btn btn-xs btn-outline-success"><i
+                                                class="fe-bar-chart"></i> Tìm kiếm
+                                    </button>
                                     <?php if (Helper::isAdmin()) { ?>
                                         <button type="button" class="btn btn-xs btn-info approvePhone"><i
                                                     class="fe-bar-chart"></i> Phân bổ
@@ -44,7 +49,8 @@ use yii\helpers\Url;
                                                 data-remote="<?= Url::toRoute(['contacts-log/import']) ?>"
                                                 data-toggle="modal"
                                                 data-target="#logs-import"
-                                                type="button" class="btn btn-xs btn-success"><i class="fe-download-cloud"></i>
+                                                type="button" class="btn btn-xs btn-success"><i
+                                                    class="fe-download-cloud"></i>
                                             Nhập lịch sử
                                         </button>
                                     <?php } ?>
@@ -53,6 +59,9 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="box-body">
+                            <?= $this->render("search/wait", [
+                                'model' => $searchModel
+                            ]) ?>
                             <?= $this->render('tab/_tab_waiting', ['dataProvider' => $pendingProvider, 'searchModel' => $searchModel]) ?>
                         </div>
                     </div>
@@ -65,11 +74,11 @@ use yii\helpers\Url;
     </div>
     <!--MODAL-->
 
-    <?= $this->render("modal/_contact_modal") ?>
-    <?= $this->render("modal/_log_modal") ?>
-    <?= $this->render("modal/_modal_approve") ?>
-    <?= $this->render("modal/_edit_row_modal")?>
-    <?= $this->render("modal/_error_row_modal")?>
+<?= $this->render("modal/_contact_modal") ?>
+<?= $this->render("modal/_log_modal") ?>
+<?= $this->render("modal/_modal_approve") ?>
+<?= $this->render("modal/_edit_row_modal") ?>
+<?= $this->render("modal/_error_row_modal") ?>
 <?php
 $js = <<<JS
     initRemote("remote-import");

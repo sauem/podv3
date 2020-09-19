@@ -146,10 +146,10 @@ class ContactsModel extends BaseModel
             $this->short_link = Helper::getHost($this->link);
             $this->hashkey = md5($this->phone . $this->short_link . $this->option);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-            $this->code = !$this->code ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
-
-            $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
             $this->country = !empty($this->country) ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
+
+            $this->code = !$this->code ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
+            $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
 
             if (self::checkExists($this->hashkey)) {
                 $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");

@@ -22,6 +22,7 @@ class FormInfo extends BaseModel
     /**
      * {@inheritdoc}
      */
+    public $old_content;
     public static function tableName()
     {
         return 'form_info';
@@ -35,6 +36,7 @@ class FormInfo extends BaseModel
         return [
             [['category_id', 'created_at', 'updated_at'], 'integer'],
             [['revenue'], 'number'],
+            [['old_content'], 'safe'],
             [['category_id', 'revenue', 'content'], 'required'],
             [['content'], 'string', 'max' => 255],
             //[['content'], 'unique'],

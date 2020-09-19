@@ -6,6 +6,7 @@ use backend\models\ContactsLog;
 use backend\models\ContactsLogImport;
 use backend\models\ContactsModel;
 use backend\models\ContactsSearchModel;
+use backend\models\FormInfo;
 use backend\models\LandingPages;
 use backend\models\LogsImport;
 use backend\models\UploadForm;
@@ -81,7 +82,8 @@ class ContactsAssignmentController extends BaseController
             'completeProvider' => $completeProvider,
             'callbackProvider' => $callProvider,
             'pendingProvider' => $pendingProvider,
-            'allProvider' => $allProvider
+            'allProvider' => $allProvider,
+            'searchModel' => $searchModel
         ]);
     }
 
@@ -294,7 +296,42 @@ class ContactsAssignmentController extends BaseController
                 }
             }
 
-            Helper::showMessage("Có " .sizeof($importLogs) . " liên hệ chờ   được duyệt!");
+            Helper::showMessage("Có " . sizeof($importLogs) . " liên hệ chờ   được duyệt!");
+        }
+    }
+
+    public function actionSaveOption()
+    {
+        $model = new FormInfo;
+        $post = Yii::$app->request->post();
+        $oldContent = ArrayHelper::getValue($post,"old_content");
+        if($oldContent == null){
+            $oldContent = "";
+        }
+        if (Yii::$app->request->isPost && $model->load($post)) {
+            if ($model->save()) {
+                // Find pending contact with old option
+                $contactsLog = ContactsLogImport::findAll(['option' => $oldContent]);
+                if ($contactsLog) {
+                    foreach ($contactsLog as $log) {
+                        $contact = new ContactsModel;
+                        $data = ArrayHelper::toArray($log);
+                        unset($data['id']);
+                        //set new option after update
+                        $data['option'] = $model->content;
+
+                        $log->delete();
+
+                        if (!$contact->load($data, '') || !$contact->save()) {
+                           self::error(Helper::firstError($contact));
+                        }
+                    }
+                   self::success("Cập nhật liên hệ với yêu cầu {$model->content} thành công!");
+                }
+            } else {
+                self::error(Helper::firstError($model));
+            }
+            return $this->redirect(Url::toRoute(['pending']));
         }
     }
 }
