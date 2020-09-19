@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  * @property int $code
  * @property string|null $address
  * @property string|null $reason
+ * @property string|null $reason_msg
  * @property string|null $zipcode
  * @property string|null $category
  * @property string|null $option
@@ -29,6 +30,7 @@ class ContactsLogImport extends ActiveRecord
      * {@inheritdoc}
      */
     public $email;
+
     public static function tableName()
     {
         return 'contacts_log_import';
@@ -41,10 +43,10 @@ class ContactsLogImport extends ActiveRecord
     {
         return [
             [['phone'], 'required', 'message' => '{attribute} không được để trống!'],
-            [['address', 'option', 'link', 'short_link', 'code', 'note', 'country', 'type'], 'string'],
+            [['address', 'option', 'link', 'short_link', 'code', 'note', 'country', 'type', 'reason_msg'], 'string'],
             [['register_time'], 'safe'],
             [['zipcode', 'created_at', 'updated_at', 'callback_time'], 'integer'],
-            [['name', 'reason','utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
+            [['name', 'reason', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'utm_campaign', 'host', 'hashkey'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 100],
             //[['hashkey'], 'unique', 'message' => 'Liên hệ đã tồn tại với lựa chọn option tương ứng!'],
@@ -86,12 +88,12 @@ class ContactsLogImport extends ActiveRecord
                     return false;
                 }
             }
-        }else{
-            if(!$this->option){
+        } else {
+            if (!$this->option) {
                 $this->addError("type", "Không để trống yêu cầu đặt hàng!");
                 return false;
             }
-            if(!$this->link){
+            if (!$this->link) {
                 $this->addError("type", "Không để trống trang đích!");
                 return false;
             }
@@ -145,7 +147,9 @@ class ContactsLogImport extends ActiveRecord
     {
         return $this->hasOne(ContactsLog::className(), ['phone' => 'phone', 'contact_code' => 'code']);
     }
-    public function getPage(){
-        return $this->hasOne(LandingPages::className(),['link' => 'short_link']);
+
+    public function getPage()
+    {
+        return $this->hasOne(LandingPages::className(), ['link' => 'short_link']);
     }
 }

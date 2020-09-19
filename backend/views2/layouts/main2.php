@@ -53,6 +53,7 @@ AppAsset2::register($this);
             ajaxProductSelect: "<?= Url::toRoute(['ajax/load-product-select'])?>",
             loadSkus: "<?=  Url::toRoute(['ajax/load-sku'])?>",
             changeContactStatus: "<?= Url::toRoute(['ajax/change-contact-status'])?>",
+            changeMultipleStatus: "<?= Url::toRoute(['ajax/change-multiple-status'])?>",
         }
     </script>
     <style>

@@ -509,12 +509,7 @@ $("body").on("click", ".deleteAll", function () {
                 data: {model: _model, keys: _column},
                 success: function (res) {
                     if (res.success) {
-                        toastr.success(res.msg);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                        __reloadData();
-
+                        swal.fire("Thông báo", "Xóa dữ liệu thành công!","success").then(() => window.location.reload());
                         return false;
                     }
                     toastr.warning(res.msg);

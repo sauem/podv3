@@ -727,6 +727,7 @@ class AjaxController extends BaseController
     {
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post("key");
+
             $status = Yii::$app->request->post("status");
             $model = ContactsModel::findOne($id);
 
@@ -753,7 +754,6 @@ class AjaxController extends BaseController
             }
 
             $model->status = $status;
-
             if ($model->save()) {
                 ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$status}");
                 $log->user_id = Yii::$app->user->getId();
@@ -772,12 +772,55 @@ class AjaxController extends BaseController
                     'msg' => 'Thay đổi trạng thái liên hệ thành công!'
                 ];
             }
+
+
             return [
                 'success' => 0,
                 'msg' => Helper::firstError($model)
             ];
 
         }
+    }
+
+    function actionChangeMultipleStatus()
+    {
+        $ids = Yii::$app->request->post("keys");
+        if (!$ids) {
+            return [
+                'success' => 0,
+                'msg' => 'Hãy chọn liên hệ thay đổi'
+            ];
+        }
+        foreach ($ids as $id) {
+            $model = ContactsModel::findOne($id);
+            if (!$model) {
+                return [
+                    'success' => 0,
+                    'msg' => Helper::firstError($model)
+                ];
+            }
+            $model->status = ContactsModel::_CANCEL;
+            if ($model->save()) {
+                ActionLog::add("success", Yii::$app->user->identity->username . " thay đôi trạng thái <a href='/contacts/view?id=$model->id'>{$model->code}</a> sang {$model->status}");
+
+                $log = new ContactsLog;
+                $log->user_id = Yii::$app->user->getId();
+                $log->contact_id = $model->id;
+                $log->phone = $model->phone;
+                $log->contact_code = $model->code;
+                $log->status = $model->status;
+                if (!$log->save()) {
+                    return [
+                        'success' => 0,
+                        'msg' => Helper::firstError($log)
+                    ];
+                }
+            }
+        }
+        return [
+            'success' => 1,
+            'msg' => "Thay đổi trạng thái thành công!"
+        ];
     }
 
     static function numberFailStatus($phone, $user)
@@ -1202,7 +1245,7 @@ class AjaxController extends BaseController
         $errors = [];
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if($contacts > 0){
+            if ($contacts > 0) {
                 foreach ($contacts as $k => $contact) {
                     $model = new ContactsModel;
                     $contactType = strtolower($contact['type']);
@@ -1242,7 +1285,8 @@ class AjaxController extends BaseController
                     if (!$pageExit) {
                         $errors[$k] = "Chưa xác định trang đích $link hihih";
                         $data = array_merge($data, [
-                            'reason' => "Chưa xác định trang đích $link"
+                            'reason' => "link",
+                            'reason_msg' => "Chưa xác định trang đích $link"
                         ]);
                         if (!$waitContact->load($data, "") || !$waitContact->save()) {
                             $errors[$k] = Helper::firstError($waitContact);
@@ -1255,7 +1299,8 @@ class AjaxController extends BaseController
                         $errors[$k] = "Không tồn tại  $contactOption hệ thống";
 
                         $data = array_merge($data, [
-                            'reason' => "Chưa xác định yêu cầu mẫu đơn với trang đích $link"
+                            'reason' => "option",
+                            'reason_msg' => "Chưa xác định yêu cầu mẫu đơn với trang đích $link"
                         ]);
                         if (!$waitContact->load($data, "") || !$waitContact->save()) {
                             $errors[$k] = Helper::firstError($waitContact);
@@ -1284,7 +1329,7 @@ class AjaxController extends BaseController
                 ActionLog::add("success", "Nhập file liên hệ - $fileName số lượng $count");
                 return self::resultImport($errors, $count, 1, $step, $end);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $msg = $e->getMessage();
             $transaction->rollBack();
         }
