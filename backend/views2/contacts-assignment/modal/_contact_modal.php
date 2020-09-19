@@ -20,7 +20,9 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="modal-body">
-
+                <div class="text-center">
+                    <div class="spinner-border text-success m-2" role="status"></div>
+                </div>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <a class="text-info" href="<?= Url::toRoute(['/file/contacts_example.xlsx']) ?>"><i

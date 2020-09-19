@@ -6,7 +6,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="resultRowImport"></div>
+                <div id="resultRowImport">
+                    <div class="text-center">
+                        <div class="spinner-border text-success m-2" role="status"></div>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="saveRowImport btn btn-primary">Lưu</button>

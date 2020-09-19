@@ -182,7 +182,9 @@ use yii\helpers\Url;
                     </button>
                 </div>
                 <div class="modal-body">
-
+                    <div class="text-center">
+                        <div class="spinner-border text-success m-2" role="status"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" form="editPendingContact" class="saveRowPending btn btn-primary">Lưu</button>

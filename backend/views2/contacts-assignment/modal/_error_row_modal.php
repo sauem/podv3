@@ -6,7 +6,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="resultErrorRowImport"></div>
+                <div id="resultErrorRowImport">
+                    <div class="text-center">
+                        <div class="spinner-border text-success m-2" role="status"></div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Đóng</button>
