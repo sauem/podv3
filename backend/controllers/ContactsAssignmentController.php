@@ -304,14 +304,15 @@ class ContactsAssignmentController extends BaseController
     {
         $model = new FormInfo;
         $post = Yii::$app->request->post();
-        $oldContent = ArrayHelper::getValue($post,"old_content");
-        if($oldContent == null){
+        $oldContent = ArrayHelper::getValue($post, "old_content");
+        if ($oldContent == null) {
             $oldContent = "";
         }
         if (Yii::$app->request->isPost && $model->load($post)) {
             if ($model->save()) {
                 // Find pending contact with old option
                 $contactsLog = ContactsLogImport::findAll(['option' => $oldContent]);
+
                 if ($contactsLog) {
                     foreach ($contactsLog as $log) {
                         $contact = new ContactsModel;
@@ -319,14 +320,13 @@ class ContactsAssignmentController extends BaseController
                         unset($data['id']);
                         //set new option after update
                         $data['option'] = $model->content;
-
                         $log->delete();
 
                         if (!$contact->load($data, '') || !$contact->save()) {
-                           self::error(Helper::firstError($contact));
+                            self::error(Helper::firstError($contact));
                         }
                     }
-                   self::success("Cập nhật liên hệ với yêu cầu {$model->content} thành công!");
+                    self::success("Cập nhật liên hệ với yêu cầu {$model->content} thành công!");
                 }
             } else {
                 self::error(Helper::firstError($model));

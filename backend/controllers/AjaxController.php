@@ -496,6 +496,7 @@ class AjaxController extends BaseController
                     $transaction->commit();
                     return [
                         'success' => 1,
+                        'model' => $model,
                         'msg' => "Tạo thành công!"
                     ];
                 }
@@ -506,6 +507,7 @@ class AjaxController extends BaseController
             }
             return [
                 'success' => 0,
+                'model' => $model,
                 'msg' => Helper::firstError($model)
             ];
         }
@@ -825,7 +827,8 @@ class AjaxController extends BaseController
 
     static function numberFailStatus($phone, $user)
     {
-        $model = ContactsModel::findAll(['phone' => $phone]);
+        $model = ContactsModel::find()->where(['phone' => $phone])
+            ->where(['IN', 'status', [ContactsModel::_NEW]])->all();
         $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
         if (!$assignment) {
             return [
@@ -867,7 +870,8 @@ class AjaxController extends BaseController
 
     static function numberPendingStatus($phone, $user)
     {
-        $model = ContactsModel::findAll(['phone' => $phone]);
+        $model = ContactsModel::find()->where(['phone' => $phone])
+            ->where(['IN', 'status', [ContactsModel::_NEW]])->all();
         $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
         if (!$assignment) {
             return [
@@ -910,7 +914,8 @@ class AjaxController extends BaseController
 
     static function numberCallbackStatus($phone, $user)
     {
-        $model = ContactsModel::findAll(['phone' => $phone]);
+        $model = ContactsModel::find()->where(['phone' => $phone])
+            ->where(['IN', 'status', [ContactsModel::_NEW]])->all();
         $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
         if (!$assignment) {
             return [
@@ -1355,6 +1360,41 @@ class AjaxController extends BaseController
             'error' => $errors,
             'totalErrors' => sizeof($errors),
             'totalInsert' => $count
+        ];
+    }
+
+    function actionUpdateContactWaiting()
+    {
+        $oldContent = Yii::$app->request->post("oldContent");
+        $newContent = Yii::$app->request->post("newContent");
+
+        $contactsLog = ContactsLogImport::findAll(['option' => trim($oldContent)]);
+
+        if ($contactsLog) {
+            foreach ($contactsLog as $log) {
+                $contact = new ContactsModel;
+                $data = ArrayHelper::toArray($log);
+                unset($data['id']);
+                //set new option after update
+                $data['option'] = $newContent;
+                $log->delete();
+
+                if (!$contact->load($data, '') || !$contact->save()) {
+                    return [
+                        'success' => 0,
+                        'msg' => Helper::firstError($contact)
+                    ];
+                }
+            }
+            return [
+                'success' => 1,
+                'msg' => "Cập nhật liên hệ với yêu cầu {$newContent} thành công!"
+            ];
+        }
+        return [
+            'success' => 0,
+            'logs' => $contactsLog,
+            'msg' => "không tồn tại liên hệ chờ có yêu cầu {$newContent}"
         ];
     }
 

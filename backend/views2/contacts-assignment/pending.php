@@ -32,6 +32,10 @@ use yii\helpers\Url;
                 'resizableColumns' => false,
                 'pjaxSettings' => [
                     'neverTimeout' => true,
+                    'options' => [
+                        'id' => 'pjax-waiting'
+                    ],
+                    'enablePushState' => false
                 ],
                 'headerRowOptions' => [
                     'class' => 'thead-light'
@@ -135,7 +139,7 @@ use yii\helpers\Url;
                                     'data-remote' => Url::toRoute([
                                         'form-info/remote',
                                         'option' => $model->option,
-                                        'country' => $model->country
+                                        'category_id' => $model->page ? $model->page->category->id : null
                                     ]),
                                     'class' => 'btn btn-xs w-100 btn-outline-warning mb-1'
                                 ]);

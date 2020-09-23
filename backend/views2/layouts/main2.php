@@ -47,6 +47,8 @@ AppAsset2::register($this);
             deleteAll: "<?= Url::toRoute(['ajax/delete-all'])?>",
             saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
             findFormInfo: "<?= Url::toRoute(['ajax/find-form-info'])?>",
+            updateContactWaiting: "<?= Url::toRoute(['ajax/update-contact-waiting'])?>",
+
             findCity: "<?= Url::toRoute(['ajax/find-city'])?>",
             exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
             changeAddess: "<?= Url::toRoute(['ajax/change-address'])?>",

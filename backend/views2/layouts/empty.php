@@ -32,6 +32,8 @@ AppAsset2::register($this);
             pushCategories: "<?= Url::toRoute(['ajax/push-categories'])?>",
             maxSize: 52428800,
             maxRowUpload: 500000,
+            saveFormInfo: "<?= Url::toRoute(['ajax/form-info'])?>",
+            updateContactWaiting: "<?= Url::toRoute(['ajax/update-contact-waiting'])?>",
         }
 
     </script>

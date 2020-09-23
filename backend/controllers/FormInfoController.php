@@ -161,12 +161,13 @@ class FormInfoController extends BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionRemote($option)
+    public function actionRemote($option, $category_id)
     {
         $this->layout = "empty";
 
         $model = new FormInfo;
         $model->content = $option;
+        $model->category_id = $category_id;
 
         return $this->render("remote", [
             'model' => $model

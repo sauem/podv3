@@ -10,19 +10,30 @@ use yii\db\ActiveRecord;
  * This is the model class for table "contacts_log_import".
  *
  * @property int $id
- * @property int $phone
- * @property int $code
+ * @property string $name
+ * @property string $phone
+ * @property string|null $email
  * @property string|null $address
- * @property string|null $reason
- * @property string|null $reason_msg
- * @property string|null $zipcode
- * @property string|null $category
+ * @property int|null $zipcode
  * @property string|null $option
- * @property string|null $customer_note
- * @property string $status
+ * @property string|null $ip
  * @property string|null $note
+ * @property string|null $link
+ * @property string|null $short_link
+ * @property string|null $utm_source
+ * @property string|null $utm_medium
+ * @property string|null $utm_content
+ * @property string|null $utm_term
+ * @property string|null $utm_campaign
+ * @property string|null $host
+ * @property string|null $hashkey
+ * @property string|null $status
  * @property int $created_at
  * @property int $updated_at
+ * @property int $callback_time
+ * @property int $code
+ * @property string|null $country
+ * @property int|null $register_time
  */
 class ContactsLogImport extends ActiveRecord
 {
@@ -62,39 +73,42 @@ class ContactsLogImport extends ActiveRecord
         if ($insert) {
             if (!$this->created_at) {
                 $this->created_at = time();
-
-                $maxIDNumber = ContactsLogImport::find()->max('id');
-                if (!$maxIDNumber) {
-                    $maxIDNumber = 0;
-                }
-
-                $this->short_link = Helper::getHost($this->link);
-                $this->hashkey = md5($this->phone . $this->short_link . $this->option);
-                $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-                $this->code = !$this->code ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
-
-                $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
-                $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
-                if (self::checkExists($this->hashkey)) {
-                    $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
-                    return false;
-                }
-                if (self::checkExistCapture($this->phone, $this->short_link)) {
-                    $this->addError("type", "Liên hệ đã tồn tại với phân loại capture form!");
-                    return false;
-                }
-                if (!$this->country) {
-                    $this->addError("country", "Quốc gia rỗng!");
-                    return false;
-                }
             }
+
+            $maxIDNumber = ContactsModel::find()->max('id');
+            if (!$maxIDNumber) {
+                $maxIDNumber = ContactsLogImport::find()->max('id');
+            }
+            if (!$maxIDNumber) {
+                $maxIDNumber = 0;
+            }
+
+            $this->short_link = Helper::getHost($this->link);
+            $this->hashkey = md5($this->phone . $this->short_link . $this->option);
+            $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
+
+            $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode, $this->link);
+
+            $this->code = (!$this->code || !strpos($this->code, $this->country)) ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
+
+            $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
+
+//            if (self::checkExists($this->hashkey)) {
+//                $this->addError("hashkey", "Liên hệ đã tồn tại với lựa chọn option tương ứng!");
+//                return false;
+//            }
+//            if (self::checkExistCapture($this->phone, $this->short_link)) {
+//                $this->addError("type", "Liên hệ đã tồn tại với phân loại capture form!");
+//                return false;
+//            }
+
         } else {
             if (!$this->option) {
-                $this->addError("type", "Không để trống yêu cầu đặt hàng!");
+                $this->addError("option", "Không để trống yêu cầu đặt hàng!");
                 return false;
             }
             if (!$this->link) {
-                $this->addError("type", "Không để trống trang đích!");
+                $this->addError("option", "Không để trống trang đích!");
                 return false;
             }
         }
@@ -150,6 +164,6 @@ class ContactsLogImport extends ActiveRecord
 
     public function getPage()
     {
-        return $this->hasOne(LandingPages::className(), ['link' => 'short_link']);
+        return $this->hasOne(LandingPages::className(), ['link' => 'short_link'])->with('category');
     }
 }
