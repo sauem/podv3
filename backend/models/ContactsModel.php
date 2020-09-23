@@ -148,7 +148,8 @@ class ContactsModel extends BaseModel
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
             $this->country = !empty($this->country) ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
 
-            $this->code = !$this->code ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
+            $this->code = (!$this->code || strpos($this->code, $this->country)) ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
+
             $this->register_time = empty($this->register_time) ? time() : Helper::convertTime($this->register_time);
 
             if (self::checkExists($this->hashkey)) {

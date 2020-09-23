@@ -1277,7 +1277,7 @@ class AjaxController extends BaseController
                     $waitContact = new ContactsLogImport;
                     $optionExitst = FormInfo::findOne(['content' => $contactOption]);
 
-                    $link = Helper::getHost($contact['link']);
+                    $link = Helper::getHost(trim($contact['link']));
                     $pageExit = LandingPages::findOne(['link' => $link]);
 
                     // Không tồn tại landing page
