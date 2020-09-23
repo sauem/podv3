@@ -509,7 +509,7 @@ $("body").on("click", ".deleteAll", function () {
                 data: {model: _model, keys: _column},
                 success: function (res) {
                     if (res.success) {
-                        swal.fire("Thông báo", "Xóa dữ liệu thành công!","success").then(() => window.location.reload());
+                        swal.fire("Thông báo", "Xóa dữ liệu thành công!", "success").then(() => window.location.reload());
                         return false;
                     }
                     toastr.warning(res.msg);
@@ -521,6 +521,7 @@ $("body").on("click", ".deleteAll", function () {
 
 
 function __findOrderForm(_option, _category) {
+
     $.ajax({
         url: config.findFormInfo,
         data: {option: _option, category: _category},
@@ -530,6 +531,8 @@ function __findOrderForm(_option, _category) {
                 ORDER.formInfosBase = res.base;
                 ORDER.formInfosData = res.data;
                 $("#resultFormInfo").html(compileTemplate("template-form-info", res))
+            } else {
+                toastr.warning(res.msg);
             }
         }
     });
@@ -629,6 +632,8 @@ async function detectLocalCity(zipcode, country) {
 }
 
 async function loadProducts(keys) {
+    let option = null;
+    let category = null;
     if (!keys) {
         toastr.error('Liên hệ không xác định!');
         return;
@@ -640,6 +645,8 @@ async function loadProducts(keys) {
         cache: false,
         success: function (res) {
             const {zipcode, country} = res.customer.info;
+            option = res.product[0].selected;
+            category = res.product[0].category;
             detectLocalCity(zipcode, country)
                 .then(data => {
                     const {city, district} = data;
@@ -648,15 +655,21 @@ async function loadProducts(keys) {
                 }).then(() => {
                 let html = compileTemplate("template-product", res.customer);
                 $("#resultInfo").html(html);
+
                 setORDER(res);
             }).catch(error => {
                 let html = compileTemplate("template-product", res.customer);
                 $("#resultInfo").html(html);
                 setORDER(res);
-            })
+                console.log("Load contact selected ", error.toString());
+            });
+
 
         }
-    })
+    });
+    return {
+        option, category
+    };
 }
 
 function loadSku() {
@@ -678,8 +691,7 @@ function setORDER(res) {
     _products.map(item => {
         if (ORDER.skus.includes(item.sku)) {
             return 0;
-        }
-        ;
+        };
 
         ORDER.option = item.selected;
         ORDER.cate = item.category_id;

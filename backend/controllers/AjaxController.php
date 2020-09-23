@@ -133,6 +133,7 @@ class AjaxController extends BaseController
         foreach ($product as $k => $p) {
             $product[$k]['option'] = Helper::option($p['option']);
             $product[$k]['selected'] = $selected[$k];
+            $product[$k]['category'] = isset($contacts[0]) ? $contacts[0]['page']['category_id'] : null;
         }
 
         $phone = ArrayHelper::getValue($contacts[0], 'phone');
@@ -521,7 +522,7 @@ class AjaxController extends BaseController
             if (!$option) {
                 return [
                     'success' => 0,
-                    'msg' => 'Không mẫu sản phẩm phù hợp'
+                    'msg' => 'Không mẫu đơn hàng phù hợp'
                 ];
             }
             $model = FormInfo::find()
@@ -1279,6 +1280,8 @@ class AjaxController extends BaseController
                     $model = new ContactsModel;
                     $contactType = strtolower($contact['type']);
                     $contactOption = trim($contact['option']);
+                    $contactCountry = isset($contact['country']) ? $contact['country'] : null;
+                    $contactCode = isset($contact['code']) ? $contact['code'] : null;
                     $data = [
                         'phone' => $contact['phone'],
                         'name' => $contact['name'],
@@ -1298,8 +1301,8 @@ class AjaxController extends BaseController
                         'created_at' => time(),
                         'updated_at' => time(),
                         'host' => $contact['host'],
-                        'code' => isset($contact['code']) ? $contact['code'] : null,
-                        'country' => isset($contact['country']) ? $contact['country'] : null
+                        'code' => $contactCode,
+                        'country' => $contactCountry
                         // 'status' => isset($contact['status']) ? $contact['status'] : null,
                     ];
 

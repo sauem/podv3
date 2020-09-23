@@ -134,7 +134,7 @@ use kartik\grid\ActionColumn;
                         },
                         'edit' => function ($url, $model) {
                             return Html::button("<i class='fe-edit'></i> Sửa", [
-                                'class' => 'btn btn-sm editButton mt-1 btn-outline-info w-100',
+                                'class' => 'btn btn-sm  mt-1 btn-outline-info w-100',
                                 'data-toggle' => 'tooltip',
                                 'data-key' => $model->id,
                                 'data-phone' => $model->phone,

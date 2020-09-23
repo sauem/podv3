@@ -93,19 +93,21 @@ $js = <<<JS
         
         $(".createOrder").click(function() {
             let key = $(this).data("key");
-           
-            $("#collapse-order").collapse('show');
+           $("#collapse-order").collapse('show');
            $("html, body").animate({ scrollTop: 0 }, "slow");
-           
            restOrder();
+           
+            const {option, cate}  = ORDER;
+            
             swal.fire({
             title : "Đang đọc dữ liệu...",
             onBeforeOpen : function() {
                 swal.showLoading();
-                loadProducts(key).then(() => loadSku())
-                .then(() => {
-                        __findOrderForm(ORDER.option, ORDER.cate);
+                loadProducts(key)
+                .then( res => {
+                    __findOrderForm(res.option, res.category);
                 })
+                .then(() => loadSku())
                 .then(() => {
                     setTimeout(()=> swal.close(), 500)
                 });
