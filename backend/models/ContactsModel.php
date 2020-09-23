@@ -146,7 +146,7 @@ class ContactsModel extends BaseModel
             $this->short_link = Helper::getHost($this->link);
             $this->hashkey = md5($this->phone . $this->short_link . $this->option);
             $this->host = Helper::getHost(Yii::$app->request->getHostInfo());
-            $this->country = !empty($this->country) ? $this->country : Helper::findCountryFromZipcode($this->zipcode);
+            $this->country = $this->country ? $this->country : Helper::findCountryFromZipcode($this->zipcode, $this->link);
 
             $this->code = (!$this->code || strpos($this->code, $this->country)) ? Helper::makeCodeIncrement($maxIDNumber, $this->country) : $this->code;
 

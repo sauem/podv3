@@ -737,7 +737,6 @@ class AjaxController extends BaseController
             $phone = Yii::$app->request->post("phone");
             $log = new ContactsLog;
 
-
             if ($status === ContactsModel::_NUMBER_FAIL) {
                 return static::numberFailStatus($phone, $user);
             }
@@ -784,6 +783,162 @@ class AjaxController extends BaseController
         }
     }
 
+
+    static function numberFailStatus($phone, $user)
+    {
+
+        $contacts = ContactsModel::find()
+            ->where(['phone' => $phone, 'status' => ContactsModel::_NEW])
+            ->orWhere("`phone` = '$phone' AND `status` != 'ok'")->all();
+
+        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+        if (!$assignment) {
+            return [
+                'success' => 0,
+                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
+            ];
+        }
+
+        if ($contacts) {
+
+
+
+            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái Sai số");
+            ContactsModel::updateAll([
+                'status' => ContactsModel::_NUMBER_FAIL],
+                '(`status` IS NULL OR `status` != \'ok\') AND `phone`=\'' . $phone . '\'');
+
+            foreach ($contacts as $contact) {
+                $log = new ContactsLog;
+                $log->user_id = $user;
+                $log->contact_id = $contact->id;
+                $log->contact_code = $contact->code;
+                $log->phone = $contact->phone;
+                $log->status = ContactsModel::_NUMBER_FAIL;
+                $log->update_contact = false;
+                $log->save();
+            }
+
+            $assignment->status = ContactsAssignment::_COMPLETED;
+            $assignment->save();
+
+           // doScanContactByCountry::apply(Yii::$app->user->getId());
+            return [
+                'success' => 1,
+                'contacts' => $contacts,
+                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi không xác định'
+        ];
+    }
+
+    static function numberPendingStatus($phone, $user)
+    {
+        $contacts = ContactsModel::find()->where(['phone' => $phone])
+            ->orWhere("`phone` = '$phone' AND `status` != 'ok'")->all();
+        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+        if (!$assignment) {
+            return [
+                'success' => 0,
+                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
+            ];
+        }
+
+        if ($contacts) {
+            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái thuê bao");
+            ContactsModel::updateAll([
+                'status' => ContactsModel::_PENDING, 'callback_time' => 1],
+                '(`status` IS NULL OR `status` != \'ok\') AND `phone`=\'' . $phone . '\'');
+
+            foreach ($contacts as $contact) {
+                $log = new ContactsLog;
+                $log->user_id = $user;
+                $log->contact_id = $contact->id;
+                $log->contact_code = $contact->code;
+                $log->phone = $contact->phone;
+                $log->status = ContactsModel::_PENDING;
+                $log->save();
+
+//                $contact->status = ContactsModel::_PENDING;
+//                $contact->callback_time = 1;
+//                $contact->save();
+            }
+
+
+            $assignment->status = ContactsAssignment::_PENDING;
+            $assignment->callback_time = 1;
+            $assignment->save();
+
+            doScanContactByCountry::apply();
+            return [
+                'success' => 1,
+                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi không xác định'
+        ];
+    }
+
+    static function numberCallbackStatus($phone, $user)
+    {
+        $contacts = ContactsModel::find()->where(['phone' => $phone, 'status' => ContactsModel::_NEW])
+            ->orWhere("`phone` = '$phone' AND `status` != 'ok'")->all();
+        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+        if (!$assignment) {
+            return [
+                'success' => 0,
+                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
+            ];
+        }
+
+        if (!empty($contacts)) {
+            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái gọi lại");
+
+
+            ContactsModel::updateAll([
+                'status' => ContactsModel::_CALLBACK, 'callback_time' => 1],
+                '(`status` IS NULL OR `status` != \'ok\') AND `phone`=\'' . $phone . '\'');
+
+            foreach ($contacts as $contact) {
+                $log = new ContactsLog;
+                $log->user_id = $user;
+                $log->contact_id = $contact->id;
+                $log->contact_code = $contact->code;
+                $log->phone = $contact->phone;
+                $log->status = ContactsModel::_CALLBACK;
+                $log->save();
+
+//                $contact->status = ContactsModel::_CALLBACK;
+//                $contact->callback_time = 1;
+//                if (!$contact->save()) {
+//                    return [
+//                        'success' => 0,
+//                        'msg' => Helper::firstError($model)
+//                    ];
+//                }
+            }
+
+            $assignment->status = ContactsAssignment::_PENDING;
+            $assignment->callback_time = 1;
+            $assignment->save();
+
+            doScanContactByCountry::apply();
+            return [
+                'success' => 1,
+                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => 'Lỗi không xác định ' . sizeof($contacts)
+        ];
+    }
+
     function actionChangeMultipleStatus()
     {
         $ids = Yii::$app->request->post("keys");
@@ -824,137 +979,6 @@ class AjaxController extends BaseController
             'msg' => "Thay đổi trạng thái thành công!"
         ];
     }
-
-    static function numberFailStatus($phone, $user)
-    {
-        $model = ContactsModel::find()->where(['phone' => $phone])
-            ->where(['IN', 'status', [ContactsModel::_NEW]])->all();
-        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
-        if (!$assignment) {
-            return [
-                'success' => 0,
-                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
-            ];
-        }
-
-        if ($model) {
-
-            $assignment->status = ContactsAssignment::_COMPLETED;
-            $assignment->save();
-
-            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái Sai số");
-            foreach ($model as $contact) {
-                $log = new ContactsLog;
-                $log->user_id = $user;
-                $log->contact_id = $contact->id;
-                $log->contact_code = $contact->code;
-                $log->phone = $contact->phone;
-                $log->status = ContactsModel::_NUMBER_FAIL;
-                $log->save();
-
-                $contact->status = ContactsModel::_NUMBER_FAIL;
-                $contact->save();
-
-            }
-            doScanContactByCountry::apply();
-            return [
-                'success' => 1,
-                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
-            ];
-        }
-        return [
-            'success' => 0,
-            'msg' => 'Lỗi không xác định'
-        ];
-    }
-
-    static function numberPendingStatus($phone, $user)
-    {
-        $model = ContactsModel::find()->where(['phone' => $phone])
-            ->where(['IN', 'status', [ContactsModel::_NEW]])->all();
-        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
-        if (!$assignment) {
-            return [
-                'success' => 0,
-                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
-            ];
-        }
-
-        if ($model) {
-            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái thuê bao");
-            foreach ($model as $contact) {
-                $log = new ContactsLog;
-                $log->user_id = $user;
-                $log->contact_id = $contact->id;
-                $log->contact_code = $contact->code;
-                $log->phone = $contact->phone;
-                $log->status = ContactsModel::_PENDING;
-                $log->save();
-
-                $contact->status = ContactsModel::_PENDING;
-                $contact->callback_time = 1;
-                $contact->save();
-            }
-
-            $assignment->status = ContactsAssignment::_PENDING;
-            $assignment->callback_time = 1;
-            $assignment->save();
-
-            doScanContactByCountry::apply();
-            return [
-                'success' => 1,
-                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
-            ];
-        }
-        return [
-            'success' => 0,
-            'msg' => 'Lỗi không xác định'
-        ];
-    }
-
-    static function numberCallbackStatus($phone, $user)
-    {
-        $model = ContactsModel::find()->where(['phone' => $phone])
-            ->where(['IN', 'status', [ContactsModel::_NEW]])->all();
-        $assignment = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
-        if (!$assignment) {
-            return [
-                'success' => 0,
-                'msg' => 'Bạn không có quyền quản lý số điện thoại thày!'
-            ];
-        }
-
-        if ($model) {
-            ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái gọi lại");
-            foreach ($model as $contact) {
-                $log = new ContactsLog;
-                $log->user_id = $user;
-                $log->contact_id = $contact->id;
-                $log->contact_code = $contact->code;
-                $log->phone = $contact->phone;
-                $log->status = ContactsModel::_CALLBACK;
-                $log->save();
-
-                $contact->status = ContactsModel::_CALLBACK;
-                $contact->callback_time = 1;
-                $contact->save();
-            }
-            $assignment->status = ContactsAssignment::_PENDING;
-            $assignment->callback_time = 1;
-            $assignment->save();
-
-            doScanContactByCountry::apply();
-            return [
-                'success' => 1,
-                'msg' => 'Thay đổi trạng thái số điện thoại thành công!'
-            ];
-        }
-        return [
-            'success' => 0,
-            'msg' => 'Lỗi không xác định'
-        ];
-    }
-
 
     public function actionReportSearch()
     {

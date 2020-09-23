@@ -28,6 +28,8 @@ class ContactsLog extends BaseModel
      * {@inheritdoc}
      */
     public $callback_time;
+    public $update_contact = true;
+
     public static function tableName()
     {
         return 'contacts_log';
@@ -43,7 +45,8 @@ class ContactsLog extends BaseModel
             [['user_id', 'contact_id', 'created_at', 'callback_time', 'updated_at'], 'integer'],
             [['status'], 'string', 'max' => 50],
             [['phone'], 'string'],
-            [['note','customer_note','contact_code'], 'string', 'max' => 255],
+            [['update_contact'], 'safe'],
+            [['note', 'customer_note', 'contact_code'], 'string', 'max' => 255],
             [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContactsModel::className(), 'targetAttribute' => ['contact_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -74,7 +77,7 @@ class ContactsLog extends BaseModel
      */
     public function getContact()
     {
-        return $this->hasOne(ContactsModel::className(),['code' => 'contact_code'])->with('logImport');
+        return $this->hasOne(ContactsModel::className(), ['code' => 'contact_code'])->with('logImport');
     }
 
     public function beforeSave($insert)
@@ -86,11 +89,11 @@ class ContactsLog extends BaseModel
                 $this->addError("contact_id", "Liên hệ quá số lần liên lạc!");
                 return false;
             }
-            
+
 
             $this->status = isset($this->status) ? $this->status : null;
             $contact = ContactsModel::findOne($this->contact_id);
-            if($contact){
+            if ($contact) {
                 $assignment = ContactsAssignment::findOne(['contact_phone' => $contact->phone]);
                 $contact->status = $this->status;
                 $contact->callback_time = null;
@@ -98,7 +101,7 @@ class ContactsLog extends BaseModel
                         $this->status == ContactsModel::_CALLBACK ||
                         $this->status == ContactsModel::_PENDING)) {
                     $contact->callback_time = $this->callback_time;
-                    if($assignment){
+                    if ($assignment) {
                         $assignment->callback_time = $this->callback_time;
                         $assignment->status = ContactsAssignment::_PENDING;
                     }
@@ -111,7 +114,9 @@ class ContactsLog extends BaseModel
                 if ($assignment) {
                     $assignment->save();
                 }
-                $contact->save();
+                if ($this->update_contact) {
+                    $contact->save();
+                }
             }
 
         } else {

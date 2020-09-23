@@ -799,6 +799,7 @@ $("body").on("click", ".failedButton", function () {
                         cache: false,
                         data: {phone: _phone, status: 'number_fail'},
                         success: function (res) {
+                            console.log(res);
                             if (res.success) {
                                 toastr.success(res.msg);
                                 __reloadData();

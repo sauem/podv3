@@ -40,7 +40,7 @@ use kartik\grid\ActionColumn;
             'pjaxSettings' => [
                 'neverTimeout' => true,
                 'options' => [
-                    'id' => isset($id) ? "pjax-$id" : 'pjax-wait'
+                    'id' => 'pjax-all'
                 ]
             ],
             'headerRowOptions' => [
@@ -62,6 +62,7 @@ use kartik\grid\ActionColumn;
                     'format' => 'html',
                     'value' => function ($model) {
                         $html = $model->code . "<br>";
+                        $html .= $model->phone . "<br>";
                         $html .= ContactsModel::label($model->status);
                         return $html;
                     }
@@ -119,11 +120,21 @@ use kartik\grid\ActionColumn;
                     'class' => ActionColumn::className(),
                     'header' => 'Thao tác',
                     'width' => '140px',
-                    'template' => '{cancel}',
+                    'template' => '{cancel}{edit}',
                     'buttons' => [
                         'cancel' => function ($url, $model) {
                             return Html::button("<i class='fe-phone-missed'></i> Hủy", [
                                 'class' => 'btn btn-sm cancelButton mt-1 btn-outline-warning w-100',
+                                'data-toggle' => 'tooltip',
+                                'data-key' => $model->id,
+                                'data-phone' => $model->phone,
+                                'title' => 'Khách hủy',
+                                'data-pjax' => '0'
+                            ]);
+                        },
+                        'edit' => function ($url, $model) {
+                            return Html::button("<i class='fe-edit'></i> Sửa", [
+                                'class' => 'btn btn-sm editButton mt-1 btn-outline-info w-100',
                                 'data-toggle' => 'tooltip',
                                 'data-key' => $model->id,
                                 'data-phone' => $model->phone,
@@ -183,5 +194,6 @@ $(".approveContact").click(function(){
                 }
             })
 });
+
 JS;
 $this->registerJs($js);

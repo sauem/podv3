@@ -14,6 +14,69 @@ use yii\helpers\ArrayHelper;
 
 class doScanContactByCountry
 {
+    static function _apply($current_user = null)
+    {
+        // Tiêu chí phân bổ
+        // 1. Contacts được chỉ định trực tiếp
+        // 2. Số điện thoại phát sinh conctact mới
+        // 3. Số điện thoại thuê bao
+        // 4. Số điện thoại gọi lại
+        // 5. Contact mới số mới
+
+        $phones = ContactsModel::find()->addSelect(['phone', 'country'])->groupBy(['phone', 'country'])->all();
+        if (!$phones) {
+            return "Không số điện thoại nào được áp dụng";
+        }
+        $users = AuthAssignment::find()->with('user')
+            ->where(['item_name' => UserModel::_SALE])
+            ->all();
+        $userId = \Yii::$app->user->getId();
+        $currentUser = UserModel::findOne($userId);
+        if (!Helper::userRole(UserModel::_SALE)) {
+            return "Không phải đối tượng phân bổ " . json_encode(\Yii::$app->user->getId());
+        }
+
+        // bỏ qua sale đủ số lượng SĐT trong ngày
+        if (self::hasLimit($currentUser) || self::hasProcessing($currentUser->id)) {
+            // Kiểm tra số điện thoại gọi lại
+            self::applyPending($currentUser->id);
+            self::rollbackCallback($currentUser);
+        } else {
+            //chưa có liên hệ nào được phân bổ
+            foreach ($phones as $p => $phone) {
+                $phoneNumber = $phone->phone;
+                $phoneCountry = $phone->country;
+                //check số đt k có contacts
+
+                // Emty new contact
+                if (self::emptyContact($phoneNumber)) {
+                    //Helper::showMessage("Đã hết liên hệ từ số điện thoại $phoneNumber");
+                    continue;
+                }
+
+                // Bỏ qua SĐT nếu đã được phân bổ
+                if (self::exitsPhone($phoneNumber) || self::isLitmitStep($currentUser->id)) {
+                    self::checkCompleted($phoneNumber, $currentUser->id);
+                    self::applyPending($currentUser->id);
+                    self::rollbackCallback($currentUser);
+                    continue;
+                }
+                // Nếu user chưa có số điện thoại trong trạng thái : PROCESSING
+                $status = ContactsAssignment::_PROCESSING;
+                if (self::hasProcessing($currentUser->id)) {
+                    $status = ContactsAssignment::_PENDING;
+                }
+                // phân bổ số điện thoại cho user
+                if ($currentUser->country === $phoneCountry) {
+                    self::assignPhoneToUser($phoneNumber, $currentUser->id, $phoneCountry, $status);
+                }
+            }
+            // reset processing pending && callback
+            self::applyPending($currentUser->id);
+        }
+        return "success";
+    }
+
     static function apply($current_user = null)
     {
         // Tiêu chí phân bổ
@@ -32,11 +95,13 @@ class doScanContactByCountry
             ->all();
 
         foreach ($users as $k => $user) {
+
             if ($current_user) {
                 $currentUser = $current_user;
             } else {
                 $currentUser = $user->user[0];
             }
+
             // $currentUser = $user->user[0];
             // bỏ qua sale đủ số lượng SĐT trong ngày
             if (self::hasLimit($currentUser) || self::hasProcessing($currentUser->id)) {
@@ -162,6 +227,7 @@ class doScanContactByCountry
 
     static function hasLimit($user)
     {
+
         $beginOfDay = strtotime("midnight", time());
         $endOfDay = strtotime("tomorrow", $beginOfDay) - 1;
         $count = ContactsAssignment::find()->where(['user_id' => $user->id])

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\jobs\doScanContactByCountry;
 use backend\models\ContactsAssignment;
 use backend\models\ContactsLog;
 use backend\models\ContactsLogImport;
@@ -23,6 +24,9 @@ class ContactsController extends BaseController
 {
     public function actionIndex($lastTime = null)
     {
+
+        doScanContactByCountry::apply();
+
         $phone = Yii::$app->request->get("phone");
         if ((Helper::userRole(UserModel::_ADMIN) || Helper::userRole(UserModel::_MARKETING)) && !$phone) {
             $this->redirect(Url::toRoute(['/contacts-assignment/index']));

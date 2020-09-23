@@ -99,9 +99,7 @@ use kartik\grid\ActionColumn;
             'template' => '{duplicate}{cancel}{createOrder}',
             'buttons' => [
                 'duplicate' => function ($url, $model) {
-                    if(!ContactsModel::hasDuplicate($model->hashkey)){
-                        return null;
-                    }
+
                     return Html::button("<i class='fe-phone-call'></i> Trùng", [
                         'class' => 'btn btn-sm duplicateButton btn-outline-danger w-100',
                         'data-toggle' => 'tooltip',
