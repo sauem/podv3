@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use common\helper\Helper;
+use phpDocumentor\Reflection\Types\Self_;
 use Yii;
 
 /**
@@ -149,4 +150,13 @@ class ContactsLog extends BaseModel
         parent::afterFind();
     }
 
+    public static function countCallback($user_id, $code, $num = 1)
+    {
+        return self::find()
+            ->where([
+                'user_id' => $user_id,
+                'status' => ContactsModel::_CALLBACK,
+                'contact_code' => $code
+            ])->groupBy('contact_code')->count();
+    }
 }

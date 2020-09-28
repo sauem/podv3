@@ -6,6 +6,7 @@ use backend\jobs\autoBackup;
 use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
 use backend\models\ContactsAssignment;
+use backend\models\ContactsLog;
 use backend\models\ContactsModel;
 use backend\models\OrdersContacts;
 use backend\models\OrdersModel;
@@ -15,6 +16,7 @@ use common\models\Common;
 use Yii;
 use yii\data\ActiveDataProvider;
 use common\models\LoginForm;
+use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
 use yii\web\Response;
 
@@ -64,7 +66,7 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
-        if(Helper::userRole(UserModel::_PARTNER)){
+        if (Helper::userRole(UserModel::_PARTNER)) {
             return $this->redirect('/client/index');
         }
 
@@ -72,21 +74,24 @@ class SiteController extends BaseController
         $totalOrder = OrdersModel::find()->count();
 
         $conversionRate = 0;
-        if($totalContact > 0 && $totalOrder > 0){
-            $conversionRate = $totalOrder/ $totalContact * 100;
+        if ($totalContact > 0 && $totalOrder > 0) {
+            $conversionRate = $totalOrder / $totalContact * 100;
         }
         $totalAmount = OrdersContacts::find()->count('id');
-        return $this->render('index',[
-            'totalContact'  => $totalContact,
+        return $this->render('index', [
+            'totalContact' => $totalContact,
             'totalOrder' => $totalOrder,
             'totalAmount' => $totalAmount,
             'conversionRate' => $conversionRate
         ]);
     }
-    public function actionReport(){
+
+    public function actionReport()
+    {
         $sale = UserModel::listSales();
         return $this->render("report");
     }
+
     /**
      * Login action.
      *
@@ -135,7 +140,7 @@ class SiteController extends BaseController
             ->andFilterWhere([
                 'between', 'created_at', $beginOfDay, $endOfDay
             ])->count();
-       $user = UserModel::findOne(25)->getAttribute("phone_of_day");
+        $user = UserModel::findOne(25)->getAttribute("phone_of_day");
 
         echo $user == $count;
     }
@@ -146,18 +151,43 @@ class SiteController extends BaseController
         $country = Yii::$app->params['country'];
         return $country;
     }
-    function actionDeleteBackup($id){
+
+    function actionDeleteBackup($id)
+    {
         $md = Backups::findOne($id);
-        if($md){
+        if ($md) {
             autoBackup::dropDriver($md->name);
             $md->delete();
             return $this->redirect(['site/web-settings']);
         }
-        return  $this->redirect(['site/web-settings']);
+        return $this->redirect(['site/web-settings']);
     }
 
-    function actionTest(){
-        $appy = doScanContactByCountry::apply();
-        Helper::prinf($appy);
+    function actionBranking()
+    {
+        $query = ContactsLog::find()
+            ->joinWith('user')
+            ->select([
+                'contacts_log.status',
+                'contacts_log.contact_code',
+                'contacts_log.user_id',
+                'user.username as sale',
+                'contacts_log.user_id',
+                'SUM( IF (contacts_log.status = "ok", 1,0)) as ok',
+                'SUM( IF (contacts_log.status = "pending", 1,0)) as pending',
+                'SUM( IF (contacts_log.status = "cancel", 1,0)) as cancel',
+                'SUM( IF ( contacts_log.status = "number_fail" || contacts_log.status = "duplicate" || contacts_log.status = "skip" , 1,0)) as failed',
+                // Đếm nếu status = "callback" và contact code đó chỉ xuất hiện 1 lần
+                 'SUM( CASE WHEN contacts_log.status = "callback"  THEN 1 else 0 END) as callback_1',
+                 'SUM( CASE WHEN contacts_log.status = "callback"  THEN 1 else 0 END) as callback_2',
+            ])
+            ->groupBy(['contacts_log.user_id'])->asArray()->all();
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $query
+        ]);
+        return $this->render("branking", [
+            'dataProvider' => $dataProvider
+        ]);
     }
 }
