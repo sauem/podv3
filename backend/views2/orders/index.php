@@ -1,5 +1,6 @@
 <?php
 
+use kartik\grid\CheckboxColumn;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
@@ -16,12 +17,12 @@ use common\helper\Helper;
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-   <div class="card">
-       <div class="card-header">
-           <h4 class="card-title">Danh sách đơn hàng</h4>
-       </div>
-       <div class="card-body">
-           <?php $fullExportMenu = ExportMenu::widget([
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Danh sách đơn hàng</h4>
+        </div>
+        <div class="card-body">
+            <?php $fullExportMenu = ExportMenu::widget([
                 'dataProvider' => $dataProvider,
                 'asDropdown' => false,
                 'columns' => [
@@ -169,6 +170,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'enablePushState' => false
                 ],
                 'columns' => [
+                    [
+                        'class' => CheckboxColumn::class,
+                    ],
                     [
                         'attribute' => 'customer_name',
                         'format' => 'html',
@@ -328,9 +332,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'toggleDataContainer' => ['class' => 'btn-group-sm ml-1'],
                 'exportContainer' => ['class' => 'btn-group-sm ml-1']
 
-            ])  ?>
-       </div>
-   </div>
+            ]) ?>
+        </div>
+    </div>
 
 <?= $this->render('_modal_edit') ?>
 <?php
