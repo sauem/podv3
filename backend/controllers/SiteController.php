@@ -163,7 +163,7 @@ class SiteController extends BaseController
         return $this->redirect(['site/web-settings']);
     }
 
-    function actionBranking()
+    function actionBranking($start = null, $end = null)
     {
         $query = ContactsLog::find()
             ->joinWith('user')
@@ -171,6 +171,7 @@ class SiteController extends BaseController
                 'contacts_log.status',
                 'contacts_log.contact_code',
                 'contacts_log.user_id',
+                'contacts_log.created_at',
                 'user.username as sale',
                 'contacts_log.user_id',
                 'SUM( IF (contacts_log.status = "ok", 1,0)) as ok',
@@ -178,10 +179,18 @@ class SiteController extends BaseController
                 'SUM( IF (contacts_log.status = "cancel", 1,0)) as cancel',
                 'SUM( IF ( contacts_log.status = "number_fail" || contacts_log.status = "duplicate" || contacts_log.status = "skip" , 1,0)) as failed',
                 // Đếm nếu status = "callback" và contact code đó chỉ xuất hiện 1 lần
-                 'SUM( CASE WHEN contacts_log.status = "callback"  THEN 1 else 0 END) as callback_1',
-                 'SUM( CASE WHEN contacts_log.status = "callback"  THEN 1 else 0 END) as callback_2',
-            ])
-            ->groupBy(['contacts_log.user_id'])->asArray()->all();
+                 'SUM( CASE WHEN contacts_log.status = "callback"  THEN 1 else 0 END) as callback',
+                ])
+            ->groupBy(['contacts_log.user_id']);
+        if($start && $end){
+            $query->filterWhere(['between','contacts_log.created_at', $start, $end]);
+        }else{
+            $beginOfDay = strtotime("midnight", time());
+            $endOfDay = strtotime("tomorrow", $beginOfDay);
+
+            $query->filterWhere(['between','contacts_log.created_at', $beginOfDay, $endOfDay]);
+        }
+        $query = $query->asArray()->all();
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $query
