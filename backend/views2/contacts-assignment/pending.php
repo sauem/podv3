@@ -145,7 +145,7 @@ use yii\helpers\Url;
                                 ]);
                             },
                             'link' => function ($url, $model) {
-                                if (!$model->reason !== "link") {
+                                if ($model->reason !== "link") {
                                     return null;
                                 }
                                 return Html::button("Xác định trang", [
