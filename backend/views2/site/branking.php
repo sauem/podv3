@@ -72,6 +72,13 @@ use yii\helpers\Url;
                         'attribute' => 'failed',
                     ],
                     [
+                        'label' => 'CTR',
+                        'value' => function ($model) {
+                            $ctr = $model['ok'] / ($model['ok'] + $model['cancel']);
+                            return round($ctr, 2) . "%";
+                        },
+                    ],
+                    [
                         'label' => 'Điểm',
                         'value' => function ($model) {
                             $point = 0;
