@@ -803,7 +803,6 @@ class AjaxController extends BaseController
         if ($contacts) {
 
 
-
             ActionLog::add("success", Yii::$app->user->identity->username . " thay đổi $phone sang trạng thái Sai số");
             ContactsModel::updateAll([
                 'status' => ContactsModel::_NUMBER_FAIL],
@@ -823,7 +822,7 @@ class AjaxController extends BaseController
             $assignment->status = ContactsAssignment::_COMPLETED;
             $assignment->save();
 
-           // doScanContactByCountry::apply(Yii::$app->user->getId());
+            // doScanContactByCountry::apply(Yii::$app->user->getId());
             return [
                 'success' => 1,
                 'contacts' => $contacts,
@@ -1423,6 +1422,51 @@ class AjaxController extends BaseController
             'logs' => $contactsLog,
             'msg' => "không tồn tại liên hệ chờ có yêu cầu {$newContent}"
         ];
+    }
+
+    public function actionAcceptContact()
+    {
+        $id = Yii::$app->request->post("key");
+        try {
+            $model = ContactsLogImport::findOne($id);
+            $contact = new ContactsModel;
+
+            if (!$model) {
+                return [
+                    'success' => 0,
+                    'msg' => 'Không tìm thấy bản ghi'
+                ];
+            }
+
+            $data = ArrayHelper::toArray($model);
+            unset($data['created_at']);
+            unset($data['updated_at']);
+            unset($data['reason']);
+            unset($data['reason_msg']);
+            unset($data['hashkey']);
+            if ($contact->load($data, "")) {
+                if ($contact->save()) {
+                    $model->delete();
+                    return [
+                        'success' => 1,
+                        'msg' => "Duyệt liên hệ thành công!"
+                    ];
+
+                }
+                if(ContactsModel::findOne(['hashkey' => $model->hashkey])){
+                    $model->delete();
+                }
+                return [
+                    'success' => 0,
+                    'msg' => Helper::firstError($contact) . ",Liên hệ trùng sẽ xóa khỏi bảng chờ!"
+                ];
+            }
+        } catch (\Exception $exception) {
+            return [
+                'success' => 0,
+                'msg' => $exception->getMessage()
+            ];
+        }
     }
 
 }

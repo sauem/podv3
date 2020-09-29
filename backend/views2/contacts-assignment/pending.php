@@ -22,7 +22,7 @@ use yii\helpers\Url;
             </div>
         </div>
         <div class="card-body">
-            <?= $this->render("search/pending")?>
+            <?= $this->render("search/pending") ?>
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
@@ -125,9 +125,16 @@ use yii\helpers\Url;
 
                     [
                         'class' => ActionColumn::class,
-                        'template' => '{link}{option}',
+                        'template' => '{link}{option}{accept}',
                         'width' => '14%',
                         'buttons' => [
+                            'accept' => function ($url, $model) {
+                                return Html::button("Duyệt liên hệ", [
+                                    'data-pjax' => '0',
+                                    'class' => 'btn btn-xs acceptButton w-100 btn-outline-success',
+                                    'data-key' => $model->id,
+                                ]);
+                            },
                             'option' => function ($url, $model) {
                                 if ($model->reason !== "option") {
                                     return null;
@@ -231,5 +238,31 @@ $js = <<<JS
 
     initRemote("landingModal");
     initRemote("optionModal");
+    
+    $("body").on("click",".acceptButton" ,function() {
+            let _key = $(this).data("key");
+            swal.fire({
+                title : "Duyệt liên hệ",
+                onBeforeOpen : () => {
+                    swal.showLoading();
+                    $.ajax({
+                       url : config.acceptContact,
+                       data : {key : _key},
+                       type : "POST",
+                       cache : false,
+                       success : function(res) {
+                            if(res.success){
+                                toastr.success(res.msg);
+                                
+                            }else{
+                                toastr.warning(res.msg);
+                            }
+                            __reloadData();
+                            swal.close();
+                       }
+                    });
+                }
+            })
+    })
 JS;
 $this->registerJs($js);
