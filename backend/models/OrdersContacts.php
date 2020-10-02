@@ -13,6 +13,8 @@ use Yii;
  * @property int|null $user_id
  * @property int $created_at
  * @property int $updated_at
+ * @property int $contact_code
+ * @property int $phone
  *
  * @property Contacts $contact
  */
@@ -21,6 +23,8 @@ class OrdersContacts extends BaseModel
     /**
      * {@inheritdoc}
      */
+    public $phone;
+    public $contact_code;
     public static function tableName()
     {
         return 'orders_contacts';
@@ -34,6 +38,7 @@ class OrdersContacts extends BaseModel
         return [
             [['order_id', 'contact_id', 'user_id'], 'integer'],
             [['order_id', 'contact_id','user_id'], 'required'],
+            [['phone', 'contact_code'], 'string'],
             [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContactsModel::className(), 'targetAttribute' => ['contact_id' => 'id']],
         ];
     }
@@ -65,10 +70,13 @@ class OrdersContacts extends BaseModel
     public function afterSave($insert, $changedAttributes)
     {
         if($insert){
+
             $log = new ContactsLog;
             $log->status =  ContactsModel::_OK;
             $log->contact_id = $this->contact_id;
             $log->user_id = $this->user_id;
+            $log->contact_code = $this->contact_code;
+            $log->phone = $this->phone;
             $log->note = "Đã tạo đơn hàng!";
             $log->save();
         }

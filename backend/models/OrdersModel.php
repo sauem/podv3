@@ -33,6 +33,7 @@ use yii\helpers\Html;
  * @property int $payment_method
  * @property int $admin_block
  * @property int $approved_user_id
+ * @property string $code
  *
  *
  * @property User $user
@@ -92,6 +93,8 @@ class OrdersModel extends BaseModel
                     $orderRelation = new OrdersContacts;
                     $orderRelation->contact_id = $id;
                     $orderRelation->order_id = $this->id;
+                    $orderRelation->phone = $this->customer_phone;
+                    $orderRelation->contact_code = $this->code;
                     $orderRelation->user_id = Yii::$app->user->getId();
                     $orderRelation->save();
                 }
