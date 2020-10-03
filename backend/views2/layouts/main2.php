@@ -103,8 +103,7 @@ AppAsset2::register($this);
         <?= $this->render('@backend/views2/parts/foot2') ?>
     </div>
 </div>
-<?= $this->render("@backend/views2/parts/navright") ?>
-<div class="rightbar-overlay"></div>
+
 <?php $this->endBody() ?>
 <?php if (Yii::$app->request->isPjax || Yii::$app->session->hasFlash('success')): ?>
     <script>
