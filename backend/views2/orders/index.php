@@ -272,7 +272,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return null;
                                 }
                                 return Html::a("<i class='fa fa-edit'></i> sửa đơn", 'javascript:;', [
-                                    'class' => 'btn btn-sm bg-white mt-2',
+                                    'class' => 'btn btn-sm btn-info mt-2',
                                     'data-toggle' => 'modal',
                                     'data-key' => $model->id,
                                     'data-target' => '#orderEdit',
@@ -292,13 +292,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return null;
                                 }
                                 $button = Html::a("<i class='fa fa-lock'></i> Khóa sửa", 'javascript:;', [
-                                    'class' => 'bg-white block btn btn-sm mt-2',
+                                    'class' => 'btn-danger block btn btn-sm mt-2',
                                     'data-key' => $model->id,
                                     'data-pjax' => '0'
                                 ]);
                                 if ($model->hasLocked()) {
                                     $button = Html::a("<i class='fa fa-lock'></i> Mở khóa", 'javascript:;', [
-                                        'class' => 'bg-white block btn btn-sm mt-2',
+                                        'class' => 'btn-success block btn btn-sm mt-2',
                                         'data-key' => $model->id,
                                         'data-type' => 'open',
                                         'data-pjax' => '0'
@@ -308,7 +308,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                             'status' => function ($url, $model) {
                                 return Html::a("<i class='fa fa-bar-chart'></i> Trạng thái", "javascript:;", [
-                                    'class' => 'bg-white changeStatus btn btn-sm mt-2',
+                                    'class' => 'btn-warning changeStatus btn btn-sm mt-2',
                                     'data-key' => $model->id,
                                     'data-pjax' => '0'
                                 ]);
