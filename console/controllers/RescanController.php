@@ -3,6 +3,7 @@
 namespace console\controllers;
 
 use backend\jobs\autoBackup;
+use backend\jobs\autoPushSheet;
 use backend\jobs\doScanBilling;
 use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
@@ -84,5 +85,9 @@ class RescanController extends \yii\console\Controller
             'uploadType' => 'resumable'
         ]);
 
+    }
+
+    static function actionSheet(){
+      return  autoPushSheet::push();
     }
 }

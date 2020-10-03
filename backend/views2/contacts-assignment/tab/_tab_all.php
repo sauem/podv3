@@ -13,7 +13,8 @@ use kartik\grid\ActionColumn;
         <h4 class="card-title">Tất cả liên hệ</h4>
         <div class="toolbar">
             <div class="btn-group">
-                <button type="button" data-toggle="collapse" data-target="#all-search" class="btn mr-1 btn-xs btn-outline-success"><i
+                <button type="button" data-toggle="collapse" data-target="#all-search"
+                        class="btn mr-1 btn-xs btn-outline-success"><i
                             class="fe-search"></i> Tìm kiếm
                 </button>
 
@@ -21,16 +22,19 @@ use kartik\grid\ActionColumn;
                             class="fe-bar-chart"></i> Hủy liên hệ được chọn
                 </button>
                 <button data-model="<?= $dataProvider->query->modelClass ?>" type="button"
-                        class="btn btn-xs btn-danger deleteAll"><i
+                        class="btn btn-xs mr-1 btn-danger deleteAll"><i
                             class="fe-trash"></i> Xoá liên hệ được chọn
                 </button>
-
+                <button data-model="<?= $dataProvider->query->modelClass ?>" type="button"
+                        class="btn btn-xs btn-warning updateSheet"><i
+                            class="fe-cloud"></i> cập nhật G.sheet
+                </button>
             </div>
         </div>
     </div>
     <div class="box-body">
         <div class="mb-4">
-            <?= $this->render("../search/all")?>
+            <?= $this->render("../search/all") ?>
         </div>
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
@@ -192,7 +196,33 @@ $(".approveContact").click(function(){
                         }
                     })
                 }
-            })
+            });
+            
+            
+});
+$(".updateSheet").click(function() {
+    swal.fire({
+        title : 'Đang thực hiện',
+        closeOnClickOutside : false,
+        onBeforeOpen : () => {
+            swal.showLoading();
+            try {
+              $.ajax({
+                url : config.pushGoogleSheet,
+                data : {},
+                type : "POST",
+                cache : false,
+                success : res => {
+                    console.log(res)
+                    swal.close();
+                    console.log(res)
+                }
+              });
+            }catch (e) {
+                toastr.warning(e.message)
+            }
+        }
+    })
 });
 
 JS;

@@ -19,6 +19,7 @@ use kartik\grid\GridView;
                     <?= $form->field($model, 'map_api') ?>
                     <?= $form->field($model, 'drive_id') ?>
                     <?= $form->field($model, 'limit_call') ?>
+                    <?= $form->field($model, 'contact_sheet') ?>
                     <small class="text-danger">Thư mục phải share quyền cho email : <a
                             href="mailto:nguyendinhthang.go97@gmail.com">nguyendinhthang.go97@gmail.com</a></small>
                     <div class="text-right">

@@ -57,6 +57,7 @@ AppAsset2::register($this);
             changeContactStatus: "<?= Url::toRoute(['ajax/change-contact-status'])?>",
             changeMultipleStatus: "<?= Url::toRoute(['ajax/change-multiple-status'])?>",
             acceptContact: "<?= Url::toRoute(['ajax/accept-contact'])?>",
+            pushGoogleSheet: "<?= Url::toRoute(['ajax/push-google-sheet'])?>",
         }
     </script>
     <style>

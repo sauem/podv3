@@ -2,9 +2,6 @@
 
 namespace backend\models;
 
-use backend\jobs\doScanContact;
-use backend\jobs\doScanContactByCountry;
-use backend\jobs\scanNewContact;
 use common\helper\Helper;
 use Yii;
 

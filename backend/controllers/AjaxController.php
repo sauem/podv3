@@ -5,6 +5,7 @@ namespace backend\controllers;
 
 
 use backend\jobs\autoBackup;
+use backend\jobs\autoPushSheet;
 use backend\jobs\doScanContactByCountry;
 use backend\models\Backups;
 use backend\models\CategoriesModel;
@@ -25,7 +26,6 @@ use backend\models\ZipcodeCountry;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\data\ArrayDataProvider;
-use yii\debug\models\search\Log;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use Yii;
@@ -399,6 +399,21 @@ class AjaxController extends BaseController
         return [
             'success' => 0,
             'msg' => 'Lỗi hệ thống!' . Helper::firstError($saveDB)
+        ];
+    }
+
+    function actionPushGoogleSheet()
+    {
+        $result = autoPushSheet::push();
+        if ($result) {
+            return [
+                'success' => 1,
+                'msg' => 'Google sheet updated!'
+            ];
+        }
+        return [
+            'success' => 0,
+            'msg' => $result
         ];
     }
 
@@ -1453,7 +1468,7 @@ class AjaxController extends BaseController
                     ];
 
                 }
-                if(ContactsModel::findOne(['hashkey' => $model->hashkey])){
+                if (ContactsModel::findOne(['hashkey' => $model->hashkey])) {
                     $model->delete();
                 }
                 return [
