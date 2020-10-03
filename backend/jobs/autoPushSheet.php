@@ -31,6 +31,12 @@ class autoPushSheet
 
             if ($data) {
                 foreach ($data as $k => $model) {
+                    $code = $model->code ? $model->code : "";
+                    $phone = $model->phone ? $model->phone : "";
+                    $name = $model->name ? $model->name : "";
+                    $address = $model->address ? $model->address : "";
+                    $type = $model->type ? $model->type : "";
+                    $zipcode = $model->zipcode ? $model->zipcode : "";
                     $order = $model->order;
                     $product_sku = "";
                     $product_qty = "";
@@ -60,18 +66,18 @@ class autoPushSheet
                         $product_summary = substr($product_summary, 0, -1);
                     }
                     $item = [
-                        $model->code,
+                        $code,
                         $date,
-                        $model->phone,
-                        $model->name,
-                        $model->address,
+                        $phone,
+                        $name,
+                        $address,
                         $marketer,
                         $sale,
-                        $model->type,
+                        $type,
                         $country,
-                        $model->zipcode,
+                        $zipcode,
                         $count,
-                        "",
+                        $status,
                         $shipping_price,
                         $total,
                         $product_sku,
