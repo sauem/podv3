@@ -71,7 +71,7 @@ class autoPushSheet
                         $country,
                         $model->zipcode,
                         $count,
-                        $status,
+                        "",
                         $shipping_price,
                         $total,
                         $product_sku,
