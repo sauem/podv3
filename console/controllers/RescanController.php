@@ -79,7 +79,7 @@ class RescanController extends \yii\console\Controller
         $file = new \Google_Service_Drive_DriveFile();
         $file->setName(basename($filePath));
         $file->setParents([Helper::setting("drive_id")]);
-        $service->files->create($file,[
+        $service->files->create($file, [
             'data' => file_get_contents($filePath),
             'mimeType' => 'application/sql',
             'uploadType' => 'resumable'
@@ -87,7 +87,8 @@ class RescanController extends \yii\console\Controller
 
     }
 
-    static function actionSheet(){
-      return  autoPushSheet::push();
+    static function actionSheet()
+    {
+        echo autoPushSheet::push();
     }
 }

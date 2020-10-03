@@ -37,7 +37,18 @@ class autoPushSheet
                     $product_summary = "";
                     $total = "";
                     $shipping_price = "";
-
+                    $marketer = "";
+                    $sale = "";
+                    $date = date('d/m/Y H:i:s', $model->register_time);
+                    $count = $model->getContactsLogs()->count() ? $model->getContactsLogs()->count() : "";
+                    $country = Helper::getCountry($model->country);
+                    $status = ArrayHelper::getValue(ContactsModel::STATUS, $model->status, "");
+                    if($model->page){
+                        $marketer = $model->page->marketer;
+                    }
+                    if($model->saleAssign){
+                        $sale = $model->saleAssign->user->username;
+                    }
                     if ($order) {
                         foreach ($order->items as $item) {
                             $product_sku .= $item->product_sku . ",";
@@ -50,17 +61,17 @@ class autoPushSheet
                     }
                     $item = [
                         $model->code,
-                        date('d/m/Y H:i:s', $model->register_time),
+                        $date,
                         $model->phone,
                         $model->name,
                         $model->address,
-                        isset($model->page) ? $model->page->marketer : "",
-                        isset($model->saleAssign) ? $model->saleAssign->user->username : "",
+                        $marketer,
+                        $sale,
                         $model->type,
-                        Helper::getCountry($model->country),
+                        $country,
                         $model->zipcode,
-                        $model->getContactsLogs()->count(),
-                        ArrayHelper::getValue(ContactsModel::STATUS, $model->status, ''),
+                        $count,
+                        $status,
                         $shipping_price,
                         $total,
                         $product_sku,
@@ -93,9 +104,9 @@ class autoPushSheet
         $client->refreshToken(GOOGLE_DRIVE_REFRESH_TOKEN);
         $client->setScopes(\Google_Service_Sheets::SPREADSHEETS);
         $client->setAccessType('offline');
-//        $client->setHttpClient(new Client([
-//            'verify' => "D:\cacert.pem"
-//        ]));
+        $client->setHttpClient(new Client([
+            'verify' => "D:\cacert.pem"
+        ]));
         return $client;
     }
 
