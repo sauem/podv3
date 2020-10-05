@@ -38,6 +38,7 @@ class autoPushSheet
                 $type = $model->type ? $model->type : "";
                 $zipcode = $model->zipcode ? $model->zipcode : "";
                 $order = $model->order;
+                $page = $model->page;
                 $product_sku = "";
                 $product_qty = "";
                 $product_summary = "";
@@ -45,6 +46,7 @@ class autoPushSheet
                 $shipping_price = "";
                 $marketer = "";
                 $sale = "";
+                $category = "";
                 $date = $model->register_time ? date('d/m/Y H:i:s', $model->register_time) : "";
                 $count = $model->getContactsLogs()->count() ? $model->getContactsLogs()->count() : "";
                 $country = $model->country ? Helper::getCountry($model->country) : "";
@@ -54,6 +56,9 @@ class autoPushSheet
                 }
                 if ($model->saleAssign) {
                     $sale = $model->saleAssign->user->username;
+                }
+                if($page){
+                    $category = $page->category->name;
                 }
                 if ($order) {
                     foreach ($order->items as $item) {
@@ -80,6 +85,7 @@ class autoPushSheet
                     $status,
                     $shipping_price,
                     $total,
+                    $category,
                     $product_sku,
                     $product_qty,
                     $product_summary
