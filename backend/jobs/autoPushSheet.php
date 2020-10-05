@@ -100,7 +100,7 @@ class autoPushSheet
             'values' => $dataService
         ]);
 
-        $result = $sheets->spreadsheets_values->update($spreadsheetId, 'A2:Q',
+        $result = $sheets->spreadsheets_values->update($spreadsheetId, 'A2:R',
             $body, ['valueInputOption' => 'RAW']);
         if (\Yii::$app instanceof \Yii\console\Application) {
             return "Done";
