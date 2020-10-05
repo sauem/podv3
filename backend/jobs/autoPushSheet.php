@@ -69,6 +69,8 @@ class autoPushSheet
                     $product_sku = substr($product_sku, 0, -1);
                     $product_qty = substr($product_qty, 0, -1);
                     $product_summary = substr($product_summary, 0, -1);
+                    $shipping_price =  Helper::formatExcel($order->shipping_price);
+                    $total = Helper::formatExcel($order->total);
                 }
                 $item = [
                     $code,
