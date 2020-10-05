@@ -62,9 +62,9 @@ class autoPushSheet
                 }
                 if ($order) {
                     foreach ($order->items as $item) {
-                        $product_sku .= $item->product_sku . ",";
+                        $product_sku .= $item->product->name . ",";
                         $product_qty .= $item->qty . ",";
-                        $product_summary .= $item->qty . "*" . $item->product_sku . ",";
+                        $product_summary .= $item->qty . "*" . $item->product->name . ",";
                     }
                     $product_sku = substr($product_sku, 0, -1);
                     $product_qty = substr($product_qty, 0, -1);
