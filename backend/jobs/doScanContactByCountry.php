@@ -108,6 +108,7 @@ class doScanContactByCountry
                 // Kiểm tra số điện thoại gọi lại
                 self::applyPending($currentUser->id);
                 self::rollbackCallback($currentUser);
+                self::removeAssignmentPhone($phoneNumber = null, $currentUser->id);
                 continue;
             }
             //chưa có liên hệ nào được phân bổ
@@ -150,13 +151,25 @@ class doScanContactByCountry
 
     static function removeAssignmentPhone($phone, $user)
     {
-        $count = ContactsModel::findAll(['phone' => $phone]);
-        if (!$count) {
-            $ass = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
-            if ($ass) {
-                $ass->delete();
+        if (!$phone) {
+            $assignPhone = ContactsAssignment::find()
+                ->where(['user_id' => $user])
+                ->andWhere(['status' => ContactsAssignment::_PROCESSING])
+                ->orderBy(['created_at' => 'ASC'])
+                ->one();
+            if ($assignPhone) {
+                $phone = $assignPhone->contact_phone;
             }
         }
+
+        $count = ContactsModel::findAll(['phone' => $phone]);
+        if (!$count || $count <= 0) {
+            $ass = ContactsAssignment::findOne(['contact_phone' => $phone, 'user_id' => $user]);
+            if ($ass) {
+                return $ass->delete();
+            }
+        }
+        return true;
     }
 
     static function emptyContact($phone)
@@ -190,6 +203,17 @@ class doScanContactByCountry
         return false;
     }
 
+    static function getPhoneProcessing($user)
+    {
+        $processing = ContactsAssignment::find()->where(['user_id' => $user])
+            ->andWhere(['status' => ContactsAssignment::_PROCESSING])
+            ->one();
+        if ($processing) {
+            return $processing->contact_phone;
+        }
+        return false;
+    }
+
     static function applyPending($user_id)
     {
         if (!self::hasProcessing($user_id)) {
@@ -198,9 +222,15 @@ class doScanContactByCountry
                 ->andWhere(['is', 'callback_time', new \yii\db\Expression('null')])
                 ->orderBy(['created_at' => SORT_ASC])
                 ->one();
+
             if ($model) {
-                $model->status = ContactsAssignment::_PROCESSING;
-                return $model->save();
+                $contactExist = ContactsModel::findAll(['phone' => $model->contact_phone]);
+                if (!$contactExist) {
+                    return $model->delete();
+                } else {
+                    $model->status = ContactsAssignment::_PROCESSING;
+                    return $model->save();
+                }
             }
         }
         return false;

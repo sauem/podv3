@@ -120,6 +120,11 @@ class ContactsAssignment extends BaseModel
             ->andWhere(['<>', 'contact_phone', $phone])
             ->orWhere(['status' => ContactsAssignment::_PROCESSING])
             ->one();
+        $existsPhone = ContactsModel::findOne(['phone' => $assignment->contact_phone]);
+        if (!$existsPhone) {
+            Helper::showMessage('Số điện thoại không tồn tại!');
+            return $assignment->delete();
+        }
         if ($assignment) {
             $assignment->status = ContactsAssignment::_PROCESSING;
             Helper::showMessage('Số điện thoại mới được áp dụng!');
