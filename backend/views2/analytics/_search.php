@@ -5,8 +5,18 @@
         <h4 class="card-title text-danger">Bộ lọc</h4>
     </div>
     <div class="col">
-        <select name="marketer" class="selectpicker" multiple data-selected-text-format="count" data-style="btn-light">
+        <select
+                title="Marketer"
+                data-actions-box="true"
+                data-live-search="true"
+                name="marketer"
+                class="selectpicker"
+                multiple data-selected-text-format="count"
+                data-style="btn-light">
             <?php
+
+            use kartik\daterange\DateRangePicker;
+
             if ($marketer) {
                 foreach ($marketer as $name) {
                     if (!$name) {
@@ -19,7 +29,12 @@
         </select>
     </div>
     <div class="col">
-        <select name="source" class="selectpicker" multiple data-selected-text-format="count" data-style="btn-light">
+        <select title="Contact type"
+                data-actions-box="true"
+                data-live-search="true"
+                name="source" class="selectpicker"
+                multiple data-selected-text-format="count"
+                data-style="btn-light">
             <?php
             if ($source) {
                 foreach ($source as $type) {
@@ -33,7 +48,12 @@
         </select>
     </div>
     <div class="col">
-        <select name="product" class="selectpicker" multiple data-selected-text-format="count" data-style="btn-light">
+        <select title="Product"
+                data-actions-box="true"
+                data-live-search="true"
+                name="product" class="selectpicker"
+                multiple data-selected-text-format="count"
+                data-style="btn-light">
             <?php
             if ($product) {
                 foreach ($product as $sku => $name) {
@@ -47,7 +67,12 @@
         </select>
     </div>
     <div class="col">
-        <select name="sale" class="selectpicker" multiple data-selected-text-format="count" data-style="btn-light">
+        <select title="Sale"
+                data-actions-box="true"
+                data-live-search="true"
+                name="sale" class="selectpicker"
+                multiple data-selected-text-format="count"
+                data-style="btn-light">
             <?php
             if ($sale) {
                 foreach ($sale as $id => $name) {
@@ -61,15 +86,15 @@
         </select>
     </div>
     <div class="col">
-        <select class="form-control">
-            <option>Ngày</option>
-        </select>
+        <?php
+        echo DateRangePicker::widget([
+            'name' => 'date',
+            'presetDropdown' => true,
+            'convertFormat' => true,
+            'includeMonthsFilter' => true,
+            'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
+            'options' => ['id' => 'report-date','placeholder' => 'Chọn ngày tạo đơn']
+        ]);
+        ?>
     </div>
 <?php
-$js = <<<JS
-    $(".selectpicker").change(function() {
-        let val = $(this).val();    
-        
-    });
-JS;
-$this->registerJs($js);

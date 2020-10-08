@@ -51,4 +51,23 @@
 .select2-dropdown {
   max-width: 500px; }
 
+#chartArea {
+  position: relative; }
+  #chartArea .loading {
+    background: rgba(255, 255, 255, 0.6);
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    display: none; }
+    #chartArea .loading.active {
+      display: block; }
+    #chartArea .loading .spinner-grow {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto; }
+
 /*# sourceMappingURL=site.css.map */

@@ -24,29 +24,37 @@
                 </div>
             </div>
         </div>
-        <div class="row" id="result-index">
+        <div id="chartArea">
+            <div class="loading">
+                <div class="spinner-grow text-danger" role="status">
+                </div>
+            </div>
+            <div class="row" id="result-index">
+                <p>RESULT INDEX</p>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="text-center card-title text-danger">Bảng tổng hợp C8 C3</h4>
+                </div>
+                <div class="col-12">
 
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <h4 class="text-center card-title text-danger">Bảng tổng hợp C8 C3</h4>
-            </div>
-            <div class="col-12">
-                <canvas id="index-chart" height="350">
+                    <canvas id="index-chart" height="350">
 
-                </canvas>
+                    </canvas>
+                </div>
             </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <h4 class="text-center card-title text-danger">Bảng tổng hợp C11 C8</h4>
-            </div>
-            <div class="col-12">
-                <canvas id="second-chart" height="350">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4 class="text-center card-title text-danger">Bảng tổng hợp C11 C8</h4>
+                </div>
+                <div class="col-12">
+                    <canvas id="second-chart" height="350">
 
-                </canvas>
+                    </canvas>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 <script id="index-template" type="text/x-handlebars-template">
