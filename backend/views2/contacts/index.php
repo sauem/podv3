@@ -91,7 +91,7 @@ $js = <<<JS
             shipping : 0
         }
         
-        $(".createOrder").click(function() {
+        $("body").on("click", ".createOrder", function() {
             let key = $(this).data("key");
            $("#collapse-order").collapse('show');
            $("html, body").animate({ scrollTop: 0 }, "slow");
