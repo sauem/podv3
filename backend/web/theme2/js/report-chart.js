@@ -27,7 +27,7 @@ function _setResultQuery() {
     let dataC8 = [];
     let dataC3 = [];
     let dataC8C3 = [];
-
+    setLoading();
     getAnalytics(REPORT).then(res => {
         if (res.success) {
             const {data} = res;
@@ -81,7 +81,6 @@ $("#report-date").change(function () {
     let val = $(this).val();
     let name = $(this).attr("name");
     window.REPORT[name] = val;
-    setLoading();
     _setResultQuery();
 });
 $(".selectpicker").change(function () {

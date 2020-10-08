@@ -36,7 +36,7 @@ class AppAsset2 extends AssetBundle
         '/theme2/libs/flatpickr/flatpickr.min.js',
         '/theme2/libs/chart.js/Chart.bundle.min.js',
         '/theme2/libs/bootstrap-select/js/bootstrap-select.min.js',
-        '/theme2/js/report-chart.js',
+        '/theme2/js/report-chart.js?v=1.2',
         '/lib/js/money.js',
         '/lib/js/handlebars-v4.7.6.js',
         '/lib/js/handlebars-helper.js?v=1.3',
