@@ -74,6 +74,9 @@ use yii\helpers\Url;
                     [
                         'label' => 'CTR',
                         'value' => function ($model) {
+                            if($model['ok'] <= 0){
+                                return 0;
+                            }
                             $ctr = $model['ok'] / ($model['ok'] + $model['cancel']);
                             return round($ctr, 2) . "%";
                         },
