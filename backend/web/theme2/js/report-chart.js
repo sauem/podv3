@@ -11,6 +11,8 @@ window.RESULT_QUERY = {
     C8C3: [],
     labels: []
 };
+let indexChart = document.getElementById("index-chart").getContext('2d');
+let firstChart = new Chart(indexChart, setChartOption());
 _setResultQuery();
 
 async function getAnalytics(queryPrams = {}) {
@@ -31,7 +33,6 @@ function _setResultQuery() {
     getAnalytics(REPORT).then(res => {
         if (res.success) {
             const {data} = res;
-
             data.map(item => {
                 labels.push(item.day);
                 const _C3 = parseInt(item.C3);
@@ -49,17 +50,15 @@ function _setResultQuery() {
             RESULT_QUERY.C8C3 = dataC8C3;
             RESULT_QUERY.labels = labels;
         }
-        console.log("RESULT ", RESULT_QUERY);
-
+        firstChart.data.datasets[0].data = dataC3;
+        firstChart.data.datasets[1].data = dataC8;
+        firstChart.data.datasets[2].data = dataC8C3;
+        firstChart.data.labels = labels;
+        firstChart.update();
     }).catch(error => {
         console.log("ERROR", error.message);
     });
 
-
-    new Chart(
-        document.getElementById("index-chart").getContext('2d'),
-        setChartOption()
-    );
     removeLoading();
 }
 
