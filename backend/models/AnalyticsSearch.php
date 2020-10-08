@@ -82,26 +82,4 @@ class AnalyticsSearch extends ContactsModel
 
         return $query->asArray()->all();
     }
-
-    static function getC3($query)
-    {
-        $query->filterWhere(['IN', 'contacts.status', [
-            ContactsModel::_OK,
-            ContactsModel::_CALLBACK,
-            ContactsModel::_PENDING,
-            ContactsModel::_NEW,
-            ContactsModel::_CANCEL,
-            ContactsModel::_SKIP
-        ]]);
-        return $query->count();
-    }
-
-    static function getC8($query)
-    {
-        $query->filterWhere(['IN', 'contacts.status', [
-            ContactsModel::_OK,
-        ]]);
-
-        return $query->count();
-    }
 }

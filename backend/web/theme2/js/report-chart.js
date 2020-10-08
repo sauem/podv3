@@ -146,7 +146,18 @@ function setChartOption() {
             maintainAspectRatio: false,
             tooltips: {
                 mode: 'index',
-                axis: 'y'
+                axis: 'y',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        let label = data.datasets[tooltipItem.datasetIndex].label;
+
+                        let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        if (tooltipItem.datasetIndex === 2) {
+                            return ' ' + label + ': ' + value + ' %';
+                        }
+                        return ' ' + label + ': ' + value;
+                    }
+                }
             },
             barValueSpacing: 10,
             animation: {
@@ -177,7 +188,10 @@ function setChartOption() {
                         position: 'left',
                         ticks: {
                             min: 0,
-                            stepSize: 1
+                            stepSize: 1,
+                            beginAtZero: true,
+                            mirror: false,
+                            suggestedMin: 0,
                         }
                     },
 
