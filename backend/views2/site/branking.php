@@ -77,7 +77,7 @@ use yii\helpers\Url;
                             if($model['ok'] <= 0){
                                 return 0;
                             }
-                            $ctr = $model['ok'] / ($model['ok'] + $model['cancel']);
+                            $ctr = $model['ok'] / ($model['ok'] + $model['cancel']) * 100;
                             return round($ctr, 2) . "%";
                         },
                     ],
