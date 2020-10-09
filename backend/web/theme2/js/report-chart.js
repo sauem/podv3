@@ -98,7 +98,9 @@ function setLoading() {
 function removeLoading() {
     let loading = $("#chartArea").find(".loading");
     if (loading.hasClass('active')) {
-        loading.removeClass('active');
+        setTimeout(() => {
+            loading.removeClass('active');
+        }, 3000);
     }
 }
 
