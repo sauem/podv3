@@ -58,28 +58,28 @@
     </div>
 </div>
 <script id="index-template" type="text/x-handlebars-template">
-    <div class="col text-center">
+    <div class="col-3 text-center">
         <p>Doanh thu có ship đã chuyển thành công</p>
-        <h4>0</h4>
+        <h2>{{totalShipSuccess}}</h2>
     </div>
     <div class="col text-center">
         <p>Doanh thu có ship (C8)</p>
-        <h4>0</h4>
+        <h2>{{totalOrderShip}}</h2>
     </div>
     <div class="col text-center">
         <p>Tổng phí vận chuyển</p>
-        <h4>0</h4>
+        <h2>{{totalShip}}</h2>
     </div>
-    <div class="col text-center">
+    <div class="col-2 text-center">
         <p>C3 (Contacts - Duplicate)</p>
-        <h4>0</h4>
+        <h2>{{totalC3}}</h2>
     </div>
     <div class="col text-center">
         <p>C8 (Ok)</p>
-        <h4>0</h4>
+        <h2>{{totalC8}}</h2>
     </div>
     <div class="col text-center">
         <p>C8/C3</p>
-        <h4>0</h4>
+        <h2>{{totalC8C3}}%</h2>
     </div>
 </script>

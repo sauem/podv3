@@ -73,6 +73,7 @@ class AnalyticsSearch extends ContactsModel
             ContactsModel::_CANCEL,
             ContactsModel::_SKIP
         ]]);
+
         $query->select([
             'COUNT(*) as `C3`',
             'SUM(IF (contacts.status = \'ok\', 1, 0) ) as C8',
@@ -80,6 +81,9 @@ class AnalyticsSearch extends ContactsModel
             // 'MONTH(FROM_UNIXTIME(contacts.updated_at)) as month',
         ])->groupBy(['day']);
 
+        if(empty($queryParams['product'])){
+
+        }
         return $query->asArray()->all();
     }
 }

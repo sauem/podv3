@@ -9,8 +9,17 @@ window.RESULT_QUERY = {
     C8: [],
     C3: [],
     C8C3: [],
-    labels: []
+    labels: [],
 };
+window.RESULT_ORDER = {
+    totalShipSuccess: 0,
+    totalShip: 0,
+    totalOrderShip: 0,
+    totalC3: 0,
+    totalC8: 0,
+    totalC8C3: 0,
+
+}
 let indexChart = document.getElementById("index-chart").getContext('2d');
 let firstChart = new Chart(indexChart, setChartOption());
 _setResultQuery();
@@ -24,6 +33,8 @@ async function getAnalytics(queryPrams = {}) {
     });
 }
 
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
 function _setResultQuery() {
     let labels = [];
     let dataC8 = [];
@@ -33,6 +44,11 @@ function _setResultQuery() {
     getAnalytics(REPORT).then(res => {
         if (res.success) {
             const {data} = res;
+            if (data.length <= 0) {
+                toastr.warning("Dữ liệu trống!");
+                removeLoading();
+                return false;
+            }
             data.map(item => {
                 labels.push(item.day);
                 const _C3 = parseInt(item.C3);
@@ -49,16 +65,27 @@ function _setResultQuery() {
             RESULT_QUERY.C3 = dataC3;
             RESULT_QUERY.C8C3 = dataC8C3;
             RESULT_QUERY.labels = labels;
+
+            RESULT_ORDER.totalC3 = dataC3.reduce(reducer);
+            RESULT_ORDER.totalC8 = dataC8.reduce(reducer);
+            RESULT_ORDER.totalC8C3 = Math.round(dataC8.reduce(reducer) / dataC3.reduce(reducer) * 100);
+
         }
         firstChart.data.datasets[0].data = dataC3;
         firstChart.data.datasets[1].data = dataC8;
         firstChart.data.datasets[2].data = dataC8C3;
         firstChart.data.labels = labels;
         firstChart.update();
+        setIndexResult();
         removeLoading();
     }).catch(error => {
         console.log("ERROR", error.message);
     });
+}
+
+function setIndexResult() {
+    let abc = compileTemplate('index-template', RESULT_ORDER);
+    $("#result-index").html(abc);
 }
 
 function setLoading() {
@@ -116,7 +143,7 @@ function setChartOption() {
                     //data: [10, 40, 50, 100, 80, 27, 10, 40, 50, 100, 80, 27, 80, 27],
                     data: RESULT_QUERY.C8C3,
                     type: 'line',
-                    borderJoinStyle: 'bevel',
+                    lineTension: 0,
                     order: 1,
                     borderColor: "#F23998",
                     yAxisID: 'right',
@@ -143,6 +170,7 @@ function setChartOption() {
         },
         options: {
             maintainAspectRatio: false,
+
             tooltips: {
                 mode: 'index',
                 axis: 'y',
