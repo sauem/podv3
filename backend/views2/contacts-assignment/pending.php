@@ -146,7 +146,7 @@ use yii\helpers\Url;
                                     'data-remote' => Url::toRoute([
                                         'form-info/remote',
                                         'option' => $model->option,
-                                        'category_id' => $model->page ? $model->page->category->id : null
+                                        'category_id' => $model->page ? ($model->page->category ? $model->page->category->id : null) : null
                                     ]),
                                     'class' => 'btn btn-xs w-100 btn-outline-warning mb-1'
                                 ]);
