@@ -100,7 +100,7 @@ function removeLoading() {
     if (loading.hasClass('active')) {
         setTimeout(() => {
             loading.removeClass('active');
-        }, 3000);
+        }, 2000);
     }
 }
 

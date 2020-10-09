@@ -19,7 +19,7 @@ class AppAsset2 extends AssetBundle
         '/theme2/css/app.min.css',
         //'/theme2/css/bootstrap-dark.min.css',
         //'/theme2/css/app-dark.min.css',
-        '/css/site.css?v=1.4',
+        '/css/site.css?v=1.5',
         '/theme2/css/icons.min.css',
     ];
     public $js = [
@@ -42,7 +42,7 @@ class AppAsset2 extends AssetBundle
         '/lib/js/admin.js?v=2.23',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
-        '/theme2/js/report-chart.js?v=1.5',
+        '/theme2/js/report-chart.js?v=1.7',
         '/theme2/js/app.min.js'
 
 
