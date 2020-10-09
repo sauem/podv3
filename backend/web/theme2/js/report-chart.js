@@ -8,6 +8,10 @@ window.REPORT = {
 window.RESULT_QUERY = {
     C8: [],
     C3: [],
+    C4 :[],
+    C7: [],
+    C0 : [],
+    C6 : [],
     C8C3: [],
     labels: [],
 };
@@ -20,8 +24,12 @@ window.RESULT_ORDER = {
     totalC8C3: 0,
 
 }
-let indexChart = document.getElementById("index-chart").getContext('2d');
-let firstChart = new Chart(indexChart, setChartOption());
+let indexCtx = document.getElementById("index-chart").getContext('2d');
+let firstChart = new Chart(indexCtx, setChartIndexOption());
+let secondCtx = document.getElementById("second-chart").getContext('2d');
+let secondChart = new Chart(secondCtx, setChartSecondOption());
+
+
 _setResultQuery();
 
 async function getAnalytics(queryPrams = {}) {
@@ -39,6 +47,10 @@ function _setResultQuery() {
     let labels = [];
     let dataC8 = [];
     let dataC3 = [];
+    let dataC0 = [];
+    let dataC4 = [];
+    let dataC6 = [];
+    let dataC7 = [];
     let dataC8C3 = [];
     setLoading();
     getAnalytics(REPORT).then(res => {
@@ -53,6 +65,10 @@ function _setResultQuery() {
                 labels.push(item.day);
                 const _C3 = parseInt(item.C3);
                 const _C8 = parseInt(item.C8);
+                const _C0 = parseInt(item.C0);
+                const _C4 = parseInt(item.C4);
+                const _C6 = parseInt(item.C6);
+                const _C7 = parseInt(item.C7);
                 let _C8C3 = 0;
                 if (_C8 > 0) {
                     _C8C3 = Math.round(_C8 / _C3 * 100);
@@ -60,12 +76,23 @@ function _setResultQuery() {
                 dataC8C3.push(_C8C3);
                 dataC3.push(_C3);
                 dataC8.push(_C8);
+                dataC0.push(_C0);
+                dataC4.push(_C4);
+                dataC6.push(_C6);
+                dataC7.push(_C7);
             });
+            // First chart data
             RESULT_QUERY.C8 = dataC8;
             RESULT_QUERY.C3 = dataC3;
             RESULT_QUERY.C8C3 = dataC8C3;
             RESULT_QUERY.labels = labels;
-
+            // Second chart data
+            RESULT_QUERY.C0 = dataC0;
+            RESULT_QUERY.C4 = dataC4;
+            RESULT_QUERY.C6 = dataC6;
+            RESULT_QUERY.C7 = dataC7;
+            RESULT_QUERY.labels = labels;
+            // Count data
             RESULT_ORDER.totalC3 = dataC3.reduce(reducer);
             RESULT_ORDER.totalC8 = dataC8.reduce(reducer);
             RESULT_ORDER.totalC8C3 = Math.round(dataC8.reduce(reducer) / dataC3.reduce(reducer) * 100);
@@ -76,6 +103,17 @@ function _setResultQuery() {
         firstChart.data.datasets[2].data = dataC8C3;
         firstChart.data.labels = labels;
         firstChart.update();
+
+        secondChart.data.datasets[0].data = dataC8;
+        secondChart.data.datasets[1].data = dataC6;
+        secondChart.data.datasets[2].data = dataC7;
+        secondChart.data.datasets[3].data = dataC4;
+        secondChart.data.datasets[4].data = dataC0;
+
+        secondChart.data.labels = labels;
+        secondChart.update();
+
+
         setIndexResult();
         removeLoading();
     }).catch(error => {
@@ -118,7 +156,7 @@ $(".selectpicker").change(function () {
     _setResultQuery();
 });
 
-function setChartOption() {
+function setChartIndexOption() {
     return {
         type: 'bar',
         data: {
@@ -230,52 +268,49 @@ function setChartOption() {
     }
 }
 
-
-const secondInitdata = {
-    type: 'bar',
-    data: {
-        datasets: [
-            {
-                label: 'C8 (OK)',
-                backgroundColor: '#3c5ab1',
-                data: [5, 10, 20, 25, 10, 30, 70]
-            },
-            {
-                label: 'C6 (Cancel)',
-                backgroundColor: '#787777',
-                data: [20, 15, 10, 20, 25, 40, 70]
-            },
-            {
-                label: 'C7 (Callback)',
-                backgroundColor: '#6ece62',
-                data: [10, 30, 50, 50, 50, 60, 70]
-            },
-            {
-                label: 'C4 (Number fail)',
-                backgroundColor: '#faa338',
-                data: [15, 30, 50, 50, 50, 60, 70]
-            },
-            {
-                label: 'C0 (New)',
-                backgroundColor: '#fd1b6a',
-                data: [25, 30, 50, 50, 50, 60, 70]
+function setChartSecondOption() {
+    return {
+        type: 'bar',
+        data: {
+            datasets: [
+                {
+                    label: 'C8 (OK)',
+                    backgroundColor: '#3c5ab1',
+                    data: [5, 10, 20, 25, 10, 30, 70]
+                },
+                {
+                    label: 'C6 (Cancel)',
+                    backgroundColor: '#787777',
+                    data: [20, 15, 10, 20, 25, 40, 70]
+                },
+                {
+                    label: 'C7 (Callback)',
+                    backgroundColor: '#6ece62',
+                    data: [10, 30, 50, 50, 50, 60, 70]
+                },
+                {
+                    label: 'C4 (Number fail)',
+                    backgroundColor: '#faa338',
+                    data: [15, 30, 50, 50, 50, 60, 70]
+                },
+                {
+                    label: 'C0 (New)',
+                    backgroundColor: '#fd1b6a',
+                    data: [25, 30, 50, 50, 50, 60, 70]
+                }
+            ],
+            labels: [2001, 2002, 2003, 2004, 2005, 2006, 2007]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }],
             }
-        ],
-        labels: [2001, 2002, 2003, 2004, 2005, 2006, 2007]
-    },
-    options: {
-        maintainAspectRatio: false,
-        scales: {
-            xAxes: [{
-                stacked: true
-            }],
-            yAxes: [{
-                stacked: true
-            }],
         }
     }
-};
-new Chart(
-    document.getElementById("second-chart").getContext('2d'),
-    secondInitdata
-);
+}

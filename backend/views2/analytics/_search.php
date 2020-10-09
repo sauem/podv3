@@ -51,6 +51,7 @@
         <select title="Product"
                 data-actions-box="true"
                 data-live-search="true"
+                
                 name="product" class="selectpicker"
                 multiple data-selected-text-format="count"
                 data-style="btn-light">

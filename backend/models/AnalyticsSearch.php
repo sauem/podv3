@@ -77,6 +77,10 @@ class AnalyticsSearch extends ContactsModel
         $query->select([
             'COUNT(*) as `C3`',
             'SUM(IF (contacts.status = \'ok\', 1, 0) ) as C8',
+            'SUM(IF (contacts.status = \'cancel\', 1, 0) ) as C6',
+            'SUM(IF (contacts.status = \'callback\', 1, 0) ) as C7',
+            'SUM(IF (contacts.status = \'number_fail\', 1, 0) ) as C4',
+            'SUM(IF (contacts.status IS NULL , 1, 0) ) as C0',
             'FROM_UNIXTIME(contacts.updated_at, \'%d/%m/%Y\') day',
             // 'MONTH(FROM_UNIXTIME(contacts.updated_at)) as month',
         ])->groupBy(['day']);
