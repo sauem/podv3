@@ -19,7 +19,7 @@ class AppAsset2 extends AssetBundle
         '/theme2/css/app.min.css',
         //'/theme2/css/bootstrap-dark.min.css',
         //'/theme2/css/app-dark.min.css',
-        '/css/site.css?v=1.2',
+        '/css/site.css?v=1.4',
         '/theme2/css/icons.min.css',
     ];
     public $js = [
