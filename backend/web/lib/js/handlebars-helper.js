@@ -52,7 +52,7 @@ Handlebars.registerHelper("hasArray", function (filter, array) {
 })
 
 Handlebars.registerHelper("date", function (number) {
-    return new Date(parseInt(number, 10) * 1000).toLocaleString();
+    return moment.unix(parseInt(number)).format('DD/MM/YYYY');
 })
 Handlebars.registerHelper("stt", function (number) {
     return number + 1;

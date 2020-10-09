@@ -80,8 +80,6 @@ function doProcessWorkbook(workbook, file) {
     while (row !== null) {
 
         let item = switchItem(firstSheet, row);
-
-
         if (typeof item.status === "boolean" && item.status === false) {
             toastr.error(`Dòng thứ ${(rowsIndex + 2)}, không được để trống ${item.column}`);
             rows = [];
@@ -340,6 +338,13 @@ function switchItem(sheet, row) {
             break;
         default:
             let time_register = (row[0] && (typeof row[0].v.getTime === "function")) ? Math.round(row[0].v.getTime() / 1000) : row[0].v;
+
+            if (typeof time_register === "string") {
+                let _str = time_register.split('/');
+                let _newTime = new Date(_str[2], parseInt(_str[1]) - 1, _str[0]).getTime();
+                _newTime = Math.round(_newTime / 1000);
+                time_register = _newTime;
+            }
             item = new contactModel();
 
             // check empty phone or link contacts

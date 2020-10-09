@@ -55,11 +55,10 @@ function _setResultQuery() {
         firstChart.data.datasets[2].data = dataC8C3;
         firstChart.data.labels = labels;
         firstChart.update();
+        removeLoading();
     }).catch(error => {
         console.log("ERROR", error.message);
     });
-
-    removeLoading();
 }
 
 function setLoading() {
