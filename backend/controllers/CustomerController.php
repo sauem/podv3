@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\ContactsSearchModel;
 use backend\models\CustomerPages;
 use backend\models\UserModel;
 use backend\models\UserSearchModel;
@@ -141,4 +142,5 @@ class CustomerController extends BaseController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

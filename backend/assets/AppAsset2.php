@@ -42,7 +42,7 @@ class AppAsset2 extends AssetBundle
         '/lib/js/admin.js?v=2.23',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
-        '/theme2/js/report-chart.js?v=1.8',
+        '/theme2/js/report-chart.js?v=1.9',
         '/theme2/js/app.min.js'
 
 

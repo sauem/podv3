@@ -31,6 +31,10 @@ class autoPushSheet
 
         if ($data) {
             foreach ($data as $k => $model) {
+                //Bỏ trùng dòng trùnh số
+                if ($model->status === ContactsModel::_DUPLICATE) {
+                    continue;
+                }
                 $code = $model->code ? $model->code : "";
                 $phone = $model->phone ? $model->phone : "";
                 $name = $model->name ? $model->name : "";
@@ -39,14 +43,15 @@ class autoPushSheet
                 $zipcode = $model->zipcode ? $model->zipcode : "";
                 $order = $model->order;
                 $page = $model->page;
-                $product_sku = "";
-                $product_qty = "";
-                $product_summary = "";
-                $total = "";
-                $shipping_price = "";
-                $marketer = "";
-                $sale = "";
-                $category = "";
+                $product_sku
+                    = $product_qty
+                    = $product_summary
+                    = $total
+                    = $shipping_price
+                    = $marketer
+                    = $sale
+                    = $category = "";
+                
                 $date = $model->register_time ? date('d/m/Y H:i:s', $model->register_time) : "";
                 $count = $model->getContactsLogs()->count() ? $model->getContactsLogs()->count() : "";
                 $country = $model->country ? Helper::getCountry($model->country) : "";
@@ -57,7 +62,7 @@ class autoPushSheet
                 if ($model->saleAssign) {
                     $sale = $model->saleAssign->user->username;
                 }
-                if($page){
+                if ($page) {
                     $category = $page->category->name;
                 }
                 if ($order) {
@@ -69,7 +74,7 @@ class autoPushSheet
                     $product_sku = substr($product_sku, 0, -1);
                     $product_qty = substr($product_qty, 0, -1);
                     $product_summary = substr($product_summary, 0, -1);
-                    $shipping_price =  Helper::formatExcel($order->shipping_price);
+                    $shipping_price = Helper::formatExcel($order->shipping_price);
                     $total = Helper::formatExcel($order->total);
                 }
                 $item = [

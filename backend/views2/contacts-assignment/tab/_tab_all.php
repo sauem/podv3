@@ -141,7 +141,7 @@ use kartik\grid\ActionColumn;
                                 'class' => 'btn btn-sm  mt-1 btn-outline-info w-100',
                                 'data-toggle' => 'modal',
                                 'data-target' => '#modalDetail',
-                                'data-remote' => \yii\helpers\Url::toRoute(['']),
+                                'data-remote' => \yii\helpers\Url::toRoute(['contacts/update', 'id' => $model->id]),
                                 'data-pjax' => '0'
                             ]);
                         },
@@ -151,9 +151,12 @@ use kartik\grid\ActionColumn;
             ],
         ]) ?>
     </div>
-<?php
 
+
+<?php
 $js = <<<JS
+initRemote('modalDetail');
+
 $(".approveContact").click(function(){
      let _keys = $('.grid-view').yiiGridView('getSelectedRows');
             if(_keys.length <= 0){

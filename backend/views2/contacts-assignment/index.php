@@ -79,6 +79,7 @@ use yii\helpers\Url;
 <?= $this->render("modal/_modal_approve") ?>
 <?= $this->render("modal/_edit_row_modal") ?>
 <?= $this->render("modal/_error_row_modal") ?>
+<?= $this->render("modal/_modal_edit") ?>
 <?php
 $js = <<<JS
     initRemote("remote-import");

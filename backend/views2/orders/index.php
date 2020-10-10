@@ -17,6 +17,7 @@ use common\helper\Helper;
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<?= $this->render('modal/_modal_edit') ?>
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Danh sách đơn hàng</h4>
@@ -273,11 +274,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                                 return Html::a("<i class='fa fa-edit'></i> sửa đơn", 'javascript:;', [
                                     'class' => 'btn btn-sm btn-info mt-2',
-                                    'data-toggle' => 'modal',
+                                    'data-toggle' => 'collapse',
+                                    'data-target' => '#collapse-order',
                                     'data-key' => $model->id,
-                                    'data-target' => '#orderEdit',
-                                    'data-backdrop' => "static",
-                                    'data-keyboard' => "false"
                                 ]);
                             },
                             'export' => function ($url, $model) {
@@ -320,7 +319,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'panel' => [
                     'type' => 'default',
                     'heading' => '<div class="d-flex">' .
-                        Html::a("<i class='fe-shopping-cart'></i> Tạo đơn", "javascript:;", ['class' => 'mr-1 btn createOrder btn-outline-success btn-sm', 'data-pjax' => '0'])
+                        Html::a("<i class='fe-shopping-cart'></i> Tạo đơn", "javascript:;", [
+                            'class' => 'mr-1 btn btn-outline-success btn-sm',
+                            'data-toggle' => 'collapse',
+                            'data-target' => '#collapse-order',
+                            'data-pjax' => '0'])
                         . (Helper::isAdmin() ? Html::a('<i class="fe-trash"></i> Xóa lựa chọn', 'javascript:;',
                             [
                                 'class' => 'btn deleteAll btn-outline-warning  btn-sm',
@@ -336,7 +339,6 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-<?= $this->render('_modal_edit') ?>
 <?php
 $js = <<<JS
     $("body").on("click",".changeStatus",function() {

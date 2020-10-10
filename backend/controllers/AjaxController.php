@@ -13,6 +13,7 @@ use backend\models\ContactsAssignment;
 use backend\models\ContactsLog;
 use backend\models\ContactsLogImport;
 use backend\models\ContactsModel;
+use backend\models\ContactsSearchModel;
 use backend\models\Customers;
 use backend\models\FormInfo;
 use backend\models\FormInfoSku;
@@ -1484,4 +1485,15 @@ class AjaxController extends BaseController
         }
     }
 
+    function actionSearchCustomer()
+    {
+        $params = Yii::$app->request->queryParams;
+        $searchModel = ContactsModel::find()
+            ->orFilterWhere([
+                'name' => $params['name'],
+                'phone' => $params['phone'],
+            ])
+            ->asArray()->all();
+        return $searchModel;
+    }
 }

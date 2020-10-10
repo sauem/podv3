@@ -263,6 +263,8 @@ class ContactsController extends BaseController
      */
     public function actionUpdate($id)
     {
+        $this->layout = "empty";
+
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

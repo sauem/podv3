@@ -8,10 +8,10 @@ window.REPORT = {
 window.RESULT_QUERY = {
     C8: [],
     C3: [],
-    C4 :[],
+    C4: [],
     C7: [],
-    C0 : [],
-    C6 : [],
+    C0: [],
+    C6: [],
     C8C3: [],
     labels: [],
 };
@@ -102,6 +102,7 @@ function _setResultQuery() {
         firstChart.data.datasets[1].data = dataC8;
         firstChart.data.datasets[2].data = dataC8C3;
         firstChart.data.labels = labels;
+
         firstChart.update();
 
         secondChart.data.datasets[0].data = dataC8;
@@ -157,6 +158,7 @@ $(".selectpicker").change(function () {
 });
 
 function setChartIndexOption() {
+
     return {
         type: 'bar',
         data: {
@@ -165,7 +167,6 @@ function setChartIndexOption() {
                 {
                     label: 'C3 (Contacts - Duplicate)',
                     backgroundColor: '#90EAFF',
-                    //data: [10, 30, 12, 30, 15, 29, 33, 10, 30, 12, 30, 15, 29, 33],
                     data: RESULT_QUERY.C3,
                     yAxisID: 'left',
                     order: 2
@@ -173,14 +174,12 @@ function setChartIndexOption() {
                 {
                     label: 'C8',
                     backgroundColor: '#3c5ab1',
-                    //data: [5, 15, 25, 40, 50, 23, 14, 5, 15, 25, 40, 50, 23, 14],
                     data: RESULT_QUERY.C8,
                     yAxisID: 'left',
                     order: 3
                 },
                 {
                     label: 'C8/C3',
-                    //data: [10, 40, 50, 100, 80, 27, 10, 40, 50, 100, 80, 27, 80, 27],
                     data: RESULT_QUERY.C8C3,
                     type: 'line',
                     lineTension: 0,
@@ -191,26 +190,10 @@ function setChartIndexOption() {
                 },
             ],
             labels: RESULT_QUERY.labels
-            // labels: [
-            //     'January',
-            //     'February',
-            //     'March',
-            //     'April',
-            //     '13',
-            //     '123',
-            //     '123',
-            //     'January',
-            //     'February',
-            //     'March',
-            //     'April',
-            //     '13',
-            //     '123',
-            //     '123'
-            // ]
         },
         options: {
             maintainAspectRatio: false,
-
+            responsive: true,
             tooltips: {
                 mode: 'index',
                 axis: 'y',
@@ -246,7 +229,10 @@ function setChartIndexOption() {
                             display: false,
                         },
                         ticks: {
-                            max: 150
+                            max: 160,
+                            callback: function (value, index, values) {
+                                return value + '%';
+                            }
                         }
                     },
                     {
@@ -254,7 +240,7 @@ function setChartIndexOption() {
                         type: 'linear',
                         position: 'left',
                         ticks: {
-                            min: 0,
+                            padding: 20,
                             stepSize: 1,
                             beginAtZero: true,
                             mirror: false,
