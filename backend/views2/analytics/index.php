@@ -60,26 +60,26 @@
 <script id="index-template" type="text/x-handlebars-template">
     <div class="col-3 text-center">
         <p>Doanh thu có ship đã chuyển thành công</p>
-        <h2>{{totalShipSuccess}}</h2>
+        <h3>{{totalAmountSuccess}}</h3>
     </div>
     <div class="col text-center">
         <p>Doanh thu có ship (C8)</p>
-        <h2>{{totalOrderShip}}</h2>
+        <h3>{{money totalAmount}}</h3>
     </div>
     <div class="col text-center">
         <p>Tổng phí vận chuyển</p>
-        <h2>{{totalShip}}</h2>
+        <h3>{{money totalShip}}</h3>
     </div>
     <div class="col-2 text-center">
         <p>C3 (Contacts - Duplicate)</p>
-        <h2>{{totalC3}}</h2>
+        <h3>{{totalC3}}</h3>
     </div>
     <div class="col text-center">
         <p>C8 (Ok)</p>
-        <h2>{{totalC8}}</h2>
+        <h3>{{totalC8}}</h3>
     </div>
     <div class="col text-center">
         <p>C8/C3</p>
-        <h2>{{totalC8C3}}%</h2>
+        <h3>{{totalC8C3}}%</h3>
     </div>
 </script>

@@ -16,9 +16,9 @@ window.RESULT_QUERY = {
     labels: [],
 };
 window.RESULT_ORDER = {
-    totalShipSuccess: 0,
+    totalAmountSuccesss: 0,
     totalShip: 0,
-    totalOrderShip: 0,
+    totalAmount: 0,
     totalC3: 0,
     totalC8: 0,
     totalC8C3: 0,
@@ -55,7 +55,7 @@ function _setResultQuery() {
     setLoading();
     getAnalytics(REPORT).then(res => {
         if (res.success) {
-            const {data} = res;
+            const {data,  total} = res.data;
             if (data.length <= 0) {
                 toastr.warning("Dữ liệu trống!");
                 removeLoading();
@@ -96,7 +96,9 @@ function _setResultQuery() {
             RESULT_ORDER.totalC3 = dataC3.reduce(reducer);
             RESULT_ORDER.totalC8 = dataC8.reduce(reducer);
             RESULT_ORDER.totalC8C3 = Math.round(dataC8.reduce(reducer) / dataC3.reduce(reducer) * 100);
-
+            console.log(total);
+            RESULT_ORDER.totalShip = total[0].totalShip;
+            RESULT_ORDER.totalAmount = total[0].totalAmount;
         }
         firstChart.data.datasets[0].data = dataC3;
         firstChart.data.datasets[1].data = dataC8;

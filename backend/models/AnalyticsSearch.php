@@ -5,6 +5,7 @@ namespace backend\models;
 
 
 use common\helper\Helper;
+use yii\helpers\ArrayHelper;
 
 class AnalyticsSearch extends ContactsModel
 {
@@ -73,8 +74,22 @@ class AnalyticsSearch extends ContactsModel
             ContactsModel::_CANCEL,
             ContactsModel::_SKIP
         ]]);
+        $codes = clone $query;
+        if(empty($queryParams['product'])){
+            $total = $codes->join('INNER JOIN','orders','orders.code=contacts.code')
+                ->addSelect([
+                    'SUM(orders.total) as totalAmount',
+                    'SUM(orders.shipping_price) as totalShip',
+                ])->asArray()->all();
+        }else{
+            $total = $codes->addSelect([
+                    'SUM(orders.total) as totalAmount',
+                    'SUM(orders.shipping_price) as totalShip',
+                ])->asArray()->all();
+        }
 
-        $query->select([
+
+        $query->addSelect([
             'COUNT(*) as `C3`',
             'SUM(IF (contacts.status = \'ok\', 1, 0) ) as C8',
             'SUM(IF (contacts.status = \'cancel\', 1, 0) ) as C6',
@@ -85,9 +100,10 @@ class AnalyticsSearch extends ContactsModel
             // 'MONTH(FROM_UNIXTIME(contacts.updated_at)) as month',
         ])->groupBy(['day']);
 
-        if(empty($queryParams['product'])){
 
-        }
-        return $query->asArray()->all();
+        return [
+            'data' => $query->asArray()->all(),
+            'total' => $total
+        ];
     }
 }
