@@ -102,7 +102,14 @@ function _setResultQuery() {
         firstChart.data.datasets[1].data = dataC8;
         firstChart.data.datasets[2].data = dataC8C3;
         firstChart.data.labels = labels;
+        let max = dataC3[0];
+        dataC3.forEach((item, index) => {
+            if (item > max) {
+                max = item;
+            }
+        });
 
+        firstChart.config.options.scales.yAxes[1].ticks.max = max + 5;
         firstChart.update();
 
         secondChart.data.datasets[0].data = dataC8;
@@ -110,7 +117,6 @@ function _setResultQuery() {
         secondChart.data.datasets[2].data = dataC7;
         secondChart.data.datasets[3].data = dataC4;
         secondChart.data.datasets[4].data = dataC0;
-
         secondChart.data.labels = labels;
         secondChart.update();
 
@@ -192,6 +198,29 @@ function setChartIndexOption() {
             labels: RESULT_QUERY.labels
         },
         options: {
+            animation: {
+                duration: 1,
+                onComplete: function () {
+                    let chartInstance = this.chart,
+                        ctx = chartInstance.ctx;
+
+                    ctx.font = Chart.helpers.fontString(15, 'bold', Chart.defaults.global.defaultFontFamily);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillStyle = "#0012a7";
+                    this.data.datasets.forEach(function (dataset, i) {
+                        let meta = chartInstance.controller.getDatasetMeta(i);
+                        meta.data.forEach(function (bar, index) {
+
+                            let data = dataset.data[index];
+                            if (data === 0) {
+                                return;
+                            }
+                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                        });
+                    });
+                }
+            },
             maintainAspectRatio: false,
             responsive: true,
             tooltips: {
@@ -210,15 +239,6 @@ function setChartIndexOption() {
                 }
             },
             barValueSpacing: 10,
-            animation: {
-                tension: {
-                    duration: 1000,
-                    easing: 'linear',
-                    from: 1,
-                    to: 0,
-                    loop: true
-                }
-            },
             scales: {
                 yAxes: [
                     {
@@ -287,16 +307,20 @@ function setChartSecondOption() {
             ],
             labels: [2001, 2002, 2003, 2004, 2005, 2006, 2007]
         },
+        animation: {
+            duration : 1,
+            easing : 'linear'
+        },
         options: {
             maintainAspectRatio: false,
-            scales: {
+                scales: {
                 xAxes: [{
                     stacked: true
                 }],
                 yAxes: [{
                     stacked: true
                 }],
-            }
+            },
         }
     }
 }
