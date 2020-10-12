@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label' => 'Maketer',
                         'attribute' => 'user_id',
                         'value' => function ($model) {
-                            if ($model->contact->contact->page) {
+                            if (!isset($model->contact->contact->page)) {
                                 return null;
                             }
                             return $model->contact->contact->page->marketer;
@@ -97,8 +97,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Loại SP',
                         'value' => function ($model) {
-                            if (isset($model->contact->page)) {
-                                return $model->contact->page->category->name;
+                            if (isset($model->contact->contact->page)) {
+                                return $model->contact->contact->page->category->name;
                             }
                             return null;
                         }
