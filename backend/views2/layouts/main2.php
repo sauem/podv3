@@ -98,6 +98,9 @@ AppAsset2::register($this);
     <?= $this->render("@backend/views2/parts/navleft") ?>
     <div class="content-page">
         <div class="content">
+            <div class="content-loading">
+                <div class="spinner-grow text-success" role="status"></div>
+            </div>
             <div class="container-fluid mt-3">
                 <?= $content ?>
             </div>

@@ -417,8 +417,10 @@ $js = <<<JS
               }
             })
     });
+    
     body.on("click",".showOrderForm",function() {
-       collapse.collapse("toggle");
+       $('#collapse-order').collapse("toggle");
+       
        let key = $(this).data("key");
        
        try {
@@ -553,26 +555,52 @@ $js = <<<JS
         let _formData = new FormData($(this)[0]);
         let _action = $(this).attr("action");
         _formData.append("bills" , ORDER.billings);
-        $.ajax({
+  
+        if(ORDER.products.length <= 0){
+            swal.fire("Chú ý!","Đơn hàng chưa có sản phẩm nào!","warning");
+            return false;
+        }else if( parseInt(_formData.get("total")) <= 0){
+             swal.fire("Chú ý!","Tổng giá đơn hàng > 0","warning");
+            return false;
+        }
+        
+        swal.fire({
+            title : 'Đang thực hiện...',
+            allowOutsideClick : false,
+            onBeforeOpen : () => {
+                swal.showLoading();
+                sumitOrder(_formData, _action).then( res => {
+                      if(res.success){
+                          toastr.success("Tạo đơn hàng thành công!");
+                            collapse.toggle();
+                            restOrder();
+                            __reloadData();
+                            setTimeout(() => {
+                                swal.close();
+                            }, 1000);
+                            return;
+                        }
+                        toastr.warning(res);
+                }).catch(e => {
+                    console.log(e);
+                    toastr.error(e.message);
+                    swal.close();
+                })
+            }
+        })
+      return false;
+    });
+    
+    const sumitOrder = async(_formData, _action) => {
+      return   $.ajax({
            url : _action,
            type : "POST",
            processData : false,
            contentType :false,
            data : _formData,
-           success : function(res) {
-                
-                if(res.success){
-                    toastr.success("Tạo đơn hàng thành công!");
-                    collapse.toggle();
-                    restOrder();
-                    __reloadData();
-                    return;
-                }
-                toastr.warning(res);
-           }
-        })
-      return false;
-    });
+       
+        });
+    }
 JS;
 
 $this->registerJs($js);

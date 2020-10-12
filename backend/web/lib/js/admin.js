@@ -911,3 +911,18 @@ const hideCardLoading = (parent) => {
         $(parent).find(".card > .card-loading").removeClass('active');
     }
 }
+$(document).on('pjax:end ready', function () {
+    let content = $(".content-page");
+    if (!content.find('.content-loading').hasClass("active")) {
+        content.find(".content-loading").addClass('active');
+    }
+});
+$(document).on('pjax:end', function () {
+    let content = $(".content-page");
+
+    if (content.find('.content-loading').hasClass("active")) {
+       setTimeout(() => {
+           content.find(".content-loading").removeClass('active');
+       },1000);
+    }
+});
