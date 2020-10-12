@@ -363,6 +363,7 @@ $("body").on("change", "select[name='payment_method']", function () {
 });
 $("body").on("click", ".changeAddessDefault", function () {
     const cid = $(this).data('key');
+
     (async () => {
         const {value: _address} = await swal.fire({
             title: "Thay đổi địa chỉ",
@@ -376,21 +377,21 @@ $("body").on("click", ".changeAddessDefault", function () {
             }
         });
         if (_address) {
-            $.ajax({
-                url: config.changeAddess,
-                type: "POST",
-                cache: false,
-                data: {address: _address, cid: cid},
-                success: function (res) {
-                    if (res.success) {
+            try {
+                $.ajax({
+                    url: config.changeAddess,
+                    type: "POST",
+                    cache: false,
+                    data: {address: _address, cid: cid},
+                    success: function (res) {
                         toastr.success(res.msg);
-                        return;
-                    } else {
-                        toastr.warning(res.msg);
+                        __reloadData();
                     }
-                    __reloadData();
-                }
-            })
+                })
+            } catch (e) {
+                toastr.warning(e.response.data.message);
+            }
+
         }
     })();
 });
@@ -691,7 +692,8 @@ function setORDER(res) {
     _products.map(item => {
         if (ORDER.skus.includes(item.sku)) {
             return 0;
-        };
+        }
+        ;
 
         ORDER.option = item.selected;
         ORDER.cate = item.category_id;
@@ -899,6 +901,13 @@ $("body").on("click", ".callbackButton", function () {
 });
 
 
-
-
-
+const showCardLoading = (parent) => {
+    if (!$(parent).find('.card-loading').hasClass("active")) {
+        $(parent).find(".card > .card-loading").addClass('active');
+    }
+}
+const hideCardLoading = (parent) => {
+    if ($(parent).find('.card-loading').hasClass("active")) {
+        $(parent).find(".card > .card-loading").removeClass('active');
+    }
+}

@@ -53,6 +53,7 @@ AppAsset2::register($this);
             exportWaitInfo: "<?= Url::toRoute(['ajax/export-wait-info'])?>",
             changeAddess: "<?= Url::toRoute(['ajax/change-address'])?>",
             ajaxProductSelect: "<?= Url::toRoute(['ajax/load-product-select'])?>",
+            ajaxProduct: "<?= Url::toRoute(['ajax/load-product'])?>",
             loadSkus: "<?=  Url::toRoute(['ajax/load-sku'])?>",
             changeContactStatus: "<?= Url::toRoute(['ajax/change-contact-status'])?>",
             changeMultipleStatus: "<?= Url::toRoute(['ajax/change-multiple-status'])?>",

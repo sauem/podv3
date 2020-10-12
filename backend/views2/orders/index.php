@@ -284,6 +284,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                                 return Html::a("<i class='fa fa-edit'></i> sửa đơn", 'javascript:;', [
                                     'class' => 'btn showOrderForm btn-sm btn-info mt-2',
+                                    'data-pjax' => '0',
                                     //'data-toggle' => 'collapse',
                                     //'data-target' => '#collapse-order',
                                     'data-key' => $model->id,
@@ -330,9 +331,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'type' => 'default',
                     'heading' => '<div class="d-flex">' .
                         Html::a("<i class='fe-shopping-cart'></i> Tạo đơn", "javascript:;", [
-                            'class' => 'mr-1 btn btn-outline-success btn-sm',
-                            'data-toggle' => 'collapse',
-                            'data-target' => '#collapse-order',
+                            'class' => 'mr-1 btn btn-outline-success btn-sm showOrderForm',
                             'data-pjax' => '0'])
                         . (Helper::isAdmin() ? Html::a('<i class="fe-trash"></i> Xóa lựa chọn', 'javascript:;',
                             [
@@ -358,7 +357,38 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $js = <<<JS
-    $("body").on("click",".changeStatus",function() {
+        window.ORDER = {
+            isCreated : 0,
+            skus : [],
+            option : "",
+            cate : null,
+            formInfos : [],
+            products : [],
+            billings : [],
+            total : 0,
+            subTotal : 0,
+            shipping : 0
+        }
+        
+    let collapse = $("#collapse-order");
+    let body = $("body");
+    
+     body.on("click",".removeItem",function() {
+      __removeItem(this);
+    });
+    body.on('click','#addProduct',function() {
+        __addProduct(this); 
+     });
+    body.on("change",".money",function() {
+        __moneyChange(this);
+    });
+    body.on("change","input[name='shipping_price']",function() {
+        let _val = $(this).val();
+        ORDER.shipping = typeof _val == "undefined" ? 0 : _val;
+        __reloadTotal();
+    }); 
+    
+    body.on("click",".changeStatus",function() {
         const _key = $(this).data('key');
          const { value: fruit } =  Swal.fire({
               title: 'Lự chọn trạng thái',
@@ -387,15 +417,161 @@ $js = <<<JS
               }
             })
     });
-    $("body").on("click",".showOrderForm",function() {
-        $("#collapse-order").collapse("toggle");
-        let key = $(this).data("key");
-        loadProducts(key).then(res => {
-            console.log(res);
-        })
+    body.on("click",".showOrderForm",function() {
+       collapse.collapse("toggle");
+       let key = $(this).data("key");
+       
+       try {
+            showCardLoading('#collapse-order');
+            loadOrder(key).then(res => {
+              hideCardLoading('#collapse-order');
+              const {customer} = res;
+              ORDER.total = customer.info.total;
+              ORDER.subTotal = customer.info.sub_total;
+              
+              if(res.isCreated){
+                    ORDER.isCreated = 1;
+                    res.customer.info.isCreated = 1;
+                }else{
+                    ORDER.isCreated = 0;
+                    res.customer.info.isCreated = 0;
+                }
+               __complieTemplate(res);
+         });
+       }catch (e) {
+            toastr.warning(e.message);
+       }
     });
-    $("#collapse-order").on("show.bs.collapse", function(e) {
+    collapse.on("show.bs.collapse", function(e) {
         $("html, body").animate({ scrollTop: 0 }, "slow");
+            let _val = $("select[name='payment_method']").val();
+            let _bill_image = $(".bill-image");
+            switch (_val) {
+                case "9999":
+                    _bill_image.css({"display" : "block"});
+                    if((ORDER.billings).length <= 0){
+                        _bill_image.find("input[type='file']").attr("required",true);
+                    }
+                    break;
+                default:
+                    _bill_image.css({"display" : "none"});
+                    _bill_image.find("input[type='file']").attr("required",false);
+                    break;
+            }
+            if(ORDER.isCreated === 1){
+                collapse.find(".card-title.top").text( "Tạo đơn hàng mới!");
+            }else{
+                 collapse.find(".card-title.top").text("Chỉnh sửa đơn hàng!"); 
+            }
+            
+        restOrder();
+    });
+    collapse.on("hidden.bs.collapse", function(e) {
+         $("#resultProduct").empty();
+        $("#resultItemProduct").empty();
+        $("#resutlTotal").empty();
+        if(ORDER.billings.length > 0){
+                _removeImage();
+            }
+        restOrder();
+    });
+    
+    const loadOrder = async (_key) => {
+        return  $.ajax({
+            url : config.orderData,
+            cache : false,
+            type : 'POST',
+            data : { key : _key},
+            });   
+    }
+    const __removeItem = _this  => {
+        swal.fire({
+                    title : 'Cảnh báo',
+                    icon : "error",
+                    text  : 'Loại bỏ sản phẩm này?',
+                    showCancelButton : true
+                }).then(val =>{
+                    if(val.value){
+                        $(_this).closest(".form-group").remove();
+                        let _sku = $(_this).data("sku");
+                        if(ORDER.skus.includes(_sku)){
+                          ORDER.skus = ORDER.skus.filter(item => item !== _sku);
+                          ORDER.products = ORDER.products.filter( pro => pro.sku !== _sku);
+                          __reloadTotal();
+                        }
+                    }
+                });
+    }
+     const __complieTemplate = data => {
+        const {customer, items , skus} = data;
+        $("#resultInfo").html(compileTemplate('template-customer', customer));
+        $("#resultSku").html(compileTemplate("template-sku", skus));
+       console.log(data);
+       
+        ORDER.shipping = customer.info.shipping_price;
+        ORDER.billings = customer.path;
+        if(items.length > 0){
+             $.each(items, function(index, item) {
+                
+                 let _item =  __addItemProduct(item.product, item.price, item.qty);
+                 if(!ORDER.skus.includes(_item.sku)){
+                     ORDER.skus.push(_item.sku);
+                 }
+                 $("#resultItemProduct").append(compileTemplate("template-item-product", _item));
+            });
+        };
+    }
+    const __addProduct = (_this) => {
+             let _sku = $(_this).closest(".input-group").find("select > option:selected").val();
+                $.ajax({
+                    url : config.ajaxProduct,
+                    cache : false,
+                    async  : false,
+                    type :'POST',
+                    data : {sku : _sku},
+                    success : function(res) {
+                         if(ORDER.skus.includes(_sku)){
+                             toastr.warning("Sản phẩm " + _sku + " đã tồn tại trong đơn hàng!");
+                             return;
+                         };
+                        ORDER.skus.push(_sku);
+                        let _item =  __addItemProduct(res.product);
+                        $("#resultItemProduct").prepend(compileTemplate("template-item-product", _item));
+                        __reloadTotal();
+                    }
+                });
+        }
+        
+    const __moneyChange = (_this) =>{
+      let _sku = $(_this).data("sku");
+      let _val = $(_this).val();
+      __changeProductPrice(_sku,_val);
+    }
+    
+    $(document).on("beforeSubmit", "#formOrder",function(res) {
+      res.preventDefault();
+        let _formData = new FormData($(this)[0]);
+        let _action = $(this).attr("action");
+        _formData.append("bills" , ORDER.billings);
+        $.ajax({
+           url : _action,
+           type : "POST",
+           processData : false,
+           contentType :false,
+           data : _formData,
+           success : function(res) {
+                
+                if(res.success){
+                    toastr.success("Tạo đơn hàng thành công!");
+                    collapse.toggle();
+                    restOrder();
+                    __reloadData();
+                    return;
+                }
+                toastr.warning(res);
+           }
+        })
+      return false;
     });
 JS;
 

@@ -24,13 +24,17 @@ window.RESULT_ORDER = {
     totalC8C3: 0,
 
 }
-let indexCtx = document.getElementById("index-chart").getContext('2d');
-let firstChart = new Chart(indexCtx, setChartIndexOption());
-let secondCtx = document.getElementById("second-chart").getContext('2d');
-let secondChart = new Chart(secondCtx, setChartSecondOption());
+let secondChart, firstChart = null;
 
 
-_setResultQuery();
+if (document.querySelector('#index-chart')) {
+    let indexCtx = document.getElementById("index-chart").getContext('2d');
+    firstChart = new Chart(indexCtx, setChartIndexOption());
+    let secondCtx = document.getElementById("second-chart").getContext('2d');
+    secondChart = new Chart(secondCtx, setChartSecondOption());
+
+    _setResultQuery();
+}
 
 async function getAnalytics(queryPrams = {}) {
     return $.ajax({
@@ -55,7 +59,7 @@ function _setResultQuery() {
     setLoading();
     getAnalytics(REPORT).then(res => {
         if (res.success) {
-            const {data,  total} = res.data;
+            const {data, total} = res.data;
             if (data.length <= 0) {
                 toastr.warning("Dữ liệu trống!");
                 removeLoading();
@@ -310,12 +314,12 @@ function setChartSecondOption() {
             labels: [2001, 2002, 2003, 2004, 2005, 2006, 2007]
         },
         animation: {
-            duration : 1,
-            easing : 'linear'
+            duration: 1,
+            easing: 'linear'
         },
         options: {
             maintainAspectRatio: false,
-                scales: {
+            scales: {
                 xAxes: [{
                     stacked: true
                 }],

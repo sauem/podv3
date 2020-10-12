@@ -27,7 +27,9 @@ use backend\models\ZipcodeCountry;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
 use yii\data\ArrayDataProvider;
+use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use Yii;
 use backend\models\UploadForm;
@@ -313,7 +315,7 @@ class AjaxController extends BaseController
 
         $order = OrdersModel::find()->where(['id' => $key])
             ->with('items')
-            ->with('contacts')
+            ->with('contact')
             ->with('billings')
             ->asArray()->one();
         if (!$order) {
@@ -677,45 +679,43 @@ class AjaxController extends BaseController
         }
     }
 
+    /**
+     * @throws BadRequestHttpException
+     * @return array
+     */
     function actionChangeAddress()
     {
         if (Yii::$app->request->isPost) {
             $address = Yii::$app->request->post("address");
             $key = Yii::$app->request->post("cid");
+            $transaction = Yii::$app->db->beginTransaction(Transaction::SERIALIZABLE);
+            try {
+                $contact = ContactsModel::findOne($key);
+                $order = OrdersModel::findOne(['code' => $contact->code]);
 
-            $contact = ContactsModel::findOne($key);
-            if (!$contact) {
-                return [
-                    'success' => 0,
-                    'msg' => Helper::firstError($contact)
-                ];
-            }
-            $customer = Customers::findOne(['phone' => $contact->phone]);
-            if ($customer) {
-                $customer->address = $address;
-                if ($customer->save()) {
-                    return [
-                        'success' => 1,
-                        'msg' => 'Thay đổi địa chỉ thành công!'
-                    ];
+                if(!$contact || $order){
+                    throw new BadRequestHttpException("Record not founded!");
                 }
-                return [
-                    'success' => 0,
-                    'msg' => Helper::firstError($customer)
-                ];
+
+                $order->address = $address;
+                $contact->address = $address;
+                if(!$order->save() || !$contact->save()){
+                    throw new BadRequestHttpException(Helper::firstError($order));
+                }
+                $customer = Customers::findOne(['phone' => $contact->phone]);
+                if($customer){
+                    $customer->address = $address;
+                    $customer->save();
+                }
+            }catch (\Exception $e){
+                $transaction->rollBack();
+                throw new BadRequestHttpException($e->getMessage());
             }
-            $contact->address = $address;
-            if ($contact->save()) {
-                return [
-                    'success' => 1,
-                    'msg' => 'Thay đổi địa chỉ thành công!'
-                ];
-            }
-            return [
-                'success' => 0,
-                'msg' => Helper::firstError($contact)
-            ];
         }
+        return  [
+            'success' => 1,
+            'msg' => 'Thay đổi địa chỉ thành công'
+        ];
     }
 
     function actionFindCity()
