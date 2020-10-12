@@ -17,7 +17,8 @@ use common\helper\Helper;
 $this->title = 'Orders Models';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?= $this->render('modal/_modal_edit') ?>
+<?= $this->render('modal/_collapse_order') ?>
+
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Danh sách đơn hàng</h4>
@@ -91,6 +92,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'shipping_price',
                         'value' => function ($model) {
                             return $model->shipping_price ? Helper::formatExcel($model->shipping_price) : "";
+                        }
+                    ],
+                    [
+                        'label' => 'Loại SP',
+                        'value' => function ($model) {
+                            $page = $model->page;
+                            if ($page) {
+                                return $page->category->name;
+                            }
+                            return null;
                         }
                     ],
                     [
@@ -332,6 +343,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]) : "")
                         . '{export}{toggleData}' . '</div>',
                 ],
+                'export' => [
+                    'itemsAfter' => [
+                        '<div role="presentation" class="dropdown-divider"></div>',
+                        '<div class="dropdown-header">Export All Data</div>',
+                        '<div class="p-2">' . $fullExportMenu . '</div>'
+                    ]
+                ],
                 'toggleDataContainer' => ['class' => 'btn-group-sm ml-1'],
                 'exportContainer' => ['class' => 'btn-group-sm ml-1']
 
@@ -370,8 +388,8 @@ $js = <<<JS
               }
             })
     });
-    $(".createOrder").click(function() {
-            $("#orderEdit").modal({backdrop:"static"});
+    $("#collapse-order").on("show.bs.collapse", function() {
+         $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 JS;
 
