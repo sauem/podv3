@@ -97,8 +97,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Loại SP',
                         'value' => function ($model) {
-                            if ($model->page) {
-                                return $model->page->category->name;
+                            if ($model->contact->page) {
+                                return $model->contact->page->category->name;
                             }
                             return null;
                         }
