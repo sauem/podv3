@@ -97,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'Loại SP',
                         'value' => function ($model) {
-                            if ($model->contact->page) {
+                            if (isset($model->contact->page)) {
                                 return $model->contact->page->category->name;
                             }
                             return null;
@@ -283,9 +283,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return null;
                                 }
                                 return Html::a("<i class='fa fa-edit'></i> sửa đơn", 'javascript:;', [
-                                    'class' => 'btn btn-sm btn-info mt-2',
-                                    'data-toggle' => 'collapse',
-                                    'data-target' => '#collapse-order',
+                                    'class' => 'btn showOrderForm btn-sm btn-info mt-2',
+                                    //'data-toggle' => 'collapse',
+                                    //'data-target' => '#collapse-order',
                                     'data-key' => $model->id,
                                 ]);
                             },
@@ -387,8 +387,15 @@ $js = <<<JS
               }
             })
     });
-    $("#collapse-order").on("show.bs.collapse", function() {
-         $("html, body").animate({ scrollTop: 0 }, "slow");
+    $("body").on("click",".showOrderForm",function() {
+        $("#collapse-order").collapse("toggle");
+        let key = $(this).data("key");
+        loadProducts(key).then(res => {
+            console.log(res);
+        })
+    });
+    $("#collapse-order").on("show.bs.collapse", function(e) {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 JS;
 
