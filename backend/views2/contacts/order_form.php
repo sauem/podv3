@@ -343,6 +343,28 @@ $js = <<<JS
              swal.fire("Chú ý!","Tổng giá đơn hàng > 0","warning");
             return false;
         }
+         swal.fire({
+            title : 'Đang thực hiện...',
+            allowOutsideClick : false,
+            onBeforeOpen : () => {
+                swal.showLoading();
+                submitFormOrder(_formData,_action).then( res => {
+                    toastr.success("Tạo đơn hàng thành công!");
+                    $("#collapse-order").collapse("hide");
+                    restOrder();
+                    __reloadData();
+                    
+                    setTimeout(() => {
+                       swal.close();
+                    }, 1000);
+                }).catch(e => {
+                     console.log(e);
+                    toastr.error(e.message);
+                    swal.close();
+                })
+            }
+            });
+        
         $.ajax({
            url : _action,
            type : "POST",
@@ -358,11 +380,21 @@ $js = <<<JS
                     __reloadData();
                     return;
                 }
-                toastr.warning(res);
+                toastr.warning(res.msg);
            }
         })  
       return false;
     })
+    
+    const submitFormOrder = async (data,  action) => {
+        $.ajax({
+           url : action,
+           type : "POST",
+           processData : false,
+           contentType :false,
+           data : data,
+           });
+    } 
     $("body").on("change","input[name='shipping_price']",function() {
         let _val = parseFloat($(this).val());
              if(typeof _val !== "number" || !_val){
