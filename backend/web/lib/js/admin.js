@@ -213,6 +213,7 @@ function __addItemProduct(item, order_price, _qty = 1) {
         selected: item.selected ? item.selected : item.product_option
     };
     ORDER.products.push(_item);
+
     __reloadTotal();
     return _item;
 }
@@ -221,11 +222,19 @@ function __reloadTotal() {
 
     let _p = ORDER.products;
     let _total = 0;
+    if(typeof ORDER.subTotal === "undefined"){
+        ORDER.subTotal = 0;
+    }
+    if(typeof ORDER.total === "undefined"){
+        ORDER.total = 0;
+    }
+    if(typeof ORDER.shipping === "undefined"){
+        ORDER.shipping = 0;
+    }
     _p.map(item => {
         _total = _total + parseFloat(item.price);
     })
     let _subProductTotal = parseFloat(_total);
-
     if (parseFloat(_total) > 0) {
         ORDER.subTotal = _subProductTotal;
         ORDER.total = ORDER.subTotal + parseFloat(ORDER.shipping);
@@ -233,6 +242,7 @@ function __reloadTotal() {
         ORDER.subTotal = parseFloat(ORDER.subTotal);
         ORDER.total = parseFloat(ORDER.subTotal) + parseFloat(ORDER.shipping);
     }
+
     $("#totalResult").html(compileTemplate("total-template", ORDER));
 }
 
@@ -884,7 +894,6 @@ $("body").on("click", ".callbackButton", function () {
                         cache: false,
                         data: {phone: _phone, status: 'callback'},
                         success: function (res) {
-                            console.log(res)
                             if (res.success) {
                                 toastr.success(res.msg);
                                 __reloadData();

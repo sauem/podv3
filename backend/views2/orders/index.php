@@ -508,7 +508,7 @@ $js = <<<JS
         const {customer, items , skus} = data;
         $("#resultInfo").html(compileTemplate('template-customer', customer));
         $("#resultSku").html(compileTemplate("template-sku", skus));
-       console.log(data);
+        
        
         ORDER.shipping = customer.info.shipping_price;
         ORDER.billings = customer.path;
@@ -522,6 +522,8 @@ $js = <<<JS
                  $("#resultItemProduct").append(compileTemplate("template-item-product", _item));
             });
         };
+        
+        initSelect2();
     }
     const __addProduct = (_this) => {
              let _sku = $(_this).closest(".input-group").find("select > option:selected").val();
@@ -539,7 +541,6 @@ $js = <<<JS
                         ORDER.skus.push(_sku);
                         let _item =  __addItemProduct(res.product);
                         $("#resultItemProduct").prepend(compileTemplate("template-item-product", _item));
-                        __reloadTotal();
                     }
                 });
         }

@@ -113,12 +113,12 @@ use yii\helpers\Url;
                             Địa chỉ <span class="text-danger">(*)</span>
                         </span>
                         <small class="float-right">
-                            <a data-key="{{this.info.contact.contact.id}}"
-                               data-pjax="0"
-                               class="changeAddessDefault"
-                               href="javascript:;">
-                                <i class="fe-edit"></i> Đổi địa chỉ
-                            </a>
+<!--                            <a data-key="{{this.info.contact.contact.id}}"-->
+<!--                               data-pjax="0"-->
+<!--                               class="changeAddessDefault"-->
+<!--                               href="javascript:;">-->
+<!--                                <i class="fe-edit"></i> Đổi địa chỉ-->
+<!--                            </a>-->
                         </small>
                     </label>
                     <input required name="address" value="{{this.info.address}}" class="form-control">
