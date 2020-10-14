@@ -58,21 +58,6 @@ Pjax::begin([
             </div>
         </div>
     </div>
-    <div class="card card-body">
-        <h4 class="card-title">Lịch sử đơn hàng</h4>
-        <?= $this->render('order_histories', [
-            'dataProvider' => $histories,
-            'id' => 'order'
-        ]) ?>
-    </div>
-
-    <div class="card card-body">
-        <h4 class="card-title">Lịch sử cuộc gọi</h4>
-        <?= $this->render('contact_histories', [
-            'dataProvider' => $contactHistories,
-            'id' => 'contacthistory'
-        ]) ?>
-    </div>
 
 <?php Pjax::end() ?>
 <?php
