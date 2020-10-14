@@ -86,6 +86,7 @@ class OrdersModel extends BaseModel
             [['customer_email'], 'string', 'max' => 100],
             [['status'], 'string', 'max' => 25],
             [['code'], 'string', 'max' => 50],
+            [['code'],'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
