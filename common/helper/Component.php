@@ -13,21 +13,31 @@ class Component
 
         return Html::a('<i class="fe-trash"></i> xóa'
             , $urk, [
-                'class' => 'btn btn-sm btn-warning',
+                'class' => 'btn btn-sm m-1 btn-warning',
                 'data-confirm' => 'Bạn chắc sẽ xóa dữ liệu này?',
                 'data-method' => 'post',
                 'data-pjax' => 0
             ]);
     }
 
-    static function update($url)
+    static function update($url, $remote = false, $modal = null)
     {
-        return Html::a('<i class="fe-edit"></i> sửa', $url, ['data-pjax' => '0','class' => 'btn mt-1 btn-sm bg-white']);
+        if($remote){
+            return Html::button('<i class="fe-edit"></i> sửa', [
+                'data-remote' => $url,
+                'data-toggle' => 'modal',
+                'data-target' => $modal,
+                'data-pjax' => '0',
+                'class' => 'btn m-1 btn-sm bg-white'
+
+            ]);
+        }
+        return Html::a('<i class="fe-edit"></i> sửa', $url, ['data-pjax' => '0','class' => 'btn m-1 btn-sm bg-white']);
     }
 
     static function view($url)
     {
-        return Html::a('<i class="fe-eye"></i> xem', $url, ['data-pjax' => '0' ,'class' => 'btn btn-sm bg-white']);
+        return Html::a('<i class="fe-eye"></i> xem', $url, ['data-pjax' => '0' ,'class' => 'btn m-1 btn-sm bg-white']);
     }
     static function money($form,$model,$name){
         return $form->field($model, $name)->widget(MaskMoney::classname(), [

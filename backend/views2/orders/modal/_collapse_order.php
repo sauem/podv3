@@ -218,6 +218,16 @@ use yii\helpers\Url;
         </div>
         <div class="col-md-12">
             <div class="form-group">
+                <label>Nguồn đơn hàng</label>
+                <select name="source_order" class="form-control select2">
+                    {{#each this.source_order}}
+                        <option value="{{@index}}">{{this}}</option>
+                    {{/each }}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
                 <label>Ghi chú đơn hàng</label>
                 <textarea name="order_note" class="form-control"></textarea>
             </div>

@@ -113,6 +113,7 @@ function initTypeahead() {
 
         $("#resultInfo").html(compileTemplate('template-customer', {
             countries : ORDER.countries,
+            source_order : ORDER.source_order,
             info : {
                 customer_name : s.name,
                 customer_phone : s.phone,

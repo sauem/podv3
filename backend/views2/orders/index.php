@@ -368,7 +368,8 @@ $js = <<<JS
             total : 0,
             subTotal : 0,
             shipping : 0,
-            countries : null
+            countries : null,
+            source_order : null
         }
         
     let collapse = $("#collapse-order");
@@ -511,6 +512,7 @@ $js = <<<JS
      const __complieTemplate = data => {
         const {customer, items , skus} = data;
         ORDER.countries = customer.countries;
+        ORDER.source_order = customer.source_order;
         
         $("#resultInfo").html(compileTemplate('template-customer', customer));
         $("#resultSku").html(compileTemplate("template-sku", skus));

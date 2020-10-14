@@ -159,7 +159,8 @@ class AjaxController extends BaseController
                 'info' => $customer,
                 'payment' => $payment,
                 'ids' => $ids,
-                'countries' => $countries
+                'countries' => $countries,
+                'source_order' => OrdersModel::SOURCE_ORDER
             ],
             'product' => $product,
             'total' => $total
@@ -331,6 +332,7 @@ class AjaxController extends BaseController
                     'info' => [],
                     'payment' => $payment,
                     'countries' => $countries,
+                    'source_order' => OrdersModel::SOURCE_ORDER,
                     'path' => []
                 ],
             ];
@@ -1487,8 +1489,8 @@ class AjaxController extends BaseController
     function actionCustomerSearch()
     {
         return Customers::find()
-            ->where(['LIKE','name', Yii::$app->request->get('query') ])
-            ->orWhere(['LIKE','phone', Yii::$app->request->get('query')])
+            ->where(['LIKE', 'name', Yii::$app->request->get('query')])
+            ->orWhere(['LIKE', 'phone', Yii::$app->request->get('query')])
             ->asArray()->all();
     }
 }
