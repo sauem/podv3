@@ -367,7 +367,8 @@ $js = <<<JS
             billings : [],
             total : 0,
             subTotal : 0,
-            shipping : 0
+            shipping : 0,
+            countries : null
         }
         
     let collapse = $("#collapse-order");
@@ -444,6 +445,9 @@ $js = <<<JS
             toastr.warning(e.message);
        }
     });
+    
+ 
+     
     collapse.on("show.bs.collapse", function(e) {
         $("html, body").animate({ scrollTop: 0 }, "slow");
             let _val = $("select[name='payment_method']").val();
@@ -506,10 +510,13 @@ $js = <<<JS
     }
      const __complieTemplate = data => {
         const {customer, items , skus} = data;
+        ORDER.countries = customer.countries;
+        
         $("#resultInfo").html(compileTemplate('template-customer', customer));
         $("#resultSku").html(compileTemplate("template-sku", skus));
-        
+            
        
+          
         ORDER.shipping = customer.info.shipping_price;
         ORDER.billings = customer.path;
         if(items.length > 0){
@@ -524,6 +531,7 @@ $js = <<<JS
         };
         
         initSelect2();
+        initTypeahead();
     }
     const __addProduct = (_this) => {
              let _sku = $(_this).closest(".input-group").find("select > option:selected").val();
