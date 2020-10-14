@@ -60,6 +60,7 @@ AppAsset2::register($this);
             acceptContact: "<?= Url::toRoute(['ajax/accept-contact'])?>",
             pushGoogleSheet: "<?= Url::toRoute(['ajax/push-google-sheet'])?>",
             analyticsReport: "<?= Url::toRoute(['/ajax-analytics'])?>",
+            customerSearch: "<?= Url::toRoute(['/ajax/customer-search'])?>",
         }
     </script>
     <style>

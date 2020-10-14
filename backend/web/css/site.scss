@@ -138,3 +138,23 @@
     justify-content: center;
   }
 }
+.twitter-typeahead{
+  width: 100%;
+  .tt-input{
+    width: 100%;
+  }
+  .tt-menu{
+    background: white;
+    width: 100%;
+    border-bottom:  rgba(0, 0, 0,0.08) 1px solid;
+    border-left:  rgba(0, 0, 0,0.08) 1px solid;
+    border-right:   rgba(0, 0, 0,0.08) 1px solid;
+  }
+  .tt-suggestion{
+    padding: 10px;
+  }
+  .tt-suggestion:hover{
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+  }
+}

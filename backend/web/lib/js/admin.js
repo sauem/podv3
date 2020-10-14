@@ -85,7 +85,48 @@ function initSelect2() {
     });
 }
 
-// initDateRage()
+
+
+function initTypeahead() {
+
+    let data= new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: config.customerSearch+'?query=%QUERY',
+            wildcard: '%QUERY'
+        }
+    });
+    data.initialize();
+    $(".typeahead").typeahead({
+        highlight: true,
+        valueKey: 'phone',
+        autoSelect: true
+    },{
+        name : 'phone',
+        display: function(item){
+            let name = item.name +' - '+ item.phone;
+            return name.replace(/\ - $/, '');
+        },
+        source: data.ttAdapter()
+    }).on('typeahead:selected',function(e,s) {
+
+        $("#resultInfo").html(compileTemplate('template-customer', {
+            countries : ORDER.countries,
+            info : {
+                customer_name : s.name,
+                customer_phone : s.phone,
+                customer_email : s.email,
+                city : s.city,
+                address : s.address,
+                zipcode : s.zipcode,
+                country : s.country,
+            }
+        }));
+        initTypeahead();
+    });
+}
+
 
 function initDateRage() {
     $(".daterange").daterangepicker({
@@ -222,13 +263,13 @@ function __reloadTotal() {
 
     let _p = ORDER.products;
     let _total = 0;
-    if(typeof ORDER.subTotal === "undefined"){
+    if (typeof ORDER.subTotal === "undefined") {
         ORDER.subTotal = 0;
     }
-    if(typeof ORDER.total === "undefined"){
+    if (typeof ORDER.total === "undefined") {
         ORDER.total = 0;
     }
-    if(typeof ORDER.shipping === "undefined"){
+    if (typeof ORDER.shipping === "undefined") {
         ORDER.shipping = 0;
     }
     _p.map(item => {
@@ -930,8 +971,9 @@ $(document).on('pjax:end', function () {
     let content = $(".content-page");
 
     if (content.find('.content-loading').hasClass("active")) {
-       setTimeout(() => {
-           content.find(".content-loading").removeClass('active');
-       },1000);
+        setTimeout(() => {
+            content.find(".content-loading").removeClass('active');
+        }, 1000);
     }
 });
+

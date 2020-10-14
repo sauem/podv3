@@ -19,7 +19,7 @@ class AppAsset2 extends AssetBundle
         '/theme2/css/app.min.css',
         //'/theme2/css/bootstrap-dark.min.css',
         //'/theme2/css/app-dark.min.css',
-        '/css/site.css?v=1.5',
+        '/css/site.css?v=1.6',
         '/theme2/css/icons.min.css',
     ];
     public $js = [
@@ -38,8 +38,9 @@ class AppAsset2 extends AssetBundle
         '/theme2/libs/bootstrap-select/js/bootstrap-select.min.js',
         '/lib/js/money.js',
         '/lib/js/handlebars-v4.7.6.js',
+        '/lib/js/typeahead.js',
         '/lib/js/handlebars-helper.js?v=1.5',
-        '/lib/js/admin.js?v=2.9',
+        '/lib/js/admin.js?v=3.0.1',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
         '/theme2/js/report-chart.js?v=1.9',

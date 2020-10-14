@@ -26,6 +26,7 @@ use backend\models\UserModel;
 use backend\models\ZipcodeCountry;
 use cakebake\actionlog\model\ActionLog;
 use common\helper\Helper;
+use DeepCopyTest\Matcher\Y;
 use yii\data\ArrayDataProvider;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
@@ -140,14 +141,15 @@ class AjaxController extends BaseController
         }
 
         $phone = ArrayHelper::getValue($contacts[0], 'phone');
-        $customer = Customers::findOne(['phone' => $phone]);
-        if ($customer) {
-            $array = ArrayHelper::toArray($customer);
-            $customer = array_merge($array, ['code' => $contacts[0]['code']]);
-        }
-        if (!$customer) {
-            $customer = $contacts[0];
-        }
+//        $customer = Customers::findOne(['phone' => $phone]);
+//        if ($customer) {
+//            $array = ArrayHelper::toArray($customer);
+//            $customer = array_merge($array, ['code' => $contacts[0]['code']]);
+//        }
+//        if (!$customer) {
+//            $customer = $contacts[0];
+//        }
+        $customer = $contacts[0];
 
         $ids = ArrayHelper::getColumn($contacts, 'id');
         $payment = Payment::find()->with('infos')->all();
@@ -363,25 +365,31 @@ class AjaxController extends BaseController
     {
         $key = Yii::$app->request->post('key');
         $status = Yii::$app->request->post('status');
-
-        $model = OrdersModel::findOne($key);
-        if (!$model) {
-            return [
-                'success' => 0,
-                'msg' => "Đơn hàng không tồn tại"
-            ];
+        $transaction = Yii::$app->getDb()->beginTransaction(Transaction::SERIALIZABLE);
+        try {
+            $model = OrdersModel::findOne($key);
+            if (!$model) {
+                throw new BadRequestHttpException('Order not founded');
+            }
+            $model->status = $status;
+            if (!$model->save()) {
+                throw new BadRequestHttpException(Helper::firstError($model));
+            }
+            if ($status === OrdersModel::_CANCEL || $status === OrdersModel::_APPROVED) {
+                $contact = ContactsModel::findOne(['code' => $model->code]);
+                $contactStatus = $status === OrdersModel::_CANCEL ? ContactsModel::_CANCEL : ContactsModel::_OK;
+                if ($contact) {
+                    $contact->status = $contactStatus;
+                    if (!$contact->save()) {
+                        throw new BadRequestHttpException(Helper::firstError($contact));
+                    }
+                }
+            }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException($e->getMessage());
         }
-        $model->status = $status;
-        if ($model->save()) {
-            return [
-                'success' => 1,
-                'msg' => 'Thay đổi trạng thái thành công!'
-            ];
-        }
-        return [
-            'success' => 0,
-            'msg' => Helper::firstError($model)
-        ];
     }
 
     function actionReloadBackup()
@@ -680,8 +688,8 @@ class AjaxController extends BaseController
     }
 
     /**
-     * @throws BadRequestHttpException
      * @return array
+     * @throws BadRequestHttpException
      */
     function actionChangeAddress()
     {
@@ -691,28 +699,19 @@ class AjaxController extends BaseController
             $transaction = Yii::$app->db->beginTransaction(Transaction::SERIALIZABLE);
             try {
                 $contact = ContactsModel::findOne($key);
-                $order = OrdersModel::findOne(['code' => $contact->code]);
 
-                if(!$contact || $order){
-                    throw new BadRequestHttpException("Record not founded!");
-                }
-
-                $order->address = $address;
-                $contact->address = $address;
-                if(!$order->save() || !$contact->save()){
-                    throw new BadRequestHttpException(Helper::firstError($order));
-                }
                 $customer = Customers::findOne(['phone' => $contact->phone]);
-                if($customer){
+                if ($customer) {
                     $customer->address = $address;
                     $customer->save();
                 }
-            }catch (\Exception $e){
+                $transaction->commit();
+            } catch (\Exception $e) {
                 $transaction->rollBack();
                 throw new BadRequestHttpException($e->getMessage());
             }
         }
-        return  [
+        return [
             'success' => 1,
             'msg' => 'Thay đổi địa chỉ thành công'
         ];
@@ -1485,15 +1484,11 @@ class AjaxController extends BaseController
         }
     }
 
-    function actionSearchCustomer()
+    function actionCustomerSearch()
     {
-        $params = Yii::$app->request->queryParams;
-        $searchModel = ContactsModel::find()
-            ->orFilterWhere([
-                'name' => $params['name'],
-                'phone' => $params['phone'],
-            ])
+        return Customers::find()
+            ->where(['LIKE','name', Yii::$app->request->get('query') ])
+            ->orWhere(['LIKE','phone', Yii::$app->request->get('query')])
             ->asArray()->all();
-        return $searchModel;
     }
 }

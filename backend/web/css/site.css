@@ -102,4 +102,20 @@
     .content .content-loading.active {
       display: flex; }
 
+.twitter-typeahead {
+  width: 100%; }
+  .twitter-typeahead .tt-input {
+    width: 100%; }
+  .twitter-typeahead .tt-menu {
+    background: white;
+    width: 100%;
+    border-bottom: rgba(0, 0, 0, 0.08) 1px solid;
+    border-left: rgba(0, 0, 0, 0.08) 1px solid;
+    border-right: rgba(0, 0, 0, 0.08) 1px solid; }
+  .twitter-typeahead .tt-suggestion {
+    padding: 10px; }
+  .twitter-typeahead .tt-suggestion:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white; }
+
 /*# sourceMappingURL=site.css.map */
