@@ -6,9 +6,12 @@ namespace backend\controllers;
 
 use backend\models\Warehouse;
 use backend\models\WarehouseSearch;
+use backend\models\WarehouseStorage;
 use common\helper\Helper;
+use yii\data\ActiveDataProvider;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class BillLadingController extends BaseController
 {
@@ -74,8 +77,35 @@ class BillLadingController extends BaseController
         if (!$model) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-        return $this->render('warehouse-view', [
-            'model' => $model
+        $storage = new WarehouseStorage();
+
+
+        $productStorage = new ActiveDataProvider([
+            'query' => WarehouseStorage::find()
+                ->where(['warehouse_id' => $id])
+                ->with('product'),
+            'pagination' => [
+                'pageSize' => 20
+            ]
         ]);
+
+        return $this->render('warehouse-view', [
+            'model' => $model,
+            'storage' => $storage,
+            'productStorage' => $productStorage
+        ]);
+    }
+
+    public function actionSaveStorage()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $storage = new WarehouseStorage();
+
+        if (\Yii::$app->request->isPost && $storage->load(\Yii::$app->request->post())) {
+            if (!$storage->save()) {
+                throw new BadRequestHttpException(Helper::firstError($storage));
+            }
+        }
+        return true;
     }
 }

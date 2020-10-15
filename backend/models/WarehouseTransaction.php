@@ -18,11 +18,20 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  */
-class WarehouseTransaction extends \yii\db\ActiveRecord
+class WarehouseTransaction extends BaseModel
 {
     /**
      * {@inheritdoc}
      */
+
+    const TRANSACTION_TYPE_IMPORT = 1;
+    const TRANSACTION_TYPE_EXPORT = 2;
+
+    const TRANSACTION_TYPE = [
+        self::TRANSACTION_TYPE_IMPORT => 'Nhập kho',
+        self::TRANSACTION_TYPE_EXPORT => 'Xuất kho',
+    ];
+
     public static function tableName()
     {
         return 'warehouse_transaction';
@@ -35,7 +44,7 @@ class WarehouseTransaction extends \yii\db\ActiveRecord
     {
         return [
             [['warehouse_id', 'quantity', 'product_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['created_at', 'updated_at'], 'required'],
+            [['warehouse_id', 'quantity', 'product_id'], 'required'],
             [['note', 'transaction_type', 'order_code'], 'string', 'max' => 255],
         ];
     }
