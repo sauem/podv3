@@ -35,7 +35,7 @@ class ZipcodeCountry extends BaseModel
     public function rules()
     {
         return [
-            [['country_code', 'zipcode', 'city'], 'required'],
+            [['country_code', 'zipcode'], 'required'],
             [['created_at', 'updated_at'], 'integer'],
             [['country_code'], 'string', 'max' => 10],
             [['country_name', 'city', 'district', 'address'], 'string', 'max' => 255],
