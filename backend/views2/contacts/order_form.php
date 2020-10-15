@@ -434,10 +434,6 @@ $js = <<<JS
              }
                  __reloadTotal();
     });
-    
-    
-    $('#modalViewFormInfo').on('shown.bs.modal', function (e) {
-        $("#resultFormInfo").html(compileTemplate("template-form-info",ORDER.formInfosBase));
-    });
+
 JS;
 $this->registerJs($js);

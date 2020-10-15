@@ -583,7 +583,8 @@ function __findOrderForm(_option, _category) {
             if (res.success) {
                 ORDER.formInfosBase = res.base;
                 ORDER.formInfosData = res.data;
-                $("#resultFormInfo").html(compileTemplate("template-form-info", res))
+                $("#resultFormInfo").html(compileTemplate("template-form-info",ORDER.formInfosBase));
+                //$("#resultFormInfo").html(compileTemplate("template-form-info", res))
             } else {
                 toastr.warning(res.msg);
             }

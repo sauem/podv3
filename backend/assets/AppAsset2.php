@@ -40,7 +40,7 @@ class AppAsset2 extends AssetBundle
         '/lib/js/handlebars-v4.7.6.js',
         '/lib/js/typeahead.js',
         '/lib/js/handlebars-helper.js?v=1.5',
-        '/lib/js/admin.js?v=3.0.1',
+        '/lib/js/admin.js?v=3.0.2',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
         '/theme2/js/report-chart.js?v=1.9',
