@@ -15,12 +15,12 @@ use yii\helpers\Html; ?>
             </h4>
             <div class="actions">
                 <button data-toggle="modal"
-                        data-target="#modal-import"
-                        class="btn btn-warning btn-sm">Nhập excel
+                        data-target="#modal-product"
+                        class="btn btn-info btn-sm">Nhập sản phẩm
                 </button>
                 <button data-toggle="modal"
-                        data-target="#modal-product"
-                        class="btn btn-info btn-sm">Nhập kho
+                        data-target="#modal-import"
+                        class="btn btn-warning btn-sm">Nhập excel
                 </button>
             </div>
         </div>
@@ -29,7 +29,7 @@ use yii\helpers\Html; ?>
             GridView::widget([
                 'dataProvider' => $productStorage,
                 'tableOptions' => [
-                        'class' => 'table-sm'
+                    'class' => 'table-sm'
                 ],
                 'columns' => [
                     'product.name',
@@ -48,13 +48,21 @@ use yii\helpers\Html; ?>
                         'width' => '20%',
                         'buttons' => [
                             'export' => function ($url, $model) {
-                                return Html::a('<i class="fe-download"></i> Nhập','',[
-                                        'class' => 'btn btn-xs mx-1 btn-outline-success'
+                                return Html::a('<i class="fe-download"></i> Nhập', 'javascript:;', [
+                                    'class' => 'btn btn-xs changeQuantity mx-1 btn-outline-success',
+                                    'data-toggle' => 'modal',
+                                    'data-target' => '#modal-quantity',
+                                    'data-key' => $model->product_id,
+                                    'data-pjax' => '0'
                                 ]);
                             },
                             'import' => function ($url, $model) {
-                                return Html::a('<i class="fe-upload"></i> Xuất','',[
-                                    'class' => 'btn btn-xs mx-1 btn-outline-warning'
+                                return Html::a('<i class="fe-upload"></i> Xuất', 'javascript:;', [
+                                    'class' => 'btn btn-xs changeQuantity mx-1 btn-outline-warning',
+                                    'data-pjax' => '0',
+                                    'data-toggle' => 'modal',
+                                    'data-target' => '#modal-quantity',
+                                    'data-key' => $model->product_id,
                                 ]);
                             },
                         ]
@@ -98,6 +106,37 @@ use yii\helpers\Html; ?>
                         </div>
                     </div>
                     <?php ActiveForm::end() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" role="dialog" id="modal-quantity">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Nhập/Xuất số lượng kho</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Số lượng</label>
+                        <input class="form-control" name="quantity" value="0" min="0" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <textarea class="form-control" name="note"></textarea>
+                    </div>
+                    <div class="text-right">
+                        <button data-dismiss="modal" class="btn btn-sm btn-secondary">
+                            <i class="fe-x"></i> Đóng
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="fe-save"></i> Lưu
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
