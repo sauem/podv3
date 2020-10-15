@@ -29,7 +29,7 @@ use yii\helpers\Url; ?>
                 'columns' => [
                     'name',
                     [
-                        'attribute' => 'status',
+                        'attribute' => 'Thị trường',
                         'format' => 'html',
                         'value' => function ($model) {
                             return Helper::getCountry($model->country);

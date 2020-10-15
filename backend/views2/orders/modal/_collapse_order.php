@@ -23,7 +23,7 @@ use yii\helpers\Url;
             <div class="d-flex justify-content-between">
                 <h4 class="card-title top"><i class="fe-shopping-cart"></i> Tạo đơn hàng</h4>
                 <div class="text-right">
-                    <small class="text-danger">Các thông tin (*) là bắt buộc</small>
+                    <small class="text-danger mr-4">Các thông tin (*) là bắt buộc</small>
                     <button type="button" class="btn btn-sm btn-secondary mr-1" data-target="#collapse-order"
                             data-toggle="collapse"><i class="fe-x"></i> Hủy
                     </button>
@@ -56,7 +56,7 @@ use yii\helpers\Url;
                         <tr>
                             <td width="30%">Sản phẩm</td>
                             <td width="20%">Số lượng</td>
-                            <td width="20%" class="text-left">Tổng cộng</td>
+                            <td width="20%" class="text-left">Tổng tiền</td>
                         </tr>
                         </thead>
                         <tbody id="resultItemProduct">
@@ -68,8 +68,8 @@ use yii\helpers\Url;
 
                     </table>
                 </div>
-                <div class="col-12 text-right   ">
-                    <small class="text-danger">Các thông tin (*) là bắt buộc</small>
+                <div class="col-12 text-right">
+                    <small class="text-danger mr-4">Các thông tin (*) là bắt buộc</small>
                     <button type="button" class="btn btn-sm btn-secondary mr-1" data-target="#collapse-order"
                             data-toggle="collapse"><i class="fe-x"></i> Hủy
                     </button>
@@ -291,7 +291,7 @@ use yii\helpers\Url;
 </script>
 <script type="text/x-handlebars-template" id="total-template">
     <tr>
-        <td colspan="2"><strong>Tổng cộng</strong></td>
+        <td colspan="2"><strong>Tổng tiền</strong></td>
         <td class="text-left">
             <strong><input class="maskMoneyTotal form-control" value="{{money this.subTotal}}"></strong>
             <input type="hidden" value="{{subTotal}}" name="sub_total">

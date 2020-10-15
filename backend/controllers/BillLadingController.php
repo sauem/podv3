@@ -56,10 +56,11 @@ class BillLadingController extends BaseController
             'dataProvider' => $dataProvider
         ]);
     }
+
     public function actionWarehouseDelete($id)
     {
         $model = Warehouse::findOne($id);
-        if(!$model){
+        if (!$model) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
@@ -67,5 +68,14 @@ class BillLadingController extends BaseController
         return $this->redirect(['warehouse']);
     }
 
-
+    public function actionView($id)
+    {
+        $model = Warehouse::findOne($id);
+        if (!$model) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+        return $this->render('warehouse-view', [
+            'model' => $model
+        ]);
+    }
 }

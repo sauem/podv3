@@ -53,7 +53,7 @@ use yii\helpers\Url;
                             <tr>
                                 <td width="30%">Sản phẩm</td>
                                 <td width="20%">Số lượng</td>
-                                <td width="20%" class="text-left">Tổng cộng</td>
+                                <td width="20%" class="text-left">Tổng tiền</td>
                             </tr>
                             </thead>
                             <tbody id="resultItemProduct">
@@ -251,7 +251,7 @@ use yii\helpers\Url;
     <script type="text/x-handlebars-template" id="total-template">
 
         <tr>
-            <td colspan="2"><strong>Tổng cộng</strong></td>
+            <td colspan="2"><strong>Tổng tiền</strong></td>
             <td class="text-left">
                 <strong><input class="maskMoneyTotal form-control" value="{{money this.subTotal}}"></strong>
                 <input type="hidden" value="{{subTotal}}" name="sub_total">
