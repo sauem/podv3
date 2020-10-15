@@ -47,7 +47,7 @@ use yii\helpers\Url;
                             <div id="resultProduct">
                             </div>
                         </div>
-                        <div id="resultFormInfo"></div>
+                        <div id="resultFormInfo" class="mt-2"></div>
                         <table class="table mt-2 table-sm table-bordered table-hover">
                             <thead>
                             <tr>
@@ -272,7 +272,7 @@ use yii\helpers\Url;
     </script>
 
     <script type="text/x-handlebars-template" id="template-form-info">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered table-sm">
             <thead>
             <tr>
                 <th>loại sản phẩm</th>
