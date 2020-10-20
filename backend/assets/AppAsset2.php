@@ -24,6 +24,9 @@ class AppAsset2 extends AssetBundle
     ];
     public $js = [
         '/theme2/js/vendor.js',
+        '/lib/js/handlebars-v4.7.6.js',
+        '/lib/js/typeahead.js',
+        '/lib/js/handlebars-helper.js?v=1.5',
         'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js',
         'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
         'https://cdn.jsdelivr.net/npm/sweetalert2@9',
@@ -37,16 +40,12 @@ class AppAsset2 extends AssetBundle
         '/theme2/libs/chart.js/Chart.bundle.min.js',
         '/theme2/libs/bootstrap-select/js/bootstrap-select.min.js',
         '/lib/js/money.js',
-        '/lib/js/handlebars-v4.7.6.js',
-        '/lib/js/typeahead.js',
-        '/lib/js/handlebars-helper.js?v=1.5',
         '/lib/js/admin.js?v=3.0.2',
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
+        '/js/order.js?v=2.9',
         '/theme2/js/report-chart.js?v=1.9',
-        '/theme2/js/app.min.js'
-
-
+        '/theme2/js/app.min.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

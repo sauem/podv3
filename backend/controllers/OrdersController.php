@@ -11,7 +11,9 @@ use common\helper\Helper;
 use Yii;
 use backend\models\OrdersModel;
 use backend\models\OrdersSearchModel;
+use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -71,15 +73,17 @@ class OrdersController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function _actionCreate()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $model = new OrdersModel();
+
         $post = Yii::$app->request->post();
         $product = ArrayHelper::getValue($post, "product");
         $path = ArrayHelper::getValue($post, 'bills');
         $path = explode(',', $path);
         $defaultInfo = ArrayHelper::getValue($post, "default_info");
+
+        $model = new OrdersModel();
 
         if (Yii::$app->request->isPost && $model->load($post, '')) {
             try {
@@ -115,14 +119,14 @@ class OrdersController extends Controller
                     $msg = ContactsModel::updateCompleteAndNextProcess();
                     //save defaultInfo
                     if ($defaultInfo == "on") {
-                       $info =  self::updateOrCreateCustomer($model);
+                        $info = self::updateOrCreateCustomer($model);
 
-                       if(!$info){
-                            return  [
+                        if (!$info) {
+                            return [
                                 'success' => 1,
                                 'msg' => $info
                             ];
-                       }
+                        }
                     }
                     return [
                         'success' => 1,
@@ -145,9 +149,70 @@ class OrdersController extends Controller
         ];
 
     }
-    static function updateOrCreateCustomer(OrdersModel $model){
+
+    /**
+     * @return array
+     * @throws BadRequestHttpException
+     */
+    public function actionCreate()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $post = Yii::$app->request->post();
+
+        $product = ArrayHelper::getValue($post, "product");
+        $path = ArrayHelper::getValue($post, 'bills');
+        $path = explode(',', $path);
+        $defaultInfo = ArrayHelper::getValue($post, "default_info");
+
+        $transaction = Yii::$app->getDb()->beginTransaction(Transaction::SERIALIZABLE);
+        try {
+            $model = new OrdersModel();
+            if (!$model->load($post, '') || !$model->save()) {
+                throw new BadRequestHttpException(Helper::firstError($model));
+            }
+            if (empty($product)) {
+                throw new BadRequestHttpException('Đơn hàng không có sản phẩm!');
+            }
+            foreach ($product as $k => $item) {
+                $orderItems = new OrdersItems;
+                $itemOrder = [
+                    'order_id' => $model->id,
+                    'price' => $item['price'],
+                    'product_sku' => $item['product_sku'],
+                    'qty' => $item['qty']
+                ];
+                if (!$orderItems->load($itemOrder , "") || !$orderItems->save()) {
+                    throw new BadRequestHttpException(Helper::firstError($orderItems));
+                }
+            }
+//            OrdersBilling::updateAll([
+//                'order_id' => $model->id,
+//                'active' => OrdersBilling::ACTIVE
+//            ], ['IN', 'path', $path]);
+//            if ($defaultInfo == "on") {
+//                $info = self::updateOrCreateCustomer($model);
+//                if (!$info) {
+//                    throw new BadRequestHttpException($info);
+//                }
+//            }
+            $transaction->commit();
+
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        return [
+          'success' => 1,
+          'msg' => 'Tạo đơn hàng  thành công!'
+        ];
+    }
+
+    static function updateOrCreateCustomer(OrdersModel $model)
+    {
         $customer = Customers::findOne(['phone' => $model->customer_phone]);
-        if(!$customer){
+        if (!$customer) {
             $customer = new Customers;
         }
         $info = [
@@ -162,7 +227,7 @@ class OrdersController extends Controller
         ];
 
         if ($customer->load($info, "")) {
-            $res =  $customer->save();
+            $res = $customer->save();
         }
         return $res ? true : Helper::firstError($customer);
     }
@@ -170,102 +235,49 @@ class OrdersController extends Controller
     /**
      * Updates an existing OrdersModel model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws BadRequestHttpException
      */
-    public function actionUpdate()
+    public
+    function actionUpdate()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $id = Yii::$app->request->post("order_id");
-        $isCreated = Yii::$app->request->post("isCreated");
-        $model = OrdersModel::findOne($id);
-        if (!$model) {
-            if($isCreated){
-                return  $this->actionCreate();
+        $transaction = Yii::$app->getDb()->beginTransaction(Transaction::SERIALIZABLE);
+        try {
+            $postData = Yii::$app->request->post();
+            $order = OrdersModel::findOne($postData['order_id']);
+            if (!$order) {
+                return $this->actionCreate();
+                //throw new BadRequestHttpException('Không tìm thấy đơn  hàng!');
             }
-            return [
-                'success' => 0,
-                'msg' => 'Đơn hàng không tồn tại'
-            ];
-        }
 
-        $post = Yii::$app->request->post();
-        $product = ArrayHelper::getValue($post, "product");
-        $path = ArrayHelper::getValue($post, 'bills');
-        $path = explode(',', $path);
-        $curentSku = ArrayHelper::getColumn($product, 'product_sku');
+            if (!$order->load($postData, '') || !$order->save()) {
+                throw new BadRequestHttpException(Helper::firstError($order));
+            }
+            $products = ArrayHelper::getValue($postData, 'product', []);
+            if (!$products || empty($products)) {
+                throw new BadRequestHttpException("Đơn hàng không có sản phẩm!");
+            }
+            OrdersItems::deleteAll(['order_id' => $order->id]);
 
-        $defaultInfo = ArrayHelper::getValue($post, "default_info");
-
-        if (Yii::$app->request->isPost && $model->load($post, '')) {
-            try {
-                if ($model->save()) {
-                    foreach ($product as $k => $item) {
-                        $p = [
-                            'order_id' => $model->id,
-                            'price' => $item['price'],
-                            'qty' => $item['qty'],
-                            'product_sku' => $item['product_sku'],
-                            'product_option' => isset($item['product_option']) ? $item['product_option'] : null
-                        ];
-
-                        $items = OrdersItems::findOne(['order_id' => $model->id,
-                            'product_sku' => $item['product_sku']]);
-                        if (!$items) {
-                            $items = new OrdersItems;
-                        }
-                        if ($items->load($p, "") && $items->save()) {
-                            continue;
-                        } else {
-                            return [
-                                'success' => 0,
-                                'msg' => Helper::firstError($items)
-                            ];
-                        }
-                    }
-                    //xóa các sản phẩm đã loại bỏ
-                    $condition = [
-                        'AND', ['NOT', ['product_sku' => $curentSku]],
-                        ['order_id' => $model->id]
-                    ];
-                    //cập nhật defaultInfo
-                    if ($defaultInfo && $defaultInfo == "on") {
-                        self::updateOrCreateCustomer($model);
-                    }
-                    // xóa các sản phẩm được loại bỏ
-                    OrdersItems::deleteAll($condition);
-                    // cập nhật lại hình ảnh hóa đơn thanh toán
-
-                    OrdersBilling::updateAll([
-                        'order_id' => $model->id,
-                        'active' => OrdersBilling::ACTIVE
-                    ], ['IN', 'path', $path]);
-
-                    OrdersBilling::deleteAll([
-                        'AND', ['NOT', ['path' => $path]],
-                        ['order_id' => $model->id]
-                    ]);
-
-                    ActionLog::add("success", "Cập nhật đơn hàng $model->id");
-                    return [
-                        'success' => 1,
-                        'msg' => 'Cập nhật đơn hàng thành công!'
-                    ];
+            foreach ($products as $product) {
+                $orderItem = new OrdersItems();
+                $orderItem->qty = $product['qty'];
+                $orderItem->product_sku = $product['product_sku'];
+                $orderItem->price = $product['price'];
+                $orderItem->order_id = $order->id;
+                if (!$orderItem->save()) {
+                    throw new BadRequestHttpException("item " . Helper::firstError($orderItem));
                 }
-            } catch (\Exception $e) {
-                ActionLog::add("error", "Cập nhật đơn hàng thất bại " . $e->getMessage());
-                return [
-                    'success' => 0,
-                    'msg' => $e->getMessage()
-                ];
             }
-
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException($exception->getMessage());
         }
-
         return [
-            'success' => 0,
-            'msg' => Helper::firstError($model)
+            'success' => 1,
+            'msg' => 'Cập nhật đơn hàng thành công!'
         ];
     }
 
@@ -276,7 +288,8 @@ class OrdersController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public
+    function actionDelete($id)
     {
         $this->findModel($id)->delete();
 
@@ -290,7 +303,8 @@ class OrdersController extends Controller
      * @return OrdersModel the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected
+    function findModel($id)
     {
         if (($model = OrdersModel::findOne($id)) !== null) {
             return $model;

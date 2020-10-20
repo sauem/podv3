@@ -33,7 +33,9 @@ class Helper
     static function getHost($link)
     {
         $parse = parse_url($link);
-        return isset($parse['host']) ? $parse['host'] : $link;
+        return isset($parse['host']) ?
+            preg_replace('#^(http(s)?://)?w{3}\.#', '$1', $parse['host']) :
+            preg_replace('#^(http(s)?://)?w{3}\.#', '$1', $link);
     }
 
     static function userRole($role)
@@ -172,7 +174,7 @@ class Helper
     static function getCur($code = 'VN')
     {
         $country = Yii::$app->params['country'];
-        $position = array_search($code, array_column($country,'code'), true);
+        $position = array_search($code, array_column($country, 'code'), true);
         return isset($country[$position]['cur']) ? $country[$position]['cur'] : 'đ';
     }
 

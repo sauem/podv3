@@ -37,6 +37,7 @@ AppAsset2::register($this);
         }
 
     </script>
+    <?= $this->render('link')?>
 </head>
 <body class="fixed-navbar">
 <?php $this->beginBody() ?>

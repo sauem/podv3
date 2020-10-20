@@ -91,6 +91,7 @@ AppAsset2::register($this);
             }
         }
     </style>
+    <?= $this->render('link')?>
 </head>
 <?php $this->beginBody() ?>
 <body class="loading" data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": false}, "topbar": {"color": "dark"}, "showRightSidebarOnPageLoad": true}'>

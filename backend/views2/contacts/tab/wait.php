@@ -39,6 +39,7 @@ use kartik\grid\ActionColumn;
             'format' => 'html',
             'value' => function ($model) {
                 $html = $model->code . "<br>";
+                $html .= $model->phone . "<br>";
                 $html .= ContactsModel::label($model->status);
                 return $html;
             }

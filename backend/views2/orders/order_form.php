@@ -7,6 +7,7 @@ use yii\helpers\Url;
 <?php $form = ActiveForm::begin([
     'id' => 'formOrder',
     'options' => [
+        'data-action' => 'update',
         'enctype' => 'multipart/form-data'
     ],
     'enableClientValidation' => true,
@@ -38,7 +39,7 @@ use yii\helpers\Url;
                         Thông tin khách hàng
                     </h4>
                     <div class="row">
-                        <div id="resultInfo" class="col-12">
+                        <div id="customer-info" class="col-12">
                         </div>
                     </div>
                 </div>
@@ -47,10 +48,10 @@ use yii\helpers\Url;
                         <h4 class="card-title mb-4">
                             <i class="fe-shopping-bag"></i> Sản phẩm đặt mua
                         </h4>
-                        <div id="resultSku">
+                        <div id="product-list">
                         </div>
                     </div>
-                    <div id="resultFormInfo"></div>
+                    <div id="order-example"></div>
                     <table class="table mt-2 table-sm table-bordered table-hover">
                         <thead>
                         <tr>
@@ -59,10 +60,10 @@ use yii\helpers\Url;
                             <td width="20%" class="text-left">Tổng tiền</td>
                         </tr>
                         </thead>
-                        <tbody id="resultItemProduct">
+                        <tbody id="product-contact">
 
                         </tbody>
-                        <tfoot id="totalResult">
+                        <tfoot id="amount-order">
 
                         </tfoot>
 
@@ -82,29 +83,29 @@ use yii\helpers\Url;
 </div>
 
 <?php ActiveForm::end() ?>
-<script type="text/x-handlebars-template" id="template-customer">
+<script type="text/x-handlebars-template" id="customer-template">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
                 <label>Tên khách hàng <span class="text-danger">(*)</span></label>
-                <input required name="customer_name" value="{{this.info.customer_name}}" class="typeahead form-control">
-                <input type="hidden" required name="order_id" value="{{this.info.id}}" class="form-control">
-                <input type="hidden" name="code" value="{{this.info.code}}" class="form-control">
-                <input type="hidden" required name="isCreated" value="{{this.info.isCreated}}" class="form-control">
+                <input required name="customer_name" value="{{this.customer.name}}" class="typeahead form-control">
+                <input type="hidden" required name="order_id" value="{{this.customer.order_id}}" class="form-control">
+                <input type="hidden" name="code" value="{{this.customer.code}}" class="form-control">
+                <input type="hidden" required name="isCreated" value="{{this.customer.isCreated}}" class="form-control">
 
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Số điện toại <span class="text-danger">(*)</span></label>
-                <input required name="customer_phone" value="{{this.info.customer_phone}}"
+                <input required name="customer_phone" value="{{this.customer.phone}}"
                        class="typeahead form-control">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" name="customer_email" value="{{this.info.customer_email}}" class="form-control">
+                <input type="email" name="customer_email" value="{{this.customer.email}}" class="form-control">
             </div>
         </div>
         <div class="col-md-6">
@@ -113,22 +114,14 @@ use yii\helpers\Url;
                         <span>
                             Địa chỉ <span class="text-danger">(*)</span>
                         </span>
-                    <small class="float-right">
-                        <!--                            <a data-key="{{this.info.contact.contact.id}}"-->
-                        <!--                               data-pjax="0"-->
-                        <!--                               class="changeAddessDefault"-->
-                        <!--                               href="javascript:;">-->
-                        <!--                                <i class="fe-edit"></i> Đổi địa chỉ-->
-                        <!--                            </a>-->
-                    </small>
                 </label>
-                <input required name="address" value="{{this.info.address}}" class="form-control">
+                <input required name="address" value="{{this.customer.address}}" class="form-control">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Quận/huyện <span class="text-danger"></span></label>
-                <input value="{{this.info.district}}" name="district" class="form-control">
+                <input value="{{this.customer.district}}" name="district" class="form-control">
             </div>
         </div>
         <div class="col-md-6">
@@ -136,7 +129,7 @@ use yii\helpers\Url;
                 <label class="d-flex justify-content-between">
                     <span>Thành phố</span>
                     <small class="float-right">
-                        <a data-key="{{this.info.id}}"
+                        <a data-key="{{this.customer.id}}"
                            data-pjax="0"
                            class="autoUpdateCity"
                            href="javascript:;">
@@ -144,13 +137,13 @@ use yii\helpers\Url;
                         </a>
                     </small>
                 </label>
-                <input value="{{this.info.city}}" name="city" class="form-control">
+                <input value="{{this.customer.city}}" name="city" class="form-control">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Zipcode <span class="text-danger">(*)</span></label>
-                <input required name="zipcode" value="{{this.info.zipcode}}" class="form-control">
+                <input required name="zipcode" value="{{this.customer.zipcode}}" class="form-control">
             </div>
         </div>
         <div class="col-md-6">
@@ -160,7 +153,7 @@ use yii\helpers\Url;
                     <option value="">Chọn quốc gia</option>
                     {{#each this.countries}}
                     <option {{selected ..
-                    /info.country this.code}} value="{{this.code}}">{{this.name}}</option>
+                    /customer.country this.code}} value="{{this.code}}">{{this.name}}</option>
                     {{/each}}
                 </select>
             </div>
@@ -172,7 +165,7 @@ use yii\helpers\Url;
                     <option value="">Chọn PTTT...</option>
                     {{#each this.payment}}
                     <option {{selected ..
-                    /info.payment_method this.id}} value="{{this.id}}">{{this.name}}</option>
+                    /customer.payment_method this.id}} value="{{this.id}}">{{this.name}}</option>
                     {{/each}}
                 </select>
             </div>
@@ -180,7 +173,7 @@ use yii\helpers\Url;
         <div class="col-md-6">
             <div class="form-group">
                 <label>Phí vận chuyển </label>
-                <input required min="0" type="number" name="shipping_price" value="{{this.info.shipping_price}}"
+                <input required min="0" type="number" name="shipping_price" value="{{this.customer.shipping_price}}"
                        class="form-control">
             </div>
         </div>
@@ -192,7 +185,7 @@ use yii\helpers\Url;
                 <input type="file" name="bill_transfer[]" multiple>
             </div>
             <div class="row">
-                {{#if this.info.billings}}
+                {{#if this.customer.billings}}
                 <div class="col-12">
                     <small data-toggle="collapse" data-target="#bill-view" class="text-danger float-right btn"><i
                                 class="fa fa-file-pdf-o"></i> Hiển thị hóa đơn</small>
@@ -200,7 +193,7 @@ use yii\helpers\Url;
                 <div class="col-12">
                     <div id="bill-view" class="collapse  mt-2">
                         <div class="row">
-                            {{#each this.info.billings}}
+                            {{#each this.customer.billings}}
                             <div class="col-md-6">
                                 <div class="bill-item ">
                                     <button data-key="{{../info.id}}" data-path="{{this.path}}" type="button"
@@ -216,26 +209,32 @@ use yii\helpers\Url;
                 {{/if}}
             </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="form-group">
                 <label>Nguồn đơn hàng</label>
                 <select name="source_order" class="form-control select2">
                     {{#each this.source_order}}
-                        <option value="{{@index}}">{{this}}</option>
+                    <option value="{{@index}}">{{this}}</option>
                     {{/each }}
                 </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Mã đơn hàng <span class="text-danger">(*)</span></label>
+                <input value="{{this.customer.code}}" required class="form-control">
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
                 <label>Ghi chú đơn hàng</label>
-                <textarea name="order_note" class="form-control"></textarea>
+                <textarea name="order_note" class="form-control">{{customer.order_note}}</textarea>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
                 <label>Ghi chú cho đơn vị vận chuyển</label>
-                <textarea name="vendor_note" class="form-control"></textarea>
+                <textarea name="vendor_note" class="form-control">{{customer.vendor_note}}</textarea>
             </div>
         </div>
         <div class="col-md-12">
@@ -249,7 +248,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </script>
-<script type="text/x-handlebars-template" id="template-sku">
+<script type="text/x-handlebars-template" id="product-list-template">
     <div class="input-group">
         <div style="width: 50%">
             <select class="form-control select2">
@@ -265,14 +264,14 @@ use yii\helpers\Url;
         </div>
     </div>
 </script>
-<script type="text/x-handlebars-template" id="template-item-product">
+<script type="text/x-handlebars-template" id="product-contact-template">
     <tr class="form-group">
         <td>{{this.name}}<br>
             <small>{{this.category}}|{{this.sku}}</small>
             <input type="hidden" value="{{this.sku}}" name="product[{{this.sku}}][product_sku]">
         </td>
         <td>
-            <input name="product[{{this.sku}}][qty]" data-sku="{{this.sku}}" value="1" min="1" type="number"
+            <input name="product[{{this.sku}}][qty]" data-sku="{{this.sku}}" value="{{this.qty}}" min="1" type="number"
                    class="form-control">
         </td>
         <td class="text-right input-group">
@@ -289,27 +288,59 @@ use yii\helpers\Url;
         </td>
     </tr>
 </script>
-<script type="text/x-handlebars-template" id="total-template">
+<script type="text/x-handlebars-template" id="amount-order-template">
     <tr>
         <td colspan="2"><strong>Tổng tiền</strong></td>
         <td class="text-left">
-            <strong><input class="maskMoneyTotal form-control" value="{{money this.subTotal}}"></strong>
+            <div class="input-group">
+                <input class="maskMoneyTotal form-control" value="{{money this.subTotal}}">
+                <div class="input-group-append">
+                    <span class="input-group-text">{{currency}}</span>
+                </div>
+            </div>
             <input type="hidden" value="{{subTotal}}" name="sub_total">
         </td>
     </tr>
     <tr>
         <td colspan="2">Phí ship</td>
-        <td><strong>{{money this.shipping}}</strong></td>
+        <td><strong>{{money this.shipping}} {{currency}}</strong></td>
     </tr>
     <tr>
         <td colspan="2"><strong>Tổng đơn</strong></td>
         <td class="text-left">
-            <strong>{{money this.total}}</strong>
+            <strong>{{money this.total}} {{currency}}</strong>
             <input type="hidden" value="{{total}}" name="total">
         </td>
     </tr>
 </script>
+<script type="text/x-handlebars-template" id="order-example-template">
+    <table class="table table-hover table-bordered table-sm">
+        <thead>
+        <tr>
+            <th>loại sản phẩm</th>
+            <th>Doanh thu</th>
+            <th width="35%">Nội dung</th>
+            <th>Sản phẩm</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each this}}
+        <tr>
 
-<script type="text/x-handlebars-template" id="template-form-info">
-    <p>{{msg}} <a class="btn btn-sm btn-warning" data-target="#modalViewFormInfo" data-toggle="modal">Xem</a></p>
+            <td>{{category}}</td>
+            <td>{{money revenue}}</td>
+            <td>{{content}}</td>
+            <td>
+                {{#each skus}}
+                <small>{{this}}</small><br>
+                {{/each}}
+            </td>
+            <td>
+                <button data-key="{{@index}}" type="button" class="applyInfo btn btn-sm btn-info">Áp dụng</button>
+            </td>
+        </tr>
+        {{/each }}
+        </tbody>
+    </table>
 </script>

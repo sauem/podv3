@@ -15,12 +15,15 @@ use yii\helpers\Url;
 ]) ?>
     <div id="collapse-order" class="collapse">
         <div class="card">
+            <div class="card-loading">
+                <div class="spinner-grow text-success" role="status"></div>
+            </div>
             <div class="card-body">
                 <input type="hidden" value="<?= Yii::$app->user->getId() ?>" name="user_id">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title"><i class="fe-shopping-cart"></i> Tạo đơn hàng</h4>
                     <div class="text-right">
-                        <small class="text-danger">Các thông tin (*) là bắt buộc</small>
+                        <small class="text-danger mr-4">Các thông tin (*) là bắt buộc</small>
                         <button type="button" class="btn btn-sm btn-secondary mr-1" data-target="#collapse-order"
                                 data-toggle="collapse"><i class="fe-x"></i> Hủy
                         </button>
@@ -35,7 +38,7 @@ use yii\helpers\Url;
                             Thông tin khách hàng
                         </h4>
                         <div class="row">
-                            <div id="resultInfo" class="col-12">
+                            <div id="customer-info" class="col-12">
                             </div>
                         </div>
                     </div>
@@ -44,10 +47,10 @@ use yii\helpers\Url;
                             <h4 class="card-title mb-4">
                                 <i class="fe-shopping-bag"></i> Sản phẩm đặt mua
                             </h4>
-                            <div id="resultProduct">
+                            <div id="product-list">
                             </div>
                         </div>
-                        <div id="resultFormInfo" class="mt-2"></div>
+                        <div id="order-example" class="mt-2"></div>
                         <table class="table mt-2 table-sm table-bordered table-hover">
                             <thead>
                             <tr>
@@ -56,17 +59,17 @@ use yii\helpers\Url;
                                 <td width="20%" class="text-left">Tổng tiền</td>
                             </tr>
                             </thead>
-                            <tbody id="resultItemProduct">
+                            <tbody id="product-contact">
 
                             </tbody>
-                            <tfoot id="totalResult">
+                            <tfoot id="amount-order">
 
                             </tfoot>
 
                         </table>
                     </div>
-                    <div class="col-12 text-right   ">
-                        <small class="text-danger">Các thông tin (*) là bắt buộc</small>
+                    <div class="col-12 text-right">
+                        <small class="text-danger mr-4">Các thông tin (*) là bắt buộc</small>
                         <button type="button" class="btn btn-sm btn-secondary mr-1" data-target="#collapse-order"
                                 data-toggle="collapse"><i class="fe-x"></i> Hủy
                         </button>
@@ -79,26 +82,26 @@ use yii\helpers\Url;
     </div>
 
 <?php ActiveForm::end() ?>
-    <script type="text/x-handlebars-template" id="template-product">
+    <script type="text/x-handlebars-template" id="customer-template">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Tên khách hàng <span class="text-danger">(*)</span></label>
-                    <input required name="customer_name" value="{{this.info.name}}" class="form-control">
-                    <input type="hidden" name="contact_id" value="{{this.ids}}" class="form-control">
-                    <input type="hidden" name="code" value="{{this.info.code}}" class="form-control">
+                    <input required name="customer_name" value="{{this.customer.name}}" class="form-control">
+                    <input type="hidden" name="contact_id" value="{{this.customer.lead}}" class="form-control">
+                    <input type="hidden" name="code" value="{{this.customer.code}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Số điện toại <span class="text-danger">(*)</span></label>
-                    <input required name="customer_phone" value="{{this.info.phone}}" class="form-control">
+                    <input required name="customer_phone" value="{{this.customer.phone}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="customer_email" value="{{this.info.email}}" class="form-control">
+                    <input type="email" name="customer_email" value="{{this.customer.email}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -107,22 +110,14 @@ use yii\helpers\Url;
                         <span>
                             Địa chỉ <span class="text-danger">(*)</span>
                         </span>
-                        <small class="float-right">
-<!--                            <a data-key="{{this.info.id}}"-->
-<!--                               data-pjax="0"-->
-<!--                               class="changeAddessDefault"-->
-<!--                               href="javascript:;">-->
-<!--                                <i class="fe-edit"></i> Đổi địa chỉ-->
-<!--                            </a>-->
-                        </small>
                     </label>
-                    <input required name="address" value="{{this.info.address}}" class="form-control">
+                    <input required name="address" value="{{this.customer.address}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Quận/huyện <span class="text-danger"></span></label>
-                    <input value="{{this.info.district}}" name="district" class="form-control">
+                    <input name="district" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -130,7 +125,7 @@ use yii\helpers\Url;
                     <label class="d-flex justify-content-between">
                         <span>Thành phố</span>
                         <small class="float-right">
-                            <a data-key="{{this.info.id}}"
+                            <a data-key="{{this.customer.lead}}"
                                data-pjax="0"
                                class="autoUpdateCity"
                                href="javascript:;">
@@ -138,13 +133,13 @@ use yii\helpers\Url;
                             </a>
                         </small>
                     </label>
-                    <input value="{{this.info.city}}" name="city" class="form-control">
+                    <input name="city" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Zipcode <span class="text-danger">(*)</span></label>
-                    <input required name="zipcode" value="{{this.info.zipcode}}" class="form-control">
+                    <input type="number" required name="zipcode" value="{{this.customer.zipcode}}" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -154,7 +149,7 @@ use yii\helpers\Url;
                         <option value="">Chọn quốc gia</option>
                         {{#each this.countries}}
                         <option {{selected ..
-                        /info.country this.code}} value="{{this.code}}">{{this.name}}</option>
+                        /customer.country this.code}} value="{{this.code}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -207,7 +202,8 @@ use yii\helpers\Url;
             </div>
         </div>
     </script>
-    <script type="text/x-handlebars-template" id="template-sku">
+    <!--    product-list-->
+    <script type="text/x-handlebars-template" id="product-list-template">
         <div class="input-group">
             <div style="width: 50%">
                 <select class="form-control select2">
@@ -223,7 +219,8 @@ use yii\helpers\Url;
             </div>
         </div>
     </script>
-    <script type="text/x-handlebars-template" id="template-item-product">
+    <!--    product-contact-->
+    <script type="text/x-handlebars-template" id="product-contact-template">
         <tr class="form-group">
             <td>{{this.name}}<br>
                 <small>{{this.category}}|{{this.sku}}</small>
@@ -248,30 +245,35 @@ use yii\helpers\Url;
         </tr>
 
     </script>
-    <script type="text/x-handlebars-template" id="total-template">
-
+    <!--    amount-order-->
+    <script type="text/x-handlebars-template" id="amount-order-template">
         <tr>
             <td colspan="2"><strong>Tổng tiền</strong></td>
             <td class="text-left">
-                <strong><input class="maskMoneyTotal form-control" value="{{money this.subTotal}}"></strong>
+                <div class="input-group">
+                    <input class="maskMoneyTotal form-control" value="{{money this.subTotal}}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">{{currency}}</span>
+                    </div>
+                </div>
+
                 <input type="hidden" value="{{subTotal}}" name="sub_total">
             </td>
         </tr>
-
         <tr>
             <td colspan="2">Phí ship</td>
-            <td><strong>{{money this.shipping}}</strong></td>
+            <td><strong>{{money shipping}} {{currency}}</strong></td>
         </tr>
         <tr>
             <td colspan="2"><strong>Tổng đơn</strong></td>
             <td class="text-left">
-                <strong>{{money this.total}}</strong>
+                <strong>{{money total}} {{currency}}</strong>
                 <input type="hidden" value="{{total}}" name="total">
             </td>
         </tr>
     </script>
-
-    <script type="text/x-handlebars-template" id="template-form-info">
+    <!--    oder-example-->
+    <script type="text/x-handlebars-template" id="order-example-template">
         <table class="table table-hover table-bordered table-sm">
             <thead>
             <tr>
@@ -310,130 +312,6 @@ $billtransfer = Url::toRoute(['ajax/upload-bill']);
 $currentPage = Url::toRoute(Yii::$app->controller->getRoute());
 $js = <<<JS
 
- $("body").on('click','.removeItem',function() {
-        swal.fire({
-            title : 'Cảnh báo',
-            icon : "error",
-            text  : 'Loại bỏ sản phẩm này?',
-            showCancelButton : true
-        }).then(val =>{
-            if(val.value){
-                $(this).closest(".form-group").remove();
-                let _sku = $(this).data("sku");
-                if(ORDER.skus.includes(_sku)){
-                  ORDER.skus = ORDER.skus.filter(item => item !== _sku);
-                  ORDER.products = ORDER.products.filter( pro => pro.sku !== _sku);
-                  __reloadTotal();
-                }
-            }
-        });
-    })
-     $("body").on('click','#addProduct',function() {
-         let _sku = $(this).closest(".input-group").find("select > option:selected").val();
-        $.ajax({
-            url : '$loadProduct',
-            cache : false,
-            type :'POST',
-            data : {sku : _sku},
-            success : function(res) {
-                 if(ORDER.skus.includes(_sku)){
-                     toastr.warning("Sản phẩm " + _sku + " đã tồn tại trong đơn hàng!");
-                     return;
-                 };
-                ORDER.skus.push(_sku);
-                let _item =  __addItemProduct(res.product);
-                $("#resultItemProduct").prepend(compileTemplate("template-item-product", _item));
-            }
-        });
-    })
-    
-    $("body").on("change",".money",function() {
-      let _sku = $(this).data("sku");
-      let _val = parseFloat($(this).val());
-      if(typeof _val !== "number" || !_val){
-          toastr.warning("Giá trị nhập phải là số!");
-          $(this).val(0);
-          _val = 0;
-      }
-      __changeProductPrice(_sku,_val);
-    });
-
-
-    $(document).on("beforeSubmit", "#formOrder",function(res) {
-      res.preventDefault();
-        let _formData = new FormData($(this)[0]);
-        let _action = $(this).attr("action");
-        _formData.append("bills" , ORDER.billings);
-        if(ORDER.products.length <= 0){
-            swal.fire("Chú ý!","Đơn hàng chưa có sản phẩm nào!","warning");
-            return false;
-        }else if( parseInt(_formData.get("total")) <= 0){
-             swal.fire("Chú ý!","Tổng giá đơn hàng > 0","warning");
-            return false;
-        }
-         swal.fire({
-            title : 'Đang thực hiện...',
-            allowOutsideClick : false,
-            onBeforeOpen : () => {
-                swal.showLoading();
-                submitFormOrder(_formData,_action).then( res => {
-                    toastr.success("Tạo đơn hàng thành công!");
-                    $("#collapse-order").collapse("hide");
-                    restOrder();
-                    __reloadData();
-                    
-                    setTimeout(() => {
-                       swal.close();
-                    }, 1000);
-                }).catch(e => {
-                     console.log(e);
-                    toastr.error(e.message);
-                    swal.close();
-                })
-            }
-            });
-        
-        $.ajax({
-           url : _action,
-           type : "POST",
-           processData : false,
-           contentType :false,
-           data : _formData,
-           success : function(res) {
-               
-                if(res.success){
-                    toastr.success("Tạo đơn hàng thành công!");
-                    $("#collapse-order").collapse("hide");
-                    restOrder();
-                    __reloadData();
-                    return;
-                }
-                toastr.warning(res.msg);
-           }
-        })  
-      return false;
-    })
-    
-    const submitFormOrder = async (data,  action) => {
-        $.ajax({
-           url : action,
-           type : "POST",
-           processData : false,
-           contentType :false,
-           data : data,
-           });
-    } 
-    $("body").on("change","input[name='shipping_price']",function() {
-        let _val = parseFloat($(this).val());
-             if(typeof _val !== "number" || !_val){
-                  toastr.warning("Giá trị nhập phải là số!");
-                  $(this).val(0);
-                   ORDER.shipping = 0;
-             }else{
-                 ORDER.shipping =  _val;
-             }
-                 __reloadTotal();
-    });
 
 JS;
 $this->registerJs($js);
