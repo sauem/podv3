@@ -4,6 +4,7 @@
 namespace backend\controllers;
 
 
+use backend\models\ArchiveSearch;
 use backend\models\Warehouse;
 use backend\models\WarehouseSearch;
 use backend\models\WarehouseStorage;
@@ -12,21 +13,46 @@ use yii\data\ActiveDataProvider;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use backend\models\Archive;
 
 class BillLadingController extends BaseController
 {
 
     //Đơn vị vận chuyển
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
-        $model = new Warehouse();
 
+        $searchModel = new ArchiveSearch();
+        $model = new Archive();
+        if($id){
+            $model = Archive::findOne($id);
+            if(!$model){
+                throw new NotFoundHttpException('Không tồn tại đơn vị vận chuyển!');
+            }
+        }
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
+            if (!$model->save()) {
+                \Yii::$app->session->setFlash('error', Helper::firstError($model));
+            } else {
+                \Yii::$app->session->setFlash('success', 'Thao tác thành công!');
+            }
+            return $this->redirect(['index']);
+        }
         return $this->render('index', [
             'model' => $model,
-
+            'dataProvider' => $dataProvider
         ]);
     }
-
+    public function actionDeleteDelivery($id){
+        $model = Archive::findOne($id);
+        if(!$model){
+            throw new NotFoundHttpException('Không tồn tại đơn vị vận chuyển!');
+        }
+        $model->delete();
+        \Yii::$app->session->setFlash('success', 'Thao tác thành công!');
+        return $this->redirect(['index']);
+    }
     //Kho hàng
     public function actionForm($id = null)
     {
