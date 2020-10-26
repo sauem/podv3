@@ -6,6 +6,7 @@ namespace backend\controllers;
 
 use backend\models\ContactsModel;
 use backend\models\FormInfo;
+use backend\models\OrderResource;
 use backend\models\OrdersModel;
 use backend\models\Payment;
 use backend\models\ProductsModel;
@@ -40,6 +41,7 @@ class AjaxOrderController extends BaseController
 
             $payment = Payment::find()->all();
             $countries = \Yii::$app->params['country'];
+            $order_resource = OrderResource::find()->asArray()->all();
             $productList = ProductsModel::find()
                 ->addSelect(['id', 'category_id', 'name', 'sku'])
                 ->with([
@@ -87,6 +89,7 @@ class AjaxOrderController extends BaseController
                     'currency' => Helper::getCur($lead->country),
                 ]
             ],
+            'order_resource' => $order_resource,
             'productList' => $productList,
             'orderExample' => $orderExamples,
             'payment' => $payment,
@@ -106,6 +109,7 @@ class AjaxOrderController extends BaseController
                 }
             ])
             ->asArray()->all();
+        $order_resource = OrderResource::find()->asArray()->all();
         return [
             'order' => [
                 'skuExists' => [],
@@ -123,6 +127,7 @@ class AjaxOrderController extends BaseController
             'orderExample' => [],
             'payment' => $payment,
             'countries' => $countries,
+            'order_resource' => $order_resource
         ];
     }
 
@@ -140,6 +145,8 @@ class AjaxOrderController extends BaseController
             }
             $payment = Payment::find()->all();
             $countries = \Yii::$app->params['country'];
+            $order_resource = OrdersModel::find()->asArray()->all();
+
             $productList = ProductsModel::find()
                 ->addSelect(['id', 'category_id', 'name', 'sku'])->with([
                     'category' => function ($query) {
@@ -194,7 +201,7 @@ class AjaxOrderController extends BaseController
                         'currency' => Helper::getCur($model->country),
                     ]
                 ],
-                'source_order' => OrdersModel::SOURCE_ORDER,
+                'order_resource' => $order_resource,
                 'productList' => $productList,
                 'orderExample' => $orderExamples,
                 'payment' => $payment,

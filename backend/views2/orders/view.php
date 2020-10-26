@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\OrderResource;
 use common\helper\Helper;
 use yii\helpers\Html;
 
@@ -132,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tr>
                             <td>
                                 <p>Yêu cầu khách hàng
-                                    : <?= Helper::checkEmpty($model->contact) ? 'Không tồn tại' : $model->cotact->contact->option ?></p>
+                                    : <?= Helper::checkEmpty($model->contact) ? 'Không tồn tại' : $model->contact->contact->option ?></p>
                                 <p>Ghi chú khách hàng
                                     : <?= Helper::checkEmpty($model->contact) ? 'không tồn tại' : $model->contact->contact->note ?></p>
                                 <p>Ghi chú sale : <?= $model->order_note ?></p>
@@ -141,8 +142,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td>
                                 <p>Ngày lên đơn: <?= date('d/m/Y H:i:s', $model->created_at) ?></p>
                                 <p>Sale tạo đơn: <?= $model->user->username ?></p>
-                                <p>
-                                    Marketer: <?= Helper::checkEmpty($model->contact) ? 'Không tồn tại' : $model->contact->contact->page->user->username ?></p>
+                                <p>Marketer: <?= Helper::checkEmpty($model->contact) ? 'Không tồn tại' : $model->contact->contact->page->user->username ?></p>
+                                <p>Nguồn đơn hàng: <?= Helper::checkEmpty($model->source_order) ? 'Không tồn tại' : OrderResource::name($model->source_order) ?></p>
                             </td>
                         </tr>
                     </table>

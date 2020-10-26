@@ -49,6 +49,7 @@ window.ORDER = {
     countries: [],
     payment: [],
     isCreateNewOrder: 0,
+    order_resource: [],
 }
 
 // Load thông tin contact lead vào form order
@@ -223,7 +224,7 @@ const OrderForm = {
         $("html, body").animate({scrollTop: 0}, "slow");
     },
     setOrderForm: data => {
-        const {order, productList, orderExample, payment, countries} = data;
+        const {order, productList, orderExample, payment, countries, order_resource} = data;
         // let skuExists = [];
         // if (order.product) {
         //     skuExists.push(order.product.sku);
@@ -233,7 +234,8 @@ const OrderForm = {
             productList: productList,
             countries: countries,
             payment: payment,
-            orderExample: orderExample
+            orderExample: orderExample,
+            order_resource: order_resource
         }
     },
     reset: () => {
@@ -254,6 +256,7 @@ const OrderForm = {
             countries: [],
             payment: [],
             isCreateNewOrder: 0,
+            order_resource: []
         }
     },
     findArrIndex: (array = [], valueSearch, key) => {
@@ -314,7 +317,9 @@ const OrderForm = {
                 customer: ORDER.order.customer,
                 countries: ORDER.countries,
                 payment: ORDER.payment,
+                order_resource: ORDER.order_resource
             };
+            console.log(data);
             $(TEMPLATE_ID.customerInfo).html(OrderForm.compile(HANDLEBAR_ID.customerInfo, data));
         },
         total: () => {

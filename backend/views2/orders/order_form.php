@@ -213,8 +213,8 @@ use yii\helpers\Url;
             <div class="form-group">
                 <label>Nguồn đơn hàng</label>
                 <select name="source_order" class="form-control select2">
-                    {{#each this.source_order}}
-                    <option value="{{@index}}">{{this}}</option>
+                    {{#each this.order_resource}}
+                    <option value="{{this.slug}}">{{this.name}}</option>
                     {{/each }}
                 </select>
             </div>
