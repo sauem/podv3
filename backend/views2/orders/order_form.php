@@ -90,7 +90,7 @@ use yii\helpers\Url;
                 <label>Tên khách hàng <span class="text-danger">(*)</span></label>
                 <input required name="customer_name" value="{{this.customer.name}}" class="typeahead form-control">
                 <input type="hidden" required name="order_id" value="{{this.customer.order_id}}" class="form-control">
-                <input type="hidden" name="code" value="{{this.customer.code}}" class="form-control">
+<!--                <input type="hidden" name="code" value="{{this.customer.code}}" class="form-control">-->
                 <input type="hidden" required name="isCreated" value="{{this.customer.isCreated}}" class="form-control">
 
             </div>
@@ -143,7 +143,7 @@ use yii\helpers\Url;
         <div class="col-md-6">
             <div class="form-group">
                 <label>Zipcode <span class="text-danger">(*)</span></label>
-                <input required name="zipcode" value="{{this.customer.zipcode}}" class="form-control">
+                <input required type="number" name="zipcode" value="{{this.customer.zipcode}}" class="form-control">
             </div>
         </div>
         <div class="col-md-6">
@@ -222,7 +222,7 @@ use yii\helpers\Url;
         <div class="col-md-6">
             <div class="form-group">
                 <label>Mã đơn hàng <span class="text-danger">(*)</span></label>
-                <input value="{{this.customer.code}}" required class="form-control">
+                <input name="code" value="{{this.customer.code}}" required class="form-control">
             </div>
         </div>
         <div class="col-md-12">

@@ -78,7 +78,7 @@ class OrdersModel extends BaseModel
     public function rules()
     {
         return [
-            [['customer_name', 'customer_phone', 'address', 'zipcode'], 'required'],
+            [['customer_name', 'customer_phone', 'code', 'address', 'zipcode'], 'required'],
             [['zipcode', 'user_id', 'created_at', 'updated_at', 'payment_method', 'approved_user_id'], 'integer'],
             [['sale', 'sub_total', 'total', 'shipping_price'], 'number'],
             [['customer_name', 'source_order', 'address', 'city', 'district', 'country', 'order_note', 'status_note', 'contact_id', 'vendor_note'], 'string', 'max' => 255],
@@ -86,7 +86,7 @@ class OrdersModel extends BaseModel
             [['customer_email'], 'string', 'max' => 100],
             [['status'], 'string', 'max' => 25],
             [['code'], 'string', 'max' => 50],
-            [['code'],'unique'],
+            [['code'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserModel::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }

@@ -11,6 +11,7 @@ use common\helper\Helper;
 use Yii;
 use backend\models\OrdersModel;
 use backend\models\OrdersSearchModel;
+use yii\db\Exception;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
@@ -182,7 +183,7 @@ class OrdersController extends Controller
                     'product_sku' => $item['product_sku'],
                     'qty' => $item['qty']
                 ];
-                if (!$orderItems->load($itemOrder , "") || !$orderItems->save()) {
+                if (!$orderItems->load($itemOrder, "") || !$orderItems->save()) {
                     throw new BadRequestHttpException(Helper::firstError($orderItems));
                 }
             }
@@ -204,8 +205,8 @@ class OrdersController extends Controller
         }
 
         return [
-          'success' => 1,
-          'msg' => 'Tạo đơn hàng  thành công!'
+            'success' => 1,
+            'msg' => 'Tạo đơn hàng  thành công!'
         ];
     }
 
@@ -233,13 +234,17 @@ class OrdersController extends Controller
     }
 
     /**
+     * @return mixed
+     * @throws BadRequestHttpException
+     */
+
+    /**
      * Updates an existing OrdersModel model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      * @throws BadRequestHttpException
      */
-    public
-    function actionUpdate()
+    public function actionUpdate()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $transaction = Yii::$app->getDb()->beginTransaction(Transaction::SERIALIZABLE);
@@ -247,7 +252,7 @@ class OrdersController extends Controller
             $postData = Yii::$app->request->post();
             $order = OrdersModel::findOne($postData['order_id']);
             if (!$order) {
-                return $this->actionCreate();
+                $order = new OrdersModel();
                 //throw new BadRequestHttpException('Không tìm thấy đơn  hàng!');
             }
 
@@ -277,7 +282,7 @@ class OrdersController extends Controller
         }
         return [
             'success' => 1,
-            'msg' => 'Cập nhật đơn hàng thành công!'
+            'msg' => !$order ?  'Tạo đơn hàng thành công!' : 'Cập nhật đơn hàng thành công!'
         ];
     }
 

@@ -121,6 +121,11 @@ class Helper
         return $endDay;
     }
 
+    static function checkEmpty($val)
+    {
+        return empty($val) || !isset($val) || $val === "";
+    }
+
     static function makeCodeIncrement($lastID, $country = "VN")
     {
         $defaultCode = "#CC" . $country . "0000000";

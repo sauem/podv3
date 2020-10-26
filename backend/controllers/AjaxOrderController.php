@@ -35,7 +35,6 @@ class AjaxOrderController extends BaseController
             $lead = ContactsModel::findOne($contactId);
             if (!$lead) {
                 return self::createOrderManual();
-
             }
             $product = $lead->page->product;
 
@@ -95,7 +94,8 @@ class AjaxOrderController extends BaseController
         ];
     }
 
-    public static function createOrderManual(){
+    public static function createOrderManual()
+    {
         $payment = Payment::find()->all();
         $countries = \Yii::$app->params['country'];
         $productList = ProductsModel::find()
@@ -125,6 +125,7 @@ class AjaxOrderController extends BaseController
             'countries' => $countries,
         ];
     }
+
     /**
      * @return array
      * @throws BadRequestHttpException
@@ -145,8 +146,10 @@ class AjaxOrderController extends BaseController
                         $query->select('name,id');
                     }
                 ])->asArray()->all();
-
-            $orderExamples = self::getExampleOrder($model->contact->contact->option, $model->contact->contact->page->category_id);
+            $orderExamples = [];
+            if (!Helper::checkEmpty($model->contact)) {
+                $orderExamples = self::getExampleOrder($model->contact->contact->option, $model->contact->contact->page->category_id);
+            }
 
             $skuExists = [];
             $products = [];
@@ -220,5 +223,15 @@ class AjaxOrderController extends BaseController
             ];
         }
         return $orderExamples;
+    }
+
+    public function actionCheckOrderCode()
+    {
+        $code = \Yii::$app->request->post('code');
+        $model = OrdersModel::findOne(['code' => $code]);
+        if (!$model) {
+            return true;
+        }
+        throw new BadRequestHttpException('Đã tồn tại mã đơn hàng này!');
     }
 }

@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </h4>
                     <div class="d-flex">
                         <span class="badge text-danger mr-1"><?= date('d/m/Y H:i:s', $model->created_at) ?></span>
-                        <?= \backend\models\OrdersModel::statusLabel($model->status)?>
+                        <?= \backend\models\OrdersModel::statusLabel($model->status) ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -131,15 +131,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     <table class="table-borderless table">
                         <tr>
                             <td>
-                                <p>Yêu cầu khách hàng : <?= $model->contact->contact->option ?></p>
-                                <p>Ghi chú khách hàng : <?= $model->contact->contact->note ?></p>
+                                <p>Yêu cầu khách hàng
+                                    : <?= Helper::checkEmpty($model->contact) ? 'Không tồn tại' : $model->cotact->contact->option ?></p>
+                                <p>Ghi chú khách hàng
+                                    : <?= Helper::checkEmpty($model->contact) ? 'không tồn tại' : $model->contact->contact->note ?></p>
                                 <p>Ghi chú sale : <?= $model->order_note ?></p>
                                 <p>Ghi chú vận chuyển : <?= $model->vendor_note ?></p>
                             </td>
                             <td>
                                 <p>Ngày lên đơn: <?= date('d/m/Y H:i:s', $model->created_at) ?></p>
                                 <p>Sale tạo đơn: <?= $model->user->username ?></p>
-                                <p>Marketer: <?= $model->contact->contact->page->user->username ?></p>
+                                <p>
+                                    Marketer: <?= Helper::checkEmpty($model->contact) ? 'Không tồn tại' : $model->contact->contact->page->user->username ?></p>
                             </td>
                         </tr>
                     </table>

@@ -16,6 +16,7 @@ window.TEMPLATE_ID = {
     applyOrderExample: '.applyInfo',
     updateOrderButton: '.updateOrder',
     typeaheadInput: '.typeahead',
+    orderCodeInput: 'input[name="code"]',
 }
 window.CURRENCY = {
     TH: '฿',
@@ -101,15 +102,22 @@ const OrderForm = {
                 .then(res => {
                     if (res.success) {
                         toastr.success(res.msg);
+                        location.reload();
                     }
                 });
         } catch (e) {
             toastr.error(error.responseJson.message);
         } finally {
             setTimeout(() => OrderForm.hideLoading(), 2000);
-            location.reload();
         }
-
+    },
+    filterOrderCode: async (code) => {
+        return $.ajax({
+            type: 'POST',
+            url: AJAX_ENDPOINT.checkOrderCode,
+            data: {code: code},
+            cache: false
+        });
     },
     setCurrency: code => {
         let cur = CURRENCY;
@@ -476,4 +484,20 @@ $(document).on("change", TEMPLATE_ID.countrySelect, function () {
 });
 $(TEMPLATE_ID.formCollapse).on('hide.bs.collapse', function () {
     OrderForm.reset();
+});
+
+$(document).on('change', TEMPLATE_ID.orderCodeInput, function () {
+    let val = $(this).val();
+    if (val === "") {
+        return false;
+    }
+    try {
+        OrderForm.filterOrderCode(val).then(res => {
+            toastr.success(`Mã đơn hàng ${val} khả dụng!`);
+        }).catch(e => {
+            toastr.error(e.responseJSON.message);
+        });
+    } catch (e) {
+        toastr.error(e.message);
+    }
 });
