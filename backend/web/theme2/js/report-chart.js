@@ -27,7 +27,7 @@ window.RESULT_ORDER = {
 let secondChart, firstChart = null;
 
 
-if (document.querySelector('#index-chart')) {
+if (document.querySelector('#index-chart') && window.location.href.includes('analytics')) {
     let indexCtx = document.getElementById("index-chart").getContext('2d');
     firstChart = new Chart(indexCtx, setChartIndexOption());
     let secondCtx = document.getElementById("second-chart").getContext('2d');

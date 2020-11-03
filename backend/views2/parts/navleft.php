@@ -22,7 +22,6 @@ $root = 2;
 if (Helper::userRole(\backend\models\UserModel::_PARTNER)) {
     $root = 23;
 }
-
 $menu = MenuHelper::getAssignedMenu(Yii::$app->user->id, $root, $callback);
 $controller = Yii::$app->controller->id;
 $action = Url::toRoute(Yii::$app->controller->getRoute());
@@ -91,9 +90,7 @@ $path = array_filter($path);
 
         </div>
         <!-- End Sidebar -->
-
         <div class="clearfix"></div>
-
     </div>
     <!-- Sidebar -left -->
 
