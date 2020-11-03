@@ -1,10 +1,12 @@
 <?php
+
 use mdm\admin\Module;
 use yii\queue\redis\Queue;
+
 return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'bootstrap' => [
@@ -44,7 +46,7 @@ return [
             'class' => 'yii\redis\Connection',
             'hostname' => REDIS_HOST,
             'port' => REDIS_PORT,
-            'password' => REDIS_PASS,
+            // 'password' => REDIS_PASS,
             'database' => 0,
             'retries' => 1,
         ],

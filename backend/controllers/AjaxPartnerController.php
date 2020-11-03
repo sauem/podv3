@@ -95,9 +95,14 @@ class AjaxPartnerController extends BaseController
                 throw new BadRequestHttpException("Dữ liệu trống!");
             }
             $data = self::group_by(12, $values);
-            $data = $data[$partner];
-            $data = self::group_by(2, $data);
+            $partner = $data[$partner];
+            $data = self::group_by(2, $partner);
+            $product = array_keys(self::group_by(6, $partner));
+            $source = array_keys(self::group_by(11, $partner));
+            $marketer = array_keys(self::group_by(13, $partner));
+            $sale = array_keys(self::group_by(14, $partner));
             $labels = array_keys($data);
+            $sumRevenueC8 = $totalC3 = $totalC8 = $totalC11 = $total_C8_C3 = $total_C11_C3 = $total_C11_C8 = 0;
 
             foreach ($labels as $k => $label) {
                 $C3 = ArrayHelper::getColumn($data[$label], 51);
@@ -105,25 +110,58 @@ class AjaxPartnerController extends BaseController
                 $C4 = ArrayHelper::getColumn($data[$label], 52);
                 $C6 = ArrayHelper::getColumn($data[$label], 54);
                 $C7 = ArrayHelper::getColumn($data[$label], 55);
+                $C11 = ArrayHelper::getColumn($data[$label], 57);
+                $rev_c8 = ArrayHelper::getColumn($data[$label], 40);
+
                 $sumbC3 = array_sum($C3);
                 $sumbC8 = array_sum($C8);
                 $sumbC6 = array_sum($C6);
                 $sumbC7 = array_sum($C7);
                 $sumbC4 = array_sum($C4);
+                $sumbC11 = array_sum($C11);
+                $sumRevenueC8 = array_sum($rev_c8);
+
                 $dataSet["C3"][$k] = $sumbC3;
                 $dataSet["C6"][$k] = $sumbC6;
                 $dataSet["C7"][$k] = $sumbC7;
                 $dataSet["C4"][$k] = $sumbC4;
                 $dataSet["C8"][$k] = $sumbC8;
                 $dataSet["C8_C3"][$k] = $sumbC8 > 0 ? round($sumbC8 / $sumbC3 * 100) : 0;
+                $dataSet["C11"][$k] = $sumbC11;
+
+                $totalC3 = $totalC3 + $sumbC3;
+                $totalC11 = $totalC11 + $sumbC11;
+                $totalC8 = $totalC8 + $sumbC8;
+                $sumRevenueC8 = $sumRevenueC8 + $sumRevenueC8;
             }
+            $total_C8_C3 = $totalC8 > 0 ? round($totalC8 / $totalC3 * 100) : 0;
+            $total_C11_C3 = $totalC11 > 0 ? round($totalC11 / $totalC3 * 100) : 0;
+            $total_C11_C8 = $totalC11 > 0 ? round($totalC11 / $totalC8 * 100) : 0;
 
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
         return [
             'labels' => $labels,
-            'dataSet' => $dataSet
+            'dataSet' => $dataSet,
+            'calculate' => [
+                'revenue_c8' => $sumRevenueC8,
+                'C8' => $totalC8,
+                'C3' => $totalC3,
+                'C11' => $totalC11,
+                'C11_C3' => $total_C11_C3,
+                'C11_C8' => $total_C11_C8,
+                'C8_C3' => $total_C8_C3
+            ],
+            'filter' => [
+                'product' => array_merge(['' => 'Null'], $product),
+                'source' => array_merge(['' => 'Null'], $source),
+                'marketer' => array_merge(['' => 'Null'], $marketer),
+                'page' => [],
+                'sale' => array_merge(['' => 'Null'], $sale),
+                'date' => null
+            ]
         ];
     }
 
@@ -176,9 +214,9 @@ class AjaxPartnerController extends BaseController
         $client->refreshToken(GOOGLE_DRIVE_REFRESH_TOKEN);
         $client->setScopes(\Google_Service_Sheets::SPREADSHEETS);
         $client->setAccessType('offline');
-//        $client->setHttpClient(new Client([
-//            'verify' => "D:\cacert.pem"
-//        ]));
+        $client->setHttpClient(new Client([
+            'verify' => "D:\cacert.pem"
+        ]));
         return $client;
     }
 
