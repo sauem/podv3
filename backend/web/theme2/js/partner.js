@@ -39,6 +39,9 @@ const initDataTable = element => {
         }
     });
 }
+const initSelectPicker = (element  = '.selectpicker') => {
+    $(element).selectpicker();
+}
 
 function initChartIndex(labels, data) {
     let indexCtx = document.getElementById("index-chart").getContext('2d');
