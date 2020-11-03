@@ -214,9 +214,9 @@ class AjaxPartnerController extends BaseController
         $client->refreshToken(GOOGLE_DRIVE_REFRESH_TOKEN);
         $client->setScopes(\Google_Service_Sheets::SPREADSHEETS);
         $client->setAccessType('offline');
-        $client->setHttpClient(new Client([
-            'verify' => "D:\cacert.pem"
-        ]));
+//        $client->setHttpClient(new Client([
+//            'verify' => "D:\cacert.pem"
+//        ]));
         return $client;
     }
 
