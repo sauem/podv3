@@ -25,7 +25,7 @@ AppAsset::register($this);
     <meta name="description" content="Đồng hành cùng bạn mở rộng kinh doanh tại Đông Nam Á"/>
     <link rel="icon" href="/theme2/images/fa.png" sizes="16x16 32x32" type="image/png">
     <?php $this->head() ?>
-    <?php $this->registerCssFile('/css/login.css')?>
+    <?php $this->registerCssFile('/css/login.css?v=2.0')?>
 </head>
 <body class="bg-silver-300">
 <?php $this->beginBody() ?>
