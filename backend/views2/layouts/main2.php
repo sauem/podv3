@@ -1,4 +1,5 @@
 <?php
+$this->title = 'G-Sof';
 
 use backend\assets\AppAsset2;
 use yii\helpers\Html;
@@ -15,7 +16,7 @@ AppAsset2::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-
+    <meta name="description" content="Đồng hành cùng bạn mở rộng kinh doanh tại Đông Nam Á"/>
     <?php $this->head() ?>
     <script>
         var Action = {

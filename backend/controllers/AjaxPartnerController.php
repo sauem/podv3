@@ -61,8 +61,11 @@ class AjaxPartnerController extends BaseController
             $response = $service->spreadsheets_values->get($this->sheetID, $range);
 
             $values = $response->getValues();
-            $values = self::group_by(12, $values);
-            $values = $values[$partner];
+            $data = self::group_by(12, $values);
+            $values = $data[$partner];
+            $phone = array_keys(self::group_by(4, $values));
+            $C11 = array_keys(self::group_by(43, $values));
+            $C8 = array_keys(self::group_by(39, $values));
 
             if (empty($values)) {
                 throw new BadRequestHttpException("Dữ liệu trống!");
@@ -70,7 +73,14 @@ class AjaxPartnerController extends BaseController
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        return $values;
+        return [
+            'data' => $values,
+            'filter' => [
+                'phone' => $phone,
+                'C8' => $C8,
+                'C11' => $C11
+            ]
+        ];
     }
 
 

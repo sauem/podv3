@@ -70,7 +70,7 @@ $js = <<<JS
           $("#warehouse-result").html(result);
           initDataTable('#result');
       }).catch(error =>{ 
-          toastr.warning(error.message);
+          $("#warehouse-result").html('<tr><td class="text-center" colspan="5">Dữ liệu trống!</td></tr>');
       })
     });
 JS;

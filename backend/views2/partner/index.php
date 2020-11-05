@@ -1,8 +1,30 @@
 <?php
 
-?>
+use kartik\daterange\DateRangePicker; ?>
     <div class="card">
         <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="text-center card-title text-danger">Bộ lọc</h4>
+                </div>
+                <div class="col-12">
+                    <div class="row">
+                        <div id="result-filter"></div>
+                        <div class="col">
+                            <?php
+                            echo DateRangePicker::widget([
+                                'name' => 'date',
+                                'presetDropdown' => true,
+                                'convertFormat' => true,
+                                'includeMonthsFilter' => true,
+                                'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
+                                'options' => ['id' => 'report-date','placeholder' => 'Chọn ngày tạo đơn']
+                            ]);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 my-3">
                     <h4 class="text-center card-title text-danger">Chỉ số</h4>
@@ -50,40 +72,110 @@
     </div>
     <script id="index-template" type="text/x-handlebars-template">
         <div class="col-3 text-center">
-            <p>Doanh thu có ship đã chuyển thành công</p>
-            <h3>{{totalAmountSuccess}}</h3>
+            <p>Doanh thu C8</p>
+            <h3>฿{{money revenue_c8}}</h3>
         </div>
         <div class="col text-center">
-            <p>Doanh thu có ship (C8)</p>
-            <h3>{{money totalAmount}}</h3>
+            <p>C3 (Contacts - Duplicate)</p>
+            <h3>{{C3}}</h3>
         </div>
         <div class="col text-center">
-            <p>Tổng phí vận chuyển</p>
-            <h3>{{money totalShip}}</h3>
+            <p>C11 (Đã thanh toán)</p>
+            <h3>{{C11}}</h3>
         </div>
         <div class="col-2 text-center">
-            <p>C3 (Contacts - Duplicate)</p>
-            <h3>{{totalC3}}</h3>
-        </div>
-        <div class="col text-center">
-            <p>C8 (Ok)</p>
-            <h3>{{totalC8}}</h3>
+            <p>C8 (OK)</p>
+            <h3>{{C8}}</h3>
         </div>
         <div class="col text-center">
             <p>C8/C3</p>
-            <h3>{{totalC8C3}}%</h3>
+            <h3>{{C8_C3}}</h3>
+        </div>
+        <div class="col text-center">
+            <p>C11/C3</p>
+            <h3>{{C11_C3}}%</h3>
+        </div>
+        <div class="col text-center">
+            <p>C11/C8</p>
+            <h3>{{C11_C8}}%</h3>
+        </div>
+    </script>
+    <script id="filter-template" type="text/x-handlebars-template">
+        <div class="col-md-2">
+            <select title="Marketer"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.marketer}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select title="Nguồn contact"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.source}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select title="Sản phẩm"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.product}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select title="Page"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.page}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select title="Sale"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.sale }}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
         </div>
     </script>
 <?php
 $js = <<<JS
     $(document).ready(function() {
         let result = null;
+        let html = $('#index-template').html();
+        let filterHtml = $('#filter-template').html();
+        let template = Handlebars.compile(html);
+        let filterTemp = Handlebars.compile(filterHtml);
         
         getSale('$partner').then(res => {
-            if(!res){
-                result = "Dữ liệu trống!";
-            }
-           
+        
+          $("#result-index").html(template(res.calculate));
+          $("#result-filter").replaceWith(filterTemp(res.filter));
+            initSelectPicker();
             initChartIndex(res.labels, res.dataSet);
         });
     });

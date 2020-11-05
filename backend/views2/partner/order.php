@@ -1,8 +1,24 @@
 <?php
-?>
+
+use kartik\daterange\DateRangePicker; ?>
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Báo cáo đơn hàng</h4>
+            <div class="row">
+                <div  id="result-filter"></div>
+                <div class="col">
+                    <?php
+                    echo DateRangePicker::widget([
+                        'name' => 'date',
+                        'presetDropdown' => true,
+                        'convertFormat' => true,
+                        'includeMonthsFilter' => true,
+                        'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
+                        'options' => ['id' => 'report-date','placeholder' => 'Chọn ngày tạo đơn']
+                    ]);
+                    ?>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <table id="result" class="table table-borderless">
@@ -40,19 +56,64 @@
         </tr>
         {{/each}}
     </script>
+    <script id="filter-template" type="text/x-handlebars-template">
+        <div class="col">
+            <select title="Số điện thoại"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.phone}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col">
+            <select title="Tình trạng thanh toán C11"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.C11}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col">
+            <select title="Tình trạng chốt đơn C8"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="sale" class="selectpicker"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.C8}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+
+    </script>
 <?php
 $js = <<<JS
     $(document).ready(function() {
         let html = $("#order-template").html();
         let template = Handlebars.compile(html);
+         let filterHtml = $('#filter-template').html();
+         let filterTemp = Handlebars.compile(filterHtml);
         let result = null;
-        let data  = [];
+        let arr  = [];
         getOrderDetail("$partner").then(res => {
+            
             if(!res){
                 result = "Dữ liệu trống!";
             }
-            res.map((item, key) => {
-               data.push( {
+            const { data , filter}  = res;
+            
+            data.map((item, key) => {
+               arr.push( {
                    code : item[0],
                    date_register  : item[2],
                    name : item[3],
@@ -62,10 +123,15 @@ $js = <<<JS
                    status_shipping : item[43],
                });
             });
-            result = template(data);
+            result = template(arr);
             $("#order-result").html(result);
+            
             initDataTable('#result');
-        });
+            $("#result-filter").replaceWith(filterTemp(filter));
+             initSelectPicker();
+        }).catch(e =>{
+              $("#order-result").html('<tr><td class="text-center" colspan="5">Dữ liệu trống!</td></tr>');
+        })
     });
 JS;
 $this->registerJs($js);

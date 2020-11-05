@@ -35,7 +35,7 @@ const initDataTable = element => {
                 next: "<i class='mdi mdi-chevron-right'>"
             }
         }, drawCallback: function () {
-            $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
+            $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
         }
     });
 }
