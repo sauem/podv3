@@ -125,23 +125,23 @@
 
         <!-- LOGO -->
         <div class="logo-box">
-            <a href="index.html" class="logo logo-dark text-center">
+            <a href="/" class="logo logo-dark text-center">
                             <span class="logo-sm">
-                                <img src="/theme2/images/gsof.png" alt="" height="22">
+                                <img src="/theme2/images/logto.png" alt="" height="22">
                                 <!-- <span class="logo-lg-text-light">UBold</span> -->
                             </span>
                 <span class="logo-lg">
-                                <img src="/theme2/images/gsof.png" alt="" height="20">
+                                <img src="/theme2/images/logto.png" alt="" height="20">
                     <!-- <span class="logo-lg-text-light">U</span> -->
                             </span>
             </a>
 
-            <a href="index.html" class="logo logo-light text-center">
+            <a href="/" class="logo logo-light text-center">
                             <span class="logo-sm">
-                                <img src="/theme2/images/gsof.png" alt="" height="22">
+                                <img src="/theme2/images/logto.png" alt="" height="20">
                             </span>
                 <span class="logo-lg">
-                                <img src="/theme2/images/gsof.png" alt="" height="20">
+                                <img src="/theme2/images/gsof.png" alt="" height="45">
                             </span>
             </a>
         </div>

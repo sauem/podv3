@@ -22,6 +22,8 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
+    <meta name="description" content="Đồng hành cùng bạn mở rộng kinh doanh tại Đông Nam Á"/>
+    <link rel="icon" href="/theme2/images/fa.png" sizes="16x16 32x32" type="image/png">
     <?php $this->head() ?>
     <?php $this->registerCssFile('/css/login.css')?>
 </head>

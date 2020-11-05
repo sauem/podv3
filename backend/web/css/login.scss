@@ -24,10 +24,12 @@ html {
 }
 
 body {
-  background-image: url("../lib/img/bg.jpeg");
+  background-image: url("../theme2/images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: rgba(0, 0, 0, 4);
+  background-blend-mode: multiply;
 }
 
 .container {
@@ -47,6 +49,9 @@ body {
   background-color: white;
   border-radius: 5px;
   box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.3);
+  input{
+    color:white;
+  }
 
   @include breakpoint(tablet) {
     min-height: 400px;

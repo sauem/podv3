@@ -1,5 +1,5 @@
 <?php
-$this->title = 'G-Sof';
+$this->title = 'G-SOF - Dịch vụ hỗ trợ bán hàng xuyên biên giới';
 
 use backend\assets\AppAsset2;
 use yii\helpers\Html;
@@ -17,6 +17,7 @@ AppAsset2::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <meta name="description" content="Đồng hành cùng bạn mở rộng kinh doanh tại Đông Nam Á"/>
+    <link rel="icon" href="/theme2/images/fa.png" sizes="16x16 32x32" type="image/png">
     <?php $this->head() ?>
     <script>
         var Action = {

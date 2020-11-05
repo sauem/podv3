@@ -7,10 +7,12 @@ html {
     box-sizing: inherit; }
 
 body {
-  background-image: url("../lib/img/bg.jpeg");
+  background-image: url("../theme2/images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center; }
+  background-position: center;
+  background-color: black;
+  background-blend-mode: multiply; }
 
 .container {
   display: grid;
@@ -28,6 +30,8 @@ body {
   background-color: white;
   border-radius: 5px;
   box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.3); }
+  .box input {
+    color: white; }
   @media (min-width: 768px) {
     .box {
       min-height: 400px;
