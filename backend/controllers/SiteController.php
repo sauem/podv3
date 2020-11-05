@@ -66,10 +66,6 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
-        if (Helper::userRole(UserModel::_PARTNER)) {
-            return $this->redirect('/partner/index');
-        }
-
         $totalContact = ContactsModel::find()->count();
         $totalOrder = OrdersModel::find()->count();
 
@@ -108,8 +104,11 @@ class SiteController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
 
             doScanContactByCountry::apply();
-
-            return $this->goBack();
+            $defaultUrl = '';
+            if (Helper::userRole(UserModel::_PARTNER)) {
+                $defaultUrl = Url::toRoute('/partner/index');
+            }
+            return $this->goBack($defaultUrl);
         } else {
             $model->password = '';
 
