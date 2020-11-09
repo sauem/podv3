@@ -67,20 +67,18 @@ class AjaxOrderController extends BaseController
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-
+        $p = $product ? [
+            'name' => $product->name,
+            'price' => 0,
+            'qty' => 1,
+            'sku' => $product->sku,
+            'category' => $lead->page->category->name
+        ] : [];
         return [
             'order' => [
                 'skuExists' => $product ? [$product->sku] : [],
                 'customer' => $customer,
-                'product' => [
-                    [
-                        'name' => $product->name,
-                        'price' => 0,
-                        'qty' => 1,
-                        'sku' => $product->sku,
-                        'category' => $lead->page->category->name
-                    ]
-                ],
+                'product' => $p,
                 'bill' => [],
                 'amount' => [
                     'total' => 0,
