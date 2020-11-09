@@ -70,7 +70,7 @@ class AjaxOrderController extends BaseController
 
         return [
             'order' => [
-                'skuExists' => [$product->sku],
+                'skuExists' => $product ? [$product->sku] : [],
                 'customer' => $customer,
                 'product' => [
                     [
