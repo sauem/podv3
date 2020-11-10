@@ -5,7 +5,7 @@ use kartik\daterange\DateRangePicker; ?>
         <div class="card-header">
             <h4 class="card-title">Báo cáo đơn hàng</h4>
             <div class="row">
-                <div  id="result-filter"></div>
+                <div id="result-filter"></div>
                 <div class="col">
                     <?php
                     echo DateRangePicker::widget([
@@ -14,7 +14,7 @@ use kartik\daterange\DateRangePicker; ?>
                         'convertFormat' => true,
                         'includeMonthsFilter' => true,
                         'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
-                        'options' => ['id' => 'report-date','placeholder' => 'Chọn ngày tạo đơn']
+                        'options' => ['id' => 'report-date', 'placeholder' => 'Chọn ngày tạo đơn']
                     ]);
                     ?>
                 </div>
@@ -61,7 +61,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Số điện thoại"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker"
+                    name="phone" class="selectpicker"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.phone}}
@@ -73,7 +73,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Tình trạng thanh toán C11"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker"
+                    name="C11" class="selectpicker"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.C11}}
@@ -85,7 +85,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Tình trạng chốt đơn C8"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker"
+                    name="C8" class="selectpicker"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.C8}}
@@ -98,6 +98,7 @@ use kartik\daterange\DateRangePicker; ?>
     </script>
 <?php
 $js = <<<JS
+    Window.DATA_TABLE = [];
     $(document).ready(function() {
         let html = $("#order-template").html();
         let template = Handlebars.compile(html);
@@ -106,7 +107,6 @@ $js = <<<JS
         let result = null;
         let arr  = [];
         getOrderDetail("$partner").then(res => {
-            
             if(!res){
                 result = "Dữ liệu trống!";
             }
@@ -123,6 +123,7 @@ $js = <<<JS
                    status_shipping : item[43],
                });
             });
+            window.DATA_TABLE = arr;
             result = template(arr);
             $("#order-result").html(result);
             
@@ -132,6 +133,12 @@ $js = <<<JS
         }).catch(e =>{
               $("#order-result").html('<tr><td class="text-center" colspan="5">Dữ liệu trống!</td></tr>');
         })
+    });
+    
+    $(document).on('change', '.selectpicker', function() {
+       let name = $(this).attr('name');
+       let val = $(this).val();
+       alert(val); 
     });
 JS;
 $this->registerJs($js);

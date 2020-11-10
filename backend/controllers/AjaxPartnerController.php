@@ -12,6 +12,14 @@ use GuzzleHttp\Client;
 class AjaxPartnerController extends BaseController
 {
     public $sheetID = "1BKMRrB0aPJPJmJZoTrqQbk6hNuuhOHjFezvZdT9aS6c";
+    const PAYED = 'da-thanh-toan';
+    const TRANSFERRED = 'da-chuyen-tien';
+    const EXPORT_WAREHOUSE = 'da-xuat-hang';
+    const IMPORT_WAREHOUSE = 'nhap';
+    const NOT_SHIPPED = 'chua-xuat-hang';
+    const INVENTORY = 'ton';
+    const BROKEN = 'hong';
+    const REFUND = 'hoan';
 
     public function init()
     {
@@ -36,13 +44,59 @@ class AjaxPartnerController extends BaseController
             $values = $response->getValues();
             $values = self::group_by(0, $values);
             $values = $values[$partner];
+            $productGroup = self::group_by(2, $values);
+            $data = [];
+
+            foreach ($productGroup as $category => $value) {
+                $importTotal = $exportTotal = $refund = $broken = $inventory = $not_shipped = 0;
+                $products = self::group_by(1, $value);
+                foreach ($products as $product => $column) {
+
+                    foreach ($column as $key => $val) {
+                        $status = Helper::toLower($val[3]);
+                        $qty = (int)$val[4];
+                        switch ($status) {
+                            case self::EXPORT_WAREHOUSE:
+                                $exportTotal += $qty;
+                                break;
+                            case self::IMPORT_WAREHOUSE:
+                                $importTotal += $qty;
+                                break;
+                            case self::REFUND:
+                                $refund += $qty;
+                                break;
+                            case self::NOT_SHIPPED:
+                                $not_shipped += $qty;
+                                break;
+                            case self::BROKEN:
+                                $broken += $qty;
+                                break;
+                            case self::INVENTORY:
+                                $inventory += $qty;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    $data[$category][$product] = [
+                        'product' => $product,
+                        'category' => $category,
+                        'broken' => $broken,
+                        'refund' => $refund,
+                        'inventory' => $inventory,
+                        'import' => $importTotal,
+                        'export' => $exportTotal,
+                        'not_shipped' => $not_shipped,
+                    ];
+                }
+            }
             if (empty($values)) {
                 throw new BadRequestHttpException("Dữ liệu trống!");
             }
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        return $values;
+        return $data;
     }
 
     /**
@@ -175,6 +229,13 @@ class AjaxPartnerController extends BaseController
         ];
     }
 
+    static function convertNumber($arr)
+    {
+        return array_sum(array_map(function ($item) {
+            return str_replace(',', '.', $item);
+        }, $arr));
+    }
+
     function actionGetFinance()
     {
         $dataSet = [];
@@ -183,7 +244,7 @@ class AjaxPartnerController extends BaseController
             $client = static::initClient();
             $service = new \Google_Service_Sheets($client);
 
-            $range = "Data contact!M2:BG";
+            $range = "Data contact!A2:BG";
 
             $response = $service->spreadsheets_values->get($this->sheetID, $range);
 
@@ -191,26 +252,78 @@ class AjaxPartnerController extends BaseController
             if (empty($values)) {
                 throw new BadRequestHttpException("Dữ liệu trống!");
             }
-            $data = self::group_by(12, $values);
-            $data = $data[$partner];
+            $partners = self::group_by(12, $values);
+            $data = $partners[$partner];
             $data = self::group_by(2, $data);
             $labels = array_keys($data);
+            $totalC8 =
+            $totalC13 =
+            $totalC11 =
+            $dv_da_dx = $thu_ho_da_dx = $vch_da_dx = $tien_da_dx =
+            $total_dv = $total_thu_ho = $total_vch = $total_tien = 0;
+            //$dv_chua_dx = $thu_ho_chua_dx = $vch_chua_dx = $tien_dchua_dx = 0;
+            asort($labels);
 
             foreach ($labels as $k => $label) {
-                $C3 = ArrayHelper::getColumn($data[$label], 51);
-                $C8 = ArrayHelper::getColumn($data[$label], 56);
+                $col8 = ArrayHelper::getColumn($data[$label], 40);
+                $col8 = self::convertNumber($col8);
+                $dataSet['C8'][$k] = $col8;
+                $totalC11K = 0;
+                $totalC13K = 0;
 
-                $sumbC3 = array_sum($C3);
-                $sumbC8 = array_sum($C8);
+                foreach ($data[$label] as $column => $value) {
+                    $statusC11 = Helper::toLower($value[43]);
+                    $statusC13 = Helper::toLower($value[46]);
+                    $numC8 = (double)$value[40];
+                    $numDV = self::convertNumber([$value[48]]);
+                    $numThuHo = self::convertNumber([$value[45]]);
+                    $numVCH = self::convertNumber([$value[44]]);
+                    $numTien = self::convertNumber([$value[49]]);
+                    $totalC8 += $numC8;
 
-                $dataSet["C3"][$k] = $sumbC3;
-                $dataSet["C8"][$k] = $sumbC8;
+                    $total_dv += $numDV;
+                    $total_vch += $numVCH;
+                    $total_tien += $numTien;
+                    $total_thu_ho += $numThuHo;
+
+                    if ($statusC11 === self::PAYED) {
+                        $totalC11 += $numC8;
+                        $totalC11K += $numC8;
+                    }
+                    if ($statusC13 === self::TRANSFERRED) {
+                        $totalC13 += $numC8;
+                        $totalC13K += $numC8;
+                        $dv_da_dx += $numDV;
+                        $thu_ho_da_dx += $numThuHo;
+                        $vch_da_dx += $numVCH;
+                        $tien_da_dx += $numTien;
+                    }
+                }
+                $dataSet['C11'][$k] = $totalC11K;
+                $dataSet['C13'][$k] = $totalC13K;
             }
 
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
         return [
+            'calculate' => [
+                'C11_C8' => round($totalC11 / $totalC8 * 100, 2),
+                'C13' => round($totalC13, 2),
+                'C11' => round($totalC11, 2),
+                'total_dv' => round($total_dv, 2),
+                'total_thu_ho' => round($total_thu_ho, 2),
+                'total_vch' => round($total_vch, 2),
+                'dv_da_dx' => round($dv_da_dx, 2),
+                'thu_ho_da_dx' => round($thu_ho_da_dx, 2),
+                'vch_da_dx' => round($vch_da_dx, 2),
+                'tien_da_dx' => round($tien_da_dx, 2),
+                'C13_chua_dx' => round($totalC11 - $totalC13, 2),
+                'dv_chua_dx' => round($total_dv - $dv_da_dx, 2),
+                'vch_chua_dx' => round($total_vch - $vch_da_dx, 2),
+                'thu_ho_chua_dx' => round($total_thu_ho - $thu_ho_da_dx, 2),
+                'tien_chua_dx' => round($total_tien - $tien_da_dx, 2)
+            ],
             'labels' => $labels,
             'dataSet' => $dataSet
         ];

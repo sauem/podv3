@@ -5,9 +5,20 @@ Handlebars.registerHelper("caculate", function (singular_price, sale_price) {
 Handlebars.registerHelper("asset", function (path) {
     return "/file/" + path;
 })
-
+Handlebars.registerHelper('formatK', function (num) {
+    if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+    }
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num;
+});
 Handlebars.registerHelper("money", function (value, options) {
-    var dl = options.hash['decimalLength'] || 2;
+    var dl = options.hash['decimalLength'] || 0;
     var ts = options.hash['thousandsSep'] || ',';
     var ds = options.hash['decimalSep'] || '.';
 

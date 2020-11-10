@@ -105,7 +105,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Marketer"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker mr-3"
+                    name="marketer" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.marketer}}
@@ -117,7 +117,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Nguồn contact"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker mr-3"
+                    name="source" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.source}}
@@ -129,7 +129,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Sản phẩm"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker mr-3"
+                    name="product" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.product}}
@@ -141,7 +141,7 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Page"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="sale" class="selectpicker mr-3"
+                    name="page" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.page}}
