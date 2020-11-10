@@ -13,7 +13,7 @@ class AjaxPartnerController extends BaseController
 {
     public $sheetID = "1BKMRrB0aPJPJmJZoTrqQbk6hNuuhOHjFezvZdT9aS6c";
     const PAYED = 'da-thanh-toan';
-    const TRANSFERRED = 'da-chuyen-tien';
+    const TRANSFERRED = 'da-doi-soat';
     const EXPORT_WAREHOUSE = 'da-xuat-hang';
     const IMPORT_WAREHOUSE = 'nhap';
     const NOT_SHIPPED = 'chua-xuat-hang';
