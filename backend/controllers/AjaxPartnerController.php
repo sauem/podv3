@@ -20,6 +20,7 @@ class AjaxPartnerController extends BaseController
     const INVENTORY = 'ton';
     const BROKEN = 'hong';
     const REFUND = 'hoan';
+    const STATUS_OK = 'ok';
 
     public function init()
     {
@@ -71,13 +72,11 @@ class AjaxPartnerController extends BaseController
                             case self::BROKEN:
                                 $broken += $qty;
                                 break;
-                            case self::INVENTORY:
-                                $inventory += $qty;
-                                break;
                             default:
                                 break;
                         }
                     }
+                    $inventory = $importTotal > 0 ? $importTotal - $exportTotal + $refund - $broken : 0;
                     $data[$category][$product] = [
                         'product' => $product,
                         'category' => $category,
@@ -110,7 +109,7 @@ class AjaxPartnerController extends BaseController
             $client = static::initClient();
             $service = new \Google_Service_Sheets($client);
 
-            $range = "Data contact!A2:AR";
+            $range = "Data contact!A2:AX";
 
             $response = $service->spreadsheets_values->get($this->sheetID, $range);
 
@@ -120,19 +119,37 @@ class AjaxPartnerController extends BaseController
             $phone = array_keys(self::group_by(4, $values));
             $C11 = array_keys(self::group_by(43, $values));
             $C8 = array_keys(self::group_by(39, $values));
-
+            $C13 = array_keys(self::group_by(46, $values));
+            $data = [];
             if (empty($values)) {
                 throw new BadRequestHttpException("Dữ liệu trống!");
+            }
+
+            foreach ($values as $k => $value) {
+                $statusC13 = ArrayHelper::getValue($value, 46);
+                $transferC13 = self::convertNumber([ArrayHelper::getValue($value, 49)]);
+                $data[$k] = [
+                    'code' => ArrayHelper::getValue($value, 0),
+                    'date_register' => ArrayHelper::getValue($value, 2),
+                    'name' => ArrayHelper::getValue($value, 3),
+                    'phone' => ArrayHelper::getValue($value, 4),
+                    'status' => ArrayHelper::getValue($value, 39),
+                    'revenue' => ArrayHelper::getValue($value, 40),
+                    'status_shipping' => ArrayHelper::getValue($value, 43),
+                    'status_C13' => $statusC13,
+                    'transfer_C13' => $transferC13
+                ];
             }
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
         return [
-            'data' => $values,
+            'data' => $data,
             'filter' => [
                 'phone' => $phone,
                 'C8' => $C8,
-                'C11' => $C11
+                'C11' => $C11,
+                'C13' => $C13
             ]
         ];
     }
@@ -175,15 +192,21 @@ class AjaxPartnerController extends BaseController
                 $C6 = ArrayHelper::getColumn($data[$label], 54);
                 $C7 = ArrayHelper::getColumn($data[$label], 55);
                 $C11 = ArrayHelper::getColumn($data[$label], 57);
-                $rev_c8 = ArrayHelper::getColumn($data[$label], 40);
 
+                foreach ($data[$label] as $column => $value) {
+                    $statusC8 = Helper::toLower($value[39]);
+                    $numC8 = (double)$value[40];
+                    if ($statusC8 === self::STATUS_OK) {
+                        $sumRevenueC8 += $numC8;
+                    }
+                }
                 $sumbC3 = array_sum($C3);
                 $sumbC8 = array_sum($C8);
                 $sumbC6 = array_sum($C6);
                 $sumbC7 = array_sum($C7);
                 $sumbC4 = array_sum($C4);
                 $sumbC11 = array_sum($C11);
-                $sumRevenueC8 = array_sum($rev_c8);
+
 
                 $dataSet["C3"][$k] = $sumbC3;
                 $dataSet["C6"][$k] = $sumbC6;
@@ -196,7 +219,6 @@ class AjaxPartnerController extends BaseController
                 $totalC3 = $totalC3 + $sumbC3;
                 $totalC11 = $totalC11 + $sumbC11;
                 $totalC8 = $totalC8 + $sumbC8;
-                $sumRevenueC8 = $sumRevenueC8 + $sumRevenueC8;
             }
             $total_C8_C3 = $totalC8 > 0 ? round($totalC8 / $totalC3 * 100) : 0;
             $total_C11_C3 = $totalC11 > 0 ? round($totalC11 / $totalC3 * 100) : 0;
@@ -249,16 +271,21 @@ class AjaxPartnerController extends BaseController
             $response = $service->spreadsheets_values->get($this->sheetID, $range);
 
             $values = $response->getValues();
+
             if (empty($values)) {
                 throw new BadRequestHttpException("Dữ liệu trống!");
             }
             $partners = self::group_by(12, $values);
+
             $data = $partners[$partner];
+
             $data = self::group_by(2, $data);
+
             $labels = array_keys($data);
             $totalC8 =
             $totalC13 =
-            $totalC11 =
+            $totalC13Trans =
+            $totalC11 = $C13_C11 = $totalSumC11 = $totalSumC13 =
             $dv_da_dx = $thu_ho_da_dx = $vch_da_dx = $tien_da_dx =
             $total_dv = $total_thu_ho = $total_vch = $total_tien = 0;
             //$dv_chua_dx = $thu_ho_chua_dx = $vch_chua_dx = $tien_dchua_dx = 0;
@@ -268,24 +295,39 @@ class AjaxPartnerController extends BaseController
                 $col8 = ArrayHelper::getColumn($data[$label], 40);
                 $col8 = self::convertNumber($col8);
                 $dataSet['C8'][$k] = $col8;
+
+                $C11 = ArrayHelper::getColumn($data[$label], 57);
+                $sumC11 = array_sum($C11);
+                $totalSumC11 = $totalSumC11 + $sumC11;
+
+                $C13 = ArrayHelper::getColumn($data[$label], 58);
+                $sumC13 = array_sum($C13);
+                $totalSumC13 = $totalSumC13 + $sumC13;
+
                 $totalC11K = 0;
                 $totalC13K = 0;
 
                 foreach ($data[$label] as $column => $value) {
+
+
                     $statusC11 = Helper::toLower($value[43]);
                     $statusC13 = Helper::toLower($value[46]);
+                    $statusC8 = Helper::toLower($value[39]);
                     $numC8 = (double)$value[40];
                     $numDV = self::convertNumber([$value[48]]);
+                    $numCashPartner = self::convertNumber([$value[49]]);
                     $numThuHo = self::convertNumber([$value[45]]);
                     $numVCH = self::convertNumber([$value[44]]);
                     $numTien = self::convertNumber([$value[49]]);
-                    $totalC8 += $numC8;
 
                     $total_dv += $numDV;
                     $total_vch += $numVCH;
                     $total_tien += $numTien;
                     $total_thu_ho += $numThuHo;
-
+                    $totalC13Trans += $numCashPartner;
+                    if ($statusC8 === self::STATUS_OK) {
+                        $totalC8 += $numC8;
+                    }
                     if ($statusC11 === self::PAYED) {
                         $totalC11 += $numC8;
                         $totalC11K += $numC8;
@@ -302,14 +344,18 @@ class AjaxPartnerController extends BaseController
                 $dataSet['C11'][$k] = $totalC11K;
                 $dataSet['C13'][$k] = $totalC13K;
             }
+            $C13_C11 = $totalSumC13 > 0 ? round($totalSumC13 / $totalSumC11 * 100, 2) : 0;
 
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
         return [
             'calculate' => [
+                'totalC13Trans' => $totalC13Trans,
+                'totalC8' => $totalC8,
                 'C11_C8' => round($totalC11 / $totalC8 * 100, 2),
                 'C13' => round($totalC13, 2),
+                'C13_C11' => $C13_C11,
                 'C11' => round($totalC11, 2),
                 'total_dv' => round($total_dv, 2),
                 'total_thu_ho' => round($total_thu_ho, 2),

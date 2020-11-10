@@ -89,7 +89,7 @@ use kartik\daterange\DateRangePicker; ?>
         </div>
         <div class="col text-center">
             <p>C8/C3</p>
-            <h3>{{C8_C3}}</h3>
+            <h3>{{C8_C3}}%</h3>
         </div>
         <div class="col text-center">
             <p>C11/C3</p>
@@ -145,18 +145,6 @@ use kartik\daterange\DateRangePicker; ?>
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.page}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select title="Sale"
-                    data-actions-box="true"
-                    data-live-search="true"
-                    name="sale" class="selectpicker mr-3"
-                    multiple data-selected-text-format="count"
-                    data-style="btn-light">
-                {{#each this.sale }}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
             </select>

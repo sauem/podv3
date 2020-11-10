@@ -112,19 +112,22 @@ function setOptionsChartIndex(labels, data) {
                     let chartInstance = this.chart,
                         ctx = chartInstance.ctx;
 
-                    ctx.font = Chart.helpers.fontString(15, 'bold', Chart.defaults.global.defaultFontFamily);
+                    ctx.font = Chart.helpers.fontString(15, null, Chart.defaults.global.defaultFontFamily);
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
                     ctx.fillStyle = "#0012a7";
                     this.data.datasets.forEach(function (dataset, i) {
                         let meta = chartInstance.controller.getDatasetMeta(i);
                         meta.data.forEach(function (bar, index) {
-
+                            let _datasetIndex = bar._datasetIndex;
                             let data = dataset.data[index];
                             if (data === 0) {
                                 return;
                             }
-                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                            if(_datasetIndex === 1){
+                                return;
+                            }
+                            ctx.fillText(data +  (_datasetIndex === 2 ? '%' : ''), bar._model.x, bar._model.y - 5);
                         });
                     });
                 }
@@ -158,6 +161,8 @@ function setOptionsChartIndex(labels, data) {
                         },
                         ticks: {
                             max: 160,
+                            beginAtZero: true,
+                            stepSize: 50,
                             callback: function (value, index, values) {
                                 return value + '%';
                             }
@@ -169,7 +174,7 @@ function setOptionsChartIndex(labels, data) {
                         position: 'left',
                         ticks: {
                             padding: 20,
-                            stepSize: 1,
+                            stepSize: 20,
                             beginAtZero: true,
                             mirror: false,
                             suggestedMin: 0,

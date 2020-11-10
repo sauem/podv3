@@ -4,28 +4,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="card-title">Báo cáo kho</h4>
-            <div class="row w-50">
-                <div class="col-md-6">
-                    <select title="Sản phẩm"
-                            data-actions-box="true"
-                            data-live-search="true"
-                            name="sale" class="selectpicker mr-3"
-                            multiple data-selected-text-format="count"
-                            data-style="btn-light">
 
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <select title="Loại sản phẩm"
-                            data-actions-box="true"
-                            data-live-search="true"
-                            name="sale" class="selectpicker"
-                            multiple data-selected-text-format="count"
-                            data-style="btn-light">
-
-                    </select>
-                </div>
-            </div>
         </div>
         <div class="card-body">
             <table id="result" class="table table-borderless">

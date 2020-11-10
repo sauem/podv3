@@ -34,12 +34,15 @@
         <div class="col-1 text-center">
             <p>C11/C8</p>
             <h4>{{C11_C8}}%</h4>
+            <hr>
+            <p>C13/C11</p>
+            <h4>{{C13_C11}}%</h4>
         </div>
         <div class="col-11 text-center">
             <div class="row">
                 <div class="col">
-                    <p>Sô tiền chuyển đối tác (C13)</p>
-                    <h4>฿{{_C13}}</h4>
+                    <p>Doanh thu C13</p>
+                    <h4>฿{{money $totalC13Trans}}</h4>
                 </div>
                 <div class="col">
                     <p>Doanh thu C11</p>
@@ -60,11 +63,11 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <p>Tiền đã đối soát</p>
+                    <p>Doanh thu C13 đã đối soát</p>
                     <h4>฿{{money tien_da_dx}}</h4>
                 </div>
                 <div class="col">
-                    <p>Doanh thu C13</p>
+                    <p>Doanh thu C11 đã đối soát</p>
                     <h4>฿{{money C13}}</h4>
                 </div>
                 <div class="col">
@@ -82,11 +85,11 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <p>Tiền chưa đối soát</p>
+                    <p>Doanh thu C13 chưa đối soát</p>
                     <h4>฿{{money tien_chua_dx}}</h4>
                 </div>
                 <div class="col">
-                    <p>Doanh thu C13 chưa đối soát</p>
+                    <p>Doanh thu C11 chưa đối soát</p>
                     <h4>฿{{money C13_chua_dx}}</h4>
                 </div>
                 <div class="col">
@@ -98,7 +101,7 @@
                     <h4>฿{{money thu_ho_chua_dx}}</h4>
                 </div>
                 <div class="col">
-                    <p>Phí VCH chưa đối soát</p>
+                    <p>Phí vận chuyển chưa đối soát</p>
                     <h4>฿{{money vch_chua_dx}}</h4>
                 </div>
             </div>
@@ -111,9 +114,10 @@ $js = <<<JS
         let html = $("#finance-template").html();
         let temp = Handlebars.compile(html);
         
-        getFinance('DCOT').then(res =>{
+        getFinance('$partner').then(res =>{
          const {calculate,  dataSet, labels} = res;
          $("#result-calculate").replaceWith(temp(calculate));
+         console.log(calculate);
          let dataTop = {
              column_1 : dataSet.C8,
              column_2 : dataSet.C11
@@ -159,7 +163,7 @@ $js = <<<JS
                     yAxes: [{
                         ticks: {
                             beginAtZero: true,
-                            stepSize: 2500,
+                            stepSize: 3500,
                             callback: function (value, index, values) {
                                 return formatK(value);
                             }
@@ -171,12 +175,12 @@ $js = <<<JS
                 datasets: [
                     {
                         label: label1,
-                        backgroundColor: '#90EAFF',
+                        backgroundColor: 'rgb(41,98,255)',
                         data: column_1,
                     },
                     {
                         label: label2,
-                        backgroundColor: '#3c5ab1',
+                        backgroundColor: 'rgb(221,44,0)',
                         data: column_2,
                     },
                 ],

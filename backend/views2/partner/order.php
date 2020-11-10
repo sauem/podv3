@@ -30,7 +30,9 @@ use kartik\daterange\DateRangePicker; ?>
                     <th>Số điện thoại</th>
                     <th>Tình trạng chốt đơn (C8)</th>
                     <th>Tình trạng vận chuyển (C11)</th>
+                    <th>Tình trạng chuyển tiền (C13)</th>
                     <th>Doanh thu (C8)</th>
+                    <th>Số tiền thực chuyển đối tác(C13)</th>
                 </tr>
                 </thead>
                 <tbody id="order-result">
@@ -52,7 +54,9 @@ use kartik\daterange\DateRangePicker; ?>
             <td>{{phone}}</td>
             <td>{{status}}</td>
             <td>{{status_shipping}}</td>
+            <td>{{status_C13}}</td>
             <td>฿{{money revenue}}</td>
+            <td>฿{{money transfer_C13}}</td>
         </tr>
         {{/each}}
     </script>
@@ -82,6 +86,18 @@ use kartik\daterange\DateRangePicker; ?>
             </select>
         </div>
         <div class="col">
+            <select title="Tình trạng chuyển tiền C13"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="C13" class="selectpicker"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.C13}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col">
             <select title="Tình trạng chốt đơn C8"
                     data-actions-box="true"
                     data-live-search="true"
@@ -105,26 +121,25 @@ $js = <<<JS
          let filterHtml = $('#filter-template').html();
          let filterTemp = Handlebars.compile(filterHtml);
         let result = null;
-        let arr  = [];
         getOrderDetail("$partner").then(res => {
             if(!res){
                 result = "Dữ liệu trống!";
             }
             const { data , filter}  = res;
             
-            data.map((item, key) => {
-               arr.push( {
-                   code : item[0],
-                   date_register  : item[2],
-                   name : item[3],
-                   phone : item[4],
-                   status : item[39],
-                   revenue : item[40],
-                   status_shipping : item[43],
-               });
-            });
-            window.DATA_TABLE = arr;
-            result = template(arr);
+            // data.map((item, key) => {
+            //    arr.push( {
+            //        code : item[0],
+            //        date_register  : item[2],
+            //        name : item[3],
+            //        phone : item[4],
+            //        status : item[39],
+            //        revenue : item[40],
+            //        status_shipping : item[43],
+            //    });
+            // });
+            window.DATA_TABLE = data;
+            result = template(data);
             $("#order-result").html(result);
             
             initDataTable('#result');
