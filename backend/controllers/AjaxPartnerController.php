@@ -222,18 +222,21 @@ class AjaxPartnerController extends BaseController
                     }
                 }
                 foreach ($data[$label] as $column => $value) {
-                    if (!empty($s_marketer)) {
-                        if (!in_array($value[13], $s_marketer) || $s_marketer !== $value[13]) {
+                    if (!empty($s_product)) {
+                        if (!in_array($value[6], $s_product)) {
+                            unset($data[$label][$column]);
                             continue;
                         }
                     }
                     if (!empty($s_source)) {
-                        if (!in_array($value[11], $s_source) || $s_source !== $value[11]) {
+                        if (!in_array($value[11], $s_source)) {
+                            unset($data[$label][$column]);
                             continue;
                         }
                     }
-                    if (!empty($s_product)) {
-                        if (!in_array($value[6], $s_product) || $s_product !== $value[6]) {
+                    if (!empty($s_marketer)) {
+                        if (!in_array($value[13], $s_marketer)) {
+                            unset($data[$label][$column]);
                             continue;
                         }
                     }
