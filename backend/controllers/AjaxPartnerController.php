@@ -449,7 +449,7 @@ class AjaxPartnerController extends BaseController
             'calculate' => [
                 'totalC13Trans' => $totalC13Trans,
                 'totalC8' => $totalC8,
-                'C11_C8' => round($totalC11 / $totalC8 * 100, 2),
+                'C11_C8' => $totalC11 > 0 ? round($totalC11 / $totalC8 * 100, 2) : 0,
                 'C13' => round($totalC13, 2),
                 'C13_C11' => $C13_C11,
                 'C11' => round($totalC11, 2),
