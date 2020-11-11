@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="col">
                     <p>Doanh thu C13</p>
-                    <h4>฿{{money $totalC13Trans}}</h4>
+                    <h4>฿{{money totalC13Trans}}</h4>
                 </div>
                 <div class="col">
                     <p>Doanh thu C11</p>
