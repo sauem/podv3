@@ -53,8 +53,8 @@ class AppAsset2 extends AssetBundle
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
         '/js/order.js?v=2.9',
-        '/theme2/js/report-chart.js?v=2.0',
-        '/theme2/js/partner.js?v=3.1.46',
+        '/theme2/js/report-chart.js?v=2.1',
+        '/theme2/js/partner.js?v=3.1.9',
         '/theme2/js/app.min.js',
     ];
     public $depends = [

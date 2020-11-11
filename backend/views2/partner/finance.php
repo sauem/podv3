@@ -1,10 +1,29 @@
 <?php
-?>
+
+use kartik\daterange\DateRangePicker; ?>
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Báo cáo tài chính</h4>
         </div>
         <div class="card-body">
+            <h4 class="text-center card-title text-danger">Bộ lọc</h4>
+            <form id="finance-form">
+                <div class="row">
+                    <div id="result-filter"></div>
+                    <div class="col">
+                        <?php
+                        echo DateRangePicker::widget([
+                            'name' => 'filter[date]',
+                            'presetDropdown' => true,
+                            'convertFormat' => true,
+                            'includeMonthsFilter' => true,
+                            'pluginOptions' => ['locale' => ['format' => 'd-m-Y']],
+                            'options' => ['class' => 'partner-date', 'placeholder' => 'Chọn ngày tạo đơn']
+                        ]);
+                        ?>
+                    </div>
+                </div>
+            </form>
             <div class="row">
                 <div class="col-12 my-3">
                     <h4 class="text-center card-title text-danger">Chỉ số</h4>
@@ -17,7 +36,11 @@
                     </div>
                 </div>
 
-                <div id="result-calculate"></div>
+                <div class="col-12">
+                    <div class="row" id="result-calculate">
+
+                    </div>
+                </div>
             </div>
             <h4 class="text-center mt-4">BẢNG TỔNG HỢP C8 C11</h4>
             <canvas id="finance-top" style="width: 100%; height: 350px;">
@@ -107,17 +130,56 @@
             </div>
         </div>
     </script>
+    <script id="filter-template" type="text/x-handlebars-template">
+        <div class="col">
+            <select title="Tình trạng chốt đơn C8"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="filter[statusC8][]" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.statusC8}}
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col">
+            <select title="Tình trạng chuyển tiền (C13)"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="filter[statusC13][]" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.statusC13}}
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col">
+            <select title="Tình trạng thanh toán (C11)"
+                    data-actions-box="true"
+                    data-live-search="true"
+                    name="filter[statusC11][]" class="selectpicker mr-3"
+                    multiple data-selected-text-format="count"
+                    data-style="btn-light">
+                {{#each this.statusC11}}
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </script>
 <?php
 
 $js = <<<JS
-    $(document).ready(function() {
+      
         let html = $("#finance-template").html();
         let temp = Handlebars.compile(html);
-        
+        let filter = $("#filter-template").html();
+        let filterTemp =  Handlebars.compile(filter);
+    $(document).ready(function() {
+       
         getFinance('$partner').then(res =>{
-         const {calculate,  dataSet, labels} = res;
-         $("#result-calculate").replaceWith(temp(calculate));
-         console.log(calculate);
+         const {calculate, base, dataSet, labels, filter} = res;
          let dataTop = {
              column_1 : dataSet.C8,
              column_2 : dataSet.C11
@@ -126,67 +188,58 @@ $js = <<<JS
              column_1 : dataSet.C11,
              column_2 : dataSet.C13
          }
-         initChartFinance('finance-top','Doanh thu C8','Doanh thu C11', labels, dataTop);
-         initChartFinance('finance-bottom','Doanh thu C11','Doanh thu C13', labels, dataBottom);
+         
+         setLocalStorage('finance', base);
+         
+         $("#result-calculate").html(temp(calculate));
+         $("#result-filter").replaceWith(filterTemp(filter));
+         initSelectPicker();
+         financeTop = initChartFinance('finance-top','Doanh thu C8','Doanh thu C11', labels, dataTop);
+         financeBottom = initChartFinance('finance-bottom','Doanh thu C11','Doanh thu C13', labels, dataBottom);
+         
       }).catch(err => {
           console.log(err);
       });
     });
-
-    function initChartFinance(ctx, label1, label2, labels, data) {
-        let topCtx = document.getElementById(ctx).getContext('2d');
-        let {column_1,column_2}  = data;
-        column_1 = Object.values(column_1);
-        column_2 = Object.values(column_2);
-        labels = Object.values(labels);
-        new Chart(topCtx, {
-            type: 'bar',
-            animation: {
-                duration: 1,
-                easing: 'linear'
-            },
-            options: {
-                maintainAspectRatio: true,
-                responsive: true,
-                tooltips: {
-                    mode: 'index',
-                    axis: 'y',
-                    callbacks: {
-                        label: function (tooltipItem, data) {
-                            let label = data.datasets[tooltipItem.datasetIndex].label;
-                            let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                            return ' ' + label + ': ฿' + value.formatMoney();
-                        }
-                    }
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            stepSize: 3500,
-                            callback: function (value, index, values) {
-                                return formatK(value);
-                            }
-                        }
-                    }]
-                }
-            },
-            data: {
-                datasets: [
-                    {
-                        label: label1,
-                        backgroundColor: 'rgb(41,98,255)',
-                        data: column_1,
-                    },
-                    {
-                        label: label2,
-                        backgroundColor: 'rgb(221,44,0)',
-                        data: column_2,
-                    },
-                ],
-                labels: labels
-            },
+    
+    
+    $(document).on('change','.selectpicker, .partner-date', function() {
+        
+        let base = getLocalStorage('finance');
+        if(!base){
+            toastr.warning('Dữ liệu chưa cập nhật!');
+            return false;
+        }
+        let searchData = getSearchParams('finance-form',JSON.stringify(base),'GetFinance');
+       
+        getSearch(searchData).then(res => {
+            let {base,  filter,labels, calculate, dataSet} = res;
+            const {C8, C11, C13} = dataSet;
+            
+            labels = Object.values(labels); 
+            console.log(calculate);
+            switch ('$route') {
+              case "finance":
+                  
+                  financeTop.data.datasets[0].data = C8;
+                  financeTop.data.datasets[1].data = C11;
+                  financeTop.data.labels = Object.values(labels);
+                  financeTop.update();
+                  
+                  financeBottom.data.datasets[0].data = C11;
+                  financeBottom.data.datasets[1].data = C13;
+                  financeBottom.data.labels = Object.values(labels);
+                  financeBottom.update();
+                  
+                  $("#result-calculate").html(temp(calculate));
+                  
+                  break;
+              default:
+                  break;
+            }
         });
-    }
+    });
+    
+    
 JS;
 $this->registerJs($js);

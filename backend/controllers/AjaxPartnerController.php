@@ -48,9 +48,7 @@ class AjaxPartnerController extends BaseController
             $client = static::initClient();
             $service = new \Google_Service_Sheets($client);
             $range = "Data kho!A2:E";
-
             $response = $service->spreadsheets_values->get($this->sheetID, $range);
-
             $values = $response->getValues();
             $values = self::group_by(0, $values);
             $values = $values[$partner];
@@ -274,9 +272,9 @@ class AjaxPartnerController extends BaseController
                 $totalC11 = $totalC11 + $sumbC11;
                 $totalC8 = $totalC8 + $sumbC8;
             }
-            $total_C8_C3 = $totalC8 > 0 ? round($totalC8 / $totalC3 * 100,1) : 0;
-            $total_C11_C3 = $totalC11 > 0 ? round($totalC11 / $totalC3 * 100,1) : 0;
-            $total_C11_C8 = $totalC11 > 0 ? round($totalC11 / $totalC8 * 100,1) : 0;
+            $total_C8_C3 = $totalC8 > 0 ? round($totalC8 / $totalC3 * 100, 1) : 0;
+            $total_C11_C3 = $totalC11 > 0 ? round($totalC11 / $totalC3 * 100, 1) : 0;
+            $total_C11_C8 = $totalC11 > 0 ? round($totalC11 / $totalC8 * 100, 1) : 0;
 
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -312,38 +310,59 @@ class AjaxPartnerController extends BaseController
         }, $arr));
     }
 
-    function actionGetFinance()
+    function actionGetFinance($filter = null, $searchData = null)
     {
         $dataSet = [];
+        $startDate = $endDate = null;
         $partner = \Yii::$app->request->get('partner');
+        $totalC8 =
+        $totalC13 =
+        $totalC13Trans =
+        $totalC11 = $C13_C11 = $totalSumC11 = $totalSumC13 =
+        $dv_da_dx = $thu_ho_da_dx = $vch_da_dx = $tien_da_dx =
+        $total_dv = $total_thu_ho = $total_vch = $total_tien = 0;
+        $filterC8 = $filterC13 = $filterC11 = [];
+
         try {
-            $client = static::initClient();
-            $service = new \Google_Service_Sheets($client);
+            if ($searchData && !empty($searchData)) {
+                $data = (array)$searchData;
+            } else {
+                $client = static::initClient();
+                $service = new \Google_Service_Sheets($client);
+                $range = "Data contact!A2:BG";
+                $response = $service->spreadsheets_values->get($this->sheetID, $range);
+                $values = $response->getValues();
+                if (empty($values)) {
+                    throw new BadRequestHttpException("Dữ liệu trống!");
+                }
+                $partners = self::group_by(12, $values);
+                $partner = $partners[$partner];
+                $data = self::group_by(2, $partner);
 
-            $range = "Data contact!A2:BG";
 
-            $response = $service->spreadsheets_values->get($this->sheetID, $range);
-
-            $values = $response->getValues();
-
-            if (empty($values)) {
-                throw new BadRequestHttpException("Dữ liệu trống!");
+                $filterC8 = self::group_by(39, $partner);
+                $filterC11 = self::group_by(43, $partner);
+                $filterC13 = self::group_by(46, $partner);
             }
-            $partners = self::group_by(12, $values);
-
-            $data = $partners[$partner];
-
-            $data = self::group_by(2, $data);
 
             $labels = array_keys($data);
-            $totalC8 =
-            $totalC13 =
-            $totalC13Trans =
-            $totalC11 = $C13_C11 = $totalSumC11 = $totalSumC13 =
-            $dv_da_dx = $thu_ho_da_dx = $vch_da_dx = $tien_da_dx =
-            $total_dv = $total_thu_ho = $total_vch = $total_tien = 0;
-            //$dv_chua_dx = $thu_ho_chua_dx = $vch_chua_dx = $tien_dchua_dx = 0;
-            asort($labels);
+
+
+            ///Search overwrite
+            if ($searchData && !empty($searchData)) {
+                $s_statusC8 = isset($filter['statusC8']) ? $filter['statusC8'] : null;
+                $s_statusC11 = isset($filter['statusC11']) ? $filter['statusC11'] : null;
+                $s_statusC13 = isset($filter['statusC13']) ? $filter['statusC13'] : null;
+                $s_date = !empty($filter['date']) ? explode(' - ', $filter['date']) : null;
+                if ($s_date) {
+                    $startDate = \DateTime::createFromFormat('d-m-Y', $s_date[0])->format('d-m-Y');
+                    $endDate = \DateTime::createFromFormat('d-m-Y', $s_date[1])->format('d-m-Y');
+
+                    $startDate = strtotime($startDate);
+                    $endDate = strtotime($endDate);
+                }
+            }
+
 
             foreach ($labels as $k => $label) {
                 $col8 = ArrayHelper::getColumn($data[$label], 40);
@@ -363,6 +382,28 @@ class AjaxPartnerController extends BaseController
 
                 foreach ($data[$label] as $column => $value) {
 
+                    if ($startDate && $endDate) {
+                        $atDate = strtotime(str_replace('/', '-', $label));
+                        if (!($atDate >= $startDate && $atDate <= $endDate)) {
+                            unset($labels[$k]);
+                            continue;
+                        }
+                    }
+                    if (!empty($s_statusC8)) {
+                        if (!in_array($value[39], $s_statusC8) || $s_statusC8 !== $value[39]) {
+                            continue;
+                        }
+                    }
+                    if (!empty($s_statusC11)) {
+                        if (!in_array($value[43], $s_statusC11) || $s_statusC11 !== $value[43]) {
+                            continue;
+                        }
+                    }
+                    if (!empty($s_statusC13)) {
+                        if (!in_array($value[46], $s_statusC13) || $s_statusC13 !== $value[46]) {
+                            continue;
+                        }
+                    }
 
                     $statusC11 = Helper::toLower($value[43]);
                     $statusC13 = Helper::toLower($value[46]);
@@ -404,6 +445,7 @@ class AjaxPartnerController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
         return [
+            'base' => $data,
             'calculate' => [
                 'totalC13Trans' => $totalC13Trans,
                 'totalC8' => $totalC8,
@@ -423,6 +465,11 @@ class AjaxPartnerController extends BaseController
                 'vch_chua_dx' => round($total_vch - $vch_da_dx, 2),
                 'thu_ho_chua_dx' => round($total_thu_ho - $thu_ho_da_dx, 2),
                 'tien_chua_dx' => round($total_tien - $tien_da_dx, 2)
+            ],
+            'filter' => [
+                'statusC8' => array_keys($filterC8),
+                'statusC13' => array_keys($filterC13),
+                'statusC11' => array_keys($filterC11)
             ],
             'labels' => $labels,
             'dataSet' => $dataSet

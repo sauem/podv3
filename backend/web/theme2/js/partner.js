@@ -253,6 +253,64 @@ function setOptionsChartIndex2(labels, data) {
     }
 }
 
+
+function initChartFinance(ctx, label1, label2, labels, data) {
+    let topCtx = document.getElementById(ctx).getContext('2d');
+    let {column_1,column_2}  = data;
+    column_1 = Object.values(column_1);
+    column_2 = Object.values(column_2);
+    labels = Object.values(labels);
+    return new Chart(topCtx, {
+        type: 'bar',
+        animation: {
+            duration: 1,
+            easing: 'linear'
+        },
+        options: {
+            maintainAspectRatio: true,
+            responsive: true,
+            tooltips: {
+                mode: 'index',
+                axis: 'y',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        let label = data.datasets[tooltipItem.datasetIndex].label;
+                        let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        return ' ' + label + ': ฿' + value.formatMoney();
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 3500,
+                        callback: function (value, index, values) {
+                            return formatK(value);
+                        }
+                    }
+                }]
+            }
+        },
+        data: {
+            datasets: [
+                {
+                    label: label1,
+                    backgroundColor: 'rgb(41,98,255)',
+                    data: column_1,
+                },
+                {
+                    label: label2,
+                    backgroundColor: 'rgb(221,44,0)',
+                    data: column_2,
+                },
+            ],
+            labels: labels
+        },
+    });
+}
+
+
 const getSearchParams = (formID, baseData, action = 'GetSale') => {
     let formData = new FormData($(`#${formID}`)[0]);
     formData.append('action', `action${action}`);

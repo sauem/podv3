@@ -24,7 +24,7 @@ window.RESULT_ORDER = {
     totalC8C3: 0,
 
 }
-let secondChart, firstChart = null;
+let secondChart, firstChart, financeTop, financeBottom = null;
 
 
 if (document.querySelector('#index-chart') && window.location.href.includes('analytics')) {
