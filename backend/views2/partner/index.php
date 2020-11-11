@@ -8,21 +8,23 @@ use kartik\daterange\DateRangePicker; ?>
                     <h4 class="text-center card-title text-danger">Bộ lọc</h4>
                 </div>
                 <div class="col-12">
-                    <div class="row">
-                        <div id="result-filter"></div>
-                        <div class="col">
-                            <?php
-                            echo DateRangePicker::widget([
-                                'name' => 'date',
-                                'presetDropdown' => true,
-                                'convertFormat' => true,
-                                'includeMonthsFilter' => true,
-                                'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
-                                'options' => ['id' => 'report-date','placeholder' => 'Chọn ngày tạo đơn']
-                            ]);
-                            ?>
+                    <form id="sale-form">
+                        <div class="row">
+                            <div id="result-filter"></div>
+                            <div class="col">
+                                <?php
+                                echo DateRangePicker::widget([
+                                    'name' => 'filter[date]',
+                                    'presetDropdown' => true,
+                                    'convertFormat' => true,
+                                    'includeMonthsFilter' => true,
+                                    'pluginOptions' => ['locale' => ['format' => 'd-m-Y']],
+                                    'options' => ['class' => 'partner-date', 'placeholder' => 'Chọn ngày tạo đơn']
+                                ]);
+                                ?>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <div class="row">
@@ -101,70 +103,102 @@ use kartik\daterange\DateRangePicker; ?>
         </div>
     </script>
     <script id="filter-template" type="text/x-handlebars-template">
-        <div class="col-md-2">
+        <div class="col">
             <select title="Marketer"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="marketer" class="selectpicker mr-3"
+                    name="filter[marketer][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.marketer}}
-                    <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col">
             <select title="Nguồn contact"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="source" class="selectpicker mr-3"
+                    name="filter[source][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.source}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col">
             <select title="Sản phẩm"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="product" class="selectpicker mr-3"
+                    name="filter[product][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.product}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col">
             <select title="Page"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="page" class="selectpicker mr-3"
+                    name="filter[page][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.page}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
     </script>
 <?php
+
 $js = <<<JS
+    let html = $('#index-template').html();
+    let filterHtml = $('#filter-template').html();
+    let template = Handlebars.compile(html);
+    let filterTemp = Handlebars.compile(filterHtml);
+        
     $(document).ready(function() {
-        let result = null;
-        let html = $('#index-template').html();
-        let filterHtml = $('#filter-template').html();
-        let template = Handlebars.compile(html);
-        let filterTemp = Handlebars.compile(filterHtml);
+        
         
         getSale('$partner').then(res => {
-        
-          $("#result-index").html(template(res.calculate));
-          $("#result-filter").replaceWith(filterTemp(res.filter));
+          const {base,  filter, labels ,calculate, dataSet} = res;
+          setLocalStorage('sale',base);
+            $("#result-index").html(template(calculate));
+            $("#result-filter").replaceWith(filterTemp(filter));
             initSelectPicker();
-            initChartIndex(res.labels, res.dataSet);
+            initChartIndex(labels, dataSet);
+        }).catch(er =>{
+           console.log(er); 
+        });
+    });
+
+    $(document).on('change','.selectpicker, .partner-date', function() {
+        
+        let base = getLocalStorage('sale');
+        if(!base){
+            toastr.warning('Dữ liệu chưa cập nhật!');
+            return false;
+        }
+        let searchData = getSearchParams('sale-form',JSON.stringify(base));
+       
+        getSearch(searchData).then(res => {
+            let {base,  filter,labels, calculate, dataSet} = res;
+            labels = Object.values(labels);
+            switch ('$route') {
+              case "sale":
+                  firstChart.data.datasets[0].data = Object.values(dataSet.C3);
+                  firstChart.data.datasets[1].data = Object.values(dataSet.C8);
+                  firstChart.data.datasets[2].data = Object.values(dataSet.C8_C3);
+                  firstChart.data.labels = Object.values(labels);
+                  firstChart.update();
+                  $("#result-index").html(template(calculate));
+                  break;
+              default:
+                  break;
+            }
         });
     });
 

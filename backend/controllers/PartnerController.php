@@ -26,29 +26,33 @@ class PartnerController extends BaseController
     public function actionIndex()
     {
 
-        return $this->render('index',[
-            'partner' => $this->partnerName
+        return $this->render('index', [
+            'partner' => $this->partnerName,
+            'route' => 'sale'
         ]);
     }
 
     public function actionOrderDetail()
     {
-        return $this->render('order',[
-            'partner' => $this->partnerName
+        return $this->render('order', [
+            'partner' => $this->partnerName,
+            'route' => 'order'
         ]);
     }
 
     public function actionFinance()
     {
-        return $this->render('finance',[
-            'partner' => $this->partnerName
+        return $this->render('finance', [
+            'partner' => $this->partnerName,
+            'route' => 'finance'
         ]);
     }
 
     public function actionWarehouse()
     {
-        return $this->render('warehouse',[
-            'partner' => $this->partnerName
+        return $this->render('warehouse', [
+            'partner' => $this->partnerName,
+            'route' => 'warehouse'
         ]);
     }
 }

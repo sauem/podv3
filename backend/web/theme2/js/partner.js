@@ -27,6 +27,26 @@ const getFinance = async (partner = null) => {
         data: {partner: partner},
     });
 }
+const getSearch = async (data) => {
+    return $.ajax({
+        url: '/ajax-partner/search',
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        cache: false,
+        data: data,
+    });
+}
+const setLocalStorage = (name, data) => {
+    localStorage.setItem(name, JSON.stringify(data));
+}
+const getLocalStorage = name => {
+    const data = localStorage.getItem(name);
+    if (!data) {
+        return false;
+    }
+    return JSON.parse(data);
+}
 const initDataTable = element => {
     $(element).DataTable({
         language: {
@@ -55,10 +75,10 @@ const initSelectPicker = (element = '.selectpicker') => {
     $(element).selectpicker();
 }
 
+
 function initChartIndex(labels, data) {
     let indexCtx = document.getElementById("index-chart").getContext('2d');
     firstChart = new Chart(indexCtx, setOptionsChartIndex(labels, data));
-
     let max = data.C3[0];
     data.C3.forEach((item, index) => {
         if (item > max) {
@@ -67,7 +87,6 @@ function initChartIndex(labels, data) {
     });
     firstChart.config.options.scales.yAxes[1].ticks.max = max + 5;
     firstChart.update();
-
     let index2Ctx = document.getElementById("second-chart").getContext('2d');
     secondChart = new Chart(index2Ctx, setOptionsChartIndex2(labels, data));
 }
@@ -107,7 +126,8 @@ function setOptionsChartIndex(labels, data) {
         },
         options: {
             animation: {
-                duration: 1,
+                duration: 500,
+                easing: 'linear',
                 onComplete: function () {
                     let chartInstance = this.chart,
                         ctx = chartInstance.ctx;
@@ -124,10 +144,10 @@ function setOptionsChartIndex(labels, data) {
                             if (data === 0) {
                                 return;
                             }
-                            if(_datasetIndex === 1){
+                            if (_datasetIndex === 1) {
                                 return;
                             }
-                            ctx.fillText(data +  (_datasetIndex === 2 ? '%' : ''), bar._model.x, bar._model.y - 5);
+                            ctx.fillText(data + (_datasetIndex === 2 ? '%' : ''), bar._model.x, bar._model.y - 5);
                         });
                     });
                 }
@@ -233,3 +253,9 @@ function setOptionsChartIndex2(labels, data) {
     }
 }
 
+const getSearchParams = (formID, baseData, action = 'GetSale') => {
+    let formData = new FormData($(`#${formID}`)[0]);
+    formData.append('action', `action${action}`);
+    formData.append('base', baseData);
+    return formData;
+};
