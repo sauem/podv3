@@ -232,6 +232,11 @@ function setOptionsChartIndex2(labels, data) {
                     backgroundColor: '#faa338',
                     data: data.C4
                 },
+                {
+                    label: 'C0 (Pending)',
+                    backgroundColor: '#c20000',
+                    data: data.C0
+                },
             ],
             labels: labels
         },

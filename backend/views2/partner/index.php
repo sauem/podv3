@@ -199,6 +199,7 @@ $js = <<<JS
                   secondChart.data.datasets[1].data = Object.values(dataSet.C6);
                   secondChart.data.datasets[2].data = Object.values(dataSet.C7);
                   secondChart.data.datasets[3].data = Object.values(dataSet.C4);
+                  secondChart.data.datasets[4].data = Object.values(dataSet.C0);
                   secondChart.data.labels = Object.values(labels);
                   secondChart.update();
                   $("#result-index").html(template(calculate));

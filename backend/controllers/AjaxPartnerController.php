@@ -221,7 +221,13 @@ class AjaxPartnerController extends BaseController
                         continue;
                     }
                 }
+                $sumbC0 = 0;
                 foreach ($data[$label] as $column => $value) {
+                    $statusC8 = Helper::toLower($value[39]);
+
+                    if (($statusC8 === "" || $statusC8 === null || empty($statusC8)) && $value[51] === 1) {
+                        $sumbC0 += 1;
+                    }
                     if (!empty($s_product)) {
                         if (!in_array($value[6], $s_product)) {
                             unset($data[$label][$column]);
@@ -270,6 +276,7 @@ class AjaxPartnerController extends BaseController
                 $dataSet["C8"][$k] = $sumbC8;
                 $dataSet["C8_C3"][$k] = $sumbC8 > 0 ? round($sumbC8 / $sumbC3 * 100) : 0;
                 $dataSet["C11"][$k] = $sumbC11;
+                $dataSet["C0"][$k] = $sumbC0;
 
                 $totalC3 = $totalC3 + $sumbC3;
                 $totalC11 = $totalC11 + $sumbC11;
