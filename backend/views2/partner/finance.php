@@ -214,20 +214,18 @@ $js = <<<JS
        
         getSearch(searchData).then(res => {
             let {base,  filter,labels, calculate, dataSet} = res;
-            const {C8, C11, C13} = dataSet;
-            
+            let {C8, C11, C13} = dataSet;
+            console.log(dataSet);
             labels = Object.values(labels); 
-            console.log(calculate);
             switch ('$route') {
               case "finance":
-                  
-                  financeTop.data.datasets[0].data = C8;
-                  financeTop.data.datasets[1].data = C11;
+                  financeTop.data.datasets[0].data = Object.values(C8);
+                  financeTop.data.datasets[1].data = Object.values(C11);
                   financeTop.data.labels = Object.values(labels);
                   financeTop.update();
                   
-                  financeBottom.data.datasets[0].data = C11;
-                  financeBottom.data.datasets[1].data = C13;
+                  financeBottom.data.datasets[0].data = Object.values(C11);
+                  financeBottom.data.datasets[1].data = Object.values(C13);
                   financeBottom.data.labels = Object.values(labels);
                   financeBottom.update();
                   

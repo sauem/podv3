@@ -315,11 +315,16 @@ class AjaxPartnerController extends BaseController
 
     function actionGetFinance($filter = null, $searchData = null)
     {
-        $dataSet = [];
+        $dataSet = [
+            'C8' => [],
+            'C11' => [],
+            'C13' => []
+        ];
         $startDate = $endDate = null;
         $partner = \Yii::$app->request->get('partner');
         $totalC8 =
         $totalC13 =
+        $totalSumbC8 =
         $totalC13Trans =
         $totalC11 = $C13_C11 = $totalSumC11 = $totalSumC13 =
         $dv_da_dx = $thu_ho_da_dx = $vch_da_dx = $tien_da_dx =
@@ -348,62 +353,62 @@ class AjaxPartnerController extends BaseController
                 $filterC13 = self::group_by(46, $partner);
             }
 
-            $labels = array_keys($data);
-
-
             ///Search overwrite
             if ($searchData && !empty($searchData)) {
-                $s_statusC8 = isset($filter['statusC8']) ? $filter['statusC8'] : null;
-                $s_statusC11 = isset($filter['statusC11']) ? $filter['statusC11'] : null;
-                $s_statusC13 = isset($filter['statusC13']) ? $filter['statusC13'] : null;
+                $s_statusC8 = isset($filter['statusC8']) ? $filter['statusC8'] : [];
+                $s_statusC11 = isset($filter['statusC11']) ? $filter['statusC11'] : [];
+                $s_statusC13 = isset($filter['statusC13']) ? $filter['statusC13'] : [];
+                $s_statusC8 = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_statusC8);
+                $s_statusC13 = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_statusC13);
+                $s_statusC11 = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_statusC11);
                 $s_date = !empty($filter['date']) ? explode(' - ', $filter['date']) : null;
                 if ($s_date) {
                     $startDate = \DateTime::createFromFormat('d-m-Y', $s_date[0])->format('d-m-Y');
                     $endDate = \DateTime::createFromFormat('d-m-Y', $s_date[1])->format('d-m-Y');
-
                     $startDate = strtotime($startDate);
                     $endDate = strtotime($endDate);
                 }
             }
 
 
+            $labels = array_keys($data);
+
             foreach ($labels as $k => $label) {
-                $col8 = ArrayHelper::getColumn($data[$label], 40);
-                $col8 = self::convertNumber($col8);
-                $dataSet['C8'][$k] = $col8;
-
-                $C11 = ArrayHelper::getColumn($data[$label], 57);
-                $sumC11 = array_sum($C11);
-                $totalSumC11 = $totalSumC11 + $sumC11;
-
-                $C13 = ArrayHelper::getColumn($data[$label], 58);
-                $sumC13 = array_sum($C13);
-                $totalSumC13 = $totalSumC13 + $sumC13;
+                if ($startDate && $endDate) {
+                    $atDate = strtotime(str_replace('/', '-', $label));
+                    if (!($atDate >= $startDate && $atDate <= $endDate)) {
+                        $filterMatched = true;
+                        unset($labels[$k]);
+                        continue;
+                    }
+                }
 
                 $totalC11K = 0;
                 $totalC13K = 0;
 
                 foreach ($data[$label] as $column => $value) {
 
-                    if ($startDate && $endDate) {
-                        $atDate = strtotime(str_replace('/', '-', $label));
-                        if (!($atDate >= $startDate && $atDate <= $endDate)) {
-                            unset($labels[$k]);
-                            continue;
-                        }
-                    }
                     if (!empty($s_statusC8)) {
-                        if (!in_array($value[39], $s_statusC8) || $s_statusC8 !== $value[39]) {
+                        if (!in_array(Helper::toLower($value[39]), $s_statusC8)) {
+                            unset($data[$label][$column]);
                             continue;
                         }
                     }
                     if (!empty($s_statusC11)) {
-                        if (!in_array($value[43], $s_statusC11) || $s_statusC11 !== $value[43]) {
+                        if (!in_array(Helper::toLower($value[43]), $s_statusC11)) {
+                            unset($data[$label][$column]);
                             continue;
                         }
                     }
                     if (!empty($s_statusC13)) {
-                        if (!in_array($value[46], $s_statusC13) || $s_statusC13 !== $value[46]) {
+                        if (!in_array(Helper::toLower($value[46]), $s_statusC13)) {
+                            unset($data[$label][$column]);
                             continue;
                         }
                     }
@@ -439,20 +444,37 @@ class AjaxPartnerController extends BaseController
                         $tien_da_dx += $numTien;
                     }
                 }
+
+                $col8 = ArrayHelper::getColumn($data[$label], 40);
+                $col8 = self::convertNumber($col8);
+                $dataSet['C8'][$k] = $col8;
+                $C11 = ArrayHelper::getColumn($data[$label], 57);
+
+                $sumC11 = array_sum($C11);
+                $C13 = ArrayHelper::getColumn($data[$label], 58);
+                $sumC13 = array_sum($C13);
+                $C8Col56 = ArrayHelper::getColumn($data[$label], 56);
+                $sumbC8Col56 = array_sum($C8Col56);
+
+                $totalSumC11 = $totalSumC11 + $sumC11;
+                $totalSumC13 = $totalSumC13 + $sumC13;
+                $totalSumbC8 = $totalSumbC8 + $sumbC8Col56;
                 $dataSet['C11'][$k] = $totalC11K;
                 $dataSet['C13'][$k] = $totalC13K;
             }
+
             $C13_C11 = $totalSumC13 > 0 ? round($totalSumC13 / $totalSumC11 * 100, 2) : 0;
 
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
         return [
             'base' => $data,
             'calculate' => [
                 'totalC13Trans' => $totalC13Trans,
                 'totalC8' => $totalC8,
-                'C11_C8' => $totalC11 > 0 ? round($totalC11 / $totalC8 * 100, 2) : 0,
+                'C11_C8' => $totalSumC11 > 0 ? round($totalSumC11 / $totalSumbC8 * 100, 1) : 0,
                 'C13' => round($totalC13, 2),
                 'C13_C11' => $C13_C11,
                 'C11' => round($totalC11, 2),
