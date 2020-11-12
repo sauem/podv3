@@ -225,7 +225,7 @@ class AjaxPartnerController extends BaseController
                 foreach ($data[$label] as $column => $value) {
                     $statusC8 = Helper::toLower($value[39]);
 
-                    if (($statusC8 === "" || $statusC8 === null || empty($statusC8)) && $value[51] === 1) {
+                    if ($statusC8 === "" || $statusC8 === null || empty($statusC8)) {
                         $sumbC0 += 1;
                     }
                     if (!empty($s_product)) {
