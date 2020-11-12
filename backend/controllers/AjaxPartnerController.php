@@ -109,30 +109,98 @@ class AjaxPartnerController extends BaseController
      * @return mixed
      * @throws BadRequestHttpException
      */
-    function actionGetOrder()
+    function actionGetOrder($filter = null, $searchData = null)
     {
         $partner = \Yii::$app->request->get('partner');
+        $data = $source = $C8 = $C11 = $C13 = $phone = $s_C13 = $s_C11 = $s_C8 = $s_source = [];
+        $startDate = $endDate = null;
         try {
-            $client = static::initClient();
-            $service = new \Google_Service_Sheets($client);
+            if ($searchData && !empty($searchData)) {
+                $partners = (array)$searchData;
+            } else {
+                $client = static::initClient();
+                $service = new \Google_Service_Sheets($client);
 
-            $range = "Data contact!A2:AX";
+                $range = "Data contact!A2:AX";
 
-            $response = $service->spreadsheets_values->get($this->sheetID, $range);
+                $response = $service->spreadsheets_values->get($this->sheetID, $range);
 
-            $values = $response->getValues();
-            $data = self::group_by(12, $values);
-            $values = $data[$partner];
-            $phone = array_keys(self::group_by(4, $values));
-            $C11 = array_keys(self::group_by(43, $values));
-            $C8 = array_keys(self::group_by(39, $values));
-            $C13 = array_keys(self::group_by(46, $values));
-            $data = [];
-            if (empty($values)) {
-                throw new BadRequestHttpException("Dữ liệu trống!");
+                $values = $response->getValues();
+                if (empty($values)) {
+                    throw new BadRequestHttpException("Dữ liệu trống!");
+                }
+                $values = self::group_by(12, $values);
+                $partners = $values[$partner];
+                $phone = array_keys(self::group_by(4, $partners));
+                $C11 = array_keys(self::group_by(43, $partners));
+                $C8 = array_keys(self::group_by(39, $partners));
+                $C13 = array_keys(self::group_by(46, $partners));
+                $source = array_keys(self::group_by(11, $partners));
             }
 
-            foreach ($values as $k => $value) {
+            if ($searchData && !empty($searchData)) {
+                $s_source = isset($filter['source']) ? $filter['source'] : [];
+                $s_C8 = isset($filter['C8']) ? $filter['C8'] : [];
+                $s_C11 = isset($filter['C11']) ? $filter['C11'] : [];
+                $s_C13 = isset($filter['C13']) ? $filter['C13'] : [];
+                $s_source = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_source);
+                $s_C8 = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_C8);
+                $s_C11 = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_C11);
+                $s_C13 = array_map(function ($item) {
+                    return Helper::toLower($item);
+                }, $s_C13);
+
+                $s_date = !empty($filter['date']) ? explode(' - ', $filter['date']) : null;
+
+                if ($s_date) {
+                    $startDate = \DateTime::createFromFormat('d-m-Y', $s_date[0])->format('d-m-Y');
+                    $endDate = \DateTime::createFromFormat('d-m-Y', $s_date[1])->format('d-m-Y');
+
+                    $startDate = strtotime($startDate);
+                    $endDate = strtotime($endDate);
+                }
+            }
+
+            foreach ($partners as $k => $value) {
+
+                if ($startDate && $endDate) {
+                    $atDate = strtotime(str_replace('/', '-', ArrayHelper::getValue($value, 2)));
+                    if (!($atDate >= $startDate && $atDate <= $endDate)) {
+                        unset($partners[$k]);
+                        continue;
+                    }
+                }
+                if (!empty($s_source)) {
+                    if (!in_array(Helper::toLower(ArrayHelper::getValue($value, 11)), $s_source)) {
+                        unset($partners[$k]);
+                        continue;
+                    }
+                }
+                if (!empty($s_C8)) {
+                    if (!in_array(Helper::toLower(ArrayHelper::getValue($value, 39)), $s_C8)) {
+                        unset($partners[$k]);
+                        continue;
+                    }
+                }
+                if (!empty($s_C11)) {
+                    if (!in_array(Helper::toLower(ArrayHelper::getValue($value, 43)), $s_C11)) {
+                        unset($partners[$k]);
+                        continue;
+                    }
+                }
+                if (!empty($s_C13)) {
+                    if (!in_array(Helper::toLower(ArrayHelper::getValue($value, 46)), $s_C13)) {
+                        unset($partners[$k]);
+                        continue;
+                    }
+                }
+
                 $statusC13 = ArrayHelper::getValue($value, 46);
                 $transferC13 = self::convertNumber([ArrayHelper::getValue($value, 49)]);
                 $data[$k] = [
@@ -151,10 +219,12 @@ class AjaxPartnerController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
         return [
+            'base' => $partners,
             'data' => $data,
             'filter' => [
                 'phone' => $phone,
                 'C8' => $C8,
+                'source' => $source,
                 'C11' => $C11,
                 'C13' => $C13
             ]

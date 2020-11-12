@@ -4,21 +4,23 @@ use kartik\daterange\DateRangePicker; ?>
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Báo cáo đơn hàng</h4>
-            <div class="row">
-                <div id="result-filter"></div>
-                <div class="col">
-                    <?php
-                    echo DateRangePicker::widget([
-                        'name' => 'date',
-                        'presetDropdown' => true,
-                        'convertFormat' => true,
-                        'includeMonthsFilter' => true,
-                        'pluginOptions' => ['locale' => ['format' => 'm/d/Y']],
-                        'options' => ['id' => 'report-date', 'placeholder' => 'Chọn ngày tạo đơn']
-                    ]);
-                    ?>
+            <form id="order-form">
+                <div class="row">
+                    <div id="result-filter"></div>
+                    <div class="col">
+                        <?php
+                        echo DateRangePicker::widget([
+                            'name' => 'filter[date]',
+                            'presetDropdown' => true,
+                            'convertFormat' => true,
+                            'includeMonthsFilter' => true,
+                            'pluginOptions' => ['locale' => ['format' => 'd-m-Y']],
+                            'options' => ['class' => 'partner-date', 'placeholder' => 'Chọn ngày tạo đơn']
+                        ]);
+                        ?>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
         <div class="card-body">
             <table id="result" class="table table-borderless">
@@ -62,14 +64,14 @@ use kartik\daterange\DateRangePicker; ?>
     </script>
     <script id="filter-template" type="text/x-handlebars-template">
         <div class="col">
-            <select title="Số điện thoại"
+            <select title="Nguồn contact"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="phone" class="selectpicker"
+                    name="filter[source][]" class="selectpicker"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
-                {{#each this.phone}}
-                <option value="{{this}}">{{this}}</option>
+                {{#each this.source}}
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
@@ -77,11 +79,11 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Tình trạng thanh toán C11"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="C11" class="selectpicker"
+                    name="filter[C11][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.C11}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
@@ -89,11 +91,11 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Tình trạng chuyển tiền C13"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="C13" class="selectpicker"
+                    name="filter[C13][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.C13}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
@@ -101,47 +103,37 @@ use kartik\daterange\DateRangePicker; ?>
             <select title="Tình trạng chốt đơn C8"
                     data-actions-box="true"
                     data-live-search="true"
-                    name="C8" class="selectpicker"
+                    name="filter[C8][]" class="selectpicker mr-3"
                     multiple data-selected-text-format="count"
                     data-style="btn-light">
                 {{#each this.C8}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{this}}">{{#if this}} {{this}} {{else}} NULL {{/if}}</option>
                 {{/each}}
             </select>
         </div>
-
 
     </script>
 <?php
 $js = <<<JS
     Window.DATA_TABLE = [];
-    $(document).ready(function() {
         let html = $("#order-template").html();
         let template = Handlebars.compile(html);
-         let filterHtml = $('#filter-template').html();
-         let filterTemp = Handlebars.compile(filterHtml);
+        let filterHtml = $('#filter-template').html();
+        let filterTemp = Handlebars.compile(filterHtml);
         let result = null;
+        let tableResult = null;
+    $(document).ready(function() {
         getOrderDetail("$partner").then(res => {
             if(!res){
                 result = "Dữ liệu trống!";
             }
-            const { data , filter}  = res;
+            const { data , filter, base}  = res;
             
-            // data.map((item, key) => {
-            //    arr.push( {
-            //        code : item[0],
-            //        date_register  : item[2],
-            //        name : item[3],
-            //        phone : item[4],
-            //        status : item[39],
-            //        revenue : item[40],
-            //        status_shipping : item[43],
-            //    });
-            // });
+            setLocalStorage('order',base);
+            
             window.DATA_TABLE = data;
             result = template(data);
             $("#order-result").html(result);
-            
             initDataTable('#result');
             $("#result-filter").replaceWith(filterTemp(filter));
              initSelectPicker();
@@ -150,10 +142,25 @@ $js = <<<JS
         })
     });
     
-    $(document).on('change', '.selectpicker', function() {
-       let name = $(this).attr('name');
-       let val = $(this).val();
-       alert(val); 
+    $(document).on('change','.selectpicker, .partner-date', function() {
+        let base = getLocalStorage('order');
+        if(!base){
+            toastr.warning('Dữ liệu chưa cập nhật!');
+            return false;
+        }
+        let searchData = getSearchParams('order-form',JSON.stringify(base),'GetOrder');
+        getSearch(searchData).then(res => {
+            if($.fn.dataTable.isDataTable('#result')){
+                $('#result').DataTable().destroy();
+                 $("#order-result").html('');
+            }
+           const {data } = res;
+            window.DATA_TABLE = data;
+            result = template(data);
+            $("#order-result").html(result);
+             initDataTable('#result');
+           
+        });
     });
 JS;
 $this->registerJs($js);

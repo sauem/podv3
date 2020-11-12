@@ -48,7 +48,7 @@ const getLocalStorage = name => {
     return JSON.parse(data);
 }
 const initDataTable = element => {
-    $(element).DataTable({
+     $(element).DataTable({
         language: {
             paginate: {
                 previous: "<i class='mdi mdi-chevron-left'>",
@@ -58,6 +58,7 @@ const initDataTable = element => {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
         }
     });
+
 }
 const formatK = (num) => {
     if (num >= 1000000000) {
@@ -261,7 +262,7 @@ function setOptionsChartIndex2(labels, data) {
 
 function initChartFinance(ctx, label1, label2, labels, data) {
     let topCtx = document.getElementById(ctx).getContext('2d');
-    let {column_1,column_2}  = data;
+    let {column_1, column_2} = data;
     column_1 = Object.values(column_1);
     column_2 = Object.values(column_2);
     labels = Object.values(labels);
