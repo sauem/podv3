@@ -53,6 +53,7 @@ $js = <<<JS
         let template = Handlebars.compile(html);
       getWarehouse("$partner").then(res => {
           res = Object.values(res);
+          console.log(res);
           let data = [];
           res.map((item, index) => {
              data.push(Object.values(item)); 
