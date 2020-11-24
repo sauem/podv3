@@ -32,18 +32,18 @@
     </div>
     <script id="warehouse-template" type="text/x-handlebars-template">
         {{#each this}}
-        <tr>
             {{#each this}}
-            <td>{{this.product}}</td>
-            <td>{{this.category}}</td>
-            <td>{{this.import}}</td>
-            <td>{{this.export}}</td>
-            <td>{{this.refund}}</td>
-            <td>{{this.broken}}</td>
-            <td>{{this.inventory}}</td>
-            <td>{{this.not_shipped}}</td>
+                <tr>
+                    <td>{{this.product}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.import}}</td>
+                    <td>{{this.export}}</td>
+                    <td>{{this.refund}}</td>
+                    <td>{{this.broken}}</td>
+                    <td>{{this.inventory}}</td>
+                    <td>{{this.not_shipped}}</td>
+                </tr>
             {{/each}}
-        </tr>
         {{/each}}
     </script>
 <?php
