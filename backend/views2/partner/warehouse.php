@@ -52,10 +52,7 @@ $js = <<<JS
         let html = $("#warehouse-template").html();
         let template = Handlebars.compile(html);
       getWarehouse("$partner").then(res => {
-          if($.fn.dataTable.isDataTable('#result')){
-                $('#result').DataTable().destroy();
-                 $("#warehouse-result").html('');
-          }
+          console.log(res);
           
           res = Object.values(res);
           let data = [];
