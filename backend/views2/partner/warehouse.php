@@ -62,7 +62,7 @@ $js = <<<JS
           
           let result = template(data);
           $("#warehouse-result").html(result);
-         // initDataTable('#result');
+          initDataTable('#result');
       }).catch(error =>{ 
           console.log(error)
           $("#warehouse-result").html('<tr><td class="text-center" colspan="5">Dữ liệu trống!</td></tr>');
