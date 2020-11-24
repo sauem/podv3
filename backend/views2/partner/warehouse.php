@@ -52,13 +52,14 @@ $js = <<<JS
         let html = $("#warehouse-template").html();
         let template = Handlebars.compile(html);
       getWarehouse("$partner").then(res => {
-          console.log(res);
-          
+         
           res = Object.values(res);
           let data = [];
           res.map((item, index) => {
              data.push(Object.values(item)); 
           });
+           console.log(data);
+          
           let result = template(data);
           $("#warehouse-result").html(result);
          // initDataTable('#result');
