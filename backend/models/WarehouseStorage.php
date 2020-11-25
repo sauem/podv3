@@ -11,8 +11,10 @@ use yii\web\BadRequestHttpException;
  *
  * @property int $id
  * @property int|null $warehouse_id
- * @property int|null $product_id
+ * @property string|null $product_sku
  * @property int|null $quantity
+ * @property string|null $po_code
+ * @property double|null $unit_price
  * @property int $created_at
  * @property int $updated_at
  */
@@ -23,8 +25,6 @@ class WarehouseStorage extends BaseModel
      */
     const STATUS_CANCEL = 0;
     const STATUS_CONFIRM = 1;
-
-
 
     public static function tableName()
     {
@@ -37,8 +37,11 @@ class WarehouseStorage extends BaseModel
     public function rules()
     {
         return [
-            [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'integer'],
-            [['warehouse_id', 'quantity', 'product_id'], 'required'],
+            [['warehouse_id', 'quantity', 'created_at', 'updated_at'], 'integer'],
+            [['unit_price'], 'double'],
+            [['warehouse_id', 'quantity', 'product_sku','po_code'], 'required'],
+            [['product_sku','po_code'], 'string'],
+            [['po_code'], 'unique'],
         ];
     }
 
@@ -49,27 +52,45 @@ class WarehouseStorage extends BaseModel
     {
         return [
             'id' => 'ID',
-            'warehouse_id' => 'Warehouse ID',
-            'product_id' => 'Product ID',
-            'quantity' => 'Quantity',
+            'warehouse_id' => 'Kho hàng',
+            'product_sku' => 'Mã sản phẩm',
+            'po_code' => 'Mã nhập hàng',
+            'quantity' => 'Số lượng',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
     }
-    public function getProduct(){
-            return $this->hasOne(ProductsModel::className(),['id' => 'product_id']);
+
+    public function getProduct()
+    {
+        return $this->hasOne(ProductsModel::className(), ['sku' => 'product_sku']);
     }
 
-    public static function doUpdateWarehouseTransaction($warehouse_id, $quantity, $product_id, $transaction_type, $note = null, $order_code = null)
+    public function getTransaction()
     {
-        $warehouseStorage = WarehouseStorage::findOne(['product_id' => $product_id]);
+        return $this->hasMany(WarehouseTransaction::className(), ['warehouse_id' => 'warehouse_id']);
+    }
+
+    /**
+     * @param $warehouse_id
+     * @param $product_sku
+     * @param $quantity
+     * @param $transaction_type
+     * @param null $note
+     * @param null $order_code
+     * @throws BadRequestHttpException
+     */
+
+    public static function doUpdateWarehouseTransaction($warehouse_id, $product_sku, $quantity, $transaction_type, $note = null, $order_code = null)
+    {
+        $warehouseStorage = WarehouseStorage::findOne(['warehouse_id' => $warehouse_id, 'product_sku' => $product_sku]);
         if (!$warehouseStorage) {
             throw new BadRequestHttpException('Không tìm thấy sản phẩm trong kho hàng!');
         }
 
         $warehouseTran = new WarehouseTransaction();
         $warehouseTran->warehouse_id = $warehouse_id;
-        $warehouseTran->product_id = $product_id;
+        $warehouseTran->product_sku = $product_sku;
         $warehouseTran->quantity = $quantity;
         $warehouseTran->status = WarehouseStorage::STATUS_CONFIRM;
         $warehouseTran->transaction_type = $transaction_type;
@@ -80,15 +101,21 @@ class WarehouseStorage extends BaseModel
             throw new BadRequestHttpException(Helper::firstError($warehouseTran));
         }
 
-        if ($warehouseTran->transaction_type === WarehouseTransaction::TRANSACTION_TYPE_EXPORT) {
-            if ($warehouseStorage->quantity < $quantity) {
-                throw new BadRequestHttpException('Quantity not enough!');
-            }
-            $warehouseStorage->quantity = $warehouseStorage->quantity - $quantity;
-        } else {
-            $warehouseStorage->quantity = $warehouseStorage->quantity + $quantity;
+        switch ($transaction_type) {
+            case WarehouseTransaction::TRANSACTION_TYPE_IMPORT:
+            case WarehouseTransaction::TRANSACTION_TYPE_REFUND:
+                // Nhập kho hoặc hoàn đơn
+                $warehouseStorage->quantity = $warehouseStorage->quantity + $quantity;
+                break;
+            case WarehouseTransaction::TRANSACTION_TYPE_EXPORT:
+            case WarehouseTransaction::TRANSACTION_TYPE_BROKEN:
+                // Xuất kho hoặc hỏng
+                if ($warehouseStorage->quantity < $quantity) {
+                    throw new BadRequestHttpException('số lượng kho sản phẩm không đủ!');
+                }
+                $warehouseStorage->quantity = $warehouseStorage->quantity - $quantity;
+                break;
         }
-
         if (!$warehouseStorage->save()) {
             throw new BadRequestHttpException(Helper::firstError($warehouseStorage));
         }

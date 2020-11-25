@@ -2,9 +2,12 @@
 
 use backend\models\ProductsModel;
 use common\helper\Helper;
+use yii\helpers\Url;
+use common\helper\Component;
 use kartik\form\ActiveForm;
 use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
+use backend\models\WarehouseTransaction;
 use kartik\select2\Select2;
 use yii\helpers\Html; ?>
 
@@ -29,41 +32,67 @@ use yii\helpers\Html; ?>
             GridView::widget([
                 'dataProvider' => $productStorage,
                 'tableOptions' => [
-                    'class' => 'table-sm'
+                    'class' => 'table-sm',
+                ],
+                'pjaxSettings' => [
+                    'neverTimeout' => true,
+                    'options' => [
+                        'id' => 'pjax-warehouse'
+                    ]
                 ],
                 'columns' => [
-                    'product.name',
-                    'product.sku',
-                    'quantity:html:Tồn kho',
+                    'po_code',
                     [
-                        'label' => 'Ngày nhập kho',
-                        'attribute' => 'created_at',
+                        'attribute' => 'product',
+                        'format' => 'html',
+                        'label' => 'Sản phẩm',
                         'value' => function ($model) {
-                            return date('d/m/Y', $model->created_at);
+                            $html = $model->product->name . '<br>';
+                            $html .= "{$model->product->category->name} | <strong>{$model->product_sku}</strong>";
+                            return $html;
+                        }
+                    ],
+                    [
+                        'attribute' => 'quantity',
+                        'format' => 'html',
+                        'label' => 'Số lượng nhập',
+                        'value' => function ($model) {
+                            return Helper::money($model->quantity, 0, ',', '.');
+                        }
+                    ],
+                    [
+                        'attribute' => 'unit_pirce',
+                        'format' => 'html',
+                        'label' => 'Giá vốn/đơn vị',
+                        'value' => function ($model) {
+                            return Helper::money($model->unit_price, 0) . 'đ';
+                        }
+                    ],
+                    [
+                        'attribute' => 'unit_pirce',
+                        'format' => 'html',
+                        'label' => 'Tổng vốn',
+                        'value' => function ($model) {
+                            return Helper::money($model->quantity * $model->unit_price, 0) . 'đ';
                         }
                     ],
                     [
                         'class' => ActionColumn::class,
-                        'template' => '{export}{import}',
+                        'template' => '{action}{delete}',
                         'width' => '20%',
                         'buttons' => [
-                            'export' => function ($url, $model) {
+                            'action' => function ($url, $model) {
                                 return Html::a('<i class="fe-download"></i> Nhập', 'javascript:;', [
                                     'class' => 'btn btn-xs changeQuantity mx-1 btn-outline-success',
+                                    'data-product' => $model->product_sku,
                                     'data-toggle' => 'modal',
                                     'data-target' => '#modal-quantity',
-                                    'data-key' => $model->product_id,
                                     'data-pjax' => '0'
                                 ]);
                             },
-                            'import' => function ($url, $model) {
-                                return Html::a('<i class="fe-upload"></i> Xuất', 'javascript:;', [
-                                    'class' => 'btn btn-xs changeQuantity mx-1 btn-outline-warning',
-                                    'data-pjax' => '0',
-                                    'data-toggle' => 'modal',
-                                    'data-target' => '#modal-quantity',
-                                    'data-key' => $model->product_id,
-                                ]);
+                            'delete' => function ($url, $model) {
+                                $url = Url::toRoute(['warehouse-storage-delete', 'id' => $model->id]);
+                                return Component::delete($url);
                             },
                         ]
                     ]
@@ -85,17 +114,25 @@ use yii\helpers\Html; ?>
                 <div class="modal-body">
                     <?php $form = ActiveForm::begin(['id' => 'storageForm']) ?>
                     <div class="row">
-                        <div class="col-12">
-                            <?= $form->field($storage, 'warehouse_id')->hiddenInput(['value' => $model->id])->label(false) ?>
-                            <?= $form->field($storage, 'product_id')
-                                ->widget(Select2::className(), ['data' => ProductsModel::select(),
-                                    'theme' => Select2::THEME_DEFAULT])->label('Sản phẩm') ?>
+                        <div class="col-md-6">
+                            <?= $form->field($storage, 'po_code')
+                                ->textInput(['placeholder' => '#PO01329'])->label('Mã nhập') ?>
                         </div>
-                        <div class="col-12">
+                        <div class="col-md-6">
+                            <?= $form->field($storage, 'product_sku')
+                                ->widget(Select2::className(), ['data' => ProductsModel::select('sku', 'name'),
+                                    'theme' => Select2::THEME_DEFAULT])->label('Sản phẩm') ?>
+                            <?= $form->field($storage, 'warehouse_id')->hiddenInput(['value' => $model->id])->label(false) ?>
+                        </div>
+                        <div class="col-md-6">
                             <?= $form->field($storage, 'quantity')
                                 ->textInput(['type' => 'number', 'min' => 1])
                                 ->label('Số lượng') ?>
                         </div>
+                        <div class="col-md-6">
+                            <?= Component::money($form, $storage, 'unit_price')->label('Giá vốn/1 đơn vị (đ)') ?>
+                        </div>
+
                         <div class="col-12 text-right">
                             <button data-dismiss="modal" class="btn btn-sm btn-secondary">
                                 <i class="fe-x"></i> Đóng
@@ -121,13 +158,38 @@ use yii\helpers\Html; ?>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Số lượng</label>
-                        <input class="form-control" name="quantity" value="0" min="0" type="number">
-                    </div>
-                    <div class="form-group">
-                        <label>Ghi chú</label>
-                        <textarea class="form-control" name="note"></textarea>
+                    <?php ActiveForm::begin(['id' => 'transactionForm']) ?>
+                    <input type="hidden" name="product_sku">
+                    <input type="hidden" name="warehouse_id" value="<?= $model->id ?>">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Số lượng</label>
+                                <input class="form-control" name="quantity" value="0" min="0" type="number">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Trạng thái</label>
+                                <?php
+                                $data = WarehouseTransaction::TRANSACTION_TYPE;
+                                unset($data[5]);
+                                unset($data[6]);
+                                echo Select2::widget([
+                                    'theme' => Select2::THEME_DEFAULT,
+                                    'data' => $data,
+                                    'name' => 'trans_type',
+                                ]);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                <textarea class="form-control" name="note"></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div class="text-right">
                         <button data-dismiss="modal" class="btn btn-sm btn-secondary">
@@ -137,6 +199,7 @@ use yii\helpers\Html; ?>
                             <i class="fe-save"></i> Lưu
                         </button>
                     </div>
+                    <?php ActiveForm::end() ?>
                 </div>
             </div>
         </div>
@@ -149,28 +212,64 @@ $js = <<<JS
             title : 'Đang thực hiện....',
             allowOutsideClick: false,
             allowEscapeKey: false,
-            onBeforeOpen : () => {
+            onBeforeOpen :async () => {
                 swal.showLoading();
-                $.ajax({
-                    url : '/bill-lading/save-storage',
+                try {
+                  await $.ajax({
+                    url : AJAX_ENDPOINT.saveStorage,
                     type: 'POST',
                     contentType: false,
                     processData: false,
                     data : new FormData($(this)[0]),
                     cache : false,
-                    success : res => {
-                        swal.close();
-                        if(res){
-                            toastr.success('Thêm kho hàng thành công!');
-                            $('#modal-product').modal('hide');
-                            __reloadData();
-                        }
-                        
-                    },
-                });
+                    success : res => toastr.success('Thêm kho hàng thành công!')
+                    });
+                }catch (e) {
+                    toastr.error(e.responseJSON.message);
+                }finally {
+                   swal.close();
+                   $('#modal-product').modal('hide');
+                   window.location.reload();
+                }
             }
         })
         return false;
-    })
+    });
+    $('#modal-quantity').on('shown.bs.modal', function (e) {
+        let btn = $(e.relatedTarget);
+        let product = $(btn).data('product');
+        $('#transactionForm').find('input[name="product_sku"]').val(product);
+    });
+    $(document).on('beforeSubmit','#transactionForm',function(event) {
+        event.preventDefault();
+        swal.fire({
+            title : 'Đang thực hiện...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            onBeforeOpen : async () => {
+                try {
+                    await $.ajax({
+                        url : AJAX_ENDPOINT.saveStorageTrans,
+                        contentType: false,
+                        processData: false,
+                        cache: false,
+                        data : new FormData($(this)[0]),
+                        type: 'POST',
+                        success : res =>{
+                            console.log(res);
+                            toastr.success('Thao tác thành công!');
+                        }
+                    });
+                } catch (e) {
+                    toastr.error(e.responseJSON.message);
+                }finally {
+                   swal.close();
+                   $('#modal-quantity').modal('hide');
+                    window.location.reload();
+                }
+            }
+        })
+        return false;
+    });
 JS;
 $this->registerJs($js);

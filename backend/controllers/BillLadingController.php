@@ -24,9 +24,9 @@ class BillLadingController extends BaseController
 
         $searchModel = new ArchiveSearch();
         $model = new Archive();
-        if($id){
+        if ($id) {
             $model = Archive::findOne($id);
-            if(!$model){
+            if (!$model) {
                 throw new NotFoundHttpException('Không tồn tại đơn vị vận chuyển!');
             }
         }
@@ -44,15 +44,18 @@ class BillLadingController extends BaseController
             'dataProvider' => $dataProvider
         ]);
     }
-    public function actionDeleteDelivery($id){
+
+    public function actionDeleteDelivery($id)
+    {
         $model = Archive::findOne($id);
-        if(!$model){
+        if (!$model) {
             throw new NotFoundHttpException('Không tồn tại đơn vị vận chuyển!');
         }
         $model->delete();
         \Yii::$app->session->setFlash('success', 'Thao tác thành công!');
         return $this->redirect(['index']);
     }
+
     //Kho hàng
     public function actionForm($id = null)
     {
@@ -97,6 +100,17 @@ class BillLadingController extends BaseController
         return $this->redirect(['warehouse']);
     }
 
+    public function actionWarehouseStorageDelete($id)
+    {
+        $model = WarehouseStorage::findOne($id);
+        if (!$model) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+        $model->delete();
+        Helper::showMessage('Đã xóa sản phẩm khỏi kho');
+        return $this->redirect(['view', 'id' => $model->warehouse_id]);
+    }
+
     public function actionView($id)
     {
         $model = Warehouse::findOne($id);
@@ -105,15 +119,33 @@ class BillLadingController extends BaseController
         }
         $storage = new WarehouseStorage();
 
-
         $productStorage = new ActiveDataProvider([
             'query' => WarehouseStorage::find()
                 ->where(['warehouse_id' => $id])
+                ->with('transaction')
                 ->with('product'),
             'pagination' => [
                 'pageSize' => 20
             ]
         ]);
+        $query = WarehouseStorage::find()
+            ->where(['warehouse_storage.warehouse_id' => $id])
+            ->join('INNER JOIN', 'warehouse_transaction as Trans', 'warehouse_storage.warehouse_id=Trans.warehouse_id');
+
+        $query->addSelect([
+            'warehouse_storage.product_id',
+            'Trans.transaction_type as type',
+            'Trans.quantity as qty',
+            'Trans.product_sku as product',
+            'SUM( CASE WHEN Trans.transaction_type = 1 THEN Trans.quantity END) as import',
+            'SUM( CASE WHEN Trans.transaction_type = 2 THEN Trans.quantity END) as export',
+            'SUM( CASE WHEN Trans.transaction_type = 3 THEN Trans.quantity END) as refund',
+            'SUM( CASE WHEN Trans.transaction_type = 4 THEN Trans.quantity END) as broken',
+        ])->groupBy('Trans.product_sku');
+
+//        Helper::prinf($query->createCommand()->getRawSql());
+//        $query = $query->asArray()->all();
+//        Helper::prinf($query);
 
         return $this->render('warehouse-view', [
             'model' => $model,

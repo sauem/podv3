@@ -13,6 +13,7 @@ use backend\models\CategoriesModel;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use backend\models\ProductsModel;
+use backend\models\UserModel;
 $this->title = 'Landing Pages';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -53,6 +54,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'marketer')->textInput(['placeholder' => 'Tên quản lý']) ?>
+                        </div>
+                        <div class="col-md-12">
+                            <?= $form->field($model, 'partner_id')
+                                ->widget(Select2::className(), [
+                                    'data' => UserModel::listPartner(),
+                                    'theme' => Select2::THEME_DEFAULT,
+                                    'options' => [
+                                        'prompt' => 'Đối tác'
+                                    ]
+                                ])
+                                ->label("Đối tác") ?>
                         </div>
                         <div class="col-md-12">
                             <?= $form->field($model, 'product_id')

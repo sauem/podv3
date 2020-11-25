@@ -50,7 +50,7 @@ class LandingPages extends BaseModel
         return [
             [['name', 'link', 'category_id', 'marketer', 'country'], 'required'],
             [['link', 'marketer', 'country'], 'string'],
-            [['category_id', 'product_id', 'user_id', 'created_at', 'updated_at'], 'integer'],
+            [['category_id', 'product_id', 'user_id', 'partner_id', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => CategoriesModel::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductsModel::className(), 'targetAttribute' => ['product_id' => 'id']],
@@ -74,6 +74,7 @@ class LandingPages extends BaseModel
             'country' => 'Thị trường',
             'created_at' => 'Ngày tạo',
             'updated_at' => 'Updated At',
+            'partner_id' => 'Đối tác',
         ];
     }
 
@@ -107,6 +108,11 @@ class LandingPages extends BaseModel
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    public function getPartner()
+    {
+        return $this->hasOne(User::className(), ['id' => 'partner_id']);
+    }
+
     public function getContacts()
     {
         return $this->hasMany(ContactsModel::className(), ['short_link' => 'link']);
@@ -137,7 +143,7 @@ class LandingPages extends BaseModel
 
     public static function selectOption($from = "id", $to = "name")
     {
-        $all = self::find()->addSelect(['name','link', 'id'])->all();
+        $all = self::find()->addSelect(['name', 'link', 'id'])->all();
         return ArrayHelper::map($all, $from, $to);
     }
 }

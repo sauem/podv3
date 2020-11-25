@@ -11,9 +11,10 @@ use Yii;
  * @property int|null $warehouse_id
  * @property int|null $quantity
  * @property string|null $note
- * @property int|null $product_id
+ * @property string|null $product_sku
  * @property string|null $transaction_type
  * @property string|null $order_code
+ * @property double|null $total_average
  * @property int|null $status
  * @property int $created_at
  * @property int $updated_at
@@ -26,10 +27,18 @@ class WarehouseTransaction extends BaseModel
 
     const TRANSACTION_TYPE_IMPORT = 1;
     const TRANSACTION_TYPE_EXPORT = 2;
+    const TRANSACTION_TYPE_REFUND = 3;
+    const TRANSACTION_TYPE_BROKEN = 4;
+    const TRANSACTION_TYPE_INVENTORY = 5;
+    const TRANSACTION_PENDING_EXPORT = 6;
 
     const TRANSACTION_TYPE = [
         self::TRANSACTION_TYPE_IMPORT => 'Nhập kho',
         self::TRANSACTION_TYPE_EXPORT => 'Xuất kho',
+        self::TRANSACTION_TYPE_REFUND => 'Hoàn',
+        self::TRANSACTION_TYPE_BROKEN => 'Hỏng',
+        self::TRANSACTION_TYPE_INVENTORY => 'Tồn kho', // tồn kho =  nhập + hoàn - xuất + hỏng
+        self::TRANSACTION_PENDING_EXPORT => 'Chưa xuất hàng', // Chưa xuất hàng = tổng số lượng sản phẩm đã lên đơn chưa vận chuyển
     ];
 
     public static function tableName()
@@ -43,9 +52,10 @@ class WarehouseTransaction extends BaseModel
     public function rules()
     {
         return [
-            [['warehouse_id', 'quantity', 'product_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['warehouse_id', 'quantity', 'product_id'], 'required'],
-            [['note', 'transaction_type', 'order_code'], 'string', 'max' => 255],
+            [['warehouse_id', 'quantity', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['warehouse_id', 'quantity', 'product_sku'], 'required'],
+            [['total_average'], 'double'],
+            [['note', 'transaction_type', 'order_code', 'product_sku'], 'string', 'max' => 255],
         ];
     }
 
@@ -58,8 +68,9 @@ class WarehouseTransaction extends BaseModel
             'id' => 'ID',
             'warehouse_id' => 'Warehouse ID',
             'quantity' => 'Quantity',
+            'total_average' => 'Trung bình giá',
             'note' => 'Note',
-            'product_id' => 'Product ID',
+            'product_sku' => 'Mã sản phẩm',
             'transaction_type' => 'Transaction Type',
             'order_code' => 'Order Code',
             'status' => 'Status',

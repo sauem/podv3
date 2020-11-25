@@ -242,6 +242,14 @@ class UserModel extends User
         return ArrayHelper::map($all, "id", "username");
     }
 
+    public static function listPartner()
+    {
+        $all = self::find()->innerJoin("auth_assignment", "user.id=auth_assignment.user_id")
+            ->where(['auth_assignment.item_name' => self::_PARTNER])
+            ->asArray()->all();
+        return ArrayHelper::map($all, "id", "username");
+    }
+
     public static function completed()
     {
         $beginOfDay = strtotime("midnight", time());

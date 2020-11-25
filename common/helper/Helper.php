@@ -64,9 +64,9 @@ class Helper
         return ArrayHelper::getValue($country, $code);
     }
 
-    static function money($number)
+    static function money($number, $decimal = 2, $dec = '.', $thousand = ',')
     {
-        return number_format($number, 2, '.', ',');
+        return number_format($number, $decimal, '.', ',');
     }
 
     static function toDate($number, $format = "H:i:s d/m")
@@ -192,7 +192,9 @@ class Helper
             return Yii::$app->getView()->registerJs("toastr.warning('$msg')", 4, rand(0, 10));
         }
     }
-    static function toLower($str){
+
+    static function toLower($str)
+    {
         $str = trim(mb_strtolower($str));
         $str = preg_replace('/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/', 'a', $str);
         $str = preg_replace('/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/', 'e', $str);

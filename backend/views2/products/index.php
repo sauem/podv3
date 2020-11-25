@@ -15,12 +15,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
     <div class="row">
-        <div class="col-md-8">
+        <div style="transition: 0.5s ease" id="list-product" class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h4 class="card-title">Danh sách sản phẩm</h4>
                     <div class="card-tools">
-                        <a data-toggle="collapse" href="#filter"><i class="fa fa-filter"></i> Tìm kiếm</a>
+                        <a class="btn btn-outline-info btn-sm" data-toggle="collapse" href="#filter"><i
+                                    class="fa fa-filter"></i> Tìm kiếm</a>
+                        <a data-target="#collapse-order" class="btn btn-outline-success btn-sm" data-toggle="collapse"
+                           href="javascript:;"><i class="fa fa-box"></i> Thêm sản phẩm</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -40,9 +43,22 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return "<strong><i>$model->sku</i></strong> | $model->name ";
                                 }
                             ],
-                            'category_id',
                             [
-                                'label' => 'Ngày tạo',
+                                'label' => 'Tồn kho',
+                                'attribute' => 'created_at',
+                                'value' => function ($model) {
+                                    return date('d/m/Y', $model->created_at);
+                                }
+                            ],
+                            [
+                                'label' => 'Đã đặt',
+                                'attribute' => 'created_at',
+                                'value' => function ($model) {
+                                    return date('d/m/Y', $model->created_at);
+                                }
+                            ],
+                            [
+                                'label' => 'Khả dụng',
                                 'attribute' => 'created_at',
                                 'value' => function ($model) {
                                     return date('d/m/Y', $model->created_at);
@@ -67,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div id="collapse-order" class="collapse col-md-4">
             <div class="card table-responsive">
                 <div class="card-header justify-content-between d-flex">
                     <h4 class="card-title">Tạo sản phẩm</h4>
@@ -107,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     </div>
                     <div class="text-right">
-                        <?= Component::reset() ?>
+                        <?= Component::reset('Hủy') ?>
                         <?= Html::submitButton("<i class='fe-save'></i> Lưu", ['class' => 'btn btn-sm btn-success']) ?>
                     </div>
                 </div>
@@ -134,7 +150,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 class="fa fa-download"></i> File dữ liệu mẫu</a>
                     <div>
                         <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Đóng</button>
-                        <button type="button" data-action="product" class="handleData btn-sm btn btn-primary">Nhập sản phẩm
+                        <button type="button" data-action="product" class="handleData btn-sm btn btn-primary">Nhập sản
+                            phẩm
                         </button>
                     </div>
                 </div>
@@ -145,6 +162,16 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 
 $js = <<<JS
+    if((new URL(window.location.href)).searchParams.get('id')){
+     $('#list-product').removeClass('col-12').addClass('col-md-8');
+     $('#collapse-order').collapse();
+    }
+    $('#collapse-order').on('hidden.bs.collapse', function() {
+        $('#list-product').removeClass('col-md-8').addClass('col-12');
+    });
+    $('#collapse-order').on('show.bs.collapse', function() {
+       $('#list-product').removeClass('col-12').addClass('col-md-8');
+    });
     initRemote("product-import");
 JS;
 $this->registerJs($js);

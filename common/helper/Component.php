@@ -2,6 +2,7 @@
 
 
 namespace common\helper;
+
 use kartik\money\MaskMoney;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -22,7 +23,7 @@ class Component
 
     static function update($url, $remote = false, $modal = null)
     {
-        if($remote){
+        if ($remote) {
             return Html::button('<i class="fe-edit"></i> sửa', [
                 'data-remote' => $url,
                 'data-toggle' => 'modal',
@@ -32,14 +33,16 @@ class Component
 
             ]);
         }
-        return Html::a('<i class="fe-edit"></i> sửa', $url, ['data-pjax' => '0','class' => 'btn m-1 btn-sm bg-white']);
+        return Html::a('<i class="fe-edit"></i> sửa', $url, ['data-pjax' => '0', 'class' => 'btn m-1 btn-sm bg-white']);
     }
 
     static function view($url)
     {
-        return Html::a('<i class="fe-eye"></i> xem', $url, ['data-pjax' => '0' ,'class' => 'btn m-1 btn-sm bg-white']);
+        return Html::a('<i class="fe-eye"></i> xem', $url, ['data-pjax' => '0', 'class' => 'btn m-1 btn-sm bg-white']);
     }
-    static function money($form,$model,$name){
+
+    static function money($form, $model, $name, $precision = 2)
+    {
         return $form->field($model, $name)->widget(MaskMoney::classname(), [
             'options' => [
                 'placeholder' => 'Nhập số tiền...'
@@ -48,25 +51,28 @@ class Component
                 'prefix' => '',
                 'allowNegative' => false,
                 'allowZero' => false,
+                'precision' => $precision,
                 'allowEmpty' => true
             ]
         ]);
     }
 
-    static function reset($name = "Làm mới"){
+    static function reset($name = "Làm mới")
+    {
         $url = Url::toRoute(\Yii::$app->controller->getRoute());
-        if(\Yii::$app->request->get('phone')){
-            $url = Url::toRoute([\Yii::$app->controller->getRoute(),'phone' => \Yii::$app->request->get('phone')]);
+        if (\Yii::$app->request->get('phone')) {
+            $url = Url::toRoute([\Yii::$app->controller->getRoute(), 'phone' => \Yii::$app->request->get('phone')]);
         }
         return Html::a("<i class='fe-refresh-ccw'></i> $name", $url, ['class' => 'btn btn-sm btn-outline-warning']);
     }
 
-    static function renderLogs(){
+    static function renderLogs()
+    {
         $path = \Yii::getAlias("@backend/web/file/logs.txt");
         $file = fopen($path, "r");
         $content = "";
-        if(filesize($path) > 0){
-            $content  = fread($file, filesize($path));
+        if (filesize($path) > 0) {
+            $content = fread($file, filesize($path));
             fclose($file);
         }
         return $content;
