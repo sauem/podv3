@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int|null $order_id
  * @property int|null $product_id
+ * @property string|null $po
 
  * @property int $created_at
  * @property int $updated_at
@@ -39,7 +40,7 @@ class OrdersItems extends BaseModel
             [['order_id','qty'], 'integer'],
             [['order_id', 'product_sku','price'], 'required'],
             [['price'], 'number'],
-            [['product_sku','product_option'], 'string']
+            [['product_sku','product_option','po'], 'string']
         ];
     }
 
@@ -57,6 +58,7 @@ class OrdersItems extends BaseModel
             'created_at' => 'Created At',
             'product_option' => 'Yêu cầu sản phẩm',
             'updated_at' => 'Updated At',
+            'po' => 'Mã nhập hàng',
         ];
     }
 
@@ -79,5 +81,10 @@ class OrdersItems extends BaseModel
     public function getProduct()
     {
         return $this->hasOne(ProductsModel::className(), ['sku' => 'product_sku'])->with('category');
+    }
+
+    public function getPo()
+    {
+        return $this->hasOne(WarehouseStorage::className(), ['po_code' => 'po']);
     }
 }

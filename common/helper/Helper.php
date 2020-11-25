@@ -126,9 +126,9 @@ class Helper
         return empty($val) || !isset($val) || $val === "";
     }
 
-    static function makeCodeIncrement($lastID, $country = "VN")
+    static function makeCodeIncrement($lastID, $country = "VN", $prefix = '#CC')
     {
-        $defaultCode = "#CC" . $country . "0000000";
+        $defaultCode = $prefix . $country . "0000000";
         $maxLen = strlen($lastID);
         $code = substr_replace($defaultCode, $lastID, -$maxLen);
         return $code;

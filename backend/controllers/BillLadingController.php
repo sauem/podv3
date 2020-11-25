@@ -5,11 +5,15 @@ namespace backend\controllers;
 
 
 use backend\models\ArchiveSearch;
+use backend\models\ProductsModel;
 use backend\models\Warehouse;
 use backend\models\WarehouseSearch;
 use backend\models\WarehouseStorage;
+use backend\models\WarehouseTransaction;
 use common\helper\Helper;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
+use yii\db\Transaction;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -83,9 +87,32 @@ class BillLadingController extends BaseController
 
         $searchModel = new WarehouseSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+
+        $query = ProductsModel::find()
+            ->addSelect([
+                'C.name',
+                'products.sku as sku',
+                'products.category_id',
+                'WT.transaction_type as type',
+                'SUM(CASE WHEN WT.transaction_type = 1 THEN WT.quantity END) as import',
+                'SUM(CASE WHEN WT.transaction_type = 2 THEN WT.quantity END) as export',
+                'SUM(CASE WHEN WT.transaction_type = 3 THEN WT.quantity END) as refund',
+                'SUM(CASE WHEN WT.transaction_type = 4 THEN WT.quantity END) as broken'
+            ])
+            ->innerJoin('categories C', 'C.id = products.category_id')
+            ->leftJoin('warehouse_transaction WT', 'WT.product_sku = products.sku')
+            ->groupBy('products.category_id')
+            ->with('orderItems')
+            ->asArray()->all();
+
+        $productWarehouse = new ArrayDataProvider([
+            'allModels' => $query,
+        ]);
         return $this->render('warehouse', [
             'model' => $model,
-            'dataProvider' => $dataProvider
+            'dataProvider' => $dataProvider,
+            'productWarehouse' => $productWarehouse
         ]);
     }
 
@@ -128,24 +155,6 @@ class BillLadingController extends BaseController
                 'pageSize' => 20
             ]
         ]);
-        $query = WarehouseStorage::find()
-            ->where(['warehouse_storage.warehouse_id' => $id])
-            ->join('INNER JOIN', 'warehouse_transaction as Trans', 'warehouse_storage.warehouse_id=Trans.warehouse_id');
-
-        $query->addSelect([
-            'warehouse_storage.product_id',
-            'Trans.transaction_type as type',
-            'Trans.quantity as qty',
-            'Trans.product_sku as product',
-            'SUM( CASE WHEN Trans.transaction_type = 1 THEN Trans.quantity END) as import',
-            'SUM( CASE WHEN Trans.transaction_type = 2 THEN Trans.quantity END) as export',
-            'SUM( CASE WHEN Trans.transaction_type = 3 THEN Trans.quantity END) as refund',
-            'SUM( CASE WHEN Trans.transaction_type = 4 THEN Trans.quantity END) as broken',
-        ])->groupBy('Trans.product_sku');
-
-//        Helper::prinf($query->createCommand()->getRawSql());
-//        $query = $query->asArray()->all();
-//        Helper::prinf($query);
 
         return $this->render('warehouse-view', [
             'model' => $model,
@@ -154,16 +163,27 @@ class BillLadingController extends BaseController
         ]);
     }
 
+    /**
+     * @return WarehouseStorage
+     * @throws BadRequestHttpException
+     */
     public function actionSaveStorage()
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $storage = new WarehouseStorage();
-
-        if (\Yii::$app->request->isPost && $storage->load(\Yii::$app->request->post())) {
+        $transaction = \Yii::$app->getDb()->beginTransaction(Transaction::SERIALIZABLE);
+        $storage->load(\Yii::$app->request->post());
+        try {
             if (!$storage->save()) {
                 throw new BadRequestHttpException(Helper::firstError($storage));
             }
+
+            WarehouseTransaction::doFirstImport($storage->id, $storage->product_sku, $storage->quantity);
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException($exception->getMessage());
         }
-        return true;
+        return $storage;
     }
 }

@@ -2,7 +2,9 @@
 
 namespace backend\models;
 
+use common\helper\Helper;
 use Yii;
+use yii\web\BadRequestHttpException;
 
 /**
  * This is the model class for table "warehouse_transaction".
@@ -52,10 +54,10 @@ class WarehouseTransaction extends BaseModel
     public function rules()
     {
         return [
-            [['warehouse_id', 'quantity', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['warehouse_id', 'transaction_type', 'quantity', 'status', 'created_at', 'updated_at'], 'integer'],
             [['warehouse_id', 'quantity', 'product_sku'], 'required'],
             [['total_average'], 'double'],
-            [['note', 'transaction_type', 'order_code', 'product_sku'], 'string', 'max' => 255],
+            [['note', 'order_code', 'product_sku'], 'string', 'max' => 255],
         ];
     }
 
@@ -77,5 +79,27 @@ class WarehouseTransaction extends BaseModel
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @param $warehouse_id
+     * @param $product_sku
+     * @param $quantity
+     * @param $transaction_type
+     * @return bool
+     * @throws BadRequestHttpException
+     */
+    public static function doFirstImport($warehouse_id, $product_sku, $quantity)
+    {
+        $model = new WarehouseTransaction();
+        if ($model->load([
+                'warehouse_id' => $warehouse_id,
+                'product_sku' => $product_sku,
+                'quantity' => $quantity,
+                'transaction_type' => self::TRANSACTION_TYPE_IMPORT
+            ], '') && $model->save()) {
+            return true;
+        }
+        throw new BadRequestHttpException(Helper::firstError($model));
     }
 }

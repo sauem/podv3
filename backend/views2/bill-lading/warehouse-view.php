@@ -14,7 +14,7 @@ use yii\helpers\Html; ?>
     <div class="card">
         <div class="card-header d-flex justify-content-between">
             <h4 class="card-title">
-                #<?= $model->id ?> <?= $model->name ?>
+                <a href="<?= Url::toRoute(['warehouse'])?>"><i class="fe-arrow-left"></i> Quản ký kho</a>  | #<?= $model->id ?> <?= $model->name ?>
             </h4>
             <div class="actions">
                 <button data-toggle="modal"
@@ -65,15 +65,15 @@ use yii\helpers\Html; ?>
                         'format' => 'html',
                         'label' => 'Giá vốn/đơn vị',
                         'value' => function ($model) {
-                            return Helper::money($model->unit_price, 0) . 'đ';
+                            return Helper::money($model->unit_price / $model->quantity, 0) . 'đ';
                         }
                     ],
                     [
                         'attribute' => 'unit_pirce',
                         'format' => 'html',
-                        'label' => 'Tổng vốn',
+                        'label' => 'Giá vốn',
                         'value' => function ($model) {
-                            return Helper::money($model->quantity * $model->unit_price, 0) . 'đ';
+                            return Helper::money($model->unit_price, 0) . 'đ';
                         }
                     ],
                     [
@@ -116,7 +116,7 @@ use yii\helpers\Html; ?>
                     <div class="row">
                         <div class="col-md-6">
                             <?= $form->field($storage, 'po_code')
-                                ->textInput(['placeholder' => '#PO01329'])->label('Mã nhập') ?>
+                                ->textInput(['placeholder' => '#PO-AUTO', 'disabled' => true])->label('Mã nhập') ?>
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($storage, 'product_sku')
@@ -130,7 +130,7 @@ use yii\helpers\Html; ?>
                                 ->label('Số lượng') ?>
                         </div>
                         <div class="col-md-6">
-                            <?= Component::money($form, $storage, 'unit_price')->label('Giá vốn/1 đơn vị (đ)') ?>
+                            <?= Component::money($form, $storage, 'unit_price')->label('Giá vốn') ?>
                         </div>
 
                         <div class="col-12 text-right">
@@ -229,7 +229,7 @@ $js = <<<JS
                 }finally {
                    swal.close();
                    $('#modal-product').modal('hide');
-                   window.location.reload();
+                   //window.location.reload();
                 }
             }
         })
@@ -265,7 +265,7 @@ $js = <<<JS
                 }finally {
                    swal.close();
                    $('#modal-quantity').modal('hide');
-                    window.location.reload();
+                    //window.location.reload();
                 }
             }
         })

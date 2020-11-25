@@ -1,6 +1,7 @@
 <?php
 
 ?>
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="card-title">Báo cáo kho</h4>

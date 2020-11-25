@@ -77,6 +77,19 @@ class ProductsModel extends BaseModel
         return $this->hasOne(CategoriesModel::className(), ['id' => 'category_id'])->with('sku');
     }
 
+    public function getStorage()
+    {
+        return $this->hasOne(WarehouseStorage::className(), ['product_sku' => 'sku'])->with('transaction');
+    }
+
+    public function getOrderItems()
+    {
+        return $this->hasOne(OrdersItems::className(), ['product_sku' => 'sku'])->addSelect([
+            'product_sku',
+            'SUM(qty) as pending'
+        ]);
+    }
+
     static function select($val = "id", $view = "name")
     {
         $all = self::find()->all();
