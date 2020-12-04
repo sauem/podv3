@@ -56,31 +56,25 @@ return [
             'channel' => 'queue',
             'as log' => \yii\queue\LogBehavior::class,
         ],
-//        'assetManager' => [
-//            'bundles' => [
-//                'yii\bootstrap\BootstrapAsset' => [
-//                    'sourcePath' => null,
-//                    'css' => [
-//                        'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-//                    ],
-//                    'js' => [
-//                        'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js',
-//                        'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
-//                    ],
-//                ],
-//                'yii\bootstrap\BootstrapPluginAsset' => [
-//                    'sourcePath' => null,
-//                    'css' => [
-//                        'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-//                    ],
-//                    'js' => [
-//                        'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js',
-//                        'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
-//                    ],
-//                ]
-//
-//            ],
-//        ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'js' => [
+                        '/theme2/js/vendor.js'
+                    ]
+                ],
+                'yii\bootstrap\BootstrapAsset' => [
+                    'sourcePath' => null,
+                    'css' => [
+                        '/theme2/css/bootstrap.min.css'
+                    ],
+                    'js' => [
+                        '/theme2/js/vendor.js'
+                    ],
+                ],
+            ],
+        ],
+
         'formatter' => [
             'class' => \yii\i18n\Formatter::class,
             'thousandSeparator' => ',',
