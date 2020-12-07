@@ -41,7 +41,6 @@ class AppAsset2 extends AssetBundle
         '/theme2/libs/multiselect/js/jquery.multi-select.js',
         '/theme2/libs/select2/js/select2.min.js',
         '/theme2/libs/flatpickr/flatpickr.min.js',
-        '/theme2/libs/chart.js/Chart.bundle.min.js',
         '/theme2/libs/bootstrap-select/js/bootstrap-select.min.js',
         '/theme2/libs/datatables.net/js/jquery.dataTables.min.js',
         '/theme2/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js',
@@ -53,7 +52,7 @@ class AppAsset2 extends AssetBundle
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
         '/js/order.js?v=2.9',
-        '/theme2/js/report-chart.js?v=2.1',
+       // '/theme2/js/report-chart.js?v=2.1',
         '/theme2/js/partner.js?v=3.5',
         '/theme2/js/app.min.js',
     ];

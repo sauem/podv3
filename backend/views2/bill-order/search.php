@@ -8,7 +8,13 @@
                 name="" class="selectpicker mr-3"
                 multiple data-selected-text-format="count"
                 data-style="btn-light">
-            <option value=""></option>
+            <?php if (!empty($filterProducts)) { ?>
+                <?php foreach ($filterProducts as $product) {
+                    ?>
+                    <option value="<?= $product?>"><?= $product?></option>
+                    <?php
+                } ?>
+            <?php } ?>
         </select>
     </div>
     <div class="col-md-3">
@@ -18,7 +24,13 @@
                 name="" class="selectpicker mr-3"
                 multiple data-selected-text-format="count"
                 data-style="btn-light">
-            <option value=""></option>
+            <?php if (!empty($filterPayments)) { ?>
+                <?php foreach ($filterPayments as $payment) {
+                    ?>
+                    <option value="<?= $payment?>"><?= $payment?></option>
+                    <?php
+                } ?>
+            <?php } ?>
         </select>
     </div>
     <div class="col-md-3">
@@ -28,7 +40,13 @@
                 name="" class="selectpicker mr-3"
                 multiple data-selected-text-format="count"
                 data-style="btn-light">
-            <option value=""></option>
+            <?php if (!empty($filterCountries)) { ?>
+                <?php foreach ($filterCountries as $code => $country) {
+                    ?>
+                    <option value="<?= $code?>"><?= $country?></option>
+                    <?php
+                } ?>
+            <?php } ?>
         </select>
     </div>
 </div>

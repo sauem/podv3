@@ -83,3 +83,9 @@
         <h3>{{totalC8C3}}%</h3>
     </div>
 </script>
+<?php
+
+$this->registerJsFile(
+    '@web/theme2/js/report-chart.js',
+    ['depends' => [\yii\web\JqueryAsset::className()]]
+);

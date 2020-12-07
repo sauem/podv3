@@ -165,7 +165,6 @@ $(".selectpicker").change(function () {
     let val = $(this).val();
     let name = $(this).attr('name');
     window.REPORT[name] = val;
-
     _setResultQuery();
 });
 

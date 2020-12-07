@@ -64,10 +64,14 @@
         </ul>
     </div>
     <div class="card-body">
-        <?= $this->render('search') ?>
+        <?= $this->render('search', [
+            'filterProducts' => $filterProducts,
+            'filterPayments' => $filterPayments,
+            'filterCountries' => $filterCountries,
+        ]) ?>
         <div class="tab-content">
             <div class="tab-pane active" id="tab-b1">
-                <?= $this->render('tab-order',['orders' => $orders])?>
+                <?= $this->render('tab-order', ['orders' => $orders]) ?>
             </div>
             <div class="tab-pane" id="tab-b2">
                 <h1>HELLL2</h1>

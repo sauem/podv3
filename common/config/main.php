@@ -60,7 +60,8 @@ return [
             'bundles' => [
                 'yii\web\JqueryAsset' => [
                     'js' => [
-                        '/theme2/js/vendor.js'
+                        '/theme2/js/vendor.js',
+                        '/theme2/libs/chart.js/Chart.bundle.min.js'
                     ]
                 ],
                 'yii\bootstrap\BootstrapAsset' => [
