@@ -75,7 +75,7 @@ use kartik\daterange\DateRangePicker; ?>
     <script id="index-template" type="text/x-handlebars-template">
         <div class="col-3 text-center">
             <p>Doanh thu C8</p>
-            <h3>฿{{money revenue_c8}}</h3>
+            <h3>{{money revenue_c8}}</h3>
         </div>
         <div class="col text-center">
             <p>C3 (Contacts - Duplicate)</p>

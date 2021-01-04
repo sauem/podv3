@@ -57,8 +57,8 @@ use kartik\daterange\DateRangePicker; ?>
             <td>{{status}}</td>
             <td>{{status_shipping}}</td>
             <td>{{status_C13}}</td>
-            <td>฿{{money revenue}}</td>
-            <td>฿{{money transfer_C13}}</td>
+            <td>{{money revenue}}</td>
+            <td>{{money transfer_C13}}</td>
         </tr>
         {{/each}}
     </script>

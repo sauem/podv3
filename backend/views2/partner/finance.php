@@ -65,67 +65,67 @@ use kartik\daterange\DateRangePicker; ?>
             <div class="row">
                 <div class="col">
                     <p>Doanh thu C13</p>
-                    <h4>฿{{money totalC13Trans}}</h4>
+                    <h4>{{money totalC13Trans}}</h4>
                 </div>
                 <div class="col">
                     <p>Doanh thu C11</p>
-                    <h4>฿{{money C11}}</h4>
+                    <h4>{{money C11}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí dịch vụ (18%)</p>
-                    <h4>฿{{money total_dv}}</h4>
+                    <h4>{{money total_dv}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí thu hộ</p>
-                    <h4>฿{{money total_thu_ho}}</h4>
+                    <h4>{{money total_thu_ho}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí vận chuyển</p>
-                    <h4>฿{{money total_vch}}</h4>
+                    <h4>{{money total_vch}}</h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <p>Doanh thu C13 đã đối soát</p>
-                    <h4>฿{{money tien_da_dx}}</h4>
+                    <h4>{{money tien_da_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Doanh thu C11 đã đối soát</p>
-                    <h4>฿{{money C13}}</h4>
+                    <h4>{{money C13}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí dịch vụ đã đối soát</p>
-                    <h4>฿{{money dv_da_dx}}</h4>
+                    <h4>{{money dv_da_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí thu hộ đã đối soáṭ</p>
-                    <h4>฿{{money thu_ho_da_dx}}</h4>
+                    <h4>{{money thu_ho_da_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí vận chuyển đã đối soát</p>
-                    <h4>฿{{money vch_da_dx}}</h4>
+                    <h4>{{money vch_da_dx}}</h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <p>Doanh thu C13 chưa đối soát</p>
-                    <h4>฿{{money tien_chua_dx}}</h4>
+                    <h4>{{money tien_chua_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Doanh thu C11 chưa đối soát</p>
-                    <h4>฿{{money C13_chua_dx}}</h4>
+                    <h4>{{money C13_chua_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí dịch vụ chưa đối soát</p>
-                    <h4>฿{{money dv_chua_dx}}</h4>
+                    <h4>{{money dv_chua_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí thu hộ chưa đối soát</p>
-                    <h4>฿{{money thu_ho_chua_dx}}</h4>
+                    <h4>{{money thu_ho_chua_dx}}</h4>
                 </div>
                 <div class="col">
                     <p>Phí vận chuyển chưa đối soát</p>
-                    <h4>฿{{money vch_chua_dx}}</h4>
+                    <h4>{{money vch_chua_dx}}</h4>
                 </div>
             </div>
         </div>
