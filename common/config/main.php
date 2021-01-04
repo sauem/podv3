@@ -56,25 +56,25 @@ return [
             'channel' => 'queue',
             'as log' => \yii\queue\LogBehavior::class,
         ],
-        'assetManager' => [
-            'bundles' => [
-                'yii\web\JqueryAsset' => [
-                    'js' => [
-                        '/theme2/js/vendor.js',
-                        '/theme2/libs/chart.js/Chart.bundle.min.js'
-                    ]
-                ],
-                'yii\bootstrap\BootstrapAsset' => [
-                    'sourcePath' => null,
-                    'css' => [
-                        '/theme2/css/bootstrap.min.css'
-                    ],
-                    'js' => [
-                        '/theme2/js/vendor.js'
-                    ],
-                ],
-            ],
-        ],
+//        'assetManager' => [
+//            'bundles' => [
+//                'yii\web\JqueryAsset' => [
+//                    'js' => [
+//                        '/theme2/js/vendor.js',
+//                        '/theme2/libs/chart.js/Chart.bundle.min.js'
+//                    ]
+//                ],
+//                'yii\bootstrap\BootstrapAsset' => [
+//                    'sourcePath' => null,
+//                    'css' => [
+//                        '/theme2/css/bootstrap.min.css'
+//                    ],
+//                    'js' => [
+//                        '/theme2/js/vendor.js'
+//                    ],
+//                ],
+//            ],
+//        ],
 
         'formatter' => [
             'class' => \yii\i18n\Formatter::class,

@@ -2,6 +2,7 @@
 
 
 namespace backend\assets;
+
 use yii\web\AssetBundle;
 
 class AppAsset2 extends AssetBundle
@@ -28,6 +29,7 @@ class AppAsset2 extends AssetBundle
     ];
     public $js = [
         '/theme2/js/vendor.js',
+        '/theme2/libs/chart.js/Chart.bundle.min.js',
         '/lib/js/handlebars-v4.7.6.js',
         '/lib/js/typeahead.js',
         '/lib/js/handlebars-helper.js?v=1.5',
@@ -52,7 +54,7 @@ class AppAsset2 extends AssetBundle
         '/js/excel/xlsx/dist/xlsx.full.min.js',
         '/js/site.js?v=2.9',
         '/js/order.js?v=2.9',
-       // '/theme2/js/report-chart.js?v=2.1',
+        '/theme2/js/report-chart.js?v=2.1',
         '/theme2/js/partner.js?v=3.5',
         '/theme2/js/app.min.js',
     ];
