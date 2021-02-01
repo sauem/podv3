@@ -37,6 +37,38 @@ const getSearch = async (data) => {
         data: data,
     });
 }
+
+
+const initWebStorageTable = () => {
+    let db = openDatabase('mydb', '1.0', 'Demo for sqlite web', 5 * 1024 * 1024);
+
+    db.transaction(function (tx) {
+        tx.executeSql("CREATE TABLE IF NOT EXISTS sale(id unique, data)");
+        tx.executeSql("CREATE TABLE IF NOT EXISTS financial(id unique, data)");
+    });
+}
+initWebStorageTable();
+const setWebStorage = (table, data = {}) => {
+    let db = openDatabase('mydb', '1.0', 'Demo for sqlite web', 5 * 1024 * 1024);
+
+    db.transaction(function (tx) {
+        tx.executeSql("INSERT INTO " + table + " (id, name) VALUES (?,?)", [1, JSON.stringify(data)]);
+    });
+}
+const getWebStorage = (table) => {
+    let db = openDatabase('mydb', '1.0', 'Demo for sqlite web', 5 * 1024 * 1024);
+    db.transaction(function (tx) {
+        tx.executeSql("SELECT * FROM " + table, [], (transaction, result) => {
+                console.log(result.rows);
+                return result.rows;
+            },
+            (transaction, error) => {
+
+            }
+        );
+    });
+}
+
 const setLocalStorage = (name, data) => {
     localStorage.setItem(name, JSON.stringify(data));
 }
@@ -48,7 +80,7 @@ const getLocalStorage = name => {
     return JSON.parse(data);
 }
 const initDataTable = element => {
-     $(element).DataTable({
+    $(element).DataTable({
         language: {
             paginate: {
                 previous: "<i class='mdi mdi-chevron-left'>",

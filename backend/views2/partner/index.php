@@ -165,7 +165,8 @@ $js = <<<JS
         
         getSale('$partner').then(res => {
           const {base,  filter, labels ,calculate, dataSet} = res;
-          setLocalStorage('sale',base);
+          setWebStorage('sale',base);
+          //setLocalStorage('sale',base);
             $("#result-index").html(template(calculate));
             $("#result-filter").replaceWith(filterTemp(filter));
             initSelectPicker();
@@ -177,7 +178,7 @@ $js = <<<JS
 
     $(document).on('change','.selectpicker, .partner-date', function() {
         
-        let base = getLocalStorage('sale');
+        let base = getWebStorage('sale');//getLocalStorage('sale');
         if(!base){
             toastr.warning('Dữ liệu chưa cập nhật!');
             return false;

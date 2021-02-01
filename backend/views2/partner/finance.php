@@ -189,8 +189,8 @@ $js = <<<JS
              column_2 : dataSet.C13
          }
          
-         setLocalStorage('finance', base);
-         
+         //setLocalStorage('finance', base);
+           setWebStorage('financial',base);
          $("#result-calculate").html(temp(calculate));
          $("#result-filter").replaceWith(filterTemp(filter));
          initSelectPicker();
@@ -205,7 +205,7 @@ $js = <<<JS
     
     $(document).on('change','.selectpicker, .partner-date', function() {
         
-        let base = getLocalStorage('finance');
+        let base = getWebStorage('financial');//getLocalStorage('finance');
         if(!base){
             toastr.warning('Dữ liệu chưa cập nhật!');
             return false;
