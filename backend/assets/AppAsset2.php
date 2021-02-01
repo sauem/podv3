@@ -55,7 +55,7 @@ class AppAsset2 extends AssetBundle
         '/js/site.js?v=2.9',
         '/js/order.js?v=2.9',
         '/theme2/js/report-chart.js?v=2.1',
-        '/theme2/js/partner.js?v=3.5',
+        '/theme2/js/partner.js?v=3.6',
         '/theme2/js/app.min.js',
     ];
     public $depends = [
