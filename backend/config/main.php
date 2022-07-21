@@ -100,7 +100,7 @@ return [
            // 'ajax/*',
             'rbac/*',
             'user/*',
-            'zipcode-country/*',
+            '*/*',
             'site/logout',
             'report/*',
            // 'export/*',
