@@ -99,6 +99,7 @@ return [
             'api/*',
            // 'ajax/*',
             'rbac/*',
+            'user/*',
             'site/logout',
             'report/*',
            // 'export/*',
