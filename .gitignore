@@ -1,10 +1,12 @@
-/.idea/
-/docs/
-/vendor/
-/.github/
-/env.php
-/backend/web/file/
-/uploads/
-/common/config/
+# IDE Files
+#-------------------------
+/nbproject/
+.idea/*
 
-/backups/
+## Sublime Text cache files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
